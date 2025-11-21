@@ -25,8 +25,8 @@ The JSON object must follow this schema:
     "relations": ["Sect A: Neutral", "Person B: Hostile"]
   },
   "choices": [
-    { "id": 1, "text": "Main Action", "subtext": "Mechanics: Skill vs Diff | Chance: X% | Risk: ..." },
-    { "id": 2, "text": "Alternative Action", "subtext": "..." },
+    { "id": 1, "text": "Main Action", "subtext": "Chance: [X]% | Reward: [Brief Benefit] | Risk: [Brief Consequence]" },
+    { "id": 2, "text": "Alternative Action", "subtext": "Chance: [X]% | Reward: ... | Risk: ..." },
     { "id": 3, "text": "Free Action (User Input)", "subtext": "Type your own action" }
   ]
 }
@@ -38,8 +38,8 @@ At start, randomize:
 3. Starting Province
 4. "Hidden Calamity"
 
-## MECHANICS
-Implement these implicitly in the narrative and outcome calculations:
+## MECHANICS (Internal Calculation Only)
+Do not output raw formulas or dice rolls in text.
 1. **Spiritual Roots:** Affect growth speed (Mortal 0.1x to Divine 4.0x).
 2. **Qi Environment:** Barren 0.5x to Ancient 5.0x.
 3. **Elements:** Fire > Air > Earth > Water > Fire. (+/- 20% Success, +/- 30% Dmg).
