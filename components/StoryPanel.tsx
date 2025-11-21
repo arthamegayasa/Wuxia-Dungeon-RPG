@@ -105,7 +105,8 @@ export const StoryPanel: React.FC<StoryPanelProps> = ({ turnData, onAction, isLo
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto relative z-0 scrollbar-thin scrollbar-thumb-jade-900 scrollbar-track-ink-950"
       >
-        <div className="max-w-4xl mx-auto px-6 py-8 sm:px-10 sm:py-12 min-h-full flex flex-col">
+        {/* Optimized padding for mobile (px-5 py-6) */}
+        <div className="max-w-4xl mx-auto px-5 py-6 sm:px-10 sm:py-12 min-h-full flex flex-col">
             
             {!turnData && !isLoading && (
                <div className="flex-1 flex flex-col items-center justify-center text-gray-600/50 italic">
@@ -139,26 +140,26 @@ export const StoryPanel: React.FC<StoryPanelProps> = ({ turnData, onAction, isLo
         </div>
       </div>
 
-      {/* Interaction Area - Redesigned for clarity */}
-      <div className="bg-ink-900/95 backdrop-blur-md border-t border-jade-900/30 p-4 sm:p-6 z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+      {/* Interaction Area - Redesigned for clarity and mobile compactness */}
+      <div className="bg-ink-900/95 backdrop-blur-md border-t border-jade-900/30 p-3 sm:p-6 z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
          
          {turnData && !isLoading && !isTyping && (
-             <div className="max-w-3xl mx-auto space-y-4">
+             <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
                 {/* Vertical list is better for reading choices than a grid */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2 sm:gap-3">
                     {turnData.choices.filter(c => c.id !== 3 && !c.text.toLowerCase().includes("free action")).map((choice) => (
                         <button
                             key={choice.id}
                             onClick={(e) => { e.stopPropagation(); handleChoiceClick(choice); }}
-                            className="group w-full text-left bg-ink-800 border-l-[3px] border-l-gray-600 hover:border-l-jade-500 border-y border-r border-gray-800 p-4 rounded-r-lg transition-all duration-200 hover:bg-ink-800/80 shadow-sm"
+                            className="group w-full text-left bg-ink-800 border-l-[3px] border-l-gray-600 hover:border-l-jade-500 border-y border-r border-gray-800 p-3 sm:p-4 rounded-r-lg transition-all duration-200 hover:bg-ink-800/80 shadow-sm"
                         >
                             <div className="flex justify-between items-start gap-4">
                                 <div>
-                                    <div className="font-bold text-parchment-100 group-hover:text-white text-lg font-serif">
+                                    <div className="font-bold text-parchment-100 group-hover:text-white text-base sm:text-lg font-serif">
                                         {choice.text}
                                     </div>
                                     {choice.subtext && (
-                                        <div className="text-sm text-gray-500 group-hover:text-jade-400/90 font-sans mt-1">
+                                        <div className="text-xs sm:text-sm text-gray-500 group-hover:text-jade-400/90 font-sans mt-1">
                                             {choice.subtext}
                                         </div>
                                     )}
@@ -169,7 +170,7 @@ export const StoryPanel: React.FC<StoryPanelProps> = ({ turnData, onAction, isLo
                 </div>
 
                 {/* Custom Input (Free Action) */}
-                <div className="relative pt-2">
+                <div className="relative pt-1 sm:pt-2">
                      <form onSubmit={(e) => { e.stopPropagation(); handleCustomSubmit(e); }} className="relative">
                         <input
                             id="custom-action-input"
@@ -178,14 +179,14 @@ export const StoryPanel: React.FC<StoryPanelProps> = ({ turnData, onAction, isLo
                             onChange={(e) => setCustomInput(e.target.value)}
                             onClick={(e) => e.stopPropagation()}
                             placeholder="Forge your own destiny..."
-                            className="w-full bg-ink-950 text-parchment-200 border border-gray-800 rounded-lg pl-5 pr-12 py-4 focus:outline-none focus:border-jade-600 focus:ring-1 focus:ring-jade-600/50 transition-all font-serif placeholder:text-gray-700 placeholder:italic shadow-inner"
+                            className="w-full bg-ink-950 text-parchment-200 border border-gray-800 rounded-lg pl-5 pr-12 py-3 sm:py-4 focus:outline-none focus:border-jade-600 focus:ring-1 focus:ring-jade-600/50 transition-all font-serif placeholder:text-gray-700 placeholder:italic shadow-inner text-sm sm:text-base"
                         />
                         <button 
                             type="submit"
                             disabled={!customInput.trim()}
                             className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-jade-400 disabled:opacity-30 transition-colors"
                         >
-                            <Send size={20} />
+                            <Send size={18} className="sm:w-5 sm:h-5" />
                         </button>
                     </form>
                 </div>
