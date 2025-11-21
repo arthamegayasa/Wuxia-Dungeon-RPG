@@ -13,7 +13,11 @@ export interface CharacterStatus {
   cp: string | number;
   root: string;
   activeArts: string[];
-  keyItems: string[];
+  inventory: {
+    weapon: string;
+    equipment: string[]; // Max 2 items (Armor, Shoes, Accessories)
+    bag: string[];
+  };
   relations: string[];
 }
 

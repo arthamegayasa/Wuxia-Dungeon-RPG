@@ -1,6 +1,6 @@
 import React from 'react';
 import { CharacterStatus } from '../types';
-import { Scroll, MapPin, User, Activity, Zap, BookOpen, Shield, Users, Briefcase, Layers } from 'lucide-react';
+import { Scroll, MapPin, User, Activity, Zap, BookOpen, Shield, Users, Briefcase, Layers, Sword, Backpack } from 'lucide-react';
 
 interface StatusPanelProps {
   status: CharacterStatus;
@@ -42,7 +42,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ status }) => {
                     <span className="text-gray-500 text-xs font-mono bg-ink-950 px-3 py-1 rounded border border-gray-800">{status.age} yrs</span>
                 </div>
 
-                {/* Combat Power Section - Single Column (MOVED UP) */}
+                {/* Combat Power Section */}
                 <div className="relative group">
                      <div className="flex items-center justify-between mb-1.5">
                         <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold flex items-center gap-1">
@@ -60,7 +60,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ status }) => {
                      </div>
                 </div>
                 
-                {/* Realm Section - Single Column (MOVED DOWN) */}
+                {/* Realm Section */}
                 <div className="relative group">
                      <div className="flex items-center justify-between mb-1.5">
                         <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold flex items-center gap-1">
@@ -83,7 +83,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ status }) => {
                      </div>
                 </div>
 
-                {/* Root Section - Single Column */}
+                {/* Root Section */}
                 <div className="relative group">
                      <div className="flex items-center justify-between mb-1.5">
                         <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold flex items-center gap-1">
@@ -135,23 +135,73 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ status }) => {
             </div>
         </div>
 
-        {/* Inventory */}
+        {/* Equipped Gear */}
         <div>
             <div className="flex items-center gap-2 border-b border-gray-800 pb-2 mb-4 text-gray-500">
                 <Briefcase size={14} />
+                <h3 className="text-[10px] font-bold uppercase tracking-widest">
+                    Combat Gear
+                </h3>
+            </div>
+            
+            <div className="space-y-2">
+                {/* Weapon Slot */}
+                <div className="bg-ink-950 border border-gray-800 p-3 rounded flex items-center gap-3 group hover:border-red-900/50 transition-colors">
+                    <div className="w-8 h-8 bg-ink-900 rounded flex items-center justify-center border border-gray-800 text-gray-600 group-hover:text-red-500/70">
+                        <Sword size={16} />
+                    </div>
+                    <div className="flex-1">
+                         <div className="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-0.5">Weapon</div>
+                         <div className={`text-xs font-serif ${status.inventory.weapon === 'None' ? 'text-gray-600 italic' : 'text-parchment-200'}`}>
+                            {status.inventory.weapon}
+                         </div>
+                    </div>
+                </div>
+
+                {/* Equipment Slots */}
+                <div className="grid grid-cols-2 gap-2">
+                    {status.inventory.equipment.map((item, idx) => (
+                        <div key={idx} className="bg-ink-950 border border-gray-800 p-2.5 rounded flex flex-col gap-2 hover:border-jade-900/30 transition-colors">
+                            <div className="flex items-center gap-2 text-gray-600">
+                                <Shield size={12} />
+                                <span className="text-[9px] uppercase font-bold tracking-wider">Item {idx + 1}</span>
+                            </div>
+                            <div className={`text-xs font-serif truncate ${item === 'Empty' ? 'text-gray-600 italic' : 'text-parchment-200'}`}>
+                                {item}
+                            </div>
+                        </div>
+                    ))}
+                    {/* Fallback if equipment array is missing or short (though type ensures it) */}
+                    {[...Array(Math.max(0, 2 - status.inventory.equipment.length))].map((_, i) => (
+                        <div key={`empty-${i}`} className="bg-ink-950 border border-gray-800/50 border-dashed p-2.5 rounded flex flex-col gap-2">
+                            <div className="flex items-center gap-2 text-gray-700">
+                                <Shield size={12} />
+                                <span className="text-[9px] uppercase font-bold tracking-wider">Slot {i + status.inventory.equipment.length + 1}</span>
+                            </div>
+                            <div className="text-xs text-gray-700 italic">Empty</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        {/* Spatial Bag */}
+        <div>
+            <div className="flex items-center gap-2 border-b border-gray-800 pb-2 mb-4 text-gray-500">
+                <Backpack size={14} />
                 <h3 className="text-[10px] font-bold uppercase tracking-widest">
                     Spatial Bag
                 </h3>
             </div>
              <div className="flex flex-wrap gap-2">
-                {status.keyItems.length > 0 ? (
-                    status.keyItems.map((item, idx) => (
+                {status.inventory.bag.length > 0 ? (
+                    status.inventory.bag.map((item, idx) => (
                         <span key={idx} className="px-3 py-1.5 bg-ink-950 rounded border border-gray-800 text-xs text-gray-400 shadow-sm flex items-center gap-1 hover:border-gray-600 transition-colors cursor-help">
                            <span className="w-1 h-1 rounded-full bg-gray-600"></span> {item}
                         </span>
                     ))
                 ) : (
-                    <span className="text-gray-700 text-xs italic pl-2">Empty</span>
+                    <span className="text-gray-700 text-xs italic pl-2">Bag is empty</span>
                 )}
              </div>
         </div>

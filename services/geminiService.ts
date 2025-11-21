@@ -22,7 +22,11 @@ The JSON object must follow this schema:
     "cp": "Combat Power Number",
     "root": "Root Type and Element",
     "activeArts": ["Art Name (Rank - Mastery)"],
-    "keyItems": ["Item 1", "Item 2"],
+    "inventory": {
+       "weapon": "Name of Weapon (e.g. 'Iron Sword') or 'None'",
+       "equipment": ["Item 1", "Item 2"], 
+       "bag": ["Item A", "Item B", "Item C"]
+    },
     "relations": ["Sect A: Neutral", "Person B: Hostile"]
   },
   "choices": [
@@ -31,6 +35,11 @@ The JSON object must follow this schema:
     { "id": 3, "text": "Free Action (User Input)", "subtext": "Type your own action" }
   ]
 }
+
+## INVENTORY RULES
+- **Weapon:** Only 1 active weapon allowed.
+- **Equipment:** Exactly 2 slots for Armor, Shoes, or Accessories (e.g., "Spirit Silk Robe", "Jade Pendant"). If empty, use strings like "Empty".
+- **Bag:** All other items (Pills, Talismans, Materials, Quest Items) go here.
 
 ## NARRATIVE STYLE: "A REGRESSOR'S TALE" AESTHETIC
 - **Tone:** Melancholic, gritty, philosophical, and grand. The world is cruel; the Dao is heartless. 
@@ -120,6 +129,17 @@ const parseResponse = (responseText: string): TurnData => {
     if (!data.narrative || !data.status || !data.choices) {
       throw new Error("Invalid JSON structure received from AI");
     }
+    
+    // Validate Inventory Structure (Backward compatibility check if needed, but we enforce strict schema now)
+    if (!data.status.inventory || Array.isArray(data.status.inventory)) {
+        // Fallback if AI hallucinates old format, normalize it (optional but safe)
+        data.status.inventory = {
+            weapon: "None",
+            equipment: ["Empty", "Empty"],
+            bag: Array.isArray(data.status.inventory) ? data.status.inventory : []
+        };
+    }
+
     return data as TurnData;
   } catch (e) {
     console.error("Parsing Error:", e);
