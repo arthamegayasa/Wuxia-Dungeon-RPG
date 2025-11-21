@@ -11,11 +11,13 @@ export default function App() {
     phase: GamePhase.SETUP,
     history: [],
     currentTurn: null,
+    viewIndex: 0,
     isLoading: false,
     language: 'English',
     error: null,
   });
 
+  const [animatedChapters, setAnimatedChapters] = useState<Set<number>>(new Set());
   const [isMobileStatusOpen, setIsMobileStatusOpen] = useState(false);
 
   const handleStartGame = async (lang: 'English' | 'Indonesian', name: string, gender: string, isRandom: boolean) => {
@@ -28,7 +30,8 @@ export default function App() {
         phase: GamePhase.PLAYING,
         isLoading: false,
         currentTurn: turnData,
-        history: [turnData]
+        history: [turnData],
+        viewIndex: 0
       }));
     } catch (error) {
       console.error(error);
@@ -45,12 +48,16 @@ export default function App() {
 
     try {
       const turnData = await sendAction(actionText);
-      setGameState(prev => ({
-        ...prev,
-        isLoading: false,
-        currentTurn: turnData,
-        history: [...prev.history, turnData]
-      }));
+      setGameState(prev => {
+        const newHistory = [...prev.history, turnData];
+        return {
+          ...prev,
+          isLoading: false,
+          currentTurn: turnData,
+          history: newHistory,
+          viewIndex: newHistory.length - 1
+        };
+      });
     } catch (error) {
       console.error(error);
       setGameState(prev => ({ 
@@ -60,6 +67,29 @@ export default function App() {
       }));
     }
   };
+
+  const handleNavigate = (direction: -1 | 1) => {
+    setGameState(prev => {
+        const newIndex = prev.viewIndex + direction;
+        if (newIndex < 0 || newIndex >= prev.history.length) return prev;
+        return { ...prev, viewIndex: newIndex };
+    });
+  };
+  
+  const handleJumpToLatest = () => {
+      setGameState(prev => ({ ...prev, viewIndex: prev.history.length - 1 }));
+  };
+
+  const handleAnimationComplete = (index: number) => {
+      setAnimatedChapters(prev => {
+          const newSet = new Set(prev);
+          newSet.add(index);
+          return newSet;
+      });
+  };
+
+  // Determine which turn data to display based on viewIndex
+  const viewingData = gameState.history[gameState.viewIndex] || gameState.currentTurn;
 
   // Render Error Banner
   const ErrorBanner = () => gameState.error ? (
@@ -89,15 +119,15 @@ export default function App() {
       <ErrorBanner />
       
       {/* --- Mobile Header --- */}
-      {gameState.currentTurn && (
+      {viewingData && (
           <div className="md:hidden h-14 bg-ink-950 border-b border-jade-900/30 flex items-center justify-between px-4 z-30 shrink-0 shadow-md">
             <div className="flex items-center gap-3">
                <div className="w-8 h-8 bg-ink-800 rounded-full flex items-center justify-center border border-jade-900/50">
                   <User size={16} className="text-jade-500"/>
                </div>
                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-parchment-100 leading-tight">{gameState.currentTurn.status.name}</span>
-                  <span className="text-[10px] text-jade-400 uppercase tracking-wider leading-tight">{gameState.currentTurn.status.realm}</span>
+                  <span className="text-sm font-bold text-parchment-100 leading-tight">{viewingData.status.name}</span>
+                  <span className="text-[10px] text-jade-400 uppercase tracking-wider leading-tight">{viewingData.status.realm}</span>
                </div>
             </div>
             <button 
@@ -111,7 +141,7 @@ export default function App() {
       )}
 
       {/* --- Mobile Status Drawer/Overlay --- */}
-      {isMobileStatusOpen && gameState.currentTurn && (
+      {isMobileStatusOpen && viewingData && (
         <div className="fixed inset-0 z-50 md:hidden flex flex-col animate-in slide-in-from-right duration-200">
             <div className="bg-ink-950 p-4 flex justify-between items-center border-b border-jade-900/30 shrink-0">
                 <div className="flex items-center gap-2 text-jade-500">
@@ -126,22 +156,29 @@ export default function App() {
                 </button>
             </div>
             <div className="flex-1 overflow-hidden bg-ink-900">
-                <StatusPanel status={gameState.currentTurn.status} />
+                <StatusPanel status={viewingData.status} />
             </div>
         </div>
       )}
       
       {/* --- Desktop Sidebar --- */}
       <div className="hidden md:block w-80 flex-shrink-0 h-full z-20 relative">
-         {gameState.currentTurn && <StatusPanel status={gameState.currentTurn.status} />}
+         {viewingData && <StatusPanel status={viewingData.status} />}
       </div>
 
       {/* --- Main Story Area --- */}
       <div className="flex-1 h-full relative z-10 overflow-hidden">
         <StoryPanel 
-            turnData={gameState.currentTurn} 
+            key={gameState.viewIndex} // CRITICAL: Force remount on chapter change to prevent stale state
+            turnData={viewingData} 
             onAction={handleAction} 
-            isLoading={gameState.isLoading} 
+            isLoading={gameState.isLoading}
+            chapterIndex={gameState.viewIndex}
+            totalChapters={gameState.history.length}
+            onNavigate={handleNavigate}
+            onJumpToLatest={handleJumpToLatest}
+            shouldAnimate={!animatedChapters.has(gameState.viewIndex)}
+            onAnimationComplete={() => handleAnimationComplete(gameState.viewIndex)}
         />
       </div>
     </div>

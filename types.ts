@@ -33,6 +33,7 @@ export interface GameState {
   phase: GamePhase;
   history: TurnData[];
   currentTurn: TurnData | null;
+  viewIndex: number;
   isLoading: boolean;
   language: 'English' | 'Indonesian';
   error: string | null;
