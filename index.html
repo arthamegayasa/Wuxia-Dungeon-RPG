@@ -21,14 +21,17 @@
                 700: '#15803d',
                 800: '#166534',
                 900: '#14532d',
+                950: '#052e16',
               },
               ink: {
                 800: '#1e1e1e',
                 900: '#121212',
+                950: '#0a0a0a',
               },
               parchment: {
                 100: '#fdfbf7',
                 200: '#f5f0e6',
+                300: '#e6dfd0',
                 800: '#d6cbb0',
               }
             },
@@ -40,6 +43,32 @@
         },
       }
     </script>
+    <style>
+      /* Custom Scrollbar for Webkit */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #121212; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #166534; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #22c55e; 
+      }
+      
+      /* Utility for removing scrollbar but allowing scroll */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
   <script type="importmap">
 {
@@ -53,7 +82,7 @@
 }
 </script>
 </head>
-  <body class="bg-ink-900 text-gray-200 font-sans antialiased overflow-hidden h-screen">
+  <body class="bg-ink-900 text-parchment-200 font-sans antialiased overflow-hidden h-screen selection:bg-jade-900 selection:text-white">
     <div id="root" class="h-full w-full"></div>
   </body>
 </html>
