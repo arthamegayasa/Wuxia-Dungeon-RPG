@@ -2342,3 +2342,23 @@ These are **not blockers** for Phase 1. Resolve during Phase 2/3 authoring.
 - **Treat this document as source of truth.** Any engine behavior that diverges from this spec is a bug or a spec revision — never a silent deviation.
 
 — End of specification.
+
+---
+
+## Phase 0 Completion Log
+
+- Date: 2026-04-21
+- Branch: phase-0-foundation
+- Head commit (before tag): cb6ed246cc73183acaa86c1f413a38676e6695bb
+- Deliverables: engine scaffold, seeded RNG, EventBus, StateMachine, SaveManager, Migrator, zustand stores, content loader stub, engineBridge stubs, TitleScreen, CI workflow.
+- Test count: 79 across 13 files.
+- Coverage summary (src/engine/ and src/utils/):
+  - Lines:      92.19%
+  - Statements: 88.98%
+  - Functions:  87.69%
+  - Branches:   80.68%
+  (Pasted from `npm test -- --coverage` output. engine/core at 98.96% lines; engine/persistence at 94.33% lines; utils/hash at 100%.)
+- Known follow-ups for Phase 1:
+  - Remove `// @ts-nocheck` pragmas if any remain (none expected after Task 5).
+  - Tailwind / custom palette: Phase 0 TitleScreen uses custom ink-*/jade-*/parchment-*/ash-* classes; Tailwind is not configured. Wire PostCSS + Tailwind config before Phase 1 visual review.
+  - Replace `SetupScreen` / `StatusPanel` / `StoryPanel` wiring when Character + Event subsystems arrive (spec §3, §5, §9).
