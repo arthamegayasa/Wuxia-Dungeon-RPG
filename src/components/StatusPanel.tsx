@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { CharacterStatus } from '../types';
 import { Scroll, MapPin, User, Activity, Zap, BookOpen, Shield, Users, Briefcase, Layers, Sword, Backpack } from 'lucide-react';

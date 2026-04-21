@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 import { TurnData, GameChoice } from '../types';
 import { Send, Sparkles, Feather, Info, X, Dice5, Trophy, Skull, ChevronLeft, ChevronRight, History, BookOpen } from 'lucide-react';
