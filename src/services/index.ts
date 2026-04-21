@@ -1,2 +1,10 @@
-// Placeholder to keep directory tracked; will be replaced as modules are added.
-export {};
+export { createEngineBridge } from './engineBridge';
+export type {
+  EngineBridge,
+  LoadOrInitResult,
+  MetaSnapshot,
+  LineageEntry,
+  BardoPayload,
+  CreationPayload,
+  CodexSnapshot,
+} from './engineBridge';
