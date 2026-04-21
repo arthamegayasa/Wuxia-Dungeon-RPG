@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "snippets": {
+    "weather.drought.heavy": [
+      { "text": "The sun hung like a bronze coin nailed to the sky.", "tags": ["lyrical"] }
+    ]
+  },
+  "events": []
+}
