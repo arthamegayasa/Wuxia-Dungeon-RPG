@@ -36,6 +36,9 @@ export interface Character {
   readonly insight: number;
   readonly insightCap: number;
 
+  /** Progress within the current sub-layer (or the current realm, if no sub-layers). 0..100. */
+  readonly cultivationProgress: number;
+
   readonly openMeridians: ReadonlyArray<MeridianId>;   // opening order preserved
   readonly corePath: CorePathId | null;
 
@@ -51,10 +54,11 @@ export interface CreateCharacterArgs {
   startingAgeDays?: number;
 }
 
-type CharacterCore = Omit<Character, 'hpMax' | 'qiMax' | 'insightCap' | 'hp' | 'qi' | 'insight'> & {
+type CharacterCore = Omit<Character, 'hpMax' | 'qiMax' | 'insightCap' | 'hp' | 'qi' | 'insight' | 'cultivationProgress'> & {
   hp?: number;
   qi?: number;
   insight?: number;
+  cultivationProgress?: number;
 };
 
 function recomputeDerived(c: CharacterCore): Character {
@@ -71,6 +75,7 @@ function recomputeDerived(c: CharacterCore): Character {
   const nextInsight = Math.max(0, Math.min(newInsightCap, c.insight ?? 0));
   return {
     ...c,
+    cultivationProgress: c.cultivationProgress ?? 0,
     hpMax: newHpMax,
     qiMax: newQiMax,
     insightCap: newInsightCap,
@@ -89,6 +94,7 @@ export function createCharacter(args: CreateCharacterArgs): Character {
     realm: Realm.MORTAL,
     bodyTemperingLayer: 0,
     ageDays: args.startingAgeDays ?? 0,
+    cultivationProgress: 0,
     hp: undefined,
     qi: 0,
     insight: 0,

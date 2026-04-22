@@ -24,6 +24,7 @@ describe('createCharacter', () => {
     expect(c.openMeridians).toEqual([]);
     expect(c.corePath).toBeNull();
     expect(c.attributes).toEqual(BASELINE_ATTRS);
+    expect(c.cultivationProgress).toBe(0);
   });
 
   it('rolls a spirit root deterministically for the same seed', () => {
