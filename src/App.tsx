@@ -11,7 +11,7 @@ export default function App(): React.JSX.Element {
   useEffect(() => {
     engine.loadOrInit().then((r) => {
       setPhase(r.phase);
-      setHasSave(!!r.turn);
+      setHasSave(r.hasSave);
     });
   }, [engine]);
 
