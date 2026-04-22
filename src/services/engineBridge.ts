@@ -160,7 +160,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
 
       const spawnRng = createRng(now() & 0xffffffff);
       const resolved = resolveAnchor(anchor, spawnRng);
-      const runSeed = Math.floor(Math.random() * 0x7fffffff);
+      const runSeed = spawnRng.intRange(0, 0x7fffffff);
       const { character, runState } = characterFromAnchor({
         resolved, name: chosenName, runSeed, rng: spawnRng,
       });
