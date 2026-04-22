@@ -79,6 +79,9 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   );
 
   // 4. Resolve the check
+  // Phase 1D-1 zero-placeholders: technique registry, inventory effects, echoes,
+  // and memories don't exist yet. resolveTechniqueBonus([]) → 0; itemBonus /
+  // echoBonus / memoryBonus wired in Phase 1D-2 / Phase 2+. NOT bugs.
   const techBonus = choice.check?.techniqueBonusCategory
     ? resolveTechniqueBonus([], choice.check.techniqueBonusCategory)
     : 0;
