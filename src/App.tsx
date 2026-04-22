@@ -8,14 +8,28 @@ import { PlayScreen } from '@/components/PlayScreen';
 import { BardoPanel } from '@/components/BardoPanel';
 
 let engineSingleton: EngineBridge | null = null;
+let engineOverride: EngineBridge | null = null;
+
 function getEngine(): EngineBridge {
+  if (engineOverride) return engineOverride;
   if (!engineSingleton) engineSingleton = createEngineBridge();
   return engineSingleton;
 }
 
 // Test hook: reset the cached engine singleton so each test gets a fresh instance.
 // Not intended for production code.
-export function __resetEngineSingleton() { engineSingleton = null; }
+export function __resetEngineSingleton() {
+  engineSingleton = null;
+  engineOverride = null;
+}
+
+// Test hook: pre-register an engine with deterministic opts (e.g. `now: () => 2`).
+// The next getEngine() call will return this instance instead of lazily constructing
+// one. Not intended for production code.
+export function __setEngineOverride(engine: EngineBridge | null) {
+  engineOverride = engine;
+  engineSingleton = null;
+}
 
 export function App() {
   const phase = useGameStore((s) => s.phase);
@@ -30,8 +44,6 @@ export function App() {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      // Fresh engine per App mount keeps test isolation clean.
-      __resetEngineSingleton();
       const engine = getEngine();
       const init = await engine.loadOrInit();
       setHasSave(init.hasSave);
@@ -46,7 +58,29 @@ export function App() {
   }
 
   async function onContinue() {
-    useGameStore.getState().setPhase(GamePhase.PLAYING);
+    setIsLoading(true);
+    try {
+      useGameStore.getState().setPhase(GamePhase.PLAYING);
+      // Drive one turn to produce a preview from the resumed run. Same retry pattern
+      // as onBegin — the selector may land on any fixture event, so try each choice
+      // id until one matches.
+      for (const choiceId of ['ch_work', 'ch_train', 'ch_fight']) {
+        try {
+          const next = await getEngine().chooseAction(choiceId);
+          if ('karmaEarned' in next) {
+            setBardoPayload(next);
+            useGameStore.getState().setPhase(GamePhase.BARDO);
+          } else {
+            setPreview(next);
+          }
+          break;
+        } catch (e: any) {
+          if (!/choice.*not found/i.test(e.message)) throw e;
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   async function onBegin(anchorId: string, name: string) {
