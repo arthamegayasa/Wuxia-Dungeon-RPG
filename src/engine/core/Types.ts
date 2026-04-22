@@ -180,3 +180,24 @@ export const TIME_COST_DAYS: Readonly<Record<TimeCost, readonly [number, number]
   LONG:    [180, 540],
   EPOCH:   [1095, 3650],
 };
+
+// ---- Phase 1C: Narrative composer tables ----
+// Source of truth: docs/spec/design.md §6.
+
+export type SnippetTag = 'lyrical' | 'terse' | 'ominous' | 'serious' | 'tender' | 'bitter';
+
+export const SNIPPET_TAGS: readonly SnippetTag[] = [
+  'lyrical', 'terse', 'ominous', 'serious', 'tender', 'bitter',
+] as const;
+
+/** Canonical name-registry slot IDs used by the Composer. */
+export type NameSlotId =
+  | 'character' | 'master' | 'mother' | 'father' | 'sibling' | 'friend'
+  | 'rival' | 'lover' | 'stranger' | 'bandit' | 'merchant' | 'monk'
+  | 'sect' | 'place' | 'emperor';
+
+export const NAME_SLOT_IDS: readonly NameSlotId[] = [
+  'character', 'master', 'mother', 'father', 'sibling', 'friend',
+  'rival', 'lover', 'stranger', 'bandit', 'merchant', 'monk',
+  'sect', 'place', 'emperor',
+] as const;
