@@ -40,31 +40,35 @@ Every phase follows this loop:
 | 1A | Character Foundation: attributes, spirit roots, meridians, core paths, realm metadata, cultivation progress, sub-layer breakthrough, old-age death | ✅ merged (PR #2 → `8f6b2fa`) |
 | 1B | Choice-Event Engine: event/choice/outcome schemas, condition evaluator, event selector, §5.3 probability resolver, outcome resolver + applier, streak tracker, age tick | ✅ merged (PR #3 → `802b1bb`) |
 | 1C | Narrative Composer MVP: mood, snippet library, template expander, name generator + registry, composer orchestrator | ✅ merged (PR #4 → `467b55c`) |
-| **1D-1** | **Engine Glue: Anchor, AnchorResolver, characterFromAnchor, KarmicInsightRules, KarmicUpgrade, MetaState, RunSave, BardoFlow, GameLoop.runTurn, life-cycle integration test** | **📋 planned, not started** |
-| 1D-2 | UI Wiring: real `engineBridge`, CreationScreen, BardoPanel, full phase flow | ⏳ pending |
+| 1D-1 | Engine Glue: Anchor, AnchorResolver, characterFromAnchor, KarmicInsightRules, KarmicUpgrade, MetaState, RunSave, BardoFlow, GameLoop.runTurn, life-cycle integration test | ✅ merged (PR #5 → `cc71795`) |
+| **1D-2** | **UI Wiring: real `engineBridge`, CreationScreen, BardoPanel, full phase flow + realm-karma formula fix** | **📋 plan next** |
 | 1D-3 | Content Authoring: ~50 Yellow Plains events, ~80 snippet leaves, expanded name pools — delivers Phase 1 exit criterion | ⏳ pending |
 
-**Test count on main**: 357 (across 49 files). Build: 199 KB JS / 62 KB gzip.
+**Test count on main**: 424 (across 59 files). Build: 199 KB JS / 62 KB gzip.
 
 **Branch tags**: `phase-0-complete` at commit `e25a969`.
 
 ## Resuming work — next action
 
-The immediate next step is to **execute Phase 1D-1 via subagent-driven development**.
+The immediate next step is to **write the Phase 1D-2 implementation plan** via `superpowers:writing-plans`, then execute via subagent-driven-development.
 
-Plan: [`docs/superpowers/plans/2026-04-23-phase-1d1-engine-glue.md`](docs/superpowers/plans/2026-04-23-phase-1d1-engine-glue.md) — 10 TDD tasks, ~2,000 lines.
+**Phase 1D-2 scope (rough):**
+- Real `engineBridge` replacing Phase 0 stubs (wires `runTurn`, `runBardoFlow`, `purchaseUpgrade`, save/load into the Zustand store).
+- `CreationScreen` rewrite (anchor picker, name entry, spawn preview).
+- `BardoPanel` (life summary, karma breakdown, karmic-upgrade shop, reincarnate button).
+- Main play screen rewire (event narrative, choice buttons, status strip).
+- Phase state machine: `TITLE → CREATION → PLAYING → BARDO → CREATION → ...`.
+- **Realm karma formula fix** (small task): change `realmKarma = realmIndex × 10` to cumulative `sum(i × 10 for i in 1..realmIndex)` per spec §7.1 "per realm entered". Add test covering index ≥ 2 where flat vs cumulative diverge. See "Known accepted deviations" below.
+- Touch/replace legacy Gemini-era `SetupScreen.tsx`, `StatusPanel.tsx`, `StoryPanel.tsx`.
 
 **Exact first steps for a new session:**
 
 ```bash
 cd "D:/Claude Code/Wuxia RPG"
 git status                           # confirm clean, on main
-git checkout -b phase-1d1-engine-glue
-git add docs/superpowers/plans/2026-04-23-phase-1d1-engine-glue.md
-git commit -m "docs: Phase 1D-1 implementation plan"
 ```
 
-Then invoke the `superpowers:subagent-driven-development` skill and dispatch Task 1. Follow the pattern established in Phases 0, 1A, 1B, 1C.
+Then invoke `superpowers:writing-plans` to draft the 1D-2 plan, save under `docs/superpowers/plans/YYYY-MM-DD-phase-1d2-ui-wiring.md`, then follow the standard loop (branch, commit plan, subagent-driven execution, PR, merge).
 
 ## Tone & communication preferences
 
@@ -99,6 +103,7 @@ When working on a subsystem, re-read the relevant spec section first:
 - **Zod v4 `z.record(enum, value)` quirk**: treats enum keys as exhaustive. Fix applied: `z.record(enum, value.optional())`. Consumers (`ConditionEvaluator`, `ChoiceResolver`) explicitly guard `undefined` in iteration. Three call-sites in `src/content/schema.ts`.
 - **`$[KEY]` variable fallback**: `TemplateExpander` falls back to `variables[key]` when the snippet library has no entry. Allows `$[weather.$[SEASON].heavy]` nested form to resolve the inner variable.
 - **Mood baseline**: `computeDominantMood(zeroMoodInputs())` returns `'serenity'` via explicit early-return — plan's priority loop alone would return `melancholy`. Test expectations win.
+- **Realm karma — flat vs cumulative (pending fix in 1D-2)**: `KarmicInsightRules.computeKarma` currently returns `realmIndex × 10` (flat — the "last realm reached" bonus). Spec §7.1 wording `+10 × realm index (per realm)` reads more naturally as cumulative (`10+20+…+realmIndex×10`). Phase 1D-1 tests only exercise index 0–1 where both interpretations produce the same result. Formula + test will be updated to cumulative in Phase 1D-2 once UI surfaces realm progression.
 
 ## Don't do
 
