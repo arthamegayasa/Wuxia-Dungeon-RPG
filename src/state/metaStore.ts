@@ -1,4 +1,9 @@
 import { create } from 'zustand';
+import {
+  createEmptyMetaState,
+  LineageEntrySummary,
+  MetaState,
+} from '@/engine/meta/MetaState';
 
 export interface MetaStoreState {
   karmicInsight: number;
@@ -7,6 +12,9 @@ export interface MetaStoreState {
   unlockedMemories: string[];
   unlockedAnchors: string[];
   lifeCount: number;
+  ownedUpgrades: string[];
+  lineage: LineageEntrySummary[];
+  lifetimeSeenEvents: string[];
 
   addKarma: (amount: number) => void;
   spendKarma: (amount: number) => boolean;
@@ -15,16 +23,23 @@ export interface MetaStoreState {
   unlockMemory: (id: string) => void;
   unlockAnchor: (id: string) => void;
   incrementLifeCount: () => void;
+  hydrateFromMetaState: (m: MetaState) => void;
+  toMetaState: () => MetaState;
   reset: () => void;
 }
 
+const INITIAL_META = createEmptyMetaState();
+
 const initial = {
-  karmicInsight: 0,
+  karmicInsight: INITIAL_META.karmaBalance,
   heavenlyNotice: 0,
   unlockedEchoes: [] as string[],
   unlockedMemories: [] as string[],
-  unlockedAnchors: ['true_random', 'peasant_farmer'] as string[], // defaults per spec §7.4
-  lifeCount: 0,
+  unlockedAnchors: [...INITIAL_META.unlockedAnchors] as string[], // defaults per spec §7.4
+  lifeCount: INITIAL_META.lifeCount,
+  ownedUpgrades: [...INITIAL_META.ownedUpgrades] as string[],
+  lineage: [...INITIAL_META.lineage] as LineageEntrySummary[],
+  lifetimeSeenEvents: [...INITIAL_META.lifetimeSeenEvents] as string[],
 };
 
 export const useMetaStore = create<MetaStoreState>((set, get) => ({
@@ -59,9 +74,38 @@ export const useMetaStore = create<MetaStoreState>((set, get) => ({
 
   incrementLifeCount: () => set({ lifeCount: get().lifeCount + 1 }),
 
-  reset: () => set({
-    ...initial,
-    // Default anchors should always exist.
-    unlockedAnchors: [...initial.unlockedAnchors],
-  }),
+  hydrateFromMetaState: (m) =>
+    set({
+      karmicInsight: m.karmaBalance,
+      unlockedAnchors: [...m.unlockedAnchors],
+      ownedUpgrades: [...m.ownedUpgrades],
+      lifeCount: m.lifeCount,
+      lineage: [...m.lineage],
+      lifetimeSeenEvents: [...m.lifetimeSeenEvents],
+    }),
+
+  toMetaState: (): MetaState => {
+    const s = get();
+    return {
+      karmaBalance: s.karmicInsight,
+      lifeCount: s.lifeCount,
+      ownedUpgrades: [...s.ownedUpgrades],
+      unlockedAnchors: [...s.unlockedAnchors],
+      lineage: [...s.lineage],
+      lifetimeSeenEvents: [...s.lifetimeSeenEvents],
+    };
+  },
+
+  reset: () =>
+    set({
+      karmicInsight: initial.karmicInsight,
+      heavenlyNotice: initial.heavenlyNotice,
+      unlockedEchoes: [...initial.unlockedEchoes],
+      unlockedMemories: [...initial.unlockedMemories],
+      unlockedAnchors: [...initial.unlockedAnchors],
+      lifeCount: initial.lifeCount,
+      ownedUpgrades: [...initial.ownedUpgrades],
+      lineage: [...initial.lineage],
+      lifetimeSeenEvents: [...initial.lifetimeSeenEvents],
+    }),
 }));

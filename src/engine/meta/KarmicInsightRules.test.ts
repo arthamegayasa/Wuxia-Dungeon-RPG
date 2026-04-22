@@ -48,6 +48,30 @@ describe('computeKarma', () => {
       .toBe(5 /* old_age */ + 10 /* realm 1 */);
   });
 
+  it('realm karma is cumulative — sum of (index × 10) for each realm entered', () => {
+    // realmIndex 2 (QI_SENSING) → 10 + 20 = 30
+    const r2 = computeKarma(baseSummary({
+      yearsLived: 0, deathCause: 'old_age',
+      realmReached: Realm.QI_SENSING,
+    }));
+    expect(r2.breakdown.realm).toBe(30);
+    expect(r2.total).toBe(5 /* old_age */ + 30 /* cumulative realm */);
+
+    // realmIndex 3 (QI_CONDENSATION) → 10 + 20 + 30 = 60
+    const r3 = computeKarma(baseSummary({
+      yearsLived: 0, deathCause: 'old_age',
+      realmReached: Realm.QI_CONDENSATION,
+    }));
+    expect(r3.breakdown.realm).toBe(60);
+
+    // realmIndex 4 (FOUNDATION) → 10 + 20 + 30 + 40 = 100
+    const r4 = computeKarma(baseSummary({
+      yearsLived: 0, deathCause: 'old_age',
+      realmReached: Realm.FOUNDATION,
+    }));
+    expect(r4.breakdown.realm).toBe(100);
+  });
+
   it('unfulfilled vows: +15 each', () => {
     expect(computeKarma(baseSummary({ yearsLived: 0, vowsUnfulfilled: 2 })).total).toBe(5 + 30);
   });

@@ -69,39 +69,6 @@ export function noticeTierFor(value: number): NoticeTier {
   return 'baseline';
 }
 
-// ---- Types used by the existing UI components during Phase 0 ----
-// Kept for backward-compatibility so src/components/* still typecheck.
-// Phase 1 will redesign these.
-
-export interface CharacterStatus {
-  date: string;
-  location: string;
-  name: string;
-  age: string;
-  realm: string;
-  cp: string | number;
-  root: string;
-  activeArts: string[];
-  inventory: {
-    weapon: string;
-    equipment: string[];
-    bag: string[];
-  };
-  relations: string[];
-}
-
-export interface GameChoice {
-  id: number;
-  text: string;
-  subtext?: string;
-}
-
-export interface TurnData {
-  narrative: string;
-  status: CharacterStatus;
-  choices: GameChoice[];
-}
-
 // ---- Phase 1A: Character System primitive types ----
 // Source of truth: docs/spec/design.md §3, §4.
 

@@ -60,7 +60,9 @@ export function computeKarma(s: LifeSummary): KarmaResult {
   const yearsKarma = Math.floor(s.yearsLived / 10);
 
   const realmIndex = REALM_ORDER.indexOf(s.realmReached);
-  const realmKarma = realmIndex > 0 ? realmIndex * 10 : 0;
+  // Spec §7.1: "+10 × realm index (per realm)" — cumulative over realms entered.
+  // Closed form of sum(i × 10 for i in 1..N) where N = realmIndex.
+  const realmKarma = realmIndex > 0 ? 5 * realmIndex * (realmIndex + 1) : 0;
 
   const deathKarma = s.diedProtectingOther
     ? DIED_PROTECTING_BONUS
