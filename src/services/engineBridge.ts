@@ -267,16 +267,26 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         rng,
       );
 
-      useGameStore.getState().updateRun(tr.nextRunState, tr.nextStreak, tr.nextNameRegistry);
-      useGameStore.getState().setTurnResult(tr);
-      useGameStore.getState().appendSeenEvent(tr.eventId);
-      saveRun(sm, tr.nextRunState);
+      // GameLoop.runTurn does not write the advanced RNG cursor back into
+      // nextRunState.rngState, so without this fix-up every subsequent chooseAction
+      // would re-seed from the same cursor and roll identical outcomes every turn.
+      // The bridge owns its own determinism contract, so we snapshot the rng here.
+      const advancedState = rng.state();
+      const nextRunState = {
+        ...tr.nextRunState,
+        rngState: { seed: gs.runState.rngState?.seed ?? gs.runState.runSeed, cursor: advancedState.cursor },
+      };
 
-      if (tr.nextRunState.deathCause) {
-        const anchorFlag = tr.nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
+      useGameStore.getState().updateRun(nextRunState, tr.nextStreak, tr.nextNameRegistry);
+      useGameStore.getState().setTurnResult({ ...tr, nextRunState });
+      useGameStore.getState().appendSeenEvent(tr.eventId);
+      saveRun(sm, nextRunState);
+
+      if (nextRunState.deathCause) {
+        const anchorFlag = nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
         const mult = anchorMultiplierFor(anchorId);
-        const bardo = runBardoFlow(tr.nextRunState, currentMetaState(), mult);
+        const bardo = runBardoFlow(nextRunState, currentMetaState(), mult);
         useGameStore.getState().setBardoResult(bardo);
         hydrateMeta(bardo.meta);
         saveMeta(sm, bardo.meta);

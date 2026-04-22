@@ -124,18 +124,28 @@ describe('engineBridge.chooseAction', () => {
   });
 });
 
-// Force-death helper: mutate the store's runState to have a deathCause so
-// beginBardo's "rare reload" branch fires, transitioning to BARDO. The plan
-// suggests force-death loops via chooseAction, but the fixture corpus + current
-// RNG-cursor handling makes the outer loop deterministically non-terminating
-// within any reasonable iteration budget (same seed → same event → same tier
-// every turn). Direct mutation is fallback option 3 from the plan.
-function forceDeath() {
-  const rs = useGameStore.getState().runState;
-  if (!rs) throw new Error('forceDeath: no runState to kill');
-  useGameStore.setState({
-    runState: { ...rs, deathCause: 'combat_melee' },
-  });
+// Drive the natural chooseAction loop until the character dies. With the
+// RNG-cursor fix in engineBridge (rngState is advanced after each runTurn),
+// probed seeds 1..100 all terminate within ~30 turns; 500 is a safety cap.
+// Returns the turn on which BARDO was reached.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function loopUntilDeath(engine: any, cap = 500): Promise<number> {
+  for (let i = 0; i < cap; i++) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let result: any = null;
+    for (const choiceId of ['ch_work', 'ch_train', 'ch_fight']) {
+      try {
+        result = await engine.chooseAction(choiceId);
+        break;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        if (!/choice.*not found/i.test(e.message)) throw e;
+      }
+    }
+    if (result && !('narrative' in result)) return i + 1;
+    if (useGameStore.getState().phase === GamePhase.BARDO) return i + 1;
+  }
+  throw new Error(`loopUntilDeath: character still alive after ${cap} turns`);
 }
 
 describe('engineBridge.beginBardo (manual)', () => {
@@ -150,9 +160,10 @@ describe('engineBridge.beginBardo (manual)', () => {
     const engine = createEngineBridge({ saveManager: sm, now: () => 2 });
 
     await engine.beginLife('peasant_farmer', 'Lin');
-    // Force death via direct mutation, then beginBardo hits the "rare reload"
-    // branch (computes BardoResult from runState.deathCause).
-    forceDeath();
+    // Natural loop: with the RNG-cursor fix, the character dies within a few
+    // dozen turns on seed=2 (probed: turn 23). chooseAction auto-transitions
+    // to BARDO, so beginBardo() hits the idempotent "already have result" branch.
+    await loopUntilDeath(engine);
 
     const bardo = await engine.beginBardo();
     expect(bardo.karmaEarned).toBeGreaterThanOrEqual(0);
@@ -195,10 +206,10 @@ describe('engineBridge.spendKarma', () => {
     const engine = createEngineBridge({ saveManager: sm, now: () => 3 });
     await engine.loadOrInit();
 
-    // Run one life, force death, transition via beginBardo.
+    // Run one life, let the natural loop kill the character, then inspect bardo.
     await engine.beginLife('peasant_farmer', 'Lin');
-    forceDeath();
-    await engine.beginBardo();
+    await loopUntilDeath(engine);
+    await engine.beginBardo(); // idempotent: uses existing bardoResult
     expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
 
     const before = useMetaStore.getState().karmicInsight;
@@ -212,7 +223,7 @@ describe('engineBridge.spendKarma', () => {
     const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
     const engine = createEngineBridge({ saveManager: sm, now: () => 4 });
     await engine.beginLife('peasant_farmer', 'Lin');
-    forceDeath();
+    await loopUntilDeath(engine);
     await engine.beginBardo();
     await expect(engine.spendKarma('not_an_upgrade'))
       .rejects.toThrow(/unknown.*upgrade|cannot purchase/i);
