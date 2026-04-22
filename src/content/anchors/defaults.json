@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "anchors": [
+    {
+      "id": "true_random",
+      "name": "True Random",
+      "description": "Let the Heavens decide. Maximum karma gain.",
+      "unlock": "default",
+      "spawn": {
+        "regions": [{ "id": "yellow_plains", "weight": 1 }],
+        "era": { "minYear": 950, "maxYear": 1050 },
+        "age": { "min": 8, "max": 16 },
+        "familyTier": "poor",
+        "attributeModifiers": {
+          "Body": [-5, 5],
+          "Mind": [-5, 5],
+          "Spirit": [-5, 5],
+          "Agility": [-5, 5],
+          "Charm": [-5, 5],
+          "Luck": [-5, 5]
+        },
+        "startingItems": [],
+        "startingFlags": []
+      },
+      "karmaMultiplier": 1.5
+    },
+    {
+      "id": "peasant_farmer",
+      "name": "Peasant Farmer",
+      "description": "Born into the Yellow Plains, a child of the soil. Default reincarnation path.",
+      "unlock": "default",
+      "spawn": {
+        "regions": [{ "id": "yellow_plains", "weight": 1 }],
+        "era": { "minYear": 900, "maxYear": 1100 },
+        "age": { "min": 10, "max": 14 },
+        "familyTier": "poor",
+        "attributeModifiers": {
+          "Body": [0, 10],
+          "Mind": [0, 6],
+          "Spirit": [0, 4],
+          "Agility": [0, 6],
+          "Charm": [0, 6],
+          "Luck": [0, 8]
+        },
+        "startingItems": [],
+        "startingFlags": ["peasant_birth"]
+      },
+      "karmaMultiplier": 1.0
+    }
+  ]
+}
