@@ -1,5 +1,5 @@
 import React from 'react';
-import { CharacterStatus } from '../types';
+import { CharacterStatus } from '@/engine/core/Types';
 import { Scroll, MapPin, User, Activity, Zap, BookOpen, Shield, Users, Briefcase, Layers, Sword, Backpack } from 'lucide-react';
 
 interface StatusPanelProps {

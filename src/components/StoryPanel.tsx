@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TurnData, GameChoice } from '../types';
+import { TurnData, GameChoice } from '@/engine/core/Types';
 import { Send, Sparkles, Feather, Info, X, Dice5, Trophy, Skull, ChevronLeft, ChevronRight, History, BookOpen } from 'lucide-react';
 
 interface StoryPanelProps {
