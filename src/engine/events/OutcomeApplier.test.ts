@@ -1,0 +1,140 @@
+import { describe, it, expect } from 'vitest';
+import { createRng } from '@/engine/core/RNG';
+import { createCharacter } from '@/engine/character/Character';
+import { Outcome } from '@/content/schema';
+import { createRunState } from './RunState';
+import { applyOutcome } from './OutcomeApplier';
+
+const ATTRS = { Body: 20, Mind: 15, Spirit: 10, Agility: 12, Charm: 8, Luck: 30 };
+
+function baseState() {
+  const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
+  return createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' });
+}
+
+describe('applyOutcome — no-op / empty', () => {
+  it('outcome with no stateDeltas returns an equal state', () => {
+    const rs = baseState();
+    const o: Outcome = { narrativeKey: 'x' };
+    const next = applyOutcome(rs, o);
+    expect(next.character).toBe(rs.character); // no mutation
+  });
+});
+
+describe('applyOutcome — character mutations', () => {
+  it('applies hp_delta', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'hp_delta', amount: -10 }] });
+    expect(next.character.hp).toBe(rs.character.hp - 10);
+  });
+
+  it('applies qi_delta (clamped to qiMax)', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'qi_delta', amount: 1000 }] });
+    expect(next.character.qi).toBe(next.character.qiMax);
+  });
+
+  it('applies insight_delta', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'insight_delta', amount: 5 }] });
+    expect(next.character.insight).toBe(5);
+  });
+
+  it('applies attribute_delta', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'attribute_delta', stat: 'Body', amount: 3 }] });
+    expect(next.character.attributes.Body).toBe(rs.character.attributes.Body + 3);
+  });
+
+  it('applies cultivation_progress_delta', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'cultivation_progress_delta', amount: 40 }] });
+    expect(next.character.cultivationProgress).toBe(40);
+  });
+});
+
+describe('applyOutcome — flags and world', () => {
+  it('flag_set adds to character.flags (idempotent)', () => {
+    const rs = baseState();
+    const n1 = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'flag_set', flag: 'met_master' }] });
+    expect(n1.character.flags).toContain('met_master');
+    const n2 = applyOutcome(n1, { narrativeKey: 'x', stateDeltas: [{ kind: 'flag_set', flag: 'met_master' }] });
+    expect(n2.character.flags.filter(f => f === 'met_master')).toHaveLength(1);
+  });
+
+  it('flag_clear removes', () => {
+    const rs = baseState();
+    const withFlag = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'flag_set', flag: 'shamed' }] });
+    const cleared = applyOutcome(withFlag, { narrativeKey: 'x', stateDeltas: [{ kind: 'flag_clear', flag: 'shamed' }] });
+    expect(cleared.character.flags).not.toContain('shamed');
+  });
+
+  it('world_flag_set and world_flag_clear affect runState.worldFlags', () => {
+    const rs = baseState();
+    const withFlag = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'world_flag_set', flag: 'drought_active' }] });
+    expect(withFlag.worldFlags).toContain('drought_active');
+    const cleared = applyOutcome(withFlag, { narrativeKey: 'x', stateDeltas: [{ kind: 'world_flag_clear', flag: 'drought_active' }] });
+    expect(cleared.worldFlags).not.toContain('drought_active');
+  });
+});
+
+describe('applyOutcome — inventory & techniques', () => {
+  it('item_add stacks by id', () => {
+    const rs = baseState();
+    const n1 = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'item_add', id: 'pill_x', count: 2 }] });
+    expect(n1.inventory.find(i => i.id === 'pill_x')?.count).toBe(2);
+    const n2 = applyOutcome(n1, { narrativeKey: 'x', stateDeltas: [{ kind: 'item_add', id: 'pill_x', count: 1 }] });
+    expect(n2.inventory.find(i => i.id === 'pill_x')?.count).toBe(3);
+  });
+
+  it('item_remove decrements and removes entry when count hits 0', () => {
+    const rs = baseState();
+    const n1 = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'item_add', id: 'pill_x', count: 2 }] });
+    const n2 = applyOutcome(n1, { narrativeKey: 'x', stateDeltas: [{ kind: 'item_remove', id: 'pill_x', count: 2 }] });
+    expect(n2.inventory.find(i => i.id === 'pill_x')).toBeUndefined();
+  });
+
+  it('item_remove of absent item is a no-op', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'item_remove', id: 'pill_unknown', count: 1 }] });
+    expect(next.inventory).toEqual([]);
+  });
+
+  it('technique_learn adds id (idempotent)', () => {
+    const rs = baseState();
+    const n1 = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'technique_learn', id: 'TECH_A' }] });
+    expect(n1.learnedTechniques).toContain('TECH_A');
+    const n2 = applyOutcome(n1, { narrativeKey: 'x', stateDeltas: [{ kind: 'technique_learn', id: 'TECH_A' }] });
+    expect(n2.learnedTechniques.filter(t => t === 'TECH_A')).toHaveLength(1);
+  });
+});
+
+describe('applyOutcome — meta-deltas and age', () => {
+  it('karma_delta buffers into karmaEarnedBuffer', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'karma_delta', amount: 15 }] });
+    expect(next.karmaEarnedBuffer).toBe(15);
+  });
+
+  it('notice_delta clamps to [0, 100]', () => {
+    const rs = baseState();
+    const up = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'notice_delta', amount: 120 }] });
+    expect(up.heavenlyNotice).toBe(100);
+    const down = applyOutcome(up, { narrativeKey: 'x', stateDeltas: [{ kind: 'notice_delta', amount: -1000 }] });
+    expect(down.heavenlyNotice).toBe(0);
+  });
+
+  it('age_delta_days increases character.ageDays', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [{ kind: 'age_delta_days', amount: 30 }] });
+    expect(next.character.ageDays).toBe(rs.character.ageDays + 30);
+  });
+});
+
+describe('applyOutcome — deathCause', () => {
+  it('sets runState.deathCause', () => {
+    const rs = baseState();
+    const dead = applyOutcome(rs, { narrativeKey: 'x', deathCause: 'starvation' });
+    expect(dead.deathCause).toBe('starvation');
+  });
+});
