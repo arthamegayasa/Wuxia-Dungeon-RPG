@@ -1202,7 +1202,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Seed an RNG deterministically off now(). Phase 2 may want to persist this seed.
       const spawnRng = createRng(now() & 0xffffffff);
       const resolved = resolveAnchor(anchor, spawnRng);
-      const runSeed = Math.floor(Math.random() * 0x7fffffff);
+      const runSeed = spawnRng.intRange(0, 0x7fffffff); // Phase 1D-1 convention: derive from IRng, never Math.random
       const { character, runState } = characterFromAnchor({
         resolved, name: chosenName, runSeed, rng: spawnRng,
       });
