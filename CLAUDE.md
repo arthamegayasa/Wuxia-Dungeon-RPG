@@ -41,25 +41,26 @@ Every phase follows this loop:
 | 1B | Choice-Event Engine: event/choice/outcome schemas, condition evaluator, event selector, §5.3 probability resolver, outcome resolver + applier, streak tracker, age tick | ✅ merged (PR #3 → `802b1bb`) |
 | 1C | Narrative Composer MVP: mood, snippet library, template expander, name generator + registry, composer orchestrator | ✅ merged (PR #4 → `467b55c`) |
 | 1D-1 | Engine Glue: Anchor, AnchorResolver, characterFromAnchor, KarmicInsightRules, KarmicUpgrade, MetaState, RunSave, BardoFlow, GameLoop.runTurn, life-cycle integration test | ✅ merged (PR #5 → `cc71795`) |
-| **1D-2** | **UI Wiring: real `engineBridge`, CreationScreen, BardoPanel, full phase flow + realm-karma formula fix** | **📋 plan next** |
-| 1D-3 | Content Authoring: ~50 Yellow Plains events, ~80 snippet leaves, expanded name pools — delivers Phase 1 exit criterion | ⏳ pending |
+| 1D-2 | UI Wiring: real `engineBridge`, CreationScreen, PlayScreen, BardoPanel, phase routing, realm-karma cumulative fix, legacy Gemini-era component deletion, full click-through integration test | ✅ merged (PR #6 → `e6fc239`) |
+| **1D-3** | **Content Authoring: ~50 Yellow Plains events, ~80 snippet leaves, expanded name pools — delivers Phase 1 exit criterion** | **📋 plan next** |
 
-**Test count on main**: 424 (across 59 files). Build: 199 KB JS / 62 KB gzip.
+**Test count on main**: 466 (across 65 files). Build: 312 KB JS / 94 KB gzip.
 
 **Branch tags**: `phase-0-complete` at commit `e25a969`.
 
 ## Resuming work — next action
 
-The immediate next step is to **write the Phase 1D-2 implementation plan** via `superpowers:writing-plans`, then execute via subagent-driven-development.
+The immediate next step is to **write the Phase 1D-3 implementation plan** via `superpowers:writing-plans`, then execute via subagent-driven-development.
 
-**Phase 1D-2 scope (rough):**
-- Real `engineBridge` replacing Phase 0 stubs (wires `runTurn`, `runBardoFlow`, `purchaseUpgrade`, save/load into the Zustand store).
-- `CreationScreen` rewrite (anchor picker, name entry, spawn preview).
-- `BardoPanel` (life summary, karma breakdown, karmic-upgrade shop, reincarnate button).
-- Main play screen rewire (event narrative, choice buttons, status strip).
-- Phase state machine: `TITLE → CREATION → PLAYING → BARDO → CREATION → ...`.
-- **Realm karma formula fix** (small task): change `realmKarma = realmIndex × 10` to cumulative `sum(i × 10 for i in 1..realmIndex)` per spec §7.1 "per realm entered". Add test covering index ≥ 2 where flat vs cumulative diverge. See "Known accepted deviations" below.
-- Touch/replace legacy Gemini-era `SetupScreen.tsx`, `StatusPanel.tsx`, `StoryPanel.tsx`.
+**Phase 1D-3 scope (rough):**
+- Real event JSON loader (replace `src/content/events/fixture.ts` with `src/content/events/loader.ts` reading `src/content/events/yellow_plains/*.json`).
+- Author ~50 Yellow Plains events covering: daily life (farming, chores, weather), training (body/mind/spirit), social (village, family, rival), danger (bandits, beasts, illness), opportunity (chance encounters, pills), old-age death triggers.
+- Expand `SnippetLibrary` to ~80 narrative leaves per spec §6. Organize by mood + region.
+- Expand name pools — family, personal, technique, sect names for Yellow Plains era.
+- Fix `$[CHAR_NAME]` vs `$[CHARACTER]` variable-name mismatch surfaced in 1D-2 fixture.
+- Optionally: tighten the `onBegin`/`onChoose`/`onContinue` retry-loop shims in `App.tsx` — no longer needed once each event has a single well-known starting choice or once the UI knows to render the selected event's choices.
+
+**Exit criterion:** user can play through a realistic Yellow Plains life (~30–60 real decisions per life, ~60–80 in-game years) with varied narrative, a handful of training decisions that actually progress cultivation, and meaningful choice-driven outcomes.
 
 **Exact first steps for a new session:**
 
@@ -68,7 +69,7 @@ cd "D:/Claude Code/Wuxia RPG"
 git status                           # confirm clean, on main
 ```
 
-Then invoke `superpowers:writing-plans` to draft the 1D-2 plan, save under `docs/superpowers/plans/YYYY-MM-DD-phase-1d2-ui-wiring.md`, then follow the standard loop (branch, commit plan, subagent-driven execution, PR, merge).
+Then invoke `superpowers:writing-plans` to draft the 1D-3 plan, save under `docs/superpowers/plans/YYYY-MM-DD-phase-1d3-content.md`, then follow the standard loop (branch, commit plan, subagent-driven execution, PR, merge).
 
 ## Tone & communication preferences
 
