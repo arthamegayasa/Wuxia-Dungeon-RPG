@@ -103,7 +103,6 @@ When working on a subsystem, re-read the relevant spec section first:
 - **Zod v4 `z.record(enum, value)` quirk**: treats enum keys as exhaustive. Fix applied: `z.record(enum, value.optional())`. Consumers (`ConditionEvaluator`, `ChoiceResolver`) explicitly guard `undefined` in iteration. Three call-sites in `src/content/schema.ts`.
 - **`$[KEY]` variable fallback**: `TemplateExpander` falls back to `variables[key]` when the snippet library has no entry. Allows `$[weather.$[SEASON].heavy]` nested form to resolve the inner variable.
 - **Mood baseline**: `computeDominantMood(zeroMoodInputs())` returns `'serenity'` via explicit early-return — plan's priority loop alone would return `melancholy`. Test expectations win.
-- **Realm karma — flat vs cumulative (pending fix in 1D-2)**: `KarmicInsightRules.computeKarma` currently returns `realmIndex × 10` (flat — the "last realm reached" bonus). Spec §7.1 wording `+10 × realm index (per realm)` reads more naturally as cumulative (`10+20+…+realmIndex×10`). Phase 1D-1 tests only exercise index 0–1 where both interpretations produce the same result. Formula + test will be updated to cumulative in Phase 1D-2 once UI surfaces realm progression.
 
 ## Don't do
 
