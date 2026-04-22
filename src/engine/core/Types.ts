@@ -150,3 +150,33 @@ export type DeviationSeverity = 'tremor' | 'scar' | 'cripple' | 'rend' | 'shatte
 export const DEVIATION_SEVERITIES: readonly DeviationSeverity[] = [
   'tremor', 'scar', 'cripple', 'rend', 'shatter',
 ] as const;
+
+// ---- Phase 1B: Choice-event engine tables ----
+// Source of truth: docs/spec/design.md §5, §2.5.
+
+export type CheckCategory =
+  | 'brute_force' | 'melee_skill' | 'qi_combat' | 'dodge_flee'
+  | 'social_persuade' | 'social_intimidate' | 'social_seduce'
+  | 'deception' | 'insight_puzzle' | 'resist_mental' | 'resist_poison'
+  | 'cultivation_attempt' | 'survival' | 'lore_scholarship';
+
+export const CHECK_CATEGORIES: readonly CheckCategory[] = [
+  'brute_force', 'melee_skill', 'qi_combat', 'dodge_flee',
+  'social_persuade', 'social_intimidate', 'social_seduce',
+  'deception', 'insight_puzzle', 'resist_mental', 'resist_poison',
+  'cultivation_attempt', 'survival', 'lore_scholarship',
+] as const;
+
+/** Ordered from best to worst — used by OutcomeResolver for tier fallback. */
+export const OUTCOME_TIER_ORDER: readonly OutcomeTier[] = [
+  'CRIT_SUCCESS', 'SUCCESS', 'PARTIAL', 'FAILURE', 'CRIT_FAILURE',
+] as const;
+
+/** Day-range [min, max] for each TimeCost bucket — spec §2.5. */
+export const TIME_COST_DAYS: Readonly<Record<TimeCost, readonly [number, number]>> = {
+  INSTANT: [0, 0],
+  SHORT:   [1, 7],
+  MEDIUM:  [30, 90],
+  LONG:    [180, 540],
+  EPOCH:   [1095, 3650],
+};
