@@ -4,7 +4,7 @@ import { GamePhase } from '@/engine/core/Types';
 import { SaveManager, createSaveManager } from '@/engine/persistence/SaveManager';
 import { loadRun, saveRun } from '@/engine/persistence/RunSave';
 import {
-  MetaState, loadMeta, LineageEntrySummary,
+  MetaState, loadMeta, saveMeta, LineageEntrySummary,
 } from '@/engine/meta/MetaState';
 import { getAnchorById, DEFAULT_ANCHORS } from '@/engine/meta/Anchor';
 import { resolveAnchor } from '@/engine/meta/AnchorResolver';
@@ -13,6 +13,11 @@ import { createRng } from '@/engine/core/RNG';
 import { createStreakState } from '@/engine/choices/StreakTracker';
 import { createSnippetLibrary, SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
+import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
+import { runTurn } from '@/engine/core/GameLoop';
+import { runBardoFlow } from '@/engine/bardo/BardoFlow';
+import { DEFAULT_UPGRADES } from '@/engine/meta/KarmicUpgrade';
+import { FIXTURE_EVENTS } from '@/content/events/fixture';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 
@@ -93,10 +98,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
   const sm = opts.saveManager ?? createSaveManager({
     storage: () => localStorage, gameVersion: '0.1.0',
   });
-  // Library reserved for Task 5 (chooseAction narrative composition). Not used yet
-  // but we accept + construct it now so the Task 4 signature matches the plan.
-  const _library = opts.library ?? createSnippetLibrary({});
-  void _library;
+  // Snippet library used by the Composer inside runTurn. An empty library is fine
+  // for the 1D-2 fixture events: their intro lines use `$[CHAR_NAME]` which falls
+  // back to an empty string when absent. Phase 1D-3 will author a real corpus.
+  const library = opts.library ?? createSnippetLibrary({});
   const now = opts.now ?? (() => Date.now());
 
   function currentMetaState(): MetaState {
@@ -124,6 +129,53 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       realm: rs.character.realm,
       insight: rs.character.insight,
       choices,
+    };
+  }
+
+  function anchorMultiplierFor(anchorId: string): number {
+    return getAnchorById(anchorId)?.karmaMultiplier ?? 1.0;
+  }
+
+  function decorateUpgrades(meta: MetaState): BardoPayload['availableUpgrades'] {
+    return DEFAULT_UPGRADES.map((u) => {
+      const owned = meta.ownedUpgrades.includes(u.id);
+      const requirementsMet = u.requires.every((r) => meta.ownedUpgrades.includes(r));
+      const affordable = meta.karmaBalance >= u.cost;
+      return {
+        id: u.id,
+        name: u.name,
+        description: u.description,
+        cost: u.cost,
+        affordable,
+        requirementsMet,
+        owned,
+      };
+    });
+  }
+
+  function buildBardoPayload(): BardoPayload {
+    const gs = useGameStore.getState();
+    const meta = currentMetaState();
+    if (!gs.bardoResult) throw new Error('buildBardoPayload: no bardoResult in store');
+    const br = gs.bardoResult;
+    return {
+      lifeIndex: meta.lifeCount,
+      years: br.summary.yearsLived,
+      realm: br.summary.realmReached,
+      deathCause: br.summary.deathCause,
+      karmaEarned: br.karmaEarned,
+      karmaBreakdown: {
+        yearsLived: br.karmaBreakdown.yearsLived,
+        realm: br.karmaBreakdown.realm,
+        deathCause: br.karmaBreakdown.deathCause,
+        vows: br.karmaBreakdown.vows,
+        diedProtecting: br.karmaBreakdown.diedProtecting,
+        achievements: br.karmaBreakdown.achievements,
+        inLifeDelta: br.karmaBreakdown.inLifeDelta,
+      },
+      karmaBalance: meta.karmaBalance,
+      ownedUpgrades: meta.ownedUpgrades,
+      availableUpgrades: decorateUpgrades(meta),
     };
   }
 
@@ -190,8 +242,54 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       );
     },
 
-    async chooseAction(_choiceId) {
-      throw new Error('chooseAction: implemented in Task 5');
+    async chooseAction(choiceId) {
+      const gs = useGameStore.getState();
+      if (!gs.runState || !gs.streak || !gs.nameRegistry) {
+        throw new Error('chooseAction: no active run in store');
+      }
+
+      // Seed the turn RNG off the run's current cursor so replays are deterministic.
+      // Fall back to runSeed if (somehow) cursor is absent.
+      const seedCursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
+      const rng = createRng(seedCursor & 0xffffffff);
+
+      const tr = runTurn(
+        {
+          runState: gs.runState,
+          streak: gs.streak,
+          events: FIXTURE_EVENTS,
+          library,
+          nameRegistry: gs.nameRegistry,
+          lifetimeSeenEvents: gs.lifetimeSeenEvents,
+          dominantMood: computeDominantMood(zeroMoodInputs()),
+        },
+        choiceId,
+        rng,
+      );
+
+      useGameStore.getState().updateRun(tr.nextRunState, tr.nextStreak, tr.nextNameRegistry);
+      useGameStore.getState().setTurnResult(tr);
+      useGameStore.getState().appendSeenEvent(tr.eventId);
+      saveRun(sm, tr.nextRunState);
+
+      if (tr.nextRunState.deathCause) {
+        const anchorFlag = tr.nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
+        const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
+        const mult = anchorMultiplierFor(anchorId);
+        const bardo = runBardoFlow(tr.nextRunState, currentMetaState(), mult);
+        useGameStore.getState().setBardoResult(bardo);
+        hydrateMeta(bardo.meta);
+        saveMeta(sm, bardo.meta);
+        useGameStore.getState().setPhase(GamePhase.BARDO);
+        return buildBardoPayload();
+      }
+
+      // Still alive — return the current event's choices as the next preview.
+      const activeEvent = FIXTURE_EVENTS.find((e) => e.id === tr.eventId)!;
+      return buildTurnPreview(
+        tr.narrative,
+        activeEvent.choices.map((c) => ({ id: c.id, label: c.label })),
+      );
     },
     async beginBardo() { throw new Error('beginBardo: implemented in Task 6'); },
     async spendKarma(_upgradeId) { throw new Error('spendKarma: implemented in Task 6'); },

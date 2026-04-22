@@ -78,3 +78,48 @@ describe('engineBridge.beginLife', () => {
     expect(sm.load('wdr.run')).not.toBeNull();
   });
 });
+
+describe('engineBridge.chooseAction', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('throws if called without an active run', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm });
+    await expect(engine.chooseAction('ch_walk')).rejects.toThrow(/no active run/i);
+  });
+
+  it('advances the turn and returns a TurnPreview when alive', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 1 });
+    await engine.beginLife('peasant_farmer', 'Lin');
+
+    // Task 5 uses the first selectable fixture event's first choice id
+    // (either FX_BENIGN_DAY.ch_work, FX_TRAIN_BODY.ch_train, or FX_BANDIT.ch_fight
+    // depending on selector). We loop through both safe choices so the test is
+    // robust across which event fires.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let result: any;
+    for (const choiceId of ['ch_work', 'ch_train', 'ch_fight']) {
+      try {
+        result = await engine.chooseAction(choiceId);
+        break;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        if (!/choice.*not found/i.test(e.message)) throw e;
+      }
+    }
+    expect(result).toBeDefined();
+    // If alive, result has a `narrative` and `choices`.
+    // If died (possible on turn 1 with ch_fight), it's a BardoPayload.
+    if ('narrative' in result!) {
+      expect(typeof result.narrative).toBe('string');
+      expect(useGameStore.getState().runState!.turn).toBe(1);
+    } else {
+      expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
+    }
+  });
+});
