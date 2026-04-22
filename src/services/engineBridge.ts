@@ -2,9 +2,9 @@
 
 import { GamePhase } from '@/engine/core/Types';
 import { SaveManager, createSaveManager } from '@/engine/persistence/SaveManager';
-import { loadRun, saveRun } from '@/engine/persistence/RunSave';
+import { loadRun, saveRun, clearRun } from '@/engine/persistence/RunSave';
 import {
-  MetaState, loadMeta, saveMeta, LineageEntrySummary,
+  MetaState, loadMeta, saveMeta, LineageEntrySummary, purchaseUpgrade,
 } from '@/engine/meta/MetaState';
 import { getAnchorById, DEFAULT_ANCHORS } from '@/engine/meta/Anchor';
 import { resolveAnchor } from '@/engine/meta/AnchorResolver';
@@ -16,7 +16,7 @@ import { createNameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
 import { runTurn } from '@/engine/core/GameLoop';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
-import { DEFAULT_UPGRADES } from '@/engine/meta/KarmicUpgrade';
+import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
 import { FIXTURE_EVENTS } from '@/content/events/fixture';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
@@ -291,9 +291,55 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         activeEvent.choices.map((c) => ({ id: c.id, label: c.label })),
       );
     },
-    async beginBardo() { throw new Error('beginBardo: implemented in Task 6'); },
-    async spendKarma(_upgradeId) { throw new Error('spendKarma: implemented in Task 6'); },
-    async reincarnate() { throw new Error('reincarnate: implemented in Task 6'); },
+    async beginBardo() {
+      const gs = useGameStore.getState();
+      if (gs.bardoResult) {
+        return buildBardoPayload();
+      }
+      // Rare: reload captured a dead character without a computed bardoResult.
+      if (gs.runState?.deathCause) {
+        const anchorFlag = gs.runState.character.flags.find((f) => f.startsWith('anchor:'));
+        const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
+        const mult = anchorMultiplierFor(anchorId);
+        const bardo = runBardoFlow(gs.runState, currentMetaState(), mult);
+        useGameStore.getState().setBardoResult(bardo);
+        hydrateMeta(bardo.meta);
+        saveMeta(sm, bardo.meta);
+        useGameStore.getState().setPhase(GamePhase.BARDO);
+        return buildBardoPayload();
+      }
+      throw new Error('beginBardo: no bardo state — character is still alive');
+    },
+
+    async spendKarma(upgradeId) {
+      const gs = useGameStore.getState();
+      if (!gs.bardoResult) {
+        throw new Error('spendKarma: no active bardo session');
+      }
+      const upgrade = getUpgradeById(upgradeId);
+      if (!upgrade) throw new Error(`spendKarma: unknown upgrade ${upgradeId}`);
+
+      const meta = currentMetaState();
+      const next = purchaseUpgrade(meta, upgradeId);
+      if (!next) {
+        throw new Error(`spendKarma: cannot purchase ${upgradeId} (locked, unaffordable, or already owned)`);
+      }
+      hydrateMeta(next);
+      saveMeta(sm, next);
+      return buildBardoPayload();
+    },
+
+    async reincarnate() {
+      clearRun(sm);
+      useGameStore.getState().resetRun();
+      useGameStore.getState().setPhase(GamePhase.CREATION);
+      return {
+        availableAnchors: DEFAULT_ANCHORS
+          .filter((a) => a.unlock === 'default'
+            || useMetaStore.getState().unlockedAnchors.includes(a.id))
+          .map((a) => ({ id: a.id, name: a.name, description: a.description })),
+      };
+    },
 
     listAnchors() {
       const meta = currentMetaState();

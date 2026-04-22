@@ -123,3 +123,118 @@ describe('engineBridge.chooseAction', () => {
     }
   });
 });
+
+// Force-death helper: mutate the store's runState to have a deathCause so
+// beginBardo's "rare reload" branch fires, transitioning to BARDO. The plan
+// suggests force-death loops via chooseAction, but the fixture corpus + current
+// RNG-cursor handling makes the outer loop deterministically non-terminating
+// within any reasonable iteration budget (same seed → same event → same tier
+// every turn). Direct mutation is fallback option 3 from the plan.
+function forceDeath() {
+  const rs = useGameStore.getState().runState;
+  if (!rs) throw new Error('forceDeath: no runState to kill');
+  useGameStore.setState({
+    runState: { ...rs, deathCause: 'combat_melee' },
+  });
+}
+
+describe('engineBridge.beginBardo (manual)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('returns the existing BardoPayload if chooseAction already transitioned', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 2 });
+
+    await engine.beginLife('peasant_farmer', 'Lin');
+    // Force death via direct mutation, then beginBardo hits the "rare reload"
+    // branch (computes BardoResult from runState.deathCause).
+    forceDeath();
+
+    const bardo = await engine.beginBardo();
+    expect(bardo.karmaEarned).toBeGreaterThanOrEqual(0);
+    expect(bardo.availableUpgrades.length).toBe(5);
+    expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
+    expect(useGameStore.getState().bardoResult).not.toBeNull();
+
+    // Second call is idempotent: returns the existing BardoPayload.
+    const bardo2 = await engine.beginBardo();
+    expect(bardo2.karmaEarned).toBe(bardo.karmaEarned);
+  });
+
+  it('throws if there is no active bardo and no death', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm });
+    await engine.beginLife('peasant_farmer', 'Lin');
+    await expect(engine.beginBardo()).rejects.toThrow(/no bardo/i);
+  });
+});
+
+describe('engineBridge.spendKarma', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('purchases an affordable unblocked upgrade and refreshes the payload', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    // Seed a MetaState with enough karma.
+    sm.save('wdr.meta', {
+      karmaBalance: 500, lifeCount: 1, ownedUpgrades: [],
+      unlockedAnchors: ['true_random', 'peasant_farmer'],
+      lineage: [{
+        lifeIndex: 1, name: 'Ancestor', anchorId: 'peasant_farmer',
+        yearsLived: 40, realmReached: 'mortal', deathCause: 'old_age', karmaEarned: 500,
+      }],
+      lifetimeSeenEvents: [],
+    }, 1);
+    const engine = createEngineBridge({ saveManager: sm, now: () => 3 });
+    await engine.loadOrInit();
+
+    // Run one life, force death, transition via beginBardo.
+    await engine.beginLife('peasant_farmer', 'Lin');
+    forceDeath();
+    await engine.beginBardo();
+    expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
+
+    const before = useMetaStore.getState().karmicInsight;
+    const payload = await engine.spendKarma('awakened_soul_1');
+    expect(payload.ownedUpgrades).toContain('awakened_soul_1');
+    expect(useMetaStore.getState().karmicInsight).toBeLessThan(before); // deducted 80
+    expect(sm.load('wdr.meta')).not.toBeNull();
+  });
+
+  it('rejects with a useful error when upgrade unknown / locked / unaffordable', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 4 });
+    await engine.beginLife('peasant_farmer', 'Lin');
+    forceDeath();
+    await engine.beginBardo();
+    await expect(engine.spendKarma('not_an_upgrade'))
+      .rejects.toThrow(/unknown.*upgrade|cannot purchase/i);
+  });
+});
+
+describe('engineBridge.reincarnate', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('clears the run save and advances phase to CREATION', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 5 });
+    await engine.beginLife('peasant_farmer', 'Lin');
+    expect(sm.load('wdr.run')).not.toBeNull();
+
+    const result = await engine.reincarnate();
+    expect(sm.load('wdr.run')).toBeNull();
+    expect(useGameStore.getState().phase).toBe(GamePhase.CREATION);
+    expect(result.availableAnchors.length).toBeGreaterThanOrEqual(2);
+  });
+});
