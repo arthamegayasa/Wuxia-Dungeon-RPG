@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "__SMOKE_EV1",
+      "category": "test",
+      "version": 1,
+      "weight": 1,
+      "conditions": { "regions": ["yellow_plains"] },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": ["A test day passes for $[CHARACTER]."],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_pass",
+          "label": "Pass time.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ok", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ok", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "__SMOKE_EV2",
+      "category": "test",
+      "version": 1,
+      "weight": 1,
+      "conditions": { "regions": ["yellow_plains"] },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": ["Nothing happens."],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_pass",
+          "label": "Keep going.",
+          "timeCost": "INSTANT",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ok", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ok", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
