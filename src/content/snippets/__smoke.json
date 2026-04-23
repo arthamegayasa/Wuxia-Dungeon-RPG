@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "leaves": {
+    "weather.rain.spring": [
+      { "text": "A spring rain dampens the millet.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Rain.", "weight": 1, "tags": ["terse"] }
+    ]
+  }
+}
