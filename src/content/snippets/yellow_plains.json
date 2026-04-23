@@ -1,0 +1,405 @@
+{
+  "version": 1,
+  "leaves": {
+    "weather.sun.spring": [
+      { "text": "The spring sun warms the millet shoots.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Sun. Green shoots.", "weight": 1, "tags": ["terse"] },
+      { "text": "A kind sun. The earth remembers how to breathe.", "weight": 1, "tags": ["tender"] }
+    ],
+    "weather.sun.summer": [
+      { "text": "The summer sun beats the field flat.", "weight": 1, "tags": ["serious"] },
+      { "text": "Everything white. Everything hot.", "weight": 1, "tags": ["terse"] },
+      { "text": "The sun hammers the earth, and the earth takes it.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "weather.sun.autumn": [
+      { "text": "Autumn sun, low and honest.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The sun slants. The grain is ready.", "weight": 1, "tags": ["serious"] },
+      { "text": "Gold on the stubble.", "weight": 1, "tags": ["tender"] }
+    ],
+    "weather.rain.spring": [
+      { "text": "A spring rain dampens the millet.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Rain. The mud grabs at ankles.", "weight": 1, "tags": ["terse"] },
+      { "text": "Rain like a mother's hand.", "weight": 1, "tags": ["tender"] }
+    ],
+    "weather.rain.autumn": [
+      { "text": "Autumn rain, slow and grey.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Rain on the threshing floor.", "weight": 1, "tags": ["terse"] },
+      { "text": "The rain does not care that the grain is in.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "weather.snow.winter": [
+      { "text": "Snow fills the furrows.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Snow. The roof groans.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "White on white. The world has no edges today.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "weather.frost.winter": [
+      { "text": "Frost scrawls on the paper windows.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Ice at the water bucket.", "weight": 1, "tags": ["terse"] },
+      { "text": "The ground rings under the heel.", "weight": 1, "tags": ["serious"] }
+    ],
+    "weather.wind.dry": [
+      { "text": "The dry wind carries dust across the plain.", "weight": 1, "tags": ["serious"] },
+      { "text": "Grit in the teeth.", "weight": 1, "tags": ["terse", "bitter"] },
+      { "text": "A yellow wind, tasting of old harvests.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "weather.wind.cold": [
+      { "text": "The north wind finds every seam.", "weight": 1, "tags": ["serious"] },
+      { "text": "The wind cuts.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "A wind that remembers the steppes.", "weight": 1, "tags": ["lyrical", "ominous"] }
+    ],
+    "weather.drought.heavy": [
+      { "text": "The earth cracks like old pottery.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "No rain. No rain. No rain.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "The wells give back less each day.", "weight": 1, "tags": ["serious"] }
+    ],
+    "weather.drought.breaking": [
+      { "text": "Clouds gather in the west. The old men watch.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "Maybe. Maybe rain.", "weight": 1, "tags": ["terse"] },
+      { "text": "A hush on the fields, as if the sky is listening.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "weather.overcast.calm": [
+      { "text": "A grey sky, patient and still.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Overcast. The world muffled.", "weight": 1, "tags": ["terse"] },
+      { "text": "Clouds like old cloth, low and close.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "terrain.yellow_plains.millet_field": [
+      { "text": "Rows of millet, shoulder-high, whispering.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The field. Brown stalks, brown earth.", "weight": 1, "tags": ["terse"] },
+      { "text": "Millet to the edge of sight.", "weight": 1, "tags": ["serious"] }
+    ],
+    "terrain.yellow_plains.wheat_field": [
+      { "text": "The wheat bends in long slow waves.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Wheat. Ripe. Heavy.", "weight": 1, "tags": ["terse"] },
+      { "text": "A gold country, waiting for the sickle.", "weight": 1, "tags": ["tender"] }
+    ],
+    "terrain.yellow_plains.road": [
+      { "text": "The road, packed dirt, bends east toward the river.", "weight": 1, "tags": ["serious"] },
+      { "text": "The road. It is always the road.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Cart-ruts deep as a child's arm.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "terrain.yellow_plains.crossroads": [
+      { "text": "Four roads meet under a crooked ash.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The crossroads. Someone has left an offering.", "weight": 1, "tags": ["ominous"] },
+      { "text": "Where roads cross, ghosts keep watch.", "weight": 1, "tags": ["ominous", "lyrical"] }
+    ],
+    "terrain.yellow_plains.river_low": [
+      { "text": "The river runs thin. Stones gleam.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Low water. Bad season.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "The river bed shows its bones.", "weight": 1, "tags": ["lyrical", "ominous"] }
+    ],
+    "terrain.yellow_plains.river_flood": [
+      { "text": "The river has taken the bank. Brown water, fast.", "weight": 1, "tags": ["serious", "ominous"] },
+      { "text": "Flood.", "weight": 1, "tags": ["terse"] },
+      { "text": "The fields are a sea. Roofs float like rafts.", "weight": 1, "tags": ["lyrical", "ominous"] }
+    ],
+    "terrain.yellow_plains.village": [
+      { "text": "The village — ten huts, a single well, an old banyan.", "weight": 1, "tags": ["serious"] },
+      { "text": "Dogs bark. Smoke curls. A child is crying somewhere.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Mud walls, thatch, the smell of cooking fire.", "weight": 1, "tags": ["tender"] }
+    ],
+    "terrain.yellow_plains.hut": [
+      { "text": "The hut, walls of packed clay, roof of thatch.", "weight": 1, "tags": ["serious"] },
+      { "text": "Home. Such as it is.", "weight": 1, "tags": ["terse", "bitter"] },
+      { "text": "A single lamp. A single bowl. Enough.", "weight": 1, "tags": ["tender"] }
+    ],
+    "terrain.yellow_plains.temple_ruined": [
+      { "text": "A broken temple, half swallowed by the hill.", "weight": 1, "tags": ["lyrical", "ominous"] },
+      { "text": "Old stones. Older gods.", "weight": 1, "tags": ["terse"] },
+      { "text": "The incense holder is full of rain.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "terrain.yellow_plains.shrine": [
+      { "text": "A small shrine, a new ribbon tied to the post.", "weight": 1, "tags": ["tender"] },
+      { "text": "The shrine keeps what it can.", "weight": 1, "tags": ["serious"] },
+      { "text": "A dish of millet, a cup of water, someone's prayer.", "weight": 1, "tags": ["lyrical", "tender"] }
+    ],
+    "terrain.yellow_plains.hills": [
+      { "text": "Low hills, pale grass, a hawk circling.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The hills. Nothing lives up there worth the climb.", "weight": 1, "tags": ["bitter"] },
+      { "text": "The hills roll like a sleeping animal.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "terrain.yellow_plains.burial_mound": [
+      { "text": "A burial mound, grass high, stones sunken.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The dead keep the hill.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "Names on the stones, worn smooth by wind.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "terrain.yellow_plains.inn_yard": [
+      { "text": "The inn yard, straw, a tethered mule.", "weight": 1, "tags": ["serious"] },
+      { "text": "Travellers' boots at the door.", "weight": 1, "tags": ["terse"] },
+      { "text": "Lamp-smoke, laughter, a distant quarrel.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "terrain.yellow_plains.well": [
+      { "text": "The well, its ropes frayed, its bucket dented.", "weight": 1, "tags": ["serious"] },
+      { "text": "Water rises slow out of the stone.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The well. Cold breath from below.", "weight": 1, "tags": ["terse", "ominous"] }
+    ],
+    "time.dawn.cold": [
+      { "text": "A cold dawn, the sky the colour of a knife.", "weight": 1, "tags": ["lyrical", "ominous"] },
+      { "text": "Dawn. Breath smokes.", "weight": 1, "tags": ["terse"] },
+      { "text": "The first light is a grey blade at the horizon.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "time.dawn.mist": [
+      { "text": "Mist on the fields, thinning as the light climbs.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Dawn. The world vague.", "weight": 1, "tags": ["terse"] },
+      { "text": "The mist holds the night a little longer.", "weight": 1, "tags": ["tender", "lyrical"] }
+    ],
+    "time.noon.work": [
+      { "text": "Noon. The sun straight overhead, the work unfinished.", "weight": 1, "tags": ["serious"] },
+      { "text": "Noon. Bent backs.", "weight": 1, "tags": ["terse"] },
+      { "text": "The bell at the village. No one looks up.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "time.noon.rest": [
+      { "text": "The noon bell. Shade under the banyan. A shared bowl.", "weight": 1, "tags": ["tender"] },
+      { "text": "Rest. A little.", "weight": 1, "tags": ["terse"] },
+      { "text": "The men eat standing, watching the weather.", "weight": 1, "tags": ["serious"] }
+    ],
+    "time.dusk.village": [
+      { "text": "Dusk settles on the village. Lamps come on one by one.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "Dusk. Dogs calling.", "weight": 1, "tags": ["terse"] },
+      { "text": "Smoke rising straight. A good sign.", "weight": 1, "tags": ["tender"] }
+    ],
+    "time.dusk.field": [
+      { "text": "The fields go blue in the dusk. The birds settle.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Dusk. The hoe laid down.", "weight": 1, "tags": ["terse"] },
+      { "text": "The last light lies long across the furrows.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "time.night.quiet": [
+      { "text": "Night. Stars. The distant river.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Night. Nothing stirring.", "weight": 1, "tags": ["terse"] },
+      { "text": "A quiet so deep the blood hears itself.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "time.night.watchful": [
+      { "text": "Night, and someone somewhere is awake with a blade.", "weight": 1, "tags": ["ominous"] },
+      { "text": "Night. A dog will not stop barking.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "The lamps put out early. No one wants to be seen.", "weight": 1, "tags": ["serious", "ominous"] }
+    ],
+    "npc.bandit.threat": [
+      { "text": "The bandit shows his teeth more than his blade.", "weight": 1, "tags": ["serious"] },
+      { "text": "'Coin,' he says. 'Or worse.'", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "Three of them. One is laughing. That is the worst one.", "weight": 1, "tags": ["ominous"] }
+    ],
+    "npc.bandit.flee": [
+      { "text": "The bandits break and run. Their shouting fades.", "weight": 1, "tags": ["serious"] },
+      { "text": "They run. So does the breath.", "weight": 1, "tags": ["terse"] },
+      { "text": "One drops his knife in the dust. No one picks it up.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "npc.merchant.haggle": [
+      { "text": "The merchant weighs his words like copper.", "weight": 1, "tags": ["serious"] },
+      { "text": "'Two coppers less,' he says. 'And I ate this morning.'", "weight": 1, "tags": ["bitter"] },
+      { "text": "He names his price. Then a smaller one. Then a sigh.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "npc.merchant.story": [
+      { "text": "The merchant tells of a city where the river is made of stone.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "He has been south. He has been north. He remembers prices.", "weight": 1, "tags": ["serious"] },
+      { "text": "'A man asked me once,' he says, 'what a life is worth. I told him: less than salt.'", "weight": 1, "tags": ["bitter"] }
+    ],
+    "npc.monk.blessing": [
+      { "text": "The monk touches the forehead. 'Go quietly,' he says.", "weight": 1, "tags": ["tender"] },
+      { "text": "A blessing, given without ceremony.", "weight": 1, "tags": ["serious"] },
+      { "text": "He hands over a grain of rice. 'Enough,' he says.", "weight": 1, "tags": ["lyrical", "tender"] }
+    ],
+    "npc.monk.warning": [
+      { "text": "'Do not walk the east road tonight,' the monk says.", "weight": 1, "tags": ["ominous"] },
+      { "text": "The monk will not say what he saw.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "'Some debts,' he says, 'are paid in bone.'", "weight": 1, "tags": ["lyrical", "ominous"] }
+    ],
+    "npc.elder.wisdom": [
+      { "text": "The old woman says: 'The field that eats you feeds you too.'", "weight": 1, "tags": ["lyrical"] },
+      { "text": "'Patience,' the elder says. 'The year is long.'", "weight": 1, "tags": ["serious"] },
+      { "text": "She laughs, once, dry as leaves. 'I was your age when the river took my brother.'", "weight": 1, "tags": ["bitter"] }
+    ],
+    "npc.elder.warning": [
+      { "text": "'Don't take from that well,' the old man says. 'Not ever.'", "weight": 1, "tags": ["ominous"] },
+      { "text": "He shakes his head. 'You are too young to know.'", "weight": 1, "tags": ["serious", "ominous"] },
+      { "text": "'I have seen this weather before,' he says. 'It does not end well.'", "weight": 1, "tags": ["ominous"] }
+    ],
+    "npc.traveler.stranger": [
+      { "text": "A stranger at the fire. Muddy boots. Tired eyes.", "weight": 1, "tags": ["serious"] },
+      { "text": "The stranger nods. Says nothing. Drinks.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "He has come from far. His cloak smells of another weather.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "npc.traveler.thank": [
+      { "text": "The traveller bows low. 'A debt,' she says. 'I will remember.'", "weight": 1, "tags": ["tender"] },
+      { "text": "A bow. A promise. A name asked for, given.", "weight": 1, "tags": ["serious"] },
+      { "text": "She leaves a copper in the rice jar before she goes.", "weight": 1, "tags": ["tender", "lyrical"] }
+    ],
+    "npc.child.laugh": [
+      { "text": "A child runs by, laughing at nothing the adults can see.", "weight": 1, "tags": ["tender", "lyrical"] },
+      { "text": "Laughter. High. Bright. Brief.", "weight": 1, "tags": ["terse", "tender"] },
+      { "text": "Two children chase a paper kite across the stubble.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "npc.child.cry": [
+      { "text": "A child cries somewhere in the village, on and on.", "weight": 1, "tags": ["bitter"] },
+      { "text": "A child crying. No one comes.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "The child is too young to say what hurts. It only hurts.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "emotion.hunger.mild": [
+      { "text": "A small emptiness in the belly, nothing new.", "weight": 1, "tags": ["terse"] },
+      { "text": "Hunger like a polite visitor.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "$[CHARACTER] tightens the sash and keeps walking.", "weight": 1, "tags": ["serious"] }
+    ],
+    "emotion.hunger.severe": [
+      { "text": "Hunger that shakes the hands.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "A cold gnawing beneath the ribs. Everything smells of food.", "weight": 1, "tags": ["bitter"] },
+      { "text": "$[CHARACTER] thinks of grass, of bark, of the cat.", "weight": 1, "tags": ["bitter", "lyrical"] }
+    ],
+    "emotion.fear.sudden": [
+      { "text": "A shape at the edge of the light. The heart knocks.", "weight": 1, "tags": ["ominous"] },
+      { "text": "Fear. Cold down the spine.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "$[CHARACTER] forgets to breathe.", "weight": 1, "tags": ["serious"] }
+    ],
+    "emotion.fear.long": [
+      { "text": "A fear that has lived here a long time, like a mouse in the thatch.", "weight": 1, "tags": ["lyrical", "ominous"] },
+      { "text": "Fear that has become quiet. The worst kind.", "weight": 1, "tags": ["serious", "ominous"] },
+      { "text": "$[CHARACTER] has learned to sleep with one eye toward the door.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "emotion.hope.small": [
+      { "text": "A small hope, no bigger than a sparrow.", "weight": 1, "tags": ["tender", "lyrical"] },
+      { "text": "Hope. A little.", "weight": 1, "tags": ["terse"] },
+      { "text": "$[CHARACTER] catches a good smell and keeps it a moment.", "weight": 1, "tags": ["tender"] }
+    ],
+    "emotion.hope.dawn": [
+      { "text": "The kind of hope that comes with first light.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "A sudden lightness. Unearned. Welcome.", "weight": 1, "tags": ["serious"] },
+      { "text": "$[CHARACTER] smiles, and is surprised by it.", "weight": 1, "tags": ["tender"] }
+    ],
+    "emotion.resignation.tired": [
+      { "text": "A tiredness that goes past the bone.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Enough, $[CHARACTER] thinks. Enough for today.", "weight": 1, "tags": ["terse"] },
+      { "text": "The shoulders bow. The world does not notice.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "emotion.resignation.old": [
+      { "text": "The long patience of people who have buried more than they have named.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "$[CHARACTER] nods once. This is how it goes.", "weight": 1, "tags": ["bitter"] },
+      { "text": "The sigh of a person who stopped arguing with the sky.", "weight": 1, "tags": ["serious"] }
+    ],
+    "emotion.anger.flash": [
+      { "text": "A hot anger, sudden as a snapped stalk.", "weight": 1, "tags": ["terse"] },
+      { "text": "$[CHARACTER] clenches the jaw so hard it aches.", "weight": 1, "tags": ["bitter"] },
+      { "text": "A word rises and is bitten back.", "weight": 1, "tags": ["serious"] }
+    ],
+    "emotion.anger.cold": [
+      { "text": "A cold anger, set and patient.", "weight": 1, "tags": ["ominous"] },
+      { "text": "$[CHARACTER] does not speak. The hand is steady.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "An anger that has learned to wait.", "weight": 1, "tags": ["bitter", "lyrical"] }
+    ],
+    "emotion.grief.fresh": [
+      { "text": "Grief like a new cut, still surprised by itself.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "$[CHARACTER] has no words. Only hands.", "weight": 1, "tags": ["tender"] },
+      { "text": "The tears come without permission.", "weight": 1, "tags": ["serious"] }
+    ],
+    "emotion.grief.faded": [
+      { "text": "An old grief, smooth as river-stone.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "$[CHARACTER] remembers the name, and the year, and the rain.", "weight": 1, "tags": ["tender"] },
+      { "text": "Grief that has found its place and settled.", "weight": 1, "tags": ["serious"] }
+    ],
+    "emotion.wonder.quiet": [
+      { "text": "A moment when the world looks unlikely and beautiful.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "$[CHARACTER] stops. Watches. Forgets the errand.", "weight": 1, "tags": ["tender"] },
+      { "text": "The light does something to the wheat. It is almost too much.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "emotion.wonder.sudden": [
+      { "text": "A heron lifts out of the reeds like a piece of paper taking flight.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "$[CHARACTER] gasps before thinking.", "weight": 1, "tags": ["terse", "tender"] },
+      { "text": "Something moves in the grass — a fox, a spirit, a trick of dusk.", "weight": 1, "tags": ["ominous", "lyrical"] }
+    ],
+    "action.work.plowing": [
+      { "text": "The plough bites. The ox leans. The furrow opens.", "weight": 1, "tags": ["serious"] },
+      { "text": "Hands on the plough. Mud to the ankle.", "weight": 1, "tags": ["terse"] },
+      { "text": "Row by row, the field is turned.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "action.work.harvest": [
+      { "text": "Sickle swings, stalks fall. The arms burn.", "weight": 1, "tags": ["serious"] },
+      { "text": "Cut. Bundle. Cut. Bundle.", "weight": 1, "tags": ["terse"] },
+      { "text": "The threshing floor fills, sheaf by sheaf.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "action.rest.sleep": [
+      { "text": "Sleep takes $[CHARACTER] before the lamp is out.", "weight": 1, "tags": ["tender"] },
+      { "text": "The straw is warm. The dark is kind.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "Sleep. Without dreams, if the gods are merciful.", "weight": 1, "tags": ["serious"] }
+    ],
+    "action.rest.meditation": [
+      { "text": "$[CHARACTER] sits. The breath slows. The world keeps a small distance.", "weight": 1, "tags": ["lyrical", "serious"] },
+      { "text": "Legs folded. Eyes half-lidded. The mind at low tide.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Stillness. Only the pulse in the ears.", "weight": 1, "tags": ["terse"] }
+    ],
+    "action.flee.desperate": [
+      { "text": "$[CHARACTER] runs. The lungs are fire.", "weight": 1, "tags": ["terse"] },
+      { "text": "Run. Do not look. Do not think. Run.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "The legs go before the mind catches up.", "weight": 1, "tags": ["serious"] }
+    ],
+    "action.fight.desperate": [
+      { "text": "$[CHARACTER] swings without skill, only need.", "weight": 1, "tags": ["serious"] },
+      { "text": "A blow. A cry. Another blow.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "No plan, only teeth and hands and the wish to live.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "action.travel.slow": [
+      { "text": "$[CHARACTER] walks the long road, one step for each thought.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Slow walking. The pack is heavy but known.", "weight": 1, "tags": ["serious"] },
+      { "text": "The miles pass. The sky barely moves.", "weight": 1, "tags": ["terse"] }
+    ],
+    "action.travel.urgent": [
+      { "text": "$[CHARACTER] pushes on past dark. The lantern swings.", "weight": 1, "tags": ["serious"] },
+      { "text": "Fast walk. Faster. The breath ragged.", "weight": 1, "tags": ["terse"] },
+      { "text": "The road unwinds. Every bend matters.", "weight": 1, "tags": ["ominous"] }
+    ],
+    "action.eat.simple": [
+      { "text": "Millet porridge. Salt. A strip of pickled radish.", "weight": 1, "tags": ["terse"] },
+      { "text": "$[CHARACTER] eats slowly, as if thanking each spoonful.", "weight": 1, "tags": ["tender"] },
+      { "text": "A warm bowl. A cold night. Enough.", "weight": 1, "tags": ["lyrical", "tender"] }
+    ],
+    "action.drink.water": [
+      { "text": "Cold water from the well, iron-tasting, good.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "$[CHARACTER] drinks long, and longer.", "weight": 1, "tags": ["serious"] },
+      { "text": "Water. A small blessing, counted twice.", "weight": 1, "tags": ["tender"] }
+    ],
+    "reflection.mood.sorrow.1": [
+      { "text": "The heart makes its small, slow room for grief.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "$[CHARACTER] does not weep. It is past weeping.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Sorrow settles the way dust settles — everywhere, in time.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "reflection.mood.sorrow.2": [
+      { "text": "Some losses are a weather that never quite clears.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "$[CHARACTER] carries a name the way one carries an old stone.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "Grief is not a door. It is a house one learns to live in.", "weight": 1, "tags": ["serious"] }
+    ],
+    "reflection.mood.rage.1": [
+      { "text": "$[CHARACTER] wants to break something, anything, the sky if possible.", "weight": 1, "tags": ["terse", "bitter"] },
+      { "text": "The anger finds no door. It lives under the skin.", "weight": 1, "tags": ["bitter"] },
+      { "text": "A rage that tastes of iron.", "weight": 1, "tags": ["terse", "ominous"] }
+    ],
+    "reflection.mood.serenity.1": [
+      { "text": "For a breath, $[CHARACTER] is exactly where $[CHARACTER] is.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "A quietness settles. Nothing missing. Nothing needed.", "weight": 1, "tags": ["tender"] },
+      { "text": "The world is simply itself, and that is enough.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "reflection.mood.serenity.2": [
+      { "text": "Breath in. Breath out. The fields forgive their farmer.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "A stillness the old monks would call a kind of wealth.", "weight": 1, "tags": ["serious", "tender"] },
+      { "text": "$[CHARACTER] does not reach for anything. It is enough to watch.", "weight": 1, "tags": ["tender"] }
+    ],
+    "reflection.mood.paranoia.1": [
+      { "text": "Someone is watching. Or no one. The difference is thin.", "weight": 1, "tags": ["ominous"] },
+      { "text": "$[CHARACTER] counts the exits. Again.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "Every kindness has a ledger. Every ledger has a price.", "weight": 1, "tags": ["bitter", "ominous"] }
+    ],
+    "reflection.mood.resolve.1": [
+      { "text": "$[CHARACTER] sets the jaw. One thing at a time. Then the next.", "weight": 1, "tags": ["serious"] },
+      { "text": "The choice is made. The body will catch up.", "weight": 1, "tags": ["terse", "serious"] },
+      { "text": "No god will do this. Only these hands.", "weight": 1, "tags": ["bitter", "serious"] }
+    ],
+    "reflection.mood.resolve.2": [
+      { "text": "$[CHARACTER] will walk until the walking is done.", "weight": 1, "tags": ["serious", "lyrical"] },
+      { "text": "What is owed will be paid. In full. In time.", "weight": 1, "tags": ["serious", "ominous"] },
+      { "text": "The road narrows to a single step. That step is taken.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "reflection.mood.melancholy.1": [
+      { "text": "$[CHARACTER] watches the smoke climb and thinks of nothing in particular.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "A long evening. The mind drifts like a paper boat.", "weight": 1, "tags": ["lyrical", "tender"] },
+      { "text": "The years are a procession of small weathers.", "weight": 1, "tags": ["bitter", "lyrical"] }
+    ],
+    "reflection.mood.melancholy.2": [
+      { "text": "The lamps come on in the village. $[CHARACTER] is not in any of them.", "weight": 1, "tags": ["lyrical", "bitter"] },
+      { "text": "Some days are a soft, grey weight, and no more.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The river goes where it goes. $[CHARACTER] stays where $[CHARACTER] is.", "weight": 1, "tags": ["serious"] }
+    ]
+  }
+}
