@@ -42,25 +42,33 @@ Every phase follows this loop:
 | 1C | Narrative Composer MVP: mood, snippet library, template expander, name generator + registry, composer orchestrator | ✅ merged (PR #4 → `467b55c`) |
 | 1D-1 | Engine Glue: Anchor, AnchorResolver, characterFromAnchor, KarmicInsightRules, KarmicUpgrade, MetaState, RunSave, BardoFlow, GameLoop.runTurn, life-cycle integration test | ✅ merged (PR #5 → `cc71795`) |
 | 1D-2 | UI Wiring: real `engineBridge`, CreationScreen, PlayScreen, BardoPanel, phase routing, realm-karma cumulative fix, legacy Gemini-era component deletion, full click-through integration test | ✅ merged (PR #6 → `e6fc239`) |
-| **1D-3** | **Content Authoring: ~50 Yellow Plains events, ~80 snippet leaves, expanded name pools — delivers Phase 1 exit criterion** | **📋 plan next** |
+| 1D-3 | Content Authoring: 50 Yellow Plains events, 80 snippet leaves, expanded name pools, peek/resolve bridge refactor, playable-life integration test — **Phase 1 exit criterion delivered** | ✅ merged (PR #7 → `2e61259`) |
+| **2** | **Echo/Memory/Notice systems, multi-region expansion, item registry, flag-branching events, Codex/Lineage UI** | **🧠 needs brainstorming** |
 
-**Test count on main**: 466 (across 65 files). Build: 312 KB JS / 94 KB gzip.
+**Test count on main**: 527 (across 74 files). Build: 388 KB JS / 110 KB gzip.
 
-**Branch tags**: `phase-0-complete` at commit `e25a969`.
+**Branch tags**: `phase-0-complete` at commit `e25a969`. **Phase 1 complete** at commit `2e61259`.
 
 ## Resuming work — next action
 
-The immediate next step is to **write the Phase 1D-3 implementation plan** via `superpowers:writing-plans`, then execute via subagent-driven-development.
+**Phase 1 is complete.** The game is playable end-to-end: title → anchor pick → named character → real Yellow Plains life (50 events, 80 snippets) → eventual death → bardo with karma breakdown → spend karma on upgrades → reincarnate. Integration tests prove both the UI click-through and 100-turn narrative coherence.
 
-**Phase 1D-3 scope (rough):**
-- Real event JSON loader (replace `src/content/events/fixture.ts` with `src/content/events/loader.ts` reading `src/content/events/yellow_plains/*.json`).
-- Author ~50 Yellow Plains events covering: daily life (farming, chores, weather), training (body/mind/spirit), social (village, family, rival), danger (bandits, beasts, illness), opportunity (chance encounters, pills), old-age death triggers.
-- Expand `SnippetLibrary` to ~80 narrative leaves per spec §6. Organize by mood + region.
-- Expand name pools — family, personal, technique, sect names for Yellow Plains era.
-- Fix `$[CHAR_NAME]` vs `$[CHARACTER]` variable-name mismatch surfaced in 1D-2 fixture.
-- Optionally: tighten the `onBegin`/`onChoose`/`onContinue` retry-loop shims in `App.tsx` — no longer needed once each event has a single well-known starting choice or once the UI knows to render the selected event's choices.
+The next step is to **brainstorm Phase 2 scope** via the `superpowers:brainstorming` skill, then split into sub-plans. Phase 2 is larger than any 1D-* phase and should probably be broken into 2-3 sequential sub-phases.
 
-**Exit criterion:** user can play through a realistic Yellow Plains life (~30–60 real decisions per life, ~60–80 in-game years) with varied narrative, a handful of training decisions that actually progress cultivation, and meaningful choice-driven outcomes.
+**Phase 2 candidate scope (to be refined in brainstorming):**
+- **Echo system** (§7.2) — cross-life inherited traits with unlock conditions, N slots at birth based on karmic upgrades + heavenly notice.
+- **Memory system** (§7.3) — forbidden technique recall across lives, partial vs full memory grades.
+- **Heavenly Notice** (§7.5) — scaling cosmic attention, triggers Karmic Hunter encounters, gated upgrades.
+- **Codex screen** (§11.4) — browse unlocked echoes, memories, anchors, lifetime-seen events.
+- **Lineage detail screen** (§11.5) — drill into past lives from the bardo.
+- **Multi-region expansion** — author a second region beyond Yellow Plains (e.g., Jade Fields, River Cities per §8) to prove the content pipeline.
+- **Item registry** — events currently reference items by id (`spiritual_stone`, `minor_healing_pill`) without a central registry. Phase 2 introduces one so items can affect checks and be displayed in inventory.
+- **Flag-branching events** — 1D-3 events set ~20 flags (e.g., `married`, `friend_of_elder`, `apprentice`) that no downstream event currently consumes. Phase 2 authors follow-up events that gate on these flags.
+- **Technique registry + learning events** — `technique_learn` stateDelta exists but no technique corpus ships yet.
+
+**Known lingering items** from 1D-3:
+- **Cached-peek RNG drift**: `peekNextEvent` uses `cursor+1` for local RNG, `resolveChoice` uses `cursor`. Repeated peeks produce same choices but slightly varied narratives. Phase 2 should split peek/resolve RNG streams cleanly.
+- **`onContinue` consumes a turn on resume** (calls `peekNextEvent` which advances turn state via its own selection logic). Phase 2 can add a `getCurrentPendingPreview()` path that renders without running the selector.
 
 **Exact first steps for a new session:**
 
@@ -69,7 +77,7 @@ cd "D:/Claude Code/Wuxia RPG"
 git status                           # confirm clean, on main
 ```
 
-Then invoke `superpowers:writing-plans` to draft the 1D-3 plan, save under `docs/superpowers/plans/YYYY-MM-DD-phase-1d3-content.md`, then follow the standard loop (branch, commit plan, subagent-driven execution, PR, merge).
+Then invoke `superpowers:brainstorming` to explore Phase 2 scope. Likely outputs: 2-3 separate sub-plan specs (e.g., Phase 2A: Echo + Memory + Notice; Phase 2B: Codex + Lineage UI; Phase 2C: Multi-region + flag-branching events + technique registry).
 
 ## Tone & communication preferences
 
