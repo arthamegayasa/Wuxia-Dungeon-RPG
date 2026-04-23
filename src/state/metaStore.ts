@@ -93,6 +93,12 @@ export const useMetaStore = create<MetaStoreState>((set, get) => ({
       unlockedAnchors: [...s.unlockedAnchors],
       lineage: [...s.lineage],
       lifetimeSeenEvents: [...s.lifetimeSeenEvents],
+      // Phase 2A-1: bridge store-side projection to MetaState v2 shape.
+      heavenlyNotice: s.heavenlyNotice,
+      echoesUnlocked: [...s.unlockedEchoes],
+      echoProgress: {},
+      memoriesWitnessed: {},
+      memoriesManifested: [],
     };
   },
 
