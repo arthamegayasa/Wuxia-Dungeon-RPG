@@ -29,6 +29,8 @@ export interface MetaState {
   readonly heavenlyNotice: number;
   /** All echo ids ever unlocked across all lives. Task 14 will add more fields. */
   readonly echoesUnlocked: ReadonlyArray<string>;
+  /** Lifetime witness counter per technique/memory id. Incremented each life a memory is witnessed. Task 14 field. */
+  readonly memoriesWitnessed: Readonly<Record<string, number>>;
 }
 
 export function createEmptyMetaState(): MetaState {
@@ -41,6 +43,7 @@ export function createEmptyMetaState(): MetaState {
     lifetimeSeenEvents: [],
     heavenlyNotice: 0,
     echoesUnlocked: [],
+    memoriesWitnessed: {},
   };
 }
 
