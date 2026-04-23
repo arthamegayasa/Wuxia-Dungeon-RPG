@@ -317,7 +317,7 @@ No Threads marginalia (Phase 3).
 
 **Entry point:** "Lineage" button on TitleScreen and BardoPanel.
 
-**Data source:** `MetaState.pastLives: LineageEntry[]` — pushed on death (in `BardoFlow`), one entry per completed life, containing `{runId, index, name, yearStart, yearEnd, anchorId, finalRealm, deathCause, epitaph?, echoesUnlockedThisLife: string[]}`.
+**Data source:** `MetaState.lineage: LineageEntrySummary[]` (existing Phase 1D-1 field) extended with `echoesUnlockedThisLife: string[]`. Pushed on death in `BardoFlow`.
 
 ### 6.3 Enhanced Bardo (§11.6 step 10 + insertions)
 
@@ -341,13 +341,14 @@ Existing `CreationScreen` (Phase 1D-2) extended:
 
 ### 7.1 Schema bump
 
-`MetaState` version: `2 → 3`.
+`MetaState` version: `1 → 2` (current state is v1; Phase 2A-1 bumps to v2).
 
 **Additions:**
 
 ```ts
-interface MetaStateV3 extends MetaStateV2 {
-  schemaVersion: 3;                                         // bumped from 2
+// v2 extends v1 (current) — purely additive fields below.
+interface MetaStateV2 extends MetaStateV1 {
+  schemaVersion: 2;                                         // bumped from 1
 
   // Echoes
   echoesUnlocked: string[];                                 // ids
@@ -357,31 +358,33 @@ interface MetaStateV3 extends MetaStateV2 {
   memoriesWitnessed: Record<string, number>;                // techniqueId → lifetime witness count
   memoriesManifested: string[];                             // techniqueIds that have manifested ≥1 time across all lives
 
-  // Lineage
-  pastLives: LineageEntry[];
+  // Lineage — existing LineageEntrySummary gets one new field:
+  //   echoesUnlockedThisLife: string[]
+  // No parallel pastLives[] array.
 
   // Reserved for Phase 3
   heavenlyNotice: number;                                   // always 0 in 2A
 }
 ```
 
-### 7.2 Migrator.migrate(v2 → v3)
+### 7.2 Migrator.migrate(v1 → v2)
 
 Fills new fields with defaults:
 ```ts
 {
-  schemaVersion: 3,
+  schemaVersion: 2,
   echoesUnlocked: [],
   echoProgress: {},
   memoriesWitnessed: {},
   memoriesManifested: [],
-  pastLives: [],
+  // lineage[] already populated from v1; LineageEntrySummary gains
+  //   echoesUnlockedThisLife: string[]  (default [] on each existing entry)
   heavenlyNotice: 0,
   ...v2,  // karma + karmicUpgrades preserved
 }
 ```
 
-Test: `Migrator.v2_to_v3.test.ts` — load Phase 1 save fixture, migrate, assert karma preserved + new fields defaulted.
+Test: `Migrator.v1_to_v2.test.ts` — load Phase 1 save fixture, migrate, assert karma preserved + new fields defaulted.
 
 ### 7.3 Content-loader impact
 
