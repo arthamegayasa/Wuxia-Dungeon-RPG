@@ -1,0 +1,547 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_SOCIAL_ELDER_ADVICE",
+      "category": "life.social",
+      "version": 1,
+      "weight": 20,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.village] The village elder sits beneath the banyan, back straight despite the years.",
+          "$[CHARACTER] crouches by his stool. $[npc.elder.wisdom]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_listen",
+          "label": "Listen closely to what the old man says.",
+          "timeCost": "SHORT",
+          "check": { "base": 30, "stats": { "Charm": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "npc.elder.wisdom",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "flag_set", "flag": "friend_of_elder" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "npc.elder.wisdom",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "friend_of_elder" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "npc.elder.warning",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_SIBLING_QUARREL",
+      "category": "life.social",
+      "version": 1,
+      "weight": 15,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] A sibling's voice rises sharp in the small room — about grain, about chores, about an old slight.",
+          "$[CHARACTER] feels the heat climb up the neck."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_smooth",
+          "label": "Keep the peace. Swallow the pride.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -1 },
+                { "kind": "flag_set", "flag": "sibling_tension" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.anger.cold",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -1 },
+                { "kind": "flag_set", "flag": "sibling_tension" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_PARENT_PRAISE",
+      "category": "life.social",
+      "version": 1,
+      "weight": 12,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] A parent looks up from the rice pot, voice low, almost shy.",
+          "They say $[CHARACTER] has worked hard this season. Only that. Nothing more."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_receive",
+          "label": "Bow your head. Take the words.",
+          "timeCost": "INSTANT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "parental_approval" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "parental_approval" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_VILLAGE_RIVAL",
+      "category": "life.social",
+      "version": 1,
+      "weight": 18,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.inn_yard] A village rival — broader of shoulder, louder of mouth — blocks the path.",
+          "He grins the way boys grin before something stupid. $[CHARACTER] plants the feet."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_face",
+          "label": "Face him down. Match his grin.",
+          "timeCost": "SHORT",
+          "check": { "base": 20, "stats": { "Body": 1, "Charm": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "bested_rival" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "bested_rival" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.anger.cold",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -4 },
+                { "kind": "flag_set", "flag": "bested_by_rival" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.anger.cold",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -6 },
+                { "kind": "flag_set", "flag": "bested_by_rival" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_STRANGER_HELP",
+      "category": "life.social",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.road] A stranger sits in the ditch, axle snapped, cart tilted.",
+          "He looks up as $[CHARACTER] approaches. $[npc.traveler.stranger]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_help",
+          "label": "Shoulder the cart with him.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "npc.traveler.thank",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "flag_set", "flag": "helped_stranger" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "npc.traveler.thank",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "helped_stranger" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "helped_stranger" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            }
+          }
+        },
+        {
+          "id": "ch_walk_on",
+          "label": "Keep walking. The sun is low.",
+          "timeCost": "INSTANT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "walked_past" }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "walked_past" }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_ORPHAN_ENCOUNTER",
+      "category": "life.social",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.road] A child sits in the dust by the road, ribs counting through thin cloth.",
+          "$[npc.child.cry] $[CHARACTER] feels the weight of the bundle at the hip."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_feed",
+          "label": "Share your food.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "fed_orphan" },
+                { "kind": "karma_delta", "amount": 2 },
+                { "kind": "hp_delta", "amount": -1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "fed_orphan" },
+                { "kind": "karma_delta", "amount": 2 },
+                { "kind": "hp_delta", "amount": -1 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_walk_on",
+          "label": "Keep walking. There is not enough for two.",
+          "timeCost": "INSTANT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.grief.faded",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "ignored_orphan" },
+                { "kind": "karma_delta", "amount": -2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.grief.faded",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "ignored_orphan" },
+                { "kind": "karma_delta", "amount": -2 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_MARRIAGE_PROPOSAL",
+      "category": "life.social",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 16
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.village] A matchmaker crosses the threshold with tea and careful words.",
+          "The name of a family. The name of a person. $[CHARACTER] is asked — quietly, gravely — what answer to send back."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_accept",
+          "label": "Accept the match.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "married" },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "married" },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_decline",
+          "label": "Refuse, politely. The road calls louder than the hearth.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "reflection.mood.resolve.1",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "rejected_marriage" },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "rejected_marriage" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_SOCIAL_FRIEND_SHARED_MEAL",
+      "category": "life.social",
+      "version": 1,
+      "weight": 15,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] A childhood friend comes to the door with a small jar of rice wine and half a radish.",
+          "$[CHARACTER] adds what little the pot has. The lamp burns low and long."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_share",
+          "label": "Eat, drink, talk until the oil runs out.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.eat.simple",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": 3 },
+                { "kind": "qi_delta", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "action.eat.simple",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": 3 },
+                { "kind": "qi_delta", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_WEDDING_ATTEND",
+      "category": "life.social",
+      "version": 1,
+      "weight": 20,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.village] Red paper on every door. Drums. A neighbor's daughter rides out in a borrowed chair.",
+          "$[CHARACTER] stands among the crowd. For one afternoon the village is only laughter and the smell of pork."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_attend",
+          "label": "Raise a cup with the neighbors.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "qi_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "qi_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_SOCIAL_FUNERAL_ATTEND",
+      "category": "life.social",
+      "version": 1,
+      "weight": 15,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.burial_mound] White cloth on the gate. A neighbor has gone before the frost.",
+          "$[CHARACTER] stands at the edge of the pit. $[emotion.grief.fresh]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_mourn",
+          "label": "Stay until the last handful of earth.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "witnessed_death" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "witnessed_death" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
