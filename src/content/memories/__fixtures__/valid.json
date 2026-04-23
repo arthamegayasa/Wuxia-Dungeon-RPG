@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "memories": [
+    {
+      "id": "test_mem",
+      "name": "Test Memory",
+      "description": "For loader tests.",
+      "element": "water",
+      "witnessFlavour": {
+        "fragment": "k.f",
+        "partial": "k.p",
+        "complete": "k.c"
+      },
+      "manifestFlavour": "k.m",
+      "manifestInsightBonus": 5,
+      "manifestFlag": "remembered_test",
+      "requirements": {}
+    }
+  ]
+}
