@@ -212,8 +212,10 @@ describe('engineBridge.spendKarma', () => {
       lineage: [{
         lifeIndex: 1, name: 'Ancestor', anchorId: 'peasant_farmer',
         yearsLived: 40, realmReached: 'mortal', deathCause: 'old_age', karmaEarned: 500,
+        echoesUnlockedThisLife: [],
       }],
       lifetimeSeenEvents: [],
+      echoesUnlocked: [],
     }, 1);
     const engine = createEngineBridge({ saveManager: sm, now: () => 3 });
     await engine.loadOrInit();

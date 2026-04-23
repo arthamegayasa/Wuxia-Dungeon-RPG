@@ -15,6 +15,7 @@ export interface LineageEntrySummary {
   realmReached: string;
   deathCause: string;
   karmaEarned: number;
+  echoesUnlockedThisLife: ReadonlyArray<string>;
 }
 
 export interface MetaState {
@@ -26,6 +27,8 @@ export interface MetaState {
   readonly lifetimeSeenEvents: ReadonlyArray<string>;
   /** Stub added Task 2 (Phase 2A-1). Full migration done in Task 14. */
   readonly heavenlyNotice: number;
+  /** All echo ids ever unlocked across all lives. Task 14 will add more fields. */
+  readonly echoesUnlocked: ReadonlyArray<string>;
 }
 
 export function createEmptyMetaState(): MetaState {
@@ -37,6 +40,7 @@ export function createEmptyMetaState(): MetaState {
     lineage: [],
     lifetimeSeenEvents: [],
     heavenlyNotice: 0,
+    echoesUnlocked: [],
   };
 }
 
