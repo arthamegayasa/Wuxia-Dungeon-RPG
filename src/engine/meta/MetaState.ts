@@ -24,6 +24,8 @@ export interface MetaState {
   readonly unlockedAnchors: ReadonlyArray<string>;
   readonly lineage: ReadonlyArray<LineageEntrySummary>;
   readonly lifetimeSeenEvents: ReadonlyArray<string>;
+  /** Stub added Task 2 (Phase 2A-1). Full migration done in Task 14. */
+  readonly heavenlyNotice: number;
 }
 
 export function createEmptyMetaState(): MetaState {
@@ -34,6 +36,7 @@ export function createEmptyMetaState(): MetaState {
     unlockedAnchors: ['true_random', 'peasant_farmer'],
     lineage: [],
     lifetimeSeenEvents: [],
+    heavenlyNotice: 0,
   };
 }
 
