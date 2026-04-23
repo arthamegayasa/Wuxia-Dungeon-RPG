@@ -34,6 +34,10 @@ export const AnchorSchema = z.object({
       count: z.number().int().positive(),
     })),
     startingFlags: z.array(z.string()),
+    /** The region this anchor *targets* once it ships. */
+    targetRegion: z.string().min(1),
+    /** Fallback region while targetRegion is not loaded (Phase 2A-2/2B bridge). */
+    spawnRegionFallback: z.string().min(1).optional(),
   }),
   karmaMultiplier: z.number().positive(),
 });
@@ -57,6 +61,7 @@ export const DEFAULT_ANCHORS: ReadonlyArray<AnchorDef> = [
       },
       startingItems: [],
       startingFlags: [],
+      targetRegion: 'yellow_plains',
     },
     karmaMultiplier: 1.5,
   },
@@ -76,6 +81,7 @@ export const DEFAULT_ANCHORS: ReadonlyArray<AnchorDef> = [
       },
       startingItems: [],
       startingFlags: ['peasant_birth'],
+      targetRegion: 'yellow_plains',
     },
     karmaMultiplier: 1.0,
   },

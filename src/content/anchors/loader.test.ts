@@ -36,6 +36,7 @@ describe('loadAnchors', () => {
           attributeModifiers: {},
           startingItems: [],
           startingFlags: [],
+          targetRegion: 'r',
         },
         karmaMultiplier: 1.0,
       }],

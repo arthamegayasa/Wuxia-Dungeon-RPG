@@ -157,6 +157,90 @@ export const EventSchema = z.object({
   repeat: z.enum(['once_per_life', 'once_ever', 'unlimited']),
 });
 
+// ---- Phase 2A-2 Echo schema ----
+// Source: docs/spec/design.md §7.2, §9.8.
+
+const REALM_OR_STRING = z.union([z.enum(REALM_STRINGS), z.string()]);
+const ATTR_STAT = z.enum(STAT_STRINGS);
+
+const UnlockConditionSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('reach_realm'), realm: z.string(), sublayer: z.number().int().positive().optional() }),
+  z.object({ kind: z.literal('choice_category_count'), category: z.string(), count: z.number().int().positive() }),
+  z.object({ kind: z.literal('outcome_count'), outcomeKind: z.string(), count: z.number().int().positive() }),
+  z.object({ kind: z.literal('lives_as_anchor_max_age'), anchor: z.string(), lives: z.number().int().positive() }),
+  z.object({ kind: z.literal('died_with_flag'), flag: z.string() }),
+  z.object({ kind: z.literal('flag_set'), flag: z.string() }),
+  z.object({ kind: z.literal('died_in_same_region_streak'), region: z.string(), streak: z.number().int().positive() }),
+  z.object({ kind: z.literal('reached_insight_cap_lives'), lives: z.number().int().positive() }),
+  z.object({ kind: z.literal('lived_min_years_in_single_life'), years: z.number().int().positive() }),
+  z.object({ kind: z.literal('reached_realm_without_techniques'), realm: z.string() }),
+]);
+
+const EchoEffectSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('stat_mod'), stat: ATTR_STAT, delta: z.number() }),
+  z.object({ kind: z.literal('stat_mod_pct'), stat: ATTR_STAT, pct: z.number() }),
+  z.object({ kind: z.literal('resolver_bonus'), category: z.string(), bonus: z.number() }),
+  z.object({ kind: z.literal('event_weight'), eventTag: z.string(), mult: z.number().positive() }),
+  z.object({ kind: z.literal('starting_flag'), flag: z.string() }),
+  z.object({ kind: z.literal('heal_efficacy_pct'), pct: z.number() }),
+  z.object({ kind: z.literal('hp_mult'), mult: z.number().positive() }),
+  z.object({ kind: z.literal('mood_swing_pct'), pct: z.number() }),
+  z.object({ kind: z.literal('body_cultivation_rate_pct'), pct: z.number() }),
+  z.object({ kind: z.literal('insight_cap_bonus'), bonus: z.number() }),
+  z.object({ kind: z.literal('old_age_death_roll_pct'), pct: z.number() }),
+  z.object({ kind: z.literal('imprint_encounter_rate_pct'), pct: z.number() }),
+]);
+
+export const EchoSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  description: z.string(),
+  tier: z.enum(['fragment', 'partial', 'full']),
+  unlockCondition: UnlockConditionSchema,
+  effects: z.array(EchoEffectSchema),
+  conflicts: z.array(z.string()),
+  reveal: z.enum(['birth', 'trigger']),
+});
+
+export const EchoPackSchema = z.object({
+  version: z.number().int().positive(),
+  echoes: z.array(EchoSchema),
+});
+
+// ---- Phase 2A-2 Memory schema ----
+// Source: docs/spec/design.md §7.3, §9.9.
+
+export const MemoryRequirementsSchema = z.object({
+  minMeridians: z.number().int().positive().optional(),
+  minRealm: REALM_OR_STRING.optional(),
+});
+
+export const MemorySchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  description: z.string(),
+  element: z.enum(['metal', 'wood', 'water', 'fire', 'earth', 'void']),
+  witnessFlavour: z.object({
+    fragment: z.string().min(1),
+    partial: z.string().min(1),
+    complete: z.string().min(1),
+  }),
+  manifestFlavour: z.string().min(1),
+  manifestInsightBonus: z.number().int().nonnegative(),
+  manifestFlag: z.string().min(1),
+  requirements: MemoryRequirementsSchema,
+});
+
+export const MemoryPackSchema = z.object({
+  version: z.number().int().positive(),
+  memories: z.array(MemorySchema),
+});
+
+export type EchoDef = z.infer<typeof EchoSchema>;
+export type EchoPack = z.infer<typeof EchoPackSchema>;
+export type MemoryDef = z.infer<typeof MemorySchema>;
+export type MemoryPack = z.infer<typeof MemoryPackSchema>;
+
 // ---- Content pack (Phase 0 loader — now wraps the richer Event schema) ----
 
 export const ContentPackSchema = z.object({

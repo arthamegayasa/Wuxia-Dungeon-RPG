@@ -16,6 +16,7 @@ describe('AnchorSchema', () => {
         attributeModifiers: {},
         startingItems: [],
         startingFlags: [],
+        targetRegion: 'yellow_plains',
       },
       karmaMultiplier: 1.0,
     };
@@ -34,6 +35,7 @@ describe('AnchorSchema', () => {
         attributeModifiers: {},
         startingItems: [],
         startingFlags: [],
+        targetRegion: 'r',
       },
       karmaMultiplier: 1.0,
     };
@@ -52,6 +54,7 @@ describe('AnchorSchema', () => {
         attributeModifiers: {},
         startingItems: [],
         startingFlags: [],
+        targetRegion: 'r',
       },
       karmaMultiplier: -1,
     };
