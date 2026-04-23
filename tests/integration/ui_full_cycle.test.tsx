@@ -39,15 +39,16 @@ describe('UI integration: full cycle', () => {
     await waitFor(() => expect(screen.getByText(/lin wei/i)).toBeInTheDocument());
 
     // Spam choices until the character dies.
+    // Nav-button filter: PlayScreen has no nav buttons at all — only choice
+    // buttons — so we can safely click the first button in the tree. (Earlier
+    // filters used word-boundary-free regexes and incorrectly excluded fixture
+    // choices like "Fight back.".)
     for (let i = 0; i < 600; i++) {
       if (useGameStore.getState().phase === GamePhase.BARDO) break;
-      const buttons = screen.queryAllByRole('button');
-      // Filter out navigation buttons (back, new life, continue, codex).
-      const choiceBtn = buttons.find((b) =>
-        b.textContent && !/back|new life|continue|codex/i.test(b.textContent),
-      );
-      if (!choiceBtn) continue;
-      await userEvent.click(choiceBtn);
+      const buttons = screen.queryAllByRole('button')
+        .filter((b) => !(b as HTMLButtonElement).disabled);
+      if (buttons.length === 0) continue;
+      await userEvent.click(buttons[0]!);
     }
 
     expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
