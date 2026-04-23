@@ -28,6 +28,10 @@ export interface RunState {
   readonly pendingEventId?: string;
   /** Technique / memory IDs witnessed this life. Deduped by logWitness. Task 13 field. */
   readonly memoriesWitnessedThisLife: ReadonlyArray<string>;
+  /** Memory IDs that have already manifested in this life. Task 11/13 field. */
+  readonly memoriesManifestedThisLife: ReadonlyArray<string>;
+  /** How many manifestation attempts have been made this life. Max 3. Task 11/13 field. */
+  readonly manifestAttemptsThisLife: number;
 }
 
 export interface CreateRunStateArgs {
@@ -57,5 +61,7 @@ export function createRunState(args: CreateRunStateArgs): RunState {
     karmaEarnedBuffer: 0,
     deathCause: null,
     memoriesWitnessedThisLife: [],
+    memoriesManifestedThisLife: [],
+    manifestAttemptsThisLife: 0,
   };
 }
