@@ -138,3 +138,28 @@ describe('applyOutcome — deathCause', () => {
     expect(dead.deathCause).toBe('starvation');
   });
 });
+
+describe('applyOutcome — memory witness', () => {
+  it('logs techniqueId to memoriesWitnessedThisLife when outcome.witnessMemory set', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, {
+      narrativeKey: 'x',
+      stateDeltas: [],
+      witnessMemory: 'frost_palm_severing',
+    });
+    expect(next.memoriesWitnessedThisLife).toContain('frost_palm_severing');
+  });
+
+  it('dedups witness within a single life', () => {
+    const rs = baseState();
+    const a = applyOutcome(rs, { narrativeKey: 'x', witnessMemory: 'frost_palm' });
+    const b = applyOutcome(a,  { narrativeKey: 'x', witnessMemory: 'frost_palm' });
+    expect(b.memoriesWitnessedThisLife.filter((i) => i === 'frost_palm')).toHaveLength(1);
+  });
+
+  it('ignores outcomes without witnessMemory', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, { narrativeKey: 'x', stateDeltas: [] });
+    expect(next.memoriesWitnessedThisLife).toEqual([]);
+  });
+});
