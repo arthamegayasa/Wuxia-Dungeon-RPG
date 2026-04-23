@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_TRANS_OLD_AGE",
+      "category": "life.transition",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 60
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] The years have thinned the hands to paper. The lamp is low. The house is quiet.",
+          "$[CHARACTER] lies on the kang and watches the shadow of a beam that has held the roof up since before memory.",
+          "$[reflection.mood.serenity.1]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_rest_final",
+          "label": "Rest. Let the breath grow small.",
+          "timeCost": "LONG",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "reflection.mood.serenity.2",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "died_peacefully" }
+              ],
+              "deathCause": "old_age"
+            },
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.serenity.2",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "died_peacefully" }
+              ],
+              "deathCause": "old_age"
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_TRANS_CHILDBIRTH",
+      "category": "life.transition",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 18,
+        "characterFlags": {
+          "require": ["married"]
+        }
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] A long night — the midwife's hands, the boiling water, the moon at the paper window.",
+          "$[CHARACTER] hears a cry that is small and certain, and the world is a different shape than it was."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_labor",
+          "label": "Endure the hours. Push when the body says push.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 20, "stats": { "Charm": 1, "Body": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "has_child" },
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "karma_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "has_child" },
+                { "kind": "insight_delta", "amount": 3 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "has_child" },
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -10 },
+                { "kind": "flag_set", "flag": "lost_child_in_birth" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "deathCause": "childbirth"
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    }
+  ]
+}

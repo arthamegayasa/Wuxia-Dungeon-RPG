@@ -1,0 +1,488 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_DANGER_BANDIT_ROAD",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 12,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.road] Three men step from the millet, rags tied over their mouths.",
+          "$[npc.bandit.threat] $[CHARACTER] feels the sun on the back of the neck, very clear."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_fight",
+          "label": "Fight. A stick, a stone — anything.",
+          "timeCost": "INSTANT",
+          "check": { "base": 20, "stats": { "Body": 1 }, "difficulty": 75 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -2 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "fought_bandits" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "flag_set", "flag": "fought_bandits" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "deathCause": "combat_melee"
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "deathCause": "combat_melee"
+            }
+          }
+        },
+        {
+          "id": "ch_flee",
+          "label": "Run. Drop the bundle and run.",
+          "timeCost": "INSTANT",
+          "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 55 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.flee.desperate",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -2 },
+                { "kind": "flag_set", "flag": "fled_bandits" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "deathCause": "combat_melee"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DANGER_WILD_BEAST",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hills] The brush thrashes — a boar, tusks low, eyes small and hot.",
+          "$[CHARACTER] has only a sickle and a short breath."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_stand",
+          "label": "Stand. Strike at the shoulder.",
+          "timeCost": "INSTANT",
+          "check": { "base": 20, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 60 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -4 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "slew_beast" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "flag_set", "flag": "slew_beast" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -12 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -15 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "deathCause": "beast"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DANGER_ILLNESS_FEVER",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 15,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] The fever comes in the night — teeth rattling, sweat soaking the straw.",
+          "$[CHARACTER] cannot rise. The roof-beams tilt and fold like paper."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_endure",
+          "label": "Endure. Drink. Sleep. Drink again.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Spirit": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "survived_fever" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -3 },
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "survived_fever" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -10 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "deathCause": "disease"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DANGER_FAMINE_WINTER",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 6,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[weather.snow.winter] The grain jar scrapes empty before the first thaw.",
+          "$[CHARACTER] counts the days by the hollow under the ribs. The village is quiet in the wrong way."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_forage",
+          "label": "Walk the frozen fields. Dig for roots.",
+          "timeCost": "LONG",
+          "check": { "base": 20, "stats": { "Luck": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -2 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "survived_famine" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hunger.mild",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "flag_set", "flag": "survived_famine" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.hunger.severe",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -10 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hunger.severe",
+              "deathCause": "starvation"
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.hunger.severe",
+              "deathCause": "starvation"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DANGER_CONSCRIPTION",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 5,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.village] Soldiers at the well with a list and a drum — a levy for the frontier.",
+          "$[CHARACTER] stands very still. A name spoken aloud is half a chain already."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_evade",
+          "label": "Keep the head down. Find a reason to be elsewhere.",
+          "timeCost": "INSTANT",
+          "check": { "base": 20, "stats": { "Mind": 1 }, "difficulty": 60 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "evaded_draft" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "evaded_draft" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.fear.long",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "conscripted" },
+                { "kind": "hp_delta", "amount": -3 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.long",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "conscripted" },
+                { "kind": "hp_delta", "amount": -5 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.fear.long",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "conscripted" },
+                { "kind": "hp_delta", "amount": -8 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DANGER_HOUSE_FIRE",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] A cooking flame catches the thatch — smoke first, then the angry light.",
+          "$[CHARACTER] has moments, not minutes."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_escape",
+          "label": "Beat out the flames. Save what you can.",
+          "timeCost": "INSTANT",
+          "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -2 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "saved_hut" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "flag_set", "flag": "saved_hut" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "flag_set", "flag": "lost_hut" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -12 },
+                { "kind": "flag_set", "flag": "lost_hut" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "deathCause": "disease"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DANGER_DROUGHT_SEVERE",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 5,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["summer"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[weather.drought.heavy] No rain since the sowing. The clay splits in wide mouths.",
+          "$[CHARACTER] walks the cracked field. The millet is already yellow in the wrong way."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_endure_dry",
+          "label": "Ration. Wait. Pray to whichever name answers.",
+          "timeCost": "LONG",
+          "check": { "base": 20, "stats": { "Luck": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "weather.drought.breaking",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "survived_drought" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "weather.drought.breaking",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -4 },
+                { "kind": "flag_set", "flag": "survived_drought" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.hunger.mild",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hunger.severe",
+              "deathCause": "starvation"
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.hunger.severe",
+              "deathCause": "starvation"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DANGER_RIVER_FLOOD",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 7,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["spring", "summer"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.river_flood] The river climbs the bank in the night — brown, roaring, hungry.",
+          "$[CHARACTER] wakes to water at the door. The chickens are already gone."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_climb",
+          "label": "Climb to higher ground. Carry what the hands can hold.",
+          "timeCost": "INSTANT",
+          "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 55 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -3 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "survived_flood" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "flag_set", "flag": "survived_flood" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -10 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "deathCause": "drowning"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

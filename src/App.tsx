@@ -61,23 +61,8 @@ export function App() {
     setIsLoading(true);
     try {
       useGameStore.getState().setPhase(GamePhase.PLAYING);
-      // Drive one turn to produce a preview from the resumed run. Same retry pattern
-      // as onBegin — the selector may land on any fixture event, so try each choice
-      // id until one matches.
-      for (const choiceId of ['ch_work', 'ch_train', 'ch_fight']) {
-        try {
-          const next = await getEngine().chooseAction(choiceId);
-          if ('karmaEarned' in next) {
-            setBardoPayload(next);
-            useGameStore.getState().setPhase(GamePhase.BARDO);
-          } else {
-            setPreview(next);
-          }
-          break;
-        } catch (e: any) {
-          if (!/choice.*not found/i.test(e.message)) throw e;
-        }
-      }
+      const preview = await getEngine().peekNextEvent();
+      setPreview(preview);
     } finally {
       setIsLoading(false);
     }
@@ -87,22 +72,8 @@ export function App() {
     setIsLoading(true);
     try {
       await getEngine().beginLife(anchorId, name);
-      // beginLife returns an empty-choice preview by design (Phase 1D-2 simplification).
-      // Kick off the first real turn. Try each fixture choice id in turn - the selector
-      // may land on FX_BENIGN_DAY, FX_TRAIN_BODY, or FX_BANDIT, so try each.
-      for (const choiceId of ['ch_work', 'ch_train', 'ch_fight']) {
-        try {
-          const next = await getEngine().chooseAction(choiceId);
-          if ('karmaEarned' in next) {
-            setBardoPayload(next);
-          } else {
-            setPreview(next);
-          }
-          break;
-        } catch (e: any) {
-          if (!/choice.*not found/i.test(e.message)) throw e;
-        }
-      }
+      const preview = await getEngine().peekNextEvent();
+      setPreview(preview);
     } finally {
       setIsLoading(false);
     }
@@ -111,24 +82,11 @@ export function App() {
   async function onChoose(choiceId: string) {
     setIsLoading(true);
     try {
-      // The selector may land on any fixture event, so the requested choiceId
-      // might not be valid for the newly-selected event. Try the clicked choice
-      // first, then fall back to the other fixture choices until one matches.
-      // (Phase 1D-3 will replace this with real event-authoring.)
-      const fallbacks = ['ch_work', 'ch_train', 'ch_fight'].filter((c) => c !== choiceId);
-      const attempts = [choiceId, ...fallbacks];
-      for (const id of attempts) {
-        try {
-          const next = await getEngine().chooseAction(id);
-          if ('karmaEarned' in next) {
-            setBardoPayload(next);
-          } else {
-            setPreview(next);
-          }
-          break;
-        } catch (e: any) {
-          if (!/choice.*not found/i.test(e.message)) throw e;
-        }
+      const next = await getEngine().resolveChoice(choiceId);
+      if ('karmaEarned' in next) {
+        setBardoPayload(next);
+      } else {
+        setPreview(next);
       }
     } finally {
       setIsLoading(false);

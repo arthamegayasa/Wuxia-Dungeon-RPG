@@ -23,6 +23,9 @@ export interface RunState {
   readonly karmaEarnedBuffer: number;
   /** Cause of death when set; triggers Bardo transition. */
   readonly deathCause: string | null;
+  /** ID of the event the bridge has selected and composed but not yet resolved.
+   *  Cleared by resolveChoice. Phase 1D-3 addition. */
+  readonly pendingEventId?: string;
 }
 
 export interface CreateRunStateArgs {

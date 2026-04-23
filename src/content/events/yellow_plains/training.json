@@ -1,0 +1,571 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_TRAIN_STONE_LIFT",
+      "category": "life.training",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] A heavy stone leans against the wall, worn smooth by generations of hands.",
+          "$[CHARACTER] sets his feet. The old men say: lift the stone each dawn, and the body remembers."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_lift",
+          "label": "Lift the stone.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Body": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_RIVER_SWIM",
+      "category": "life.training",
+      "version": 1,
+      "weight": 20,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["spring", "summer"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.river_low] The river is cold even at noon. The current pulls harder than it looks.",
+          "$[CHARACTER] strips to the waist and wades in."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_swim",
+          "label": "Swim against the current.",
+          "timeCost": "SHORT",
+          "check": { "base": 20, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -12 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_MOUNTAIN_RUN",
+      "category": "life.training",
+      "version": 1,
+      "weight": 25,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hills] The hill is not a mountain, but the climb is long enough to burn the lungs.",
+          "$[CHARACTER] starts up the rutted path. One foot. Then the next."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_run",
+          "label": "Run all the way to the top.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.travel.urgent",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.travel.urgent",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -4 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_MEDITATE_DAWN",
+      "category": "life.training",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[time.dawn.mist] The first light spills over the flat country. The village still sleeps.",
+          "$[CHARACTER] sits cross-legged on the clay threshold. $[reflection.mood.resolve.1]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_meditate_dawn",
+          "label": "Breathe with the dawn.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Spirit": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "cultivation_progress_delta", "amount": 5 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "cultivation_progress_delta", "amount": 3 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_MEDITATE_DUSK",
+      "category": "life.training",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[time.dusk.field] The sun falls into the dust. Smoke from cooking fires hangs low.",
+          "$[CHARACTER] sits on the cooling earth. $[reflection.mood.serenity.1]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_meditate_dusk",
+          "label": "Settle the mind before sleep.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Mind": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "qi_delta", "amount": 3 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "qi_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [{ "kind": "qi_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_READ_SCROLL",
+      "category": "life.training",
+      "version": 1,
+      "weight": 12,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] A neighbor, an old clerk gone half-blind, lends out a battered scroll.",
+          "$[CHARACTER] unrolls it by the thin lamp. The characters swim. Some of them are meaningful."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_study",
+          "label": "Read through the night.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 20, "stats": { "Mind": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 6 },
+                { "kind": "flag_set", "flag": "read_first_scroll" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "flag_set", "flag": "read_first_scroll" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "read_first_scroll" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_TRAIN_PRACTICE_FIST",
+      "category": "life.training",
+      "version": 1,
+      "weight": 40,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.inn_yard] A dusty yard, a scarred wooden post. Stance. Strike. Stance. Strike.",
+          "$[CHARACTER] goes through a simple peasant form an uncle once taught."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_practice",
+          "label": "Drill the form until the arms burn.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_BREATH_COUNTING",
+      "category": "life.training",
+      "version": 1,
+      "weight": 35,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[time.night.quiet] The hut is dark. The family breathes in the other room.",
+          "$[CHARACTER] counts breath in, breath out. One to ten. Then again."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_breath",
+          "label": "Count the breath until it counts itself.",
+          "timeCost": "SHORT",
+          "check": { "base": 30, "stats": { "Spirit": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": 5 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": 3 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [{ "kind": "qi_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_FAST_SELFDENIAL",
+      "category": "life.training",
+      "version": 1,
+      "weight": 15,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.shrine] A wandering monk once said: hunger sharpens the spirit, if the spirit does not break first.",
+          "$[CHARACTER] turns away from the rice pot. $[reflection.mood.resolve.2]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_fast",
+          "label": "Fast for a full day and night.",
+          "timeCost": "SHORT",
+          "check": { "base": 20, "stats": { "Spirit": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": 6 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "cultivation_progress_delta", "amount": 4 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": 4 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "cultivation_progress_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.hunger.mild",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "hp_delta", "amount": -2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hunger.severe",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.hunger.severe",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -20 }],
+              "deathCause": "starvation"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_TRAIN_OPEN_MERIDIAN",
+      "category": "life.training",
+      "version": 1,
+      "weight": 5,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.shrine] The old stories speak of the twelve meridians, and how the first one is the hardest.",
+          "$[CHARACTER] sits in full lotus. $[reflection.mood.resolve.2]",
+          "The qi in the air is thin, but it is there. The body is a locked door."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_open",
+          "label": "Push the qi against the heart meridian.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 15, "stats": { "Spirit": 1, "Mind": 1 }, "difficulty": 70 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "meridian_open", "id": 1 },
+                { "kind": "insight_delta", "amount": 8 },
+                { "kind": "qi_delta", "amount": 5 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "meridian_open", "id": 1 },
+                { "kind": "insight_delta", "amount": 5 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "hp_delta", "amount": -4 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -10 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -20 }]
+            }
+          }
+        }
+      ],
+      "repeat": "once_ever"
+    }
+  ]
+}

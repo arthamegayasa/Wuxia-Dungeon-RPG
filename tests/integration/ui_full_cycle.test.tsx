@@ -16,10 +16,9 @@ describe('UI integration: full cycle', () => {
   });
 
   it('flows from Title -> Creation -> Play -> Bardo -> spend karma -> Creation via clicks', { timeout: 30000 }, async () => {
-    // Inject a deterministic engine so beginLife's spawn RNG no longer draws from
-    // Date.now(). Seed=2 is a known-safe wall-clock value: the Task 6 sweep in
-    // engineBridge.test.ts confirms it reliably lands on a fatal FX_BANDIT encounter
-    // well within the 600-iteration cap.
+    // Inject a deterministic engine so beginLife's spawn RNG no longer draws
+    // from Date.now(). Seed=2 is empirically stable: the 600-iteration click
+    // loop reaches BARDO against the Yellow Plains content pool.
     const engine = createEngineBridge({ now: () => 2 });
     __setEngineOverride(engine);
 
@@ -35,19 +34,23 @@ describe('UI integration: full cycle', () => {
     await userEvent.type(screen.getByLabelText(/name/i), 'Lin Wei');
     await userEvent.click(screen.getByRole('button', { name: /begin life/i }));
 
-    // Play - status strip should show Lin Wei
-    await waitFor(() => expect(screen.getByText(/lin wei/i)).toBeInTheDocument());
+    // Play - status strip should show Lin Wei. NOTE: the real Yellow Plains
+    // corpus frequently weaves `$[CHAR_NAME]` into narrative intros, so "Lin
+    // Wei" also appears inside <main>'s narrative <p>. Assert "at least one"
+    // match rather than unique-match.
+    await waitFor(() => expect(screen.getAllByText(/lin wei/i).length).toBeGreaterThan(0));
 
     // Spam choices until the character dies.
+    // Nav-button filter: PlayScreen has no nav buttons at all — only choice
+    // buttons — so we can safely click the first button in the tree. (Earlier
+    // filters used word-boundary-free regexes and incorrectly excluded fixture
+    // choices like "Fight back.".)
     for (let i = 0; i < 600; i++) {
       if (useGameStore.getState().phase === GamePhase.BARDO) break;
-      const buttons = screen.queryAllByRole('button');
-      // Filter out navigation buttons (back, new life, continue, codex).
-      const choiceBtn = buttons.find((b) =>
-        b.textContent && !/back|new life|continue|codex/i.test(b.textContent),
-      );
-      if (!choiceBtn) continue;
-      await userEvent.click(choiceBtn);
+      const buttons = screen.queryAllByRole('button')
+        .filter((b) => !(b as HTMLButtonElement).disabled);
+      if (buttons.length === 0) continue;
+      await userEvent.click(buttons[0]!);
     }
 
     expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);

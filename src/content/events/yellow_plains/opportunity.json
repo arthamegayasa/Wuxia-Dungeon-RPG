@@ -1,0 +1,465 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_OPP_WANDERING_MONK",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 5,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.shrine] A monk in grey robes rests beneath the shrine eaves, bowl at his knee.",
+          "$[npc.monk.blessing] $[CHARACTER] slows the step."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_greet_monk",
+          "label": "Kneel. Offer rice. Ask nothing directly.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "npc.monk.blessing",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "met_monk" },
+                { "kind": "item_add", "id": "spiritual_stone", "count": 1 },
+                { "kind": "insight_delta", "amount": 5 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "npc.monk.blessing",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "met_monk" },
+                { "kind": "item_add", "id": "spiritual_stone", "count": 1 },
+                { "kind": "insight_delta", "amount": 3 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "npc.monk.warning",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "npc.monk.warning",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_OPP_PILL_SELLER",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.inn_yard] A traveling pill-seller unfolds a cloth on a crate — small paper twists, each one a promise.",
+          "$[npc.merchant.haggle] $[CHARACTER] weighs the copper in the purse, and the years in the body."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_bargain",
+          "label": "Bargain for a genuine pill.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Mind": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "npc.merchant.haggle",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "minor_healing_pill", "count": 2 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "npc.merchant.haggle",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "minor_healing_pill", "count": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "npc.merchant.haggle",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "cheated_by_pill_seller" }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_OPP_ANCIENT_TOME",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 3,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.temple_ruined] A scroll case, warped but unbroken, wedged behind a fallen beam.",
+          "$[CHARACTER] brushes the dust. The ink is faded — but not gone."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_read_tome",
+          "label": "Sit in the ruin and puzzle out the characters.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 20, "stats": { "Mind": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 8 },
+                { "kind": "flag_set", "flag": "read_tome" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "flag_set", "flag": "read_tome" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "read_tome" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "read_tome" }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "read_tome" }]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_OPP_HIDDEN_SHRINE",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 4,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hills] A shrine forgotten by the road — stone dog worn smooth, incense ash old as the moss.",
+          "$[CHARACTER] kneels. The air here is different, though nothing could say how."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_meditate_shrine",
+          "label": "Sit quietly. Let the place speak, if it wants to.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 20, "stats": { "Luck": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": 5 },
+                { "kind": "qi_delta", "amount": 4 },
+                { "kind": "flag_set", "flag": "blessed_at_shrine" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": 3 },
+                { "kind": "qi_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [{ "kind": "qi_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_OPP_SKILLED_ARTISAN",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.village] A smith — or a weaver, or a carver — squints at the work of $[CHARACTER] and nods slowly.",
+          "An offer follows: stay. Learn. Sleep in the shed. Eat what there is."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_apprentice",
+          "label": "Accept the apprenticeship.",
+          "timeCost": "LONG",
+          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "apprentice" },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 3 },
+                { "kind": "insight_delta", "amount": 3 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "apprentice" },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 2 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "apprentice" },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_OPP_LOST_CHILD",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 6,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.road] A small boy sits weeping under a cedar — silk at the collar, dust on the silk.",
+          "$[npc.child.cry] $[CHARACTER] kneels. A wealthy household will be looking for this one."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_return_child",
+          "label": "Carry the child back toward the town gate.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Luck": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "silver_pouch", "count": 2 },
+                { "kind": "flag_set", "flag": "good_deed" },
+                { "kind": "karma_delta", "amount": 3 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "silver_pouch", "count": 1 },
+                { "kind": "flag_set", "flag": "good_deed" },
+                { "kind": "karma_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "good_deed" },
+                { "kind": "karma_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_OPP_STRANGE_FRUIT",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 12,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hills] A fruit the wrong colour hangs from a thorn-branch — pale, glossy, faintly warm to the palm.",
+          "$[CHARACTER] sniffs. It is not sweet, nor bitter — it is something the mouth has no word for."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_eat_fruit",
+          "label": "Eat it. Trust the land.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Luck": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Spirit", "amount": 2 },
+                { "kind": "qi_delta", "amount": 3 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Spirit", "amount": 1 },
+                { "kind": "qi_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.fear.sudden",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_OPP_MASTER_WATCHES",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 2,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.crossroads] An old man in a worn robe stands at the roadside, watching the morning practice of $[CHARACTER].",
+          "He says nothing. His eyes, though — his eyes see the flaw in every breath."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_continue_practice",
+          "label": "Ignore the watcher. Cultivate honestly.",
+          "timeCost": "SHORT",
+          "check": { "base": 20, "stats": { "Spirit": 1 }, "difficulty": 55 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "master_watched" },
+                { "kind": "insight_delta", "amount": 12 },
+                { "kind": "cultivation_progress_delta", "amount": 8 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "master_watched" },
+                { "kind": "insight_delta", "amount": 8 },
+                { "kind": "cultivation_progress_delta", "amount": 5 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "once_ever"
+    }
+  ]
+}

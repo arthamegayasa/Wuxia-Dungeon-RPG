@@ -1,0 +1,618 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_DAILY_MILLET_HARVEST",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 80,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["autumn"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.millet_field] The harvest cannot be delayed.",
+          "$[CHARACTER] kneels among the millet. The stalks are heavy with grain."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_harvest_hard",
+          "label": "Work from dawn till dark.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Body": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.work.harvest",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.work.harvest",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
+            }
+          }
+        },
+        {
+          "id": "ch_harvest_easy",
+          "label": "Pace yourself.",
+          "timeCost": "LONG",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.work.harvest",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "action.work.harvest",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_PLOW_FIELD",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 70,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["spring"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.millet_field] The earth is still cold, still heavy with winter.",
+          "$[CHARACTER] leans into the plough. The ox knows the row better than the man."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_plow",
+          "label": "Break the heavy earth.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Body": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_WEED_FIELD",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 100,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[time.noon.work] The weeds come back faster than the crop.",
+          "$[CHARACTER] works the rows, one stalk at a time. The day is very long."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_weed",
+          "label": "Bend. Pull. Bend. Pull.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_FETCH_WATER",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 90,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.well] The bucket waits.",
+          "$[CHARACTER] takes up the yoke. Two jars to fill before the sun climbs."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_fetch",
+          "label": "Carry the water home.",
+          "timeCost": "SHORT",
+          "check": { "base": 30, "stats": { "Body": 1 }, "difficulty": 25 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.drink.water",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_COOK_MEAL",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 60,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.hut] The cooking fire is low but willing.",
+          "$[CHARACTER] sets the pot, counts what is left in the jar."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_cook",
+          "label": "Cook a simple meal.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.eat.simple",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": 2 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "action.eat.simple",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": 2 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_SLEEP_COLD",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 50,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[weather.frost.winter] The hut barely holds the warmth of a candle.",
+          "$[CHARACTER] lies down in straw, breath clouding under the thatch."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_rest",
+          "label": "Try to sleep through the cold.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Spirit": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": 5 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.rest.sleep",
+              "stateDeltas": [{ "kind": "qi_delta", "amount": 3 }]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "qi_delta", "amount": -1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": -2 },
+                { "kind": "hp_delta", "amount": -1 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": -3 },
+                { "kind": "hp_delta", "amount": -2 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_WALK_ROAD",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.road] The next village is a day's walk, if the legs hold.",
+          "$[CHARACTER] sets out. $[npc.traveler.stranger]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_walk",
+          "label": "Walk the long road.",
+          "timeCost": "LONG",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.travel.slow",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "action.travel.slow",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -3 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_MARKET_DAY",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 25,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.village] Market day. Dust. Voices. The smell of cheap oil.",
+          "$[CHARACTER] threads between stalls. $[npc.merchant.haggle]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_haggle",
+          "label": "Haggle with the merchants.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "npc.merchant.story",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }],
+              "unlocks": { "codex": ["met_merchant"] }
+            },
+            "SUCCESS": {
+              "narrativeKey": "npc.merchant.haggle",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "PARTIAL": {
+              "narrativeKey": "npc.merchant.haggle",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_VILLAGE_FESTIVAL",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[terrain.yellow_plains.village] Lanterns up. Drums. The old banyan hung with red paper.",
+          "$[CHARACTER] walks into the square. For one night the hunger is not the first thing in the belly."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_celebrate",
+          "label": "Join the festival.",
+          "timeCost": "LONG",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "attended_festival" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "attended_festival" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_WINTER_WAIT",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 40,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[weather.snow.winter] Nothing to harvest. Nothing to plant. Only the slow day.",
+          "$[CHARACTER] sits at the door of the hut. $[reflection.mood.melancholy.1]"
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_wait",
+          "label": "Let the hours pass.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "reflection.mood.melancholy.2",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.2",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_OX_TROUBLE",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 25,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The ox has not risen. It lies in the stall, breath shallow, eyes wet.",
+          "$[CHARACTER] stands in the doorway. A family ox is half a field."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_treat",
+          "label": "Nurse the ox back to health.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 20, "stats": { "Spirit": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "ox_lives" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "ox_lives" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "ox_died" },
+                { "kind": "hp_delta", "amount": -2 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "ox_died" },
+                { "kind": "hp_delta", "amount": -3 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_slaughter",
+          "label": "Slaughter it. Eat while there is meat.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.eat.simple",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "slaughtered_ox" },
+                { "kind": "karma_delta", "amount": -1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "action.eat.simple",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "slaughtered_ox" },
+                { "kind": "karma_delta", "amount": -1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_DAILY_ROOF_LEAK",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[weather.rain.autumn] The roof drips, then runs, then pools on the clay floor.",
+          "$[CHARACTER] climbs the ladder. The thatch is sodden and mean."
+        ],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_patch",
+          "label": "Patch the roof in the rain.",
+          "timeCost": "SHORT",
+          "check": { "base": 20, "stats": { "Body": 1, "Mind": 1 }, "difficulty": 35 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -2 },
+                { "kind": "flag_set", "flag": "wet_bedding" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -4 },
+                { "kind": "flag_set", "flag": "wet_bedding" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

@@ -79,69 +79,81 @@ describe('engineBridge.beginLife', () => {
   });
 });
 
-describe('engineBridge.chooseAction', () => {
+describe('engineBridge.peekNextEvent', () => {
   beforeEach(() => {
     localStorage.clear();
     useGameStore.getState().reset();
     useMetaStore.getState().reset();
   });
 
-  it('throws if called without an active run', async () => {
-    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
-    const engine = createEngineBridge({ saveManager: sm });
-    await expect(engine.chooseAction('ch_walk')).rejects.toThrow(/no active run/i);
-  });
-
-  it('advances the turn and returns a TurnPreview when alive', async () => {
+  it('returns a preview whose choices correspond to the selected event', async () => {
     const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
     const engine = createEngineBridge({ saveManager: sm, now: () => 1 });
     await engine.beginLife('peasant_farmer', 'Lin');
+    const preview = await engine.peekNextEvent();
+    expect(preview.choices.length).toBeGreaterThan(0);
+    expect(typeof preview.narrative).toBe('string');
+  });
 
-    // Task 5 uses the first selectable fixture event's first choice id
-    // (either FX_BENIGN_DAY.ch_work, FX_TRAIN_BODY.ch_train, or FX_BANDIT.ch_fight
-    // depending on selector). We loop through both safe choices so the test is
-    // robust across which event fires.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let result: any;
-    for (const choiceId of ['ch_work', 'ch_train', 'ch_fight']) {
-      try {
-        result = await engine.chooseAction(choiceId);
-        break;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
-        if (!/choice.*not found/i.test(e.message)) throw e;
-      }
-    }
-    expect(result).toBeDefined();
-    // If alive, result has a `narrative` and `choices`.
-    // If died (possible on turn 1 with ch_fight), it's a BardoPayload.
-    if ('narrative' in result!) {
-      expect(typeof result.narrative).toBe('string');
-      expect(useGameStore.getState().runState!.turn).toBe(1);
+  it('repeated peeks without resolving return the same event', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 1 });
+    await engine.beginLife('peasant_farmer', 'Lin');
+    const p1 = await engine.peekNextEvent();
+    const p2 = await engine.peekNextEvent();
+    expect(p1.choices.map((c) => c.id)).toEqual(p2.choices.map((c) => c.id));
+  });
+});
+
+describe('engineBridge.resolveChoice', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('throws if called without a pending event', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm });
+    await engine.beginLife('peasant_farmer', 'Lin');
+    await expect(engine.resolveChoice('ch_anything'))
+      .rejects.toThrow(/no pending event|peek/i);
+  });
+
+  it('throws on an unknown choiceId for the pending event', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 1 });
+    await engine.beginLife('peasant_farmer', 'Lin');
+    await engine.peekNextEvent();
+    await expect(engine.resolveChoice('ch_nonsense'))
+      .rejects.toThrow(/choice.*not found/i);
+  });
+
+  it('returns TurnPreview (alive) or BardoPayload (dead) after resolving', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 1 });
+    await engine.beginLife('peasant_farmer', 'Lin');
+    const preview = await engine.peekNextEvent();
+    const firstChoiceId = preview.choices[0]!.id;
+    const result = await engine.resolveChoice(firstChoiceId);
+    if ('narrative' in result) {
+      expect(result.choices.length).toBeGreaterThan(0); // next peek happened automatically
     } else {
       expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
     }
   });
 });
 
-// Drive the natural chooseAction loop until the character dies. With the
-// RNG-cursor fix in engineBridge (rngState is advanced after each runTurn),
+// Drive the natural peek/resolve loop until the character dies. With the
+// RNG-cursor fix in engineBridge (rngState is advanced after each turn),
 // probed seeds 1..100 all terminate within ~30 turns; 500 is a safety cap.
 // Returns the turn on which BARDO was reached.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function loopUntilDeath(engine: any, cap = 500): Promise<number> {
   for (let i = 0; i < cap; i++) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let result: any = null;
-    for (const choiceId of ['ch_work', 'ch_train', 'ch_fight']) {
-      try {
-        result = await engine.chooseAction(choiceId);
-        break;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
-        if (!/choice.*not found/i.test(e.message)) throw e;
-      }
-    }
+    if (useGameStore.getState().phase === GamePhase.BARDO) return i;
+    const preview = await engine.peekNextEvent();
+    const result = await engine.resolveChoice(preview.choices[0]!.id);
     if (result && !('narrative' in result)) return i + 1;
     if (useGameStore.getState().phase === GamePhase.BARDO) return i + 1;
   }
