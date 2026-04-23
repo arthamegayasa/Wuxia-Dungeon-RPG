@@ -42,6 +42,9 @@ export interface Character {
   readonly openMeridians: ReadonlyArray<MeridianId>;   // opening order preserved
   readonly corePath: CorePathId | null;
 
+  /** Soul Echo ids applied at birth. Effects already folded into stats/hp/insightCap. */
+  readonly echoes: ReadonlyArray<string>;
+
   /** Lifetime-persistent flags set by events. Phase 1D wires these. */
   readonly flags: ReadonlyArray<string>;
 }
@@ -100,6 +103,7 @@ export function createCharacter(args: CreateCharacterArgs): Character {
     insight: 0,
     openMeridians: [] as ReadonlyArray<MeridianId>,
     corePath: null as CorePathId | null,
+    echoes: [] as ReadonlyArray<string>,
     flags: [] as ReadonlyArray<string>,
   };
   return recomputeDerived(base);
