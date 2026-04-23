@@ -7,6 +7,7 @@ import { advanceCultivation } from '@/engine/cultivation/CultivationProgress';
 import { RunState } from './RunState';
 import { StateDelta } from './StateDelta';
 import { addAttribute } from '@/engine/character/Attribute';
+import { logWitness } from '@/engine/meta/MemoryWitnessLogger';
 
 function removeFlag(c: Character, flag: string): Character {
   if (!c.flags.includes(flag)) return c;
@@ -102,6 +103,9 @@ export function applyOutcome(rs: RunState, outcome: Outcome): RunState {
   }
   if (outcome.deathCause !== undefined) {
     next = { ...next, deathCause: outcome.deathCause };
+  }
+  if (outcome.witnessMemory !== undefined) {
+    next = logWitness(next, outcome.witnessMemory);
   }
   return next;
 }

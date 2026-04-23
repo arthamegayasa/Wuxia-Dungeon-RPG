@@ -2,9 +2,11 @@
 // Source: docs/spec/design.md §7 (meta-progression), §10 (persistence).
 
 import { SaveManager } from '@/engine/persistence/SaveManager';
+import { createMigrator } from '@/engine/persistence/Migrator';
+import type { Migration } from '@/engine/persistence/Migrator';
 import { getUpgradeById } from './KarmicUpgrade';
 
-export const METASTATE_SCHEMA_VERSION = 1;
+export const METASTATE_SCHEMA_VERSION = 2;
 const META_KEY = 'wdr.meta';
 
 export interface LineageEntrySummary {
@@ -15,6 +17,7 @@ export interface LineageEntrySummary {
   realmReached: string;
   deathCause: string;
   karmaEarned: number;
+  echoesUnlockedThisLife: ReadonlyArray<string>;
 }
 
 export interface MetaState {
@@ -24,6 +27,16 @@ export interface MetaState {
   readonly unlockedAnchors: ReadonlyArray<string>;
   readonly lineage: ReadonlyArray<LineageEntrySummary>;
   readonly lifetimeSeenEvents: ReadonlyArray<string>;
+  /** Stub added Task 2 (Phase 2A-1). Full migration done in Task 14. */
+  readonly heavenlyNotice: number;
+  /** All echo ids ever unlocked across all lives. Task 14 will add more fields. */
+  readonly echoesUnlocked: ReadonlyArray<string>;
+  /** Lifetime witness counter per technique/memory id. Incremented each life a memory is witnessed. Task 14 field. */
+  readonly memoriesWitnessed: Readonly<Record<string, number>>;
+  /** Cumulative echo unlock progress counters (choice category hits, outcome counts, etc.). Task 14 field. */
+  readonly echoProgress: Readonly<Record<string, number>>;
+  /** Ids of forbidden memories that have ever manifested across all lives. Task 14 field. */
+  readonly memoriesManifested: ReadonlyArray<string>;
 }
 
 export function createEmptyMetaState(): MetaState {
@@ -34,6 +47,11 @@ export function createEmptyMetaState(): MetaState {
     unlockedAnchors: ['true_random', 'peasant_farmer'],
     lineage: [],
     lifetimeSeenEvents: [],
+    heavenlyNotice: 0,
+    echoesUnlocked: [],
+    memoriesWitnessed: {},
+    echoProgress: {},
+    memoriesManifested: [],
   };
 }
 
@@ -83,8 +101,36 @@ export function saveMeta(sm: SaveManager, m: MetaState): void {
   sm.save(META_KEY, m, METASTATE_SCHEMA_VERSION);
 }
 
+export const metaStateMigrations: ReadonlyArray<Migration> = [
+  {
+    from: 1,
+    to: 2,
+    transform: (old: any): MetaState => ({
+      karmaBalance: old.karmaBalance ?? 0,
+      lifeCount: old.lifeCount ?? 0,
+      ownedUpgrades: old.ownedUpgrades ?? [],
+      unlockedAnchors: old.unlockedAnchors ?? ['true_random', 'peasant_farmer'],
+      lineage: (old.lineage ?? []).map((entry: any) => ({
+        ...entry,
+        echoesUnlockedThisLife: entry.echoesUnlockedThisLife ?? [],
+      })),
+      lifetimeSeenEvents: old.lifetimeSeenEvents ?? [],
+      echoesUnlocked: [],
+      echoProgress: {},
+      memoriesWitnessed: {},
+      memoriesManifested: [],
+      heavenlyNotice: 0,
+    }),
+  },
+];
+
+const metaMigrator = createMigrator<MetaState>({
+  currentVersion: METASTATE_SCHEMA_VERSION,
+  migrations: metaStateMigrations as any,
+});
+
 export function loadMeta(sm: SaveManager): MetaState {
-  const envelope = sm.load<MetaState>(META_KEY);
+  const envelope = sm.load<unknown>(META_KEY);
   if (envelope === null) return createEmptyMetaState();
-  return envelope.data;
+  return metaMigrator.migrate(envelope.data, envelope.schemaVersion);
 }

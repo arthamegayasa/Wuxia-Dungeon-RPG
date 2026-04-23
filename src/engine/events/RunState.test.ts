@@ -33,4 +33,15 @@ describe('createRunState', () => {
     });
     expect(rs.rngState.seed).toBe(77);
   });
+
+  it('defaults Phase 2A-1 memory fields empty', () => {
+    const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
+    const rs = createRunState({
+      character: c, runSeed: 1, region: 'yellow_plains',
+      year: 1000, season: 'spring',
+    });
+    expect(rs.memoriesWitnessedThisLife).toEqual([]);
+    expect(rs.memoriesManifestedThisLife).toEqual([]);
+    expect(rs.manifestAttemptsThisLife).toBe(0);
+  });
 });

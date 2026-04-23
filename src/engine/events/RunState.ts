@@ -26,6 +26,12 @@ export interface RunState {
   /** ID of the event the bridge has selected and composed but not yet resolved.
    *  Cleared by resolveChoice. Phase 1D-3 addition. */
   readonly pendingEventId?: string;
+  /** Technique / memory IDs witnessed this life. Deduped by logWitness. Task 13 field. */
+  readonly memoriesWitnessedThisLife: ReadonlyArray<string>;
+  /** Memory IDs that have already manifested in this life. Task 11/13 field. */
+  readonly memoriesManifestedThisLife: ReadonlyArray<string>;
+  /** How many manifestation attempts have been made this life. Max 3. Task 11/13 field. */
+  readonly manifestAttemptsThisLife: number;
 }
 
 export interface CreateRunStateArgs {
@@ -54,5 +60,8 @@ export function createRunState(args: CreateRunStateArgs): RunState {
     heavenlyNotice: 0,
     karmaEarnedBuffer: 0,
     deathCause: null,
+    memoriesWitnessedThisLife: [],
+    memoriesManifestedThisLife: [],
+    manifestAttemptsThisLife: 0,
   };
 }

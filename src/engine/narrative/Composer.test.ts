@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { createRng } from '@/engine/core/RNG';
 import { EventDef } from '@/content/schema';
 import { createSnippetLibrary } from './SnippetLibrary';
-import { createNameRegistry } from './NameRegistry';
+import { createNameRegistry, NameRegistry } from './NameRegistry';
 import { renderEvent, CompositionContext } from './Composer';
 
 const ATTRS = { Body: 20, Mind: 15, Spirit: 10, Agility: 12, Charm: 8, Luck: 30 };
@@ -56,7 +56,8 @@ describe('renderEvent', () => {
   it('composes intro + body + outro into a single paragraph separated by spaces or newlines', () => {
     const text = renderEvent(makeEvent(), makeCtx(), LIB, createNameRegistry(), createRng(1));
     expect(text.length).toBeGreaterThan(0);
-    expect(text).toContain('The sun hung heavy');
+    // Under serenity mood, 'heavy' → 'settled' via adjective substitution post-pass.
+    expect(text).toContain('The sun hung settled');
     expect(text).toContain('Lin Wei');
     expect(text).toContain('Dust in the throat');
   });
@@ -100,6 +101,53 @@ describe('renderEvent', () => {
   it('extraVariables flow into [VAR] substitutions', () => {
     const ev = makeEvent({ text: { intro: ['[LOCATION] was quiet.'], body: [], outro: [] } });
     const text = renderEvent(ev, makeCtx({ extraVariables: { LOCATION: 'Cold Iron Peak' } }), LIB, createNameRegistry(), createRng(1));
-    expect(text).toBe('Cold Iron Peak was quiet.');
+    // Under serenity mood adjective post-pass: 'quiet' → 'still' → 'calm' (chain), 'cold' → 'crisp'.
+    expect(text).toBe('Crisp Iron Peak was calm.');
+  });
+});
+
+describe('renderEvent — Phase 2A-1 post-passes', () => {
+  it('applies adjective substitution under melancholy mood', () => {
+    const event = {
+      id: 'test_event', category: 'daily', version: 1, weight: 1, timeCost: 'SHORT',
+      conditions: {}, repeat: 'once_per_life',
+      text: { intro: ['A warm wind blew across the plains.'], body: [], outro: [] },
+      choices: [{
+        id: 'c', label: 'do it', timeCost: 'SHORT',
+        outcomes: { SUCCESS: { narrativeKey: 'x' }, FAILURE: { narrativeKey: 'x' } },
+      }],
+    };
+    const library = createSnippetLibrary({});
+    const registry: NameRegistry = createNameRegistry();
+    const rng = createRng(1);
+    const ctx: CompositionContext = {
+      characterName: 'Lin Wei', region: 'yellow_plains',
+      season: 'autumn', realm: 'mortal', dominantMood: 'melancholy',
+      turnIndex: 1, runSeed: 1, extraVariables: {},
+    };
+    const rendered = renderEvent(event as any, ctx, library, registry, rng);
+    expect(rendered).toContain('lonely');
+  });
+
+  it('renders identically for same (runSeed, turn) + identical inputs (determinism)', () => {
+    const event = {
+      id: 'test_event', category: 'daily', version: 1, weight: 1, timeCost: 'SHORT',
+      conditions: {}, repeat: 'once_per_life',
+      text: { intro: ['A warm wind blew across the plains.'], body: [], outro: [] },
+      choices: [{
+        id: 'c', label: 'do it', timeCost: 'SHORT',
+        outcomes: { SUCCESS: { narrativeKey: 'x' }, FAILURE: { narrativeKey: 'x' } },
+      }],
+    };
+    const library = createSnippetLibrary({});
+    const registry = createNameRegistry();
+    const ctx: CompositionContext = {
+      characterName: 'Lin Wei', region: 'yellow_plains',
+      season: 'autumn', realm: 'mortal', dominantMood: 'melancholy',
+      turnIndex: 1, runSeed: 1, extraVariables: {},
+    };
+    const first  = renderEvent(event as any, ctx, library, registry, createRng(42));
+    const second = renderEvent(event as any, ctx, library, registry, createRng(42));
+    expect(first).toBe(second);
   });
 });

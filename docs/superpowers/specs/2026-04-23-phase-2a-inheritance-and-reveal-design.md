@@ -30,7 +30,7 @@ Phase 2 as specified in [`docs/spec/design.md`](../../../docs/spec/design.md) §
 - Lineage screen (§11.7) — basic card-per-life layout
 - Enhanced Bardo (§11.6) — echo reveal + memory witness reveal + manifestation moment
 - Enhanced Creation — anchor picker with unlock state + hint
-- Save migration: `MetaState` v2 → v3
+- Save migration: `MetaState` v1 → v2
 
 ### Exit criteria (all must pass to merge 2A)
 1. A Life N+1 character inherits a specific echo from Life N, deterministically, given the same seed (proven by unit test).
@@ -39,7 +39,7 @@ Phase 2 as specified in [`docs/spec/design.md`](../../../docs/spec/design.md) §
 4. All 5 anchors (True Random, Peasant Farmer, Martial Family, Scholar's Son, Outer Disciple) selectable and produce different starting states (distinct `Character` attributes or starting flags).
 5. Codex screen renders actual accumulated data after ≥2 lives (not placeholder).
 6. Lineage screen lists past lives with year range, anchor, realm, cause, echoes unlocked that life.
-7. A Phase 1 save file (MetaState v2) loads and upgrades cleanly to v3 with existing karma preserved and empty echo/memory state.
+7. A Phase 1 save file (MetaState v1) loads and upgrades cleanly to v2 with existing karma preserved and empty echo/memory state.
 8. Full 5-life headless integration test passes.
 
 ### Explicitly out of scope (deferred)
@@ -299,7 +299,7 @@ Styling: parchment palette, serif headings, jade highlights for unlocked entries
 
 ### 6.2 Lineage (§11.7)
 
-**File:** `src/ui/screens/LineageScreen.tsx`. Scroll container; one `LifeCard` per entry in `MetaState.pastLives[]`, reverse chronological (most recent first).
+**File:** `src/ui/screens/LineageScreen.tsx`. Scroll container; one `LifeCard` per entry in `MetaState.lineage[]`, reverse chronological (most recent first).
 
 `LifeCard` shape:
 ```
@@ -317,7 +317,7 @@ No Threads marginalia (Phase 3).
 
 **Entry point:** "Lineage" button on TitleScreen and BardoPanel.
 
-**Data source:** `MetaState.pastLives: LineageEntry[]` — pushed on death (in `BardoFlow`), one entry per completed life, containing `{runId, index, name, yearStart, yearEnd, anchorId, finalRealm, deathCause, epitaph?, echoesUnlockedThisLife: string[]}`.
+**Data source:** `MetaState.lineage: LineageEntrySummary[]` (existing Phase 1D-1 field) extended with `echoesUnlockedThisLife: string[]`. Pushed on death in `BardoFlow`.
 
 ### 6.3 Enhanced Bardo (§11.6 step 10 + insertions)
 
@@ -341,13 +341,14 @@ Existing `CreationScreen` (Phase 1D-2) extended:
 
 ### 7.1 Schema bump
 
-`MetaState` version: `2 → 3`.
+`MetaState` version: `1 → 2` (current state is v1; Phase 2A-1 bumps to v2).
 
 **Additions:**
 
 ```ts
-interface MetaStateV3 extends MetaStateV2 {
-  schemaVersion: 3;                                         // bumped from 2
+// v2 extends v1 (current) — purely additive fields below.
+interface MetaStateV2 extends MetaStateV1 {
+  schemaVersion: 2;                                         // bumped from 1
 
   // Echoes
   echoesUnlocked: string[];                                 // ids
@@ -357,31 +358,33 @@ interface MetaStateV3 extends MetaStateV2 {
   memoriesWitnessed: Record<string, number>;                // techniqueId → lifetime witness count
   memoriesManifested: string[];                             // techniqueIds that have manifested ≥1 time across all lives
 
-  // Lineage
-  pastLives: LineageEntry[];
+  // Lineage — existing LineageEntrySummary gets one new field:
+  //   echoesUnlockedThisLife: string[]
+  // No parallel pastLives[] array.
 
   // Reserved for Phase 3
   heavenlyNotice: number;                                   // always 0 in 2A
 }
 ```
 
-### 7.2 Migrator.migrate(v2 → v3)
+### 7.2 Migrator.migrate(v1 → v2)
 
 Fills new fields with defaults:
 ```ts
 {
-  schemaVersion: 3,
+  schemaVersion: 2,
   echoesUnlocked: [],
   echoProgress: {},
   memoriesWitnessed: {},
   memoriesManifested: [],
-  pastLives: [],
+  // lineage[] already populated from v1; LineageEntrySummary gains
+  //   echoesUnlockedThisLife: string[]  (default [] on each existing entry)
   heavenlyNotice: 0,
   ...v2,  // karma + karmicUpgrades preserved
 }
 ```
 
-Test: `Migrator.v2_to_v3.test.ts` — load Phase 1 save fixture, migrate, assert karma preserved + new fields defaulted.
+Test: `Migrator.v1_to_v2.test.ts` — load Phase 1 save fixture, migrate, assert karma preserved + new fields defaulted.
 
 ### 7.3 Content-loader impact
 
@@ -424,7 +427,7 @@ Three separate plans, three PRs, matching the Phase 1D cadence:
 - ForbiddenMemory types, registry, witness logger, level calc, manifest resolver (+ unit tests)
 - `witness_memory` stateDelta + `meditation` event tag wiring
 - MoodFilter: adjective substitution + interior-thought injection (+ unit tests, composer determinism test)
-- `MetaState` v3 schema + `Migrator.v2_to_v3` (+ test with Phase 1 save fixture)
+- `MetaState` v2 schema + `Migrator.v1_to_v2` (+ test with Phase 1 save fixture)
 - `EchoRoller` conflict resolution + slot-count util (+ determinism test)
 - `tests/integration/echo_inheritance.test.ts` (engine-level only — no UI)
 - **Exit:** all new engine modules green; save migration round-trip works; no UI changes yet; Phase 1 suite unbroken.
@@ -443,7 +446,7 @@ Three separate plans, three PRs, matching the Phase 1D cadence:
 
 ### 9.3 Phase 2A-3 — Reveal UI + final integration
 - `CodexScreen.tsx` (Memories, Echoes, Anchors tabs)
-- `LineageScreen.tsx` (card layout, data from `MetaState.pastLives`)
+- `LineageScreen.tsx` (card layout, data from `MetaState.lineage`)
 - Enhanced `BardoPanel` (new reveal steps 10a / 10b / 10c)
 - Enhanced `CreationScreen` (locked-anchor silhouettes, hint text, shimmer)
 - TitleScreen Codex + Lineage entry points

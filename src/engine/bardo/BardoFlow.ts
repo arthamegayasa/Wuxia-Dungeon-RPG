@@ -51,6 +51,7 @@ export function runBardoFlow(
     realmReached: summary.realmReached,
     deathCause: summary.deathCause,
     karmaEarned: karma.total,
+    echoesUnlockedThisLife: [],  // EchoUnlocker (Task 5) fills this; BardoFlow updated in Task 14
   };
 
   let nextMeta = meta;

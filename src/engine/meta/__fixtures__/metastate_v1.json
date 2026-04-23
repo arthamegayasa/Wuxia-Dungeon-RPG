@@ -1,0 +1,18 @@
+{
+  "karmaBalance": 57,
+  "lifeCount": 2,
+  "ownedUpgrades": ["awakened_soul_1"],
+  "unlockedAnchors": ["true_random", "peasant_farmer"],
+  "lineage": [
+    {
+      "lifeIndex": 1,
+      "name": "Lin Wei",
+      "anchorId": "peasant_farmer",
+      "yearsLived": 42,
+      "realmReached": "body_tempering",
+      "deathCause": "starvation",
+      "karmaEarned": 27
+    }
+  ],
+  "lifetimeSeenEvents": ["ev.daily.01"]
+}
