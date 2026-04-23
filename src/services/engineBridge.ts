@@ -13,7 +13,7 @@ import { createRng } from '@/engine/core/RNG';
 import {
   createStreakState, recordOutcome, computeStreakBonus, computeWorldMaliceBuff, tickBuff,
 } from '@/engine/choices/StreakTracker';
-import { createSnippetLibrary, SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
+import { SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
 import { renderEvent, CompositionContext } from '@/engine/narrative/Composer';
@@ -27,14 +27,32 @@ import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
-import { FIXTURE_EVENTS } from '@/content/events/fixture';
+import { loadEvents } from '@/content/events/loader';
+import { loadSnippets } from '@/content/snippets/loader';
 import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 
-// Phase 1D-3 Task 5: event pool reference. Still FIXTURE_EVENTS — Task 10 will
-// swap this for the content-loader result.
-const ALL_EVENTS = FIXTURE_EVENTS;
+import dailyJson from '@/content/events/yellow_plains/daily.json';
+import trainingJson from '@/content/events/yellow_plains/training.json';
+import socialJson from '@/content/events/yellow_plains/social.json';
+import dangerJson from '@/content/events/yellow_plains/danger.json';
+import opportunityJson from '@/content/events/yellow_plains/opportunity.json';
+import transitionJson from '@/content/events/yellow_plains/transition.json';
+import ypSnippets from '@/content/snippets/yellow_plains.json';
+
+// Phase 1D-3 Task 10: Yellow Plains content pool. Flattens all authored regional
+// packs (~50 events) into one selectable array. Snippet library is the single
+// Yellow Plains pack (~80 leaves) that backs narrative composition.
+const ALL_EVENTS: ReadonlyArray<EventDef> = [
+  ...loadEvents(dailyJson),
+  ...loadEvents(trainingJson),
+  ...loadEvents(socialJson),
+  ...loadEvents(dangerJson),
+  ...loadEvents(opportunityJson),
+  ...loadEvents(transitionJson),
+];
+const DEFAULT_LIBRARY: SnippetLibrary = loadSnippets(ypSnippets);
 
 export interface LoadOrInitResult {
   phase: GamePhase;
@@ -134,10 +152,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
   const sm = opts.saveManager ?? createSaveManager({
     storage: () => localStorage, gameVersion: '0.1.0',
   });
-  // Snippet library used by the Composer inside runTurn. An empty library is fine
-  // for the 1D-2 fixture events: their intro lines use `$[CHAR_NAME]` which falls
-  // back to an empty string when absent. Phase 1D-3 will author a real corpus.
-  const library = opts.library ?? createSnippetLibrary({});
+  // Snippet library used by the Composer. Phase 1D-3 Task 10 wires the authored
+  // Yellow Plains corpus (~80 leaves) as the default. Tests/adapters can still
+  // override via opts.library for determinism.
+  const library = opts.library ?? DEFAULT_LIBRARY;
   const now = opts.now ?? (() => Date.now());
 
   function currentMetaState(): MetaState {
