@@ -7,6 +7,8 @@ import { EventDef } from '@/content/schema';
 import { SnippetLibrary } from './SnippetLibrary';
 import { NameRegistry } from './NameRegistry';
 import { expandTemplate } from './TemplateExpander';
+import { maybeInjectInteriorThought } from './InteriorThoughtInjector';
+import { substituteAdjectives, DEFAULT_ADJECTIVE_DICT } from './MoodAdjectiveDict';
 
 export interface CompositionContext {
   characterName: string;
@@ -17,6 +19,7 @@ export interface CompositionContext {
   turnIndex: number;
   runSeed: number;
   extraVariables: Readonly<Record<string, string>>;
+  mindStat?: number;       // Phase 2A-1: drives interior-thought injection rate
 }
 
 /** Map mood → preferred snippet tag(s). Phase 1C uses a lean 1-to-1 mapping. */
@@ -73,5 +76,21 @@ export function renderEvent(
     if (rendered.length > 0) parts.push(rendered);
   }
 
-  return parts.join(' ');
+  let rendered = parts.join(' ');
+
+  // Phase 2A-1 post-pass 1: interior-thought injection.
+  rendered = maybeInjectInteriorThought({
+    text: rendered,
+    mood: ctx.dominantMood,
+    realm: String(ctx.realm),
+    mindStat: ctx.mindStat ?? 0,
+    runSeed: ctx.runSeed,
+    turnIndex: ctx.turnIndex,
+    library,
+  });
+
+  // Phase 2A-1 post-pass 2: mood-adjective substitution.
+  rendered = substituteAdjectives(rendered, ctx.dominantMood, DEFAULT_ADJECTIVE_DICT);
+
+  return rendered;
 }
