@@ -17,31 +17,56 @@ export interface NamePools {
 
 export const DEFAULT_NAME_POOLS: NamePools = {
   familyNames: [
-    'Lin', 'Wang', 'Zhao', 'Hua', 'Mo', 'Qin', 'Bai', 'Xu', 'Yan', 'Shen',
-    'Tao', 'Meng', 'Lu', 'Su', 'Jiang', 'Song', 'Feng', 'Luo', 'Fan', 'Cui',
+    // Bai Jia Xing selective — top 50+
+    'Lin', 'Wang', 'Zhao', 'Liu', 'Chen', 'Li', 'Zhang', 'Huang', 'Yang', 'Zhou',
+    'Wu', 'Xu', 'Sun', 'Zhu', 'Ma', 'Hu', 'Guo', 'He', 'Gao', 'Luo',
+    'Song', 'Zheng', 'Xie', 'Han', 'Tang', 'Feng', 'Yu', 'Dong', 'Xiao', 'Cao',
+    'Cheng', 'Peng', 'Lu', 'Fan', 'Cui', 'Shen', 'Mo', 'Qian', 'Bai', 'Gu',
+    'Jiao', 'Yue', 'Meng', 'Ren', 'Kong', 'Shi', 'Jia', 'Nie', 'Qiu', 'Duan',
+    'Fu', 'Qu', 'Ding',
   ],
   givenSyllables: [
-    'Wei', 'Min', 'Shan', 'Qing', 'Yuan', 'Hao', 'Ling', 'Jie', 'Cheng', 'Zhi',
-    'Ning', 'Bo', 'Yi', 'Ran', 'Xian', 'Ru', 'Tai', 'Yong', 'Mei', 'Xiao',
+    // Classical virtues/nature (20)
+    'Wei', 'Min', 'Shan', 'Yu', 'Ling', 'Xue', 'Fang', 'Ping', 'An', 'Jing',
+    'Hua', 'Lan', 'Mei', 'Yan', 'Rui', 'Jun', 'Tai', 'Heng', 'Qing', 'De',
+    // Wuxia flavors/elements (17)
+    'Feng', 'Yun', 'Huo', 'Shui', 'Long', 'Hu', 'Niu', 'Hong',
+    'Hei', 'Jin', 'Yin', 'Tie', 'Mu', 'Chun', 'Qiu', 'Bai', 'Shi',
+    // Peasant names / countryside (17)
+    'Lao', 'Xiao', 'Da', 'Er', 'San', 'Si', 'Liu', 'Qi', 'Ba',
+    'Tian', 'Gou', 'Shu', 'Cao', 'Mai', 'Dou', 'Dao', 'He',
+    // Seasons, moods, qualities (15)
+    'Dong', 'Xia', 'Zhao', 'Chen', 'Shao', 'Yi', 'Yue', 'Zhi',
+    'Ning', 'Xin', 'Cheng', 'Lian', 'Yao', 'Yong', 'Ren',
+    // Extended — additional wuxia register (13)
+    'Kai', 'Lie', 'Wan', 'Xiang', 'Zhen', 'Zhong', 'Gang', 'Kun', 'Lei', 'Hai',
+    'Jian', 'Pang', 'Qian',
   ],
   sectAdjectives: [
-    'Azure', 'Crimson', 'Jade', 'Iron', 'Nine', 'Silent', 'Thousand',
-    'Void', 'Heaven', 'Moon', 'Frozen', 'Eternal',
+    'Azure', 'Crimson', 'Jade', 'Obsidian', 'Silver', 'Golden', 'Thousand',
+    'Black', 'White', 'Eternal', 'Forgotten', 'Hidden', 'Wandering', 'Still',
+    'Nine', 'Endless', 'Heavenly', 'Broken', 'Righteous', 'Burning', 'Silent',
+    'Moonlit', 'Ancient',
   ],
   sectObjects: [
-    'Cloud', 'Sword', 'Lotus', 'Mist', 'Peak', 'Blade', 'Flame', 'River',
-    'Serpent', 'Tiger', 'Phoenix', 'Pavilion',
+    'Cloud', 'Sword', 'Lotus', 'Mountain', 'River', 'Moon', 'Sun', 'Phoenix',
+    'Dragon', 'Tiger', 'Crane', 'Pine', 'Mirror', 'Scroll', 'Flame',
+    'Blade', 'Fist', 'Heart', 'Bone', 'Shadow', 'Star', 'Ocean',
+    'Bell',
   ],
   sectSuffixes: [
-    'Sect', 'Valley', 'Pavilion', 'Palace', 'Gate', 'Temple', 'Hall',
+    'Sect', 'Valley', 'Pavilion', 'Mountain', 'Temple', 'Hall',
+    'Palace', 'Peak', 'School', 'Way', 'Gate', 'Dao',
   ],
   placePrefixes: [
-    'Cold', 'Iron', 'Old', 'Quiet', 'White', 'Nine-Hundred-Steps',
-    'Forgotten', 'Withered', 'Southern', 'Jade',
+    'Cold', 'Iron', 'Old', 'New', 'Broken', 'Hidden', 'Crooked', 'Long',
+    'Yellow', 'Black', 'Quiet', 'Whispering', 'Nine', 'Red', 'Lesser',
+    'Upper', 'Lower',
   ],
   placeFeatures: [
-    'Peak', 'Gorge', 'Village', 'Crossroad', 'Ford', 'Hollow',
-    'Grove', 'Pass', 'Town', 'Hermitage',
+    'Peak', 'Gorge', 'Village', 'Crossroads', 'Bridge', 'Hollow', 'Ford',
+    'Well', 'Mound', 'Ridge', 'Pass', 'Plains', 'Market', 'Shrine', 'Temple',
+    'Hill', 'Stream',
   ],
 };
 

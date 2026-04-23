@@ -65,6 +65,53 @@ describe('generatePlaceName', () => {
   });
 });
 
+describe('DEFAULT_NAME_POOLS — size requirements (Phase 1D-3)', () => {
+  it('has at least 50 family names', () => {
+    expect(DEFAULT_NAME_POOLS.familyNames.length).toBeGreaterThanOrEqual(50);
+  });
+
+  it('has at least 80 given-name syllables', () => {
+    expect(DEFAULT_NAME_POOLS.givenSyllables.length).toBeGreaterThanOrEqual(80);
+  });
+
+  it('has at least 20 sect adjectives', () => {
+    expect(DEFAULT_NAME_POOLS.sectAdjectives.length).toBeGreaterThanOrEqual(20);
+  });
+
+  it('has at least 20 sect objects', () => {
+    expect(DEFAULT_NAME_POOLS.sectObjects.length).toBeGreaterThanOrEqual(20);
+  });
+
+  it('has at least 10 sect suffixes', () => {
+    expect(DEFAULT_NAME_POOLS.sectSuffixes.length).toBeGreaterThanOrEqual(10);
+  });
+
+  it('has at least 15 place prefixes', () => {
+    expect(DEFAULT_NAME_POOLS.placePrefixes.length).toBeGreaterThanOrEqual(15);
+  });
+
+  it('has at least 15 place features', () => {
+    expect(DEFAULT_NAME_POOLS.placeFeatures.length).toBeGreaterThanOrEqual(15);
+  });
+
+  it('all entries are non-empty strings', () => {
+    for (const k of Object.keys(DEFAULT_NAME_POOLS) as Array<keyof typeof DEFAULT_NAME_POOLS>) {
+      for (const s of DEFAULT_NAME_POOLS[k]) {
+        expect(s.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('over many rolls, produces distinct personal names (variety check)', () => {
+    const names = new Set<string>();
+    for (let s = 1; s <= 50; s++) {
+      const n = generatePersonalName(DEFAULT_NAME_POOLS, createRng(s));
+      names.add(n);
+    }
+    expect(names.size).toBeGreaterThanOrEqual(40); // ≥80% unique across 50 tries
+  });
+});
+
 describe('custom pools', () => {
   it('generatePersonalName uses the pools argument', () => {
     const pools: NamePools = {
