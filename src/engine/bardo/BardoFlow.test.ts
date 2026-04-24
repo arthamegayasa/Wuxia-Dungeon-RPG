@@ -84,6 +84,28 @@ describe('runBardoFlow', () => {
     // With yearsLived=30 → yearsKarma=3; old_age=5; total=8 × 1.0 = 8; + 5 buffer = 13.
     expect(r.karmaEarned).toBe(13);
   });
+
+  it('emits birthYear and deathYear on the new lineage entry', () => {
+    const c = createCharacter({
+      name: 'Ancient One',
+      attributes: { Body: 20, Mind: 10, Spirit: 10, Agility: 10, Charm: 10, Luck: 20 },
+      rng: createRng(1),
+      startingAgeDays: 30 * 365,
+    });
+    const rs = {
+      ...createRunState({
+        character: c, runSeed: 1, region: 'yellow_plains',
+        year: 980, birthYear: 950, season: 'summer',
+      }),
+      deathCause: 'old_age' as const,
+    };
+    const meta = createEmptyMetaState();
+    const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
+    const entry = result.meta.lineage[result.meta.lineage.length - 1]!;
+    expect(entry.birthYear).toBe(950);
+    expect(entry.deathYear).toBe(980);
+    expect(entry.yearsLived).toBe(30);
+  });
 });
 
 function makeRunStateDyingAt(opts: {

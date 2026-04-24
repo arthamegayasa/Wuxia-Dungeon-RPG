@@ -78,6 +78,8 @@ export function runBardoFlow(
     lifeIndex: nextMeta.lifeCount + 1,
     name: rs.character.name,
     anchorId: anchorThisLife,
+    birthYear: rs.birthYear,
+    deathYear: rs.birthYear + summary.yearsLived,
     yearsLived: summary.yearsLived,
     realmReached: summary.realmReached,
     deathCause: summary.deathCause,
