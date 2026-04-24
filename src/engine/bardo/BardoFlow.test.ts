@@ -18,7 +18,7 @@ function buildTestRunState(overrides = {}) {
     startingAgeDays: 30 * 365,
   });
   return {
-    ...createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' }),
+    ...createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' }),
     deathCause: 'old_age' as const,
     ...overrides,
   };
@@ -27,7 +27,7 @@ function buildTestRunState(overrides = {}) {
 describe('runBardoFlow', () => {
   it('requires a deathCause', () => {
     const c = createCharacter({ name: 't', attributes: { Body: 20, Mind: 10, Spirit: 10, Agility: 10, Charm: 10, Luck: 20 }, rng: createRng(1) });
-    const rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' });
+    const rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' });
     // deathCause: null in fresh RunState
     expect(() => runBardoFlow(rs, createEmptyMetaState(), 1.0, EMPTY_REG))
       .toThrow(/no death cause/i);
@@ -102,7 +102,7 @@ function makeRunStateDyingAt(opts: {
   };
   const rs = createRunState({
     character: withLayer, runSeed: 1, region: 'yellow_plains',
-    year: 1000, season: 'spring',
+    year: 1000, birthYear: 1000, season: 'spring',
   });
   return { ...rs, deathCause: opts.deathCause };
 }

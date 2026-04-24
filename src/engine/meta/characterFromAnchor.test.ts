@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { createRng } from '@/engine/core/RNG';
 import { getAnchorById } from './Anchor';
+import { DEFAULT_ANCHORS } from '@/engine/meta/Anchor';
 import { resolveAnchor } from './AnchorResolver';
 import { characterFromAnchor } from './characterFromAnchor';
 import { EchoRegistry } from './EchoRegistry';
+import { EMPTY_ECHO_REGISTRY } from '@/engine/meta/EchoRegistry';
 import { createEmptyMetaState } from './MetaState';
 import type { SoulEcho } from './SoulEcho';
 
@@ -66,6 +68,22 @@ describe('characterFromAnchor', () => {
       meta: emptyMeta, echoRegistry: emptyRegistry,
     });
     expect(runState.inventory.find((i) => i.id === 'rice_bowl')?.count).toBe(1);
+  });
+
+  it('sets runState.birthYear = spawn year minus starting age years', () => {
+    const rng = createRng(42);
+    // Resolve a real anchor with deterministic seed; assert the math.
+    const peasantAnchor = DEFAULT_ANCHORS.find((a) => a.id === 'peasant_farmer')!;
+    const resolved = resolveAnchor(peasantAnchor, rng);
+
+    const meta = createEmptyMetaState();
+    const result = characterFromAnchor({
+      resolved, name: 'Lin Wei', runSeed: 1, rng: createRng(7),
+      meta, echoRegistry: EMPTY_ECHO_REGISTRY,
+    });
+
+    const startingAgeYears = Math.floor(resolved.ageDays / 365);
+    expect(result.runState.birthYear).toBe(resolved.year - startingAgeYears);
   });
 });
 

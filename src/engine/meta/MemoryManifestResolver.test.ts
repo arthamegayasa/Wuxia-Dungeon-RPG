@@ -25,7 +25,7 @@ function runStateWithMind(mind: number) {
     attributes: { Body: 1, Mind: mind, Spirit: 1, Agility: 1, Charm: 1, Luck: 1 },
     rng,
   });
-  return createRunState({ character, runSeed: 42, region: 'yellow_plains', year: 900, season: 'spring' });
+  return createRunState({ character, runSeed: 42, region: 'yellow_plains', year: 900, birthYear: 900, season: 'spring' });
 }
 
 describe('rollManifest', () => {

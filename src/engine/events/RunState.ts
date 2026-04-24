@@ -17,6 +17,10 @@ export interface RunState {
   readonly region: string;
   readonly locale: string;
   readonly year: number;
+  /** Phase 2A-3 Task 2: the year the character was born. Set once at
+   *  characterFromAnchor; never advanced. Distinct from `year` which tracks
+   *  the current calendar year as turns advance. Lineage card uses this. */
+  readonly birthYear: number;
   readonly season: Season;
   readonly heavenlyNotice: number;
   /** Buffered karma earned this life; committed at Bardo (Phase 1D). */
@@ -39,6 +43,7 @@ export interface CreateRunStateArgs {
   runSeed: number;
   region: string;
   year: number;
+  birthYear: number;
   season: Season;
   locale?: string;
 }
@@ -56,6 +61,7 @@ export function createRunState(args: CreateRunStateArgs): RunState {
     region: args.region,
     locale: args.locale ?? 'unnamed',
     year: args.year,
+    birthYear: args.birthYear,
     season: args.season,
     heavenlyNotice: 0,
     karmaEarnedBuffer: 0,

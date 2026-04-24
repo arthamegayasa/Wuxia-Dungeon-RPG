@@ -57,6 +57,7 @@ describe('memory manifestation Life N → Life N+5', () => {
       runSeed: 5,
       region: 'yellow_plains',
       year: 1050,
+      birthYear: 1050,
       season: 'autumn',
     });
     // Pump insight up to 50 (fresh characters start at 0, and insight

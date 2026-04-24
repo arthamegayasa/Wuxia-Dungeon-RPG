@@ -13,6 +13,7 @@ describe('createRunState', () => {
       runSeed: 42,
       region: 'yellow_plains',
       year: 1000,
+      birthYear: 1000,
       season: 'summer',
     });
     expect(rs.turn).toBe(0);
@@ -29,7 +30,7 @@ describe('createRunState', () => {
     const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
     const rs = createRunState({
       character: c, runSeed: 77, region: 'yellow_plains',
-      year: 1000, season: 'summer',
+      year: 1000, birthYear: 1000, season: 'summer',
     });
     expect(rs.rngState.seed).toBe(77);
   });
@@ -38,7 +39,7 @@ describe('createRunState', () => {
     const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
     const rs = createRunState({
       character: c, runSeed: 1, region: 'yellow_plains',
-      year: 1000, season: 'spring',
+      year: 1000, birthYear: 1000, season: 'spring',
     });
     expect(rs.memoriesWitnessedThisLife).toEqual([]);
     expect(rs.memoriesManifestedThisLife).toEqual([]);

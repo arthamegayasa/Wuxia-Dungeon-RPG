@@ -87,7 +87,7 @@ function makeCtx(opts: {
 } = {}): TurnContext {
   const c = createCharacter({ name: 'Lin Wei', attributes: ATTRS, rng: createRng(1) });
   return {
-    runState: createRunState({ character: c, runSeed: 42, region: 'yellow_plains', year: 1000, season: 'summer' }),
+    runState: createRunState({ character: c, runSeed: 42, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' }),
     streak: createStreakState(),
     events: opts.events ?? [SIMPLE_EVENT],
     library: createSnippetLibrary({}),
