@@ -20,6 +20,7 @@ import { SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { NameRegistry } from '@/engine/narrative/NameRegistry';
 import { resolveTechniqueBonus } from '@/engine/cultivation/Technique';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { EchoTracker } from '@/engine/meta/EchoTracker';
 
 export interface TurnContext {
   runState: RunState;
@@ -29,6 +30,13 @@ export interface TurnContext {
   nameRegistry: NameRegistry;
   lifetimeSeenEvents: ReadonlyArray<string>;
   dominantMood: Mood;
+  /**
+   * Life-scoped echo counters threaded through each turn. Phase 2A-2 Task 10
+   * keeps this OUTSIDE `RunState` to avoid bumping the run-save schema. The
+   * bridge (or integration harness) owns persistence across turns and commits
+   * the snapshot into `MetaState.echoProgress` at death.
+   */
+  echoTracker: EchoTracker;
 }
 
 export interface TurnResult {
@@ -39,6 +47,8 @@ export interface TurnResult {
   nextRunState: RunState;
   nextStreak: StreakState;
   nextNameRegistry: NameRegistry;
+  /** Updated tracker with this turn's `choice_cat.<event.category>` increment. */
+  nextEchoTracker: EchoTracker;
 }
 
 export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResult {
@@ -120,6 +130,19 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   nextStreak = tickBuff(nextStreak);
   nextRunState = advanceTurn(nextRunState, choice.timeCost, rng);
 
+  // 8. Echo tracker increment (Phase 2A-2 Task 10). Key format matches
+  // EchoUnlocker's `choice_cat.<category>` reader in src/engine/meta/EchoUnlocker.ts.
+  // Runs AFTER applyOutcome so that if a Phase 3+ delta ever introduces a
+  // category override, we still count the event's own category (stable).
+  const nextEchoTracker = ctx.echoTracker.increment(`choice_cat.${event.category}`);
+
+  // 9. [Phase 2A-2 Task 11 insertion point]
+  //    MemoryManifestResolver meditation hook fires here — called when
+  //    `event.category === 'life.training'` with `techniqueBonusCategory === 'meditation'`
+  //    (or similar), rolls a forbidden-memory manifestation against meta, and appends
+  //    any resulting `memoriesWitnessedThisLife` / narrative ornamentation to the
+  //    return value. Intentionally a no-op in Task 10.
+
   return {
     eventId: event.id,
     choiceId,
@@ -128,6 +151,7 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
     nextRunState,
     nextStreak,
     nextNameRegistry: ctx.nameRegistry,
+    nextEchoTracker,
   };
 }
 

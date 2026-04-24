@@ -7,6 +7,7 @@ import { createStreakState } from '@/engine/choices/StreakTracker';
 import { createSnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
+import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { runTurn, TurnContext } from './GameLoop';
 
 const ATTRS = { Body: 28, Mind: 20, Spirit: 15, Agility: 35, Charm: 22, Luck: 42 };
@@ -29,16 +30,35 @@ const SIMPLE_EVENT: EventDef = {
   repeat: 'unlimited',
 };
 
-function makeCtx(): TurnContext {
+const TRAINING_EVENT: EventDef = {
+  id: 'EV_TRAINING',
+  category: 'life.training',
+  version: 1,
+  weight: 100,
+  conditions: { regions: ['yellow_plains'] },
+  timeCost: 'SHORT',
+  text: { intro: ['You train your body.'], body: [], outro: [] },
+  choices: [{
+    id: 'ch_walk', label: 'Train on.', timeCost: 'SHORT',
+    outcomes: {
+      SUCCESS: { narrativeKey: 'ok', stateDeltas: [{ kind: 'insight_delta', amount: 1 }] },
+      FAILURE: { narrativeKey: 'fail', stateDeltas: [{ kind: 'hp_delta', amount: -1 }] },
+    },
+  }],
+  repeat: 'unlimited',
+};
+
+function makeCtx(opts: { events?: ReadonlyArray<EventDef> } = {}): TurnContext {
   const c = createCharacter({ name: 'Lin Wei', attributes: ATTRS, rng: createRng(1) });
   return {
     runState: createRunState({ character: c, runSeed: 42, region: 'yellow_plains', year: 1000, season: 'summer' }),
     streak: createStreakState(),
-    events: [SIMPLE_EVENT],
+    events: opts.events ?? [SIMPLE_EVENT],
     library: createSnippetLibrary({}),
     nameRegistry: createNameRegistry(),
     lifetimeSeenEvents: [],
     dominantMood: computeDominantMood(zeroMoodInputs()),
+    echoTracker: EchoTracker.empty(),
   };
 }
 
@@ -107,5 +127,25 @@ describe('runTurn', () => {
     expect(r1.nextRunState.character.hp).toBe(r2.nextRunState.character.hp);
     expect(r1.nextRunState.character.insight).toBe(r2.nextRunState.character.insight);
     expect(r1.eventId).toBe(r2.eventId);
+  });
+
+  it('increments echoTracker with `choice_cat.<category>` after applyOutcome', () => {
+    // Phase 2A-2 Task 10: EchoTracker is threaded through runTurn per-turn,
+    // incrementing `choice_cat.<event.category>` after the outcome is applied.
+    const ctx = makeCtx({ events: [TRAINING_EVENT] });
+    const rng = createRng(100);
+    const r = runTurn(ctx, 'ch_walk', rng);
+    expect(r.nextEchoTracker.get('choice_cat.life.training')).toBe(1);
+    // Original tracker is unchanged (immutable).
+    expect(ctx.echoTracker.get('choice_cat.life.training')).toBe(0);
+  });
+
+  it('accumulates echoTracker counters across multiple runTurn calls', () => {
+    // Two back-to-back turns on the same category produce a count of 2.
+    const ctx1 = makeCtx({ events: [TRAINING_EVENT] });
+    const r1 = runTurn(ctx1, 'ch_walk', createRng(100));
+    const ctx2 = { ...ctx1, echoTracker: r1.nextEchoTracker };
+    const r2 = runTurn(ctx2, 'ch_walk', createRng(101));
+    expect(r2.nextEchoTracker.get('choice_cat.life.training')).toBe(2);
   });
 });

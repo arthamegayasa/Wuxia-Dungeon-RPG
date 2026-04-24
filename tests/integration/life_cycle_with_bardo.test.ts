@@ -12,6 +12,7 @@ import { createNameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
 import { runTurn } from '@/engine/core/GameLoop';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
+import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
 
 // A tiny corpus with one benign event and one fatal event, so a loop will eventually die.
 const EVENTS: EventDef[] = [
@@ -77,6 +78,7 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
     let streak = createStreakState();
     const library = createSnippetLibrary({});
     let nameRegistry = createNameRegistry();
+    let echoTracker = EchoTracker.empty();
 
     const turnRng = createRng(500);
     let turnsPlayed = 0;
@@ -87,6 +89,7 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
         runState, streak, events: EVENTS, library, nameRegistry,
         lifetimeSeenEvents: [],
         dominantMood: computeDominantMood(zeroMoodInputs()),
+        echoTracker,
       };
       let result;
       try {
@@ -97,14 +100,26 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
       runState = result.nextRunState;
       streak = result.nextStreak;
       nameRegistry = result.nextNameRegistry;
+      echoTracker = result.nextEchoTracker;
       turnsPlayed++;
     }
 
     expect(runState.deathCause).toBeTruthy();
     expect(turnsPlayed).toBeLessThan(MAX_TURNS);
 
-    // BARDO
-    const bardo = runBardoFlow(runState, meta, resolved.karmaMultiplier, emptyRegistry);
+    // Tracker should have counted both event categories encountered this life.
+    // (EV_BENIGN -> life.daily, EV_FATAL -> life.danger)
+    const trackerSnap = echoTracker.snapshot();
+    expect(
+      (trackerSnap['choice_cat.life.daily'] ?? 0) + (trackerSnap['choice_cat.life.danger'] ?? 0),
+    ).toBe(turnsPlayed);
+
+    // BARDO — fold tracker into meta first so EchoUnlocker sees this life's counters.
+    const metaWithProgress = commitTrackerToMeta(meta, echoTracker);
+    const bardo = runBardoFlow(runState, metaWithProgress, resolved.karmaMultiplier, emptyRegistry);
+    expect(bardo.meta.echoProgress['choice_cat.life.daily'] ?? 0).toBe(
+      trackerSnap['choice_cat.life.daily'] ?? 0,
+    );
     expect(bardo.karmaEarned).toBeGreaterThan(0);
     expect(bardo.meta.karmaBalance).toBe(bardo.karmaEarned);
     expect(bardo.meta.lifeCount).toBe(1);

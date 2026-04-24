@@ -27,6 +27,7 @@ import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
+import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
 import { loadEvents } from '@/content/events/loader';
 import { loadSnippets } from '@/content/snippets/loader';
 import { loadEchoes } from '@/content/echoes/loader';
@@ -477,7 +478,18 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         },
       };
 
+      // Phase 2A-2 Task 10: per-turn EchoTracker increment. Key format matches
+      // EchoUnlocker's `choice_cat.<category>` reader. Held in gameStore across
+      // turns (not in RunState — no schema bump). Tracker is snapshotted into
+      // meta.echoProgress at death, below, before runBardoFlow.
+      //
+      // [Task 11 insertion point]: MemoryManifestResolver meditation hook will
+      // slot in right after this tracker increment and before updateRun.
+      const currentTracker = gs.echoTracker ?? EchoTracker.empty();
+      const nextEchoTracker = currentTracker.increment(`choice_cat.${pending.category}`);
+
       useGameStore.getState().updateRun(nextRunState, nextStreak, gs.nameRegistry);
+      useGameStore.getState().setEchoTracker(nextEchoTracker);
       useGameStore.getState().setTurnResult({
         eventId: pending.id,
         choiceId,
@@ -486,6 +498,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         nextRunState,
         nextStreak,
         nextNameRegistry: gs.nameRegistry,
+        nextEchoTracker,
       });
       useGameStore.getState().appendSeenEvent(pending.id);
       saveRun(sm, nextRunState);
@@ -494,8 +507,13 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const anchorFlag = nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
         const mult = anchorMultiplierFor(anchorId);
-        const bardo = runBardoFlow(nextRunState, currentMetaState(), mult, ECHO_REGISTRY);
+        // Fold the life-scoped tracker into meta.echoProgress BEFORE runBardoFlow
+        // so EchoUnlocker (inside BardoFlow) observes this life's counters.
+        // Scope: keeps runBardoFlow's signature stable from Task 9.
+        const metaWithProgress = commitTrackerToMeta(currentMetaState(), nextEchoTracker);
+        const bardo = runBardoFlow(nextRunState, metaWithProgress, mult, ECHO_REGISTRY);
         useGameStore.getState().setBardoResult(bardo);
+        useGameStore.getState().setEchoTracker(null); // reset for next life
         hydrateMeta(bardo.meta);
         saveMeta(sm, bardo.meta);
         useGameStore.getState().setPhase(GamePhase.BARDO);
@@ -515,8 +533,15 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const anchorFlag = gs.runState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
         const mult = anchorMultiplierFor(anchorId);
-        const bardo = runBardoFlow(gs.runState, currentMetaState(), mult, ECHO_REGISTRY);
+        // Tracker is not persisted across reloads (lives in-memory only), so on
+        // rare resume-of-a-dead-character flows we pass whatever is still in
+        // the store (or empty). Cross-life echoProgress already committed on the
+        // original death path wins — this is a belt-and-braces path.
+        const fallbackTracker = gs.echoTracker ?? EchoTracker.empty();
+        const metaWithProgress = commitTrackerToMeta(currentMetaState(), fallbackTracker);
+        const bardo = runBardoFlow(gs.runState, metaWithProgress, mult, ECHO_REGISTRY);
         useGameStore.getState().setBardoResult(bardo);
+        useGameStore.getState().setEchoTracker(null);
         hydrateMeta(bardo.meta);
         saveMeta(sm, bardo.meta);
         useGameStore.getState().setPhase(GamePhase.BARDO);
