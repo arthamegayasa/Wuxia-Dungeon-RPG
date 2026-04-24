@@ -78,6 +78,10 @@ export function rollManifest(args: ManifestArgs): ManifestResult {
   let character = runState.character;
   const manifestFlags: string[] = [];
 
+  // Dormant in Phase 2A: mem.requirements (minMeridians / minRealm) is authored
+  // on each memory but NOT gated here. 2A grants insight + flag on a successful
+  // probability roll regardless of meridian/realm. Phase 2B adds the requirements
+  // check that converts the flag into a usable technique.
   for (const { id, count } of witnessed) {
     const chance = manifestChance(meta, character, count);
     const roll = rng.intRange(1, 100);
