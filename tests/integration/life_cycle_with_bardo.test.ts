@@ -5,6 +5,7 @@ import { getAnchorById } from '@/engine/meta/Anchor';
 import { resolveAnchor } from '@/engine/meta/AnchorResolver';
 import { characterFromAnchor } from '@/engine/meta/characterFromAnchor';
 import { createEmptyMetaState, purchaseUpgrade, ownsUpgrade, addKarma } from '@/engine/meta/MetaState';
+import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { createStreakState } from '@/engine/choices/StreakTracker';
 import { createSnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
@@ -67,11 +68,13 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
     const anchor = getAnchorById('peasant_farmer')!;
     const spawnRng = createRng(1);
     const resolved = resolveAnchor(anchor, spawnRng);
+    const emptyRegistry = EchoRegistry.fromList([]);
+    let meta = createEmptyMetaState();
     let { runState } = characterFromAnchor({
       resolved, name: 'Lin Wei', runSeed: 42, rng: spawnRng,
+      meta, echoRegistry: emptyRegistry,
     });
     let streak = createStreakState();
-    let meta = createEmptyMetaState();
     const library = createSnippetLibrary({});
     let nameRegistry = createNameRegistry();
 
@@ -124,6 +127,7 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
     const resolved2 = resolveAnchor(anchor, createRng(2));
     const { runState: rs2 } = characterFromAnchor({
       resolved: resolved2, name: 'Lin Wei II', runSeed: 100, rng: createRng(2),
+      meta, echoRegistry: emptyRegistry,
     });
 
     expect(rs2.turn).toBe(0);

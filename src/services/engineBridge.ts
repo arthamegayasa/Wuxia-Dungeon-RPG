@@ -29,6 +29,9 @@ import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
 import { loadEvents } from '@/content/events/loader';
 import { loadSnippets } from '@/content/snippets/loader';
+import { loadEchoes } from '@/content/echoes/loader';
+import { EchoRegistry } from '@/engine/meta/EchoRegistry';
+import { SoulEcho } from '@/engine/meta/SoulEcho';
 import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
@@ -40,6 +43,7 @@ import dangerJson from '@/content/events/yellow_plains/danger.json';
 import opportunityJson from '@/content/events/yellow_plains/opportunity.json';
 import transitionJson from '@/content/events/yellow_plains/transition.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
+import echoPack from '@/content/echoes/echoes.json';
 
 // Phase 1D-3 Task 10: Yellow Plains content pool. Flattens all authored regional
 // packs (~50 events) into one selectable array. Snippet library is the single
@@ -53,6 +57,12 @@ const ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(transitionJson),
 ];
 const DEFAULT_LIBRARY: SnippetLibrary = loadSnippets(ypSnippets);
+
+// Phase 2A-2 Task 8: the canonical echo registry. Built once at module load from
+// the authored `echoes.json`. `characterFromAnchor` consumes this at spawn to
+// roll any unlocked echoes against the player's `meta.echoesUnlocked` pool.
+// EchoDef (zod-inferred) is structurally compatible with SoulEcho.
+const ECHO_REGISTRY = EchoRegistry.fromList(loadEchoes(echoPack) as ReadonlyArray<SoulEcho>);
 
 export interface LoadOrInitResult {
   phase: GamePhase;
@@ -350,6 +360,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const runSeed = spawnRng.intRange(0, 0x7fffffff);
       const { character, runState } = characterFromAnchor({
         resolved, name: chosenName, runSeed, rng: spawnRng,
+        meta: currentMetaState(),
+        echoRegistry: ECHO_REGISTRY,
       });
 
       // Tag the character so BardoFlow can extract the anchor id for lineage.
