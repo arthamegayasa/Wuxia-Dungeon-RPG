@@ -104,7 +104,7 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
     expect(turnsPlayed).toBeLessThan(MAX_TURNS);
 
     // BARDO
-    const bardo = runBardoFlow(runState, meta, resolved.karmaMultiplier);
+    const bardo = runBardoFlow(runState, meta, resolved.karmaMultiplier, emptyRegistry);
     expect(bardo.karmaEarned).toBeGreaterThan(0);
     expect(bardo.meta.karmaBalance).toBe(bardo.karmaEarned);
     expect(bardo.meta.lifeCount).toBe(1);

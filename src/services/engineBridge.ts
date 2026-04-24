@@ -494,7 +494,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const anchorFlag = nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
         const mult = anchorMultiplierFor(anchorId);
-        const bardo = runBardoFlow(nextRunState, currentMetaState(), mult);
+        const bardo = runBardoFlow(nextRunState, currentMetaState(), mult, ECHO_REGISTRY);
         useGameStore.getState().setBardoResult(bardo);
         hydrateMeta(bardo.meta);
         saveMeta(sm, bardo.meta);
@@ -515,7 +515,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const anchorFlag = gs.runState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
         const mult = anchorMultiplierFor(anchorId);
-        const bardo = runBardoFlow(gs.runState, currentMetaState(), mult);
+        const bardo = runBardoFlow(gs.runState, currentMetaState(), mult, ECHO_REGISTRY);
         useGameStore.getState().setBardoResult(bardo);
         hydrateMeta(bardo.meta);
         saveMeta(sm, bardo.meta);
