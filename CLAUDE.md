@@ -42,7 +42,7 @@ The spec defines 6 major phases (0–5). Each ships a standalone playable build 
 |-------|-------|-------------|--------|
 | **0** | Foundation | Engine skeleton, RNG, SaveManager, TitleScreen, CI | ✅ merged (see 1D-1 table below for full breakdown) |
 | **1** | The Mortal's Burden | Vertical slice: Peasant Farmer anchor, Yellow Plains, Body Tempering, 50 events, karma cycle | ✅ **complete** — delivered across 1A/1B/1C/1D-1/1D-2/1D-3 |
-| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI | 🧠 needs brainstorming to split into 2A/2B/2C |
+| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI | 🚧 **in progress** — 2A split into 2A-1 (engine) + 2A-2 (content + integration) + 2A-3 (reveal UI); 2B (Azure Peaks + techniques + core paths) pending |
 | **3** | The Heavens Notice | Heavenly Notice system + Karmic Imprints + Karmic Hunters + Tribulations I-II + Foundation/Core realms + Bone Marshes + cross-life Threads + world map | ⏳ pending |
 | **4** | Mind Benders | Pillar puzzles + NPC persistence + faction state + Imperial Capital + Northern Wastes + Nascent Soul realms + Tribulations III-IV | ⏳ pending |
 | **5** | Ascension | Sunken Isles + Void Refinement + Immortal realms + Tribulations V-IX + 5 true endings + PWA | ⏳ pending |
@@ -69,42 +69,67 @@ Phase 1 was split into 7 sub-phases executed between 2026-04-21 and 2026-04-23.
 
 **Branch tags**: `phase-0-complete` at commit `e25a969`. **Phase 1 complete** at merge commit `2e61259`.
 
+## Phase 2A progress
+
+Phase 2 brainstormed 2026-04-23 and split into **2A** (inheritance + reveal) and **2B** (Azure Peaks + techniques + core paths). 2A further split into three sub-phases. Spec of record: [`docs/superpowers/specs/2026-04-23-phase-2a-inheritance-and-reveal-design.md`](docs/superpowers/specs/2026-04-23-phase-2a-inheritance-and-reveal-design.md).
+
+| Sub-phase | Scope | Tests | PR / Commit |
+|-----------|-------|-------|-------------|
+| 2A-1 | Engine foundations: SoulEcho (registry/tracker/unlocker/roller/applier), ForbiddenMemory (registry/witness-logger/manifest-resolver), MoodFilter post-passes (adjective dict + interior-thought injector), MetaState v2 schema + v1→v2 migrator, `witness_memory` stateDelta, `meditation` event tag wiring, integration test echo_inheritance | +71 | [#9](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/9) → `f1efa86` |
+| 2A-2 | Content authoring + engine integration: 10 canonical echoes + 5 memories JSON + 3 new anchors (Martial Family / Scholar's Son / Outer Disciple), `AnchorResolver` targetRegion/spawnRegionFallback, `characterFromAnchor` echo roll+apply at spawn, `BardoFlow` witness commit + echo unlock + lineage annotation, `GameLoop.runTurn` + `resolveChoice` threaded via shared `PostOutcomeHooks` (tracker increment + meditation manifest roll), `witnessMemory` retrofit on 10 YP events, 6 anchor-bridging events, 3 meditation events, 18 reflection/anchor-opener snippets, integration tests for memory manifest N→N+5 + mood filter variance | +124 | [#10](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/10) → `337f315` |
+| 2A-3 | Reveal UI: Codex screen (Memories / Echoes / Anchors tabs), Lineage screen (LifeCards), enhanced BardoPanel (reveal steps 10a/10b/10c), enhanced CreationScreen (locked-anchor silhouettes + shimmer), TitleScreen entry points, `engineBridge` snapshot APIs, full-cycle UI integration test | ⏳ pending | — |
+
+**Test count on main after 2A-2:** 651 (across 98 files). Build: 420.78 KB raw / 118.14 KB gzip (Phase 3 budget 450 KB).
+
+**Phase 2A exit criteria proven so far** (spec §2):
+1. ✅ Echo inheritance N → N+1 deterministic (`tests/integration/echo_inheritance.test.ts`, 2A-1)
+2. ✅ Memory witnessed N → manifest N+5 (`tests/integration/memory_manifestation.test.ts`, 2A-2)
+3. ✅ MoodFilter variance (`tests/integration/mood_filter_variance.test.ts`, 2A-2)
+4. ✅ All 5 anchors selectable + produce distinct starting states (`Anchor.test.ts`, 2A-2)
+5. ⏳ Codex screen renders real accumulated data (2A-3)
+6. ⏳ Lineage screen lists past lives (2A-3)
+7. ✅ MetaState v1 → v2 migration preserves karma + defaults new fields (`Migrator.v1_to_v2.test.ts`, 2A-1)
+8. ⚠ Partial — memory mechanic proven at N+5 horizon; full runtime 5-life UI-driven loop deferred to 2A-3
+
 ## Resuming work — next action
 
-**Phase 1 is complete.** The game is playable end-to-end: Title → anchor pick → named character → real Yellow Plains life (50 events, 80 snippets) → eventual death → bardo summary + karma breakdown + upgrade shop → reincarnate.
-
-The next step is to **brainstorm Phase 2 scope** via the `superpowers:brainstorming` skill. Phase 2 is the largest so far; recommend splitting into 2-3 sub-phases.
-
-**Phase 2 candidate decomposition (to refine in brainstorming):**
-
-- **Phase 2A — Cross-life inheritance:** Echo system (§7.2, 10 echoes with conflict resolution), Forbidden Memory system (§7.3, witness logging + manifestation roll), MoodFilter narrative tweaks (§6.4), +3 anchors (Martial Family / Scholar's Son / Outer Disciple), store + save-envelope changes.
-- **Phase 2B — Codex + Lineage UI:** Codex screen (§11.4 — Memories/Echoes/Anchors tabs), Lineage screen (§11.5 — drill into past lives from bardo), unlock-animation polish.
-- **Phase 2C — Second region + techniques + core paths:** Azure Peaks region + content authoring (events + snippets), technique registry + 10 basic techniques integrated with choice resolver (`technique_learn` stateDelta + `techniqueBonusCategory` checks), core-path detection + bonus application, realm expansion (Qi Sensing + Qi Condensation 1-9), 200-leaf snippet library target.
-
-**Phase 2 exit criteria** (§13):
-1. A Life N+1 character inherits echoes from Life N in a reproducible way.
-2. Forbidden Memory witnessed in Life N can manifest in Life N+5.
-3. Core Path detection affects at least 5 choice resolvers.
+**Next: Phase 2A-3 (reveal UI).** Spec covers this in §6 (Codex/Lineage/Bardo/Creation UI) and §9.3 (plan split). No new brainstorming needed — go straight to `superpowers:writing-plans`.
 
 **Exact first steps for a new session:**
 
 ```bash
 cd "D:/Claude Code/Wuxia RPG"
 git status                           # confirm clean, on main
+git log --oneline -5                 # confirm 337f315 is tip
 ```
 
-Then invoke `superpowers:brainstorming` to explore Phase 2 scope. Expected output: 2-3 separate sub-plan specs (e.g., `docs/superpowers/specs/YYYY-MM-DD-phase-2a-echoes-memories.md`, etc.), each driving its own implementation plan written via `superpowers:writing-plans`.
+Then invoke `superpowers:writing-plans` with the spec §6 + §9.3 as input. Expected output: `docs/superpowers/plans/YYYY-MM-DD-phase-2a3-reveal-ui.md` driving a new branch `phase-2a3-ui` from main.
 
-## Known lingering items (from Phase 1)
+After 2A-3 merges, Phase 2A is complete. Then brainstorm **Phase 2B** (Azure Peaks region + technique registry + core-path detection + realm expansion) as its own spec.
 
-These are accepted Phase-1 trade-offs that Phase 2 should address, documented so they aren't re-fixed mid-flight:
+## Known lingering items
 
-- **Cached-peek narrative drift**: `peekNextEvent` uses `cursor+1` for local RNG, `resolveChoice` uses `cursor`. Repeated peeks without resolving return the same event/choices but slightly varied narrative. Phase 2 should split peek/resolve RNG streams cleanly.
-- **`onContinue` consumes a turn on resume**: calls `peekNextEvent`, which runs the selector and advances turn state. Phase 2 can add a `getCurrentPendingPreview()` path that re-renders the stored `pendingEventId` without running the selector.
-- **Event flags unconsumed**: Phase 1D-3 events set ~20 flags (e.g., `married`, `friend_of_elder`, `apprentice`, `has_child`) that no current event gates on. Phase 2 authors follow-up events that branch on these.
-- **Item registry absent**: events reference `spiritual_stone`, `minor_healing_pill`, `silver_pouch` via `item_add` deltas. No central item registry yet — items are opaque strings. Phase 2 introduces a registry so items can affect checks and show in inventory.
-- **Technique registry absent**: `technique_learn` stateDelta is supported but no technique corpus ships. Phase 2C adds 10 basic techniques + registry + check bonus wiring.
-- **Bundle growth budget**: 388 KB raw / 110 KB gzip after 1D-3. Spec §13 allows growth through Phase 3 (450 KB raw target); audit size at each phase boundary.
+**Phase 1 carry-overs (still open):**
+
+- **Cached-peek narrative drift**: `peekNextEvent` uses `cursor+1` for local RNG, `resolveChoice` uses `cursor`. Phase 2A did NOT address this; still open.
+- **`onContinue` consumes a turn on resume**: calls `peekNextEvent`, which runs the selector and advances turn state. Still open.
+- **Event flags unconsumed**: Phase 1D-3 events set ~20 flags that no current event gates on. Phase 2A-2's bridge events consume a few (`from_martial_family`, `literate`, `outer_sect_member`) but most Phase 1 flags still unused.
+- **Item registry absent**: items still opaque strings. Deferred past Phase 2A; expected in Phase 2B or later.
+- **Technique registry absent**: `technique_learn` stateDelta still no-op. Phase 2B owns this.
+
+**Phase 2A-2 trade-offs (accepted; don't re-fix mid-flight):**
+
+- **Dormant echo effects**: 8 of 12 `EchoEffect` kinds (`body_cultivation_rate_pct`, `resolver_bonus`, `heal_efficacy_pct`, `mood_swing_pct`, `stat_mod_pct`, `event_weight`, `old_age_death_roll_pct`, `imprint_encounter_rate_pct`) fall through `EchoApplier`'s default branch. Effects validate + ship in the canonical roster but are no-ops until Phase 2B/2C (resolver/cultivation/event-weight wiring) or Phase 3 (imprints). In-tree comment at `src/engine/meta/EchoApplier.ts:42-48`.
+- **`ghost_in_mirror` echo unreachable**: `BardoFlow.computeRegionStreak` stubs to `{[region]: 1}` because `LineageEntrySummary` has no `regionOfDeath` field. The `died_in_same_region_streak` unlock condition can never fire under current code. Phase 3 Imprints work extends lineage + unblocks this.
+- **Memory `requirements` gate dormant**: `mem.requirements.minMeridians` / `minRealm` authored on each memory but NOT checked at manifest time. 2A grants insight + flag on probability roll alone. Phase 2B adds the gate when technique registry lands. In-tree comment at `src/engine/meta/MemoryManifestResolver.ts:81-84`.
+- **Anchor unlock evaluator deferred**: All 5 anchors (including `martial_family` / `scholars_son` / `outer_disciple`) are selectable without earning their unlock. Unlock strings (`reach_body_tempering_5`, `read_ten_tomes_one_life`, `befriend_sect_disciple`) are opaque. Phase 2A-3 Codex screen will wire the gate.
+- **`anchor.spawn.regions` deprecated but retained**: `@deprecated` JSDoc on the field; `AnchorResolver` ignores it (uses `targetRegion` + `spawnRegionFallback` instead). Kept for backward-compat on content-loader schema. Delete in Phase 3 if no new consumers appear.
+- **Pack-version schema inconsistency**: `AnchorPackSchema.version` + `EventPackSchema.version` use `z.literal(1)`; new `EchoPackSchema.version` + `MemoryPackSchema.version` use `z.number().int().positive()`. Cheap follow-up cleanup for any future sub-phase.
+- **EchoTracker not persisted to disk**: Lives in Zustand `gameStore.echoTracker` only, nulled on session reset. Mid-life reload after Phase 1 save/load loses within-life counters. `beginBardo` fallback uses empty tracker (conservative — no false unlocks). Consider disk-persistence when Phase 2A-3 touches the save envelope.
+- **`EchoDef`/`MemoryDef` → `SoulEcho`/`ForbiddenMemory` casts in `engineBridge`**: Content-schema-derived vs engine types are structurally identical today. Casts documented inline. Phase 2B may broaden `EchoRegistry.fromList<T extends SoulEcho>` to eliminate both.
+- **`anchorThisLife` flag-string extraction repeated 3×**: `flags.find(f => f.startsWith('anchor:'))?.slice(7) ?? 'unknown'` appears in `BardoFlow.ts` + `engineBridge.ts` (2 sites). Extract `getAnchorFromFlags(flags)` helper in a Phase 2B polish commit, or store `anchorId` directly on `RunState`/`Character`.
+
+**Bundle growth:** 420.78 KB raw / 118.14 KB gzip after 2A-2 (was 388/110 after 1D-3). Phase 3 budget is 450 KB raw — re-audit at the start of 2A-3 + 2B.
 
 ## Tone & communication preferences
 
@@ -149,5 +174,8 @@ When working on a subsystem, re-read the relevant spec section first:
 - Don't modify files in other phase-locked subsystems unless your current task requires it (and the plan permits it).
 - Don't add runtime dependencies beyond the locked set in `package.json` without explicit user approval.
 - Don't regress Phase 1 exit criterion — the `tests/integration/playable_life.test.ts` and `tests/integration/ui_full_cycle.test.tsx` must stay green.
+- Don't regress Phase 2A-2 exit criteria — `tests/integration/echo_inheritance.test.ts`, `memory_manifestation.test.ts`, `mood_filter_variance.test.ts`, `life_cycle_with_bardo.test.ts` must stay green.
 - Don't replace `peasant_farmer` / `true_random` anchor defaults — Phase 2 adds new anchors, doesn't replace.
 - Don't delete the Yellow Plains content — Phase 2 authors a second region (Azure Peaks) alongside, doesn't replace.
+- Don't add meridian/realm gating to `MemoryManifestResolver.rollManifest` — the `requirements` field is deliberately dormant in 2A. Phase 2B adds the gate.
+- Don't delete `anchor.spawn.regions` — `@deprecated` but still validated by the content loader. Phase 3 can remove.
