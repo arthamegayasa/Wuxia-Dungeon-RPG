@@ -6,6 +6,7 @@ import { resolveAnchor } from '@/engine/meta/AnchorResolver';
 import { characterFromAnchor } from '@/engine/meta/characterFromAnchor';
 import { createEmptyMetaState, purchaseUpgrade, ownsUpgrade, addKarma } from '@/engine/meta/MetaState';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
+import { EMPTY_MEMORY_REGISTRY } from '@/engine/meta/MemoryRegistry';
 import { createStreakState } from '@/engine/choices/StreakTracker';
 import { createSnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
@@ -90,6 +91,8 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
         lifetimeSeenEvents: [],
         dominantMood: computeDominantMood(zeroMoodInputs()),
         echoTracker,
+        memoryRegistry: EMPTY_MEMORY_REGISTRY,
+        meta,
       };
       let result;
       try {
@@ -113,6 +116,13 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
     expect(
       (trackerSnap['choice_cat.life.daily'] ?? 0) + (trackerSnap['choice_cat.life.danger'] ?? 0),
     ).toBe(turnsPlayed);
+
+    // Task 10 M5: per-category assertion. The fatal event is `life.danger`, and
+    // a fatal FAILURE/CRIT_FAILURE is what terminates the loop — so at least
+    // one `choice_cat.life.danger` increment must land in the final tracker.
+    // This guards against a future refactor that moves the tracker increment
+    // before `applyOutcome` (which would mis-bucket the death turn).
+    expect(echoTracker.get('choice_cat.life.danger')).toBeGreaterThanOrEqual(1);
 
     // BARDO — fold tracker into meta first so EchoUnlocker sees this life's counters.
     const metaWithProgress = commitTrackerToMeta(meta, echoTracker);

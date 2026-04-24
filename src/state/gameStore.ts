@@ -80,6 +80,12 @@ export const useGameStore = create<GameStoreState>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 
+  // EchoTracker lifecycle asymmetry (Task 10 I3):
+  //   seedRun  -> EchoTracker.empty()  (fresh zero-counter tracker for a new life)
+  //   resetRun -> null                 (session teardown; no life is active)
+  // This matters because `bridge.resolveChoice` does `gs.echoTracker ?? EchoTracker.empty()`
+  // — a null is treated as "no active life", and an empty tracker is "life in progress
+  // with no hits yet". They must NOT be collapsed to a single value.
   seedRun: ({ runState, streak, nameRegistry, lifetimeSeenEvents }) =>
     set({
       runState,

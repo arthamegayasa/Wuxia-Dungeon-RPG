@@ -8,6 +8,9 @@ import { createSnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
+import { MemoryRegistry, EMPTY_MEMORY_REGISTRY } from '@/engine/meta/MemoryRegistry';
+import { ForbiddenMemory } from '@/engine/meta/ForbiddenMemory';
+import { createEmptyMetaState } from '@/engine/meta/MetaState';
 import { runTurn, TurnContext } from './GameLoop';
 
 const ATTRS = { Body: 28, Mind: 20, Spirit: 15, Agility: 35, Charm: 22, Luck: 42 };
@@ -48,7 +51,40 @@ const TRAINING_EVENT: EventDef = {
   repeat: 'unlimited',
 };
 
-function makeCtx(opts: { events?: ReadonlyArray<EventDef> } = {}): TurnContext {
+const MEDITATION_EVENT: EventDef = {
+  id: 'EV_MEDITATION',
+  category: 'meditation',
+  version: 1,
+  weight: 100,
+  conditions: { regions: ['yellow_plains'] },
+  timeCost: 'SHORT',
+  text: { intro: ['You still your mind.'], body: [], outro: [] },
+  choices: [{
+    id: 'ch_walk', label: 'Sit.', timeCost: 'SHORT',
+    outcomes: {
+      SUCCESS: { narrativeKey: 'ok', stateDeltas: [{ kind: 'insight_delta', amount: 1 }] },
+      FAILURE: { narrativeKey: 'fail', stateDeltas: [{ kind: 'hp_delta', amount: -1 }] },
+    },
+  }],
+  repeat: 'unlimited',
+};
+
+function memory(id: string, insightBonus = 10): ForbiddenMemory {
+  return {
+    id, name: id, description: '', element: 'water',
+    witnessFlavour: { fragment: 'a', partial: 'b', complete: 'c' },
+    manifestFlavour: 'm',
+    manifestInsightBonus: insightBonus,
+    manifestFlag: `remembered_${id}`,
+    requirements: {},
+  };
+}
+
+function makeCtx(opts: {
+  events?: ReadonlyArray<EventDef>;
+  memoryRegistry?: MemoryRegistry;
+  meta?: TurnContext['meta'];
+} = {}): TurnContext {
   const c = createCharacter({ name: 'Lin Wei', attributes: ATTRS, rng: createRng(1) });
   return {
     runState: createRunState({ character: c, runSeed: 42, region: 'yellow_plains', year: 1000, season: 'summer' }),
@@ -59,6 +95,8 @@ function makeCtx(opts: { events?: ReadonlyArray<EventDef> } = {}): TurnContext {
     lifetimeSeenEvents: [],
     dominantMood: computeDominantMood(zeroMoodInputs()),
     echoTracker: EchoTracker.empty(),
+    memoryRegistry: opts.memoryRegistry ?? EMPTY_MEMORY_REGISTRY,
+    meta: opts.meta ?? createEmptyMetaState(),
   };
 }
 
@@ -147,5 +185,42 @@ describe('runTurn', () => {
     const ctx2 = { ...ctx1, echoTracker: r1.nextEchoTracker };
     const r2 = runTurn(ctx2, 'ch_walk', createRng(101));
     expect(r2.nextEchoTracker.get('choice_cat.life.training')).toBe(2);
+  });
+
+  it('runs MemoryManifestResolver on meditation-category events', () => {
+    // Phase 2A-2 Task 11: meditation-gated manifest hook. Even if the
+    // probability roll fails, the manifest attempt counter still advances so
+    // the attempts-per-life ceiling is enforceable.
+    const reg = MemoryRegistry.fromList([memory('iron_bamboo', 10)]);
+    const ctx = makeCtx({
+      events: [MEDITATION_EVENT],
+      memoryRegistry: reg,
+      meta: { ...createEmptyMetaState(), memoriesWitnessed: { iron_bamboo: 10 } },
+    });
+    const rng = createRng(100);
+    const r = runTurn(ctx, 'ch_walk', rng);
+    expect(r.nextRunState.manifestAttemptsThisLife).toBe(1);
+  });
+
+  it('does NOT run MemoryManifestResolver on non-meditation events', () => {
+    // Training-category event must never consume a manifest attempt.
+    const reg = MemoryRegistry.fromList([memory('iron_bamboo', 10)]);
+    const ctx = makeCtx({
+      events: [TRAINING_EVENT],
+      memoryRegistry: reg,
+      meta: { ...createEmptyMetaState(), memoriesWitnessed: { iron_bamboo: 10 } },
+    });
+    const rng = createRng(100);
+    const r = runTurn(ctx, 'ch_walk', rng);
+    expect(r.nextRunState.manifestAttemptsThisLife).toBe(0);
+    expect(r.manifested).toEqual([]);
+  });
+
+  it('includes `manifested: readonly string[]` in TurnResult', () => {
+    const ctx = makeCtx();
+    const rng = createRng(100);
+    const r = runTurn(ctx, 'ch_walk', rng);
+    expect(Array.isArray(r.manifested)).toBe(true);
+    expect(r.manifested).toEqual([]);
   });
 });

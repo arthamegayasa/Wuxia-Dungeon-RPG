@@ -21,6 +21,9 @@ import { NameRegistry } from '@/engine/narrative/NameRegistry';
 import { resolveTechniqueBonus } from '@/engine/cultivation/Technique';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
+import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
+import { MetaState } from '@/engine/meta/MetaState';
+import { applyPostOutcomeHooks } from './PostOutcomeHooks';
 
 export interface TurnContext {
   runState: RunState;
@@ -37,6 +40,20 @@ export interface TurnContext {
    * the snapshot into `MetaState.echoProgress` at death.
    */
   echoTracker: EchoTracker;
+  /**
+   * Registry of authored forbidden memories. Phase 2A-2 Task 11 reads this in
+   * `applyPostOutcomeHooks` when the resolved event's category is `meditation`
+   * (the only gate that fires `MemoryManifestResolver.rollManifest`). Pass
+   * `EMPTY_MEMORY_REGISTRY` in tests that don't care.
+   */
+  memoryRegistry: MemoryRegistry;
+  /**
+   * Cross-life meta snapshot — read-only inside `runTurn`. Used by the Task 11
+   * manifest hook to compute manifest chance (Mind, SotW level, witness count)
+   * and to gate on `memoriesWitnessed`. `runTurn` never mutates meta; the
+   * bridge/integration harness is responsible for committing at bardo time.
+   */
+  meta: MetaState;
 }
 
 export interface TurnResult {
@@ -49,6 +66,11 @@ export interface TurnResult {
   nextNameRegistry: NameRegistry;
   /** Updated tracker with this turn's `choice_cat.<event.category>` increment. */
   nextEchoTracker: EchoTracker;
+  /**
+   * Forbidden-memory ids that manifested on this turn. Always `[]` for non-
+   * meditation events. Phase 2A-2 Task 11 surface; UI / Bardo can highlight.
+   */
+  manifested: ReadonlyArray<string>;
 }
 
 export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResult {
@@ -130,18 +152,22 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   nextStreak = tickBuff(nextStreak);
   nextRunState = advanceTurn(nextRunState, choice.timeCost, rng);
 
-  // 8. Echo tracker increment (Phase 2A-2 Task 10). Key format matches
-  // EchoUnlocker's `choice_cat.<category>` reader in src/engine/meta/EchoUnlocker.ts.
-  // Runs AFTER applyOutcome so that if a Phase 3+ delta ever introduces a
-  // category override, we still count the event's own category (stable).
-  const nextEchoTracker = ctx.echoTracker.increment(`choice_cat.${event.category}`);
-
-  // 9. [Phase 2A-2 Task 11 insertion point]
-  //    MemoryManifestResolver meditation hook fires here — called when
-  //    `event.category === 'life.training'` with `techniqueBonusCategory === 'meditation'`
-  //    (or similar), rolls a forbidden-memory manifestation against meta, and appends
-  //    any resulting `memoriesWitnessedThisLife` / narrative ornamentation to the
-  //    return value. Intentionally a no-op in Task 10.
+  // 8. Post-outcome hooks (Phase 2A-2 Task 10 + Task 11).
+  //    Shared helper — kept in lockstep with `engineBridge.resolveChoice`.
+  //    Owns:
+  //      a. `echoTracker.increment('choice_cat.<event.category>')` — always.
+  //      b. `MemoryManifestResolver.rollManifest` — meditation-category only.
+  //    Runs AFTER `applyOutcome` / `advanceTurn` so it observes the final
+  //    per-turn state (mirrors the bridge's ordering exactly).
+  const hooks = applyPostOutcomeHooks({
+    runState: nextRunState,
+    event,
+    meta: ctx.meta,
+    echoTracker: ctx.echoTracker,
+    memoryRegistry: ctx.memoryRegistry,
+  });
+  nextRunState = hooks.runState;
+  const nextEchoTracker = hooks.echoTracker;
 
   return {
     eventId: event.id,
@@ -152,6 +178,7 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
     nextStreak,
     nextNameRegistry: ctx.nameRegistry,
     nextEchoTracker,
+    manifested: hooks.manifested,
   };
 }
 
