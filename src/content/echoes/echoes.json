@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "echoes": [
+    {
+      "id": "iron_body",
+      "name": "Iron Body",
+      "description": "Your flesh remembers tempering. Old pains re-teach themselves.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "reach_realm", "realm": "body_tempering", "sublayer": 5 },
+      "effects": [
+        { "kind": "hp_mult", "mult": 1.2 },
+        { "kind": "body_cultivation_rate_pct", "pct": 10 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "sword_memory",
+      "name": "Sword Memory",
+      "description": "Your hands know a grip you never learned.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "choice_category_count", "category": "life.training", "count": 100 },
+      "effects": [
+        { "kind": "stat_mod", "stat": "Agility", "delta": 5 },
+        { "kind": "resolver_bonus", "category": "life.training", "bonus": 15 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "doctors_hands",
+      "name": "Doctor's Hands",
+      "description": "Wounds ease themselves beneath your touch.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "choice_category_count", "category": "life.social", "count": 50 },
+      "effects": [
+        { "kind": "heal_efficacy_pct", "pct": 30 },
+        { "kind": "stat_mod", "stat": "Mind", "delta": 5 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "cold_resolve",
+      "name": "Cold Resolve",
+      "description": "You have refused temptation before. The pattern stays.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "choice_category_count", "category": "life.danger", "count": 10 },
+      "effects": [
+        { "kind": "mood_swing_pct", "pct": -10 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "regret_unspoken",
+      "name": "Regret of the Unspoken",
+      "description": "A vow you never fulfilled still pulls at your throat.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "died_with_flag", "flag": "unfulfilled_vow" },
+      "effects": [
+        { "kind": "stat_mod", "stat": "Charm", "delta": 15 },
+        { "kind": "insight_cap_bonus", "bonus": 10 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "farmers_eye",
+      "name": "Farmer's Eye",
+      "description": "You read the sky without thinking. The soil speaks plainly.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "lives_as_anchor_max_age", "anchor": "peasant_farmer", "lives": 5 },
+      "effects": [
+        { "kind": "resolver_bonus", "category": "life.daily", "bonus": 20 },
+        { "kind": "starting_flag", "flag": "weather_wise" }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "hollow_teacher",
+      "name": "Hollow Teacher",
+      "description": "You learned without hands, without books. The way arrived from nowhere.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "reached_realm_without_techniques", "realm": "foundation" },
+      "effects": [
+        { "kind": "stat_mod", "stat": "Spirit", "delta": 5 },
+        { "kind": "resolver_bonus", "category": "life.opportunity", "bonus": 25 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "patience_of_stone",
+      "name": "Patience of Stone",
+      "description": "Ninety winters taught you that endings are slow. So are beginnings.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "lived_min_years_in_single_life", "years": 90 },
+      "effects": [
+        { "kind": "old_age_death_roll_pct", "pct": -20 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "vessel_understanding",
+      "name": "Vessel of Understanding",
+      "description": "You have overflowed with insight before. The cup remembers its shape.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "reached_insight_cap_lives", "lives": 3 },
+      "effects": [
+        { "kind": "insight_cap_bonus", "bonus": 50 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    },
+    {
+      "id": "ghost_in_mirror",
+      "name": "Ghost in the Mirror",
+      "description": "The same region has buried you three times. The land has learned your face.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "died_in_same_region_streak", "region": "yellow_plains", "streak": 3 },
+      "effects": [
+        { "kind": "imprint_encounter_rate_pct", "pct": 100 }
+      ],
+      "conflicts": [],
+      "reveal": "birth"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "memories": [
+    {
+      "id": "frost_palm_severing",
+      "name": "Frost Palm Severing",
+      "description": "A water-element severing art, cold enough to split blood.",
+      "element": "water",
+      "witnessFlavour": {
+        "fragment": "memory.witness.frost_palm_severing.fragment",
+        "partial": "memory.witness.frost_palm_severing.partial",
+        "complete": "memory.witness.frost_palm_severing.complete"
+      },
+      "manifestFlavour": "memory.manifest.frost_palm_severing",
+      "manifestInsightBonus": 10,
+      "manifestFlag": "remembered_frost_palm_severing",
+      "requirements": { "minMeridians": 3 }
+    },
+    {
+      "id": "crimson_spear_river",
+      "name": "Crimson Spear That Crosses the River",
+      "description": "A fire-element thrusting art; the blade burns across the enemy's breath.",
+      "element": "fire",
+      "witnessFlavour": {
+        "fragment": "memory.witness.crimson_spear_river.fragment",
+        "partial": "memory.witness.crimson_spear_river.partial",
+        "complete": "memory.witness.crimson_spear_river.complete"
+      },
+      "manifestFlavour": "memory.manifest.crimson_spear_river",
+      "manifestInsightBonus": 15,
+      "manifestFlag": "remembered_crimson_spear_river",
+      "requirements": { "minRealm": "qi_condensation" }
+    },
+    {
+      "id": "silent_waters_scripture",
+      "name": "Scripture of the Silent Waters",
+      "description": "A meditation manual. Its syllables erase the reader.",
+      "element": "water",
+      "witnessFlavour": {
+        "fragment": "memory.witness.silent_waters_scripture.fragment",
+        "partial": "memory.witness.silent_waters_scripture.partial",
+        "complete": "memory.witness.silent_waters_scripture.complete"
+      },
+      "manifestFlavour": "memory.manifest.silent_waters_scripture",
+      "manifestInsightBonus": 8,
+      "manifestFlag": "remembered_silent_waters_scripture",
+      "requirements": { "minMeridians": 1 }
+    },
+    {
+      "id": "iron_bamboo_stance",
+      "name": "Iron Bamboo Stance",
+      "description": "A wood-element defensive form. The practitioner bends; the wood does not break.",
+      "element": "wood",
+      "witnessFlavour": {
+        "fragment": "memory.witness.iron_bamboo_stance.fragment",
+        "partial": "memory.witness.iron_bamboo_stance.partial",
+        "complete": "memory.witness.iron_bamboo_stance.complete"
+      },
+      "manifestFlavour": "memory.manifest.iron_bamboo_stance",
+      "manifestInsightBonus": 7,
+      "manifestFlag": "remembered_iron_bamboo_stance",
+      "requirements": { "minMeridians": 2 }
+    },
+    {
+      "id": "hollow_mountain_breath",
+      "name": "Hollow Mountain Breath",
+      "description": "An earth-element breathing art. The lungs become ancient caverns.",
+      "element": "earth",
+      "witnessFlavour": {
+        "fragment": "memory.witness.hollow_mountain_breath.fragment",
+        "partial": "memory.witness.hollow_mountain_breath.partial",
+        "complete": "memory.witness.hollow_mountain_breath.complete"
+      },
+      "manifestFlavour": "memory.manifest.hollow_mountain_breath",
+      "manifestInsightBonus": 12,
+      "manifestFlag": "remembered_hollow_mountain_breath",
+      "requirements": { "minRealm": "foundation" }
+    }
+  ]
+}

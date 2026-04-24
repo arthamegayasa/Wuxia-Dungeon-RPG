@@ -30,7 +30,8 @@
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 4 },
                 { "kind": "flag_set", "flag": "friend_of_elder" }
-              ]
+              ],
+              "witnessMemory": "silent_waters_scripture"
             },
             "SUCCESS": {
               "narrativeKey": "npc.elder.wisdom",
@@ -182,7 +183,8 @@
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 2 },
                 { "kind": "flag_set", "flag": "bested_rival" }
-              ]
+              ],
+              "witnessMemory": "frost_palm_severing"
             },
             "SUCCESS": {
               "narrativeKey": "action.fight.desperate",
@@ -444,7 +446,8 @@
                 { "kind": "hp_delta", "amount": 3 },
                 { "kind": "qi_delta", "amount": 1 },
                 { "kind": "insight_delta", "amount": 1 }
-              ]
+              ],
+              "witnessMemory": "iron_bamboo_stance"
             },
             "FAILURE": {
               "narrativeKey": "action.eat.simple",

@@ -7,6 +7,9 @@ import {
   MetaState, addKarma, incrementLifeCount, appendLineageEntry, LineageEntrySummary,
 } from '@/engine/meta/MetaState';
 import { computeKarma, LifeSummary } from '@/engine/meta/KarmicInsightRules';
+import { EchoRegistry } from '@/engine/meta/EchoRegistry';
+import { evaluateUnlocks, UnlockContext } from '@/engine/meta/EchoUnlocker';
+import { commitWitnesses } from '@/engine/meta/MemoryWitnessLogger';
 
 export interface BardoResult {
   summary: LifeSummary;
@@ -36,6 +39,7 @@ export function runBardoFlow(
   rs: RunState,
   meta: MetaState,
   anchorMultiplier: number,
+  echoRegistry: EchoRegistry,
 ): BardoResult {
   if (!rs.deathCause) {
     throw new Error('runBardoFlow: no death cause — cannot enter bardo');
@@ -43,18 +47,44 @@ export function runBardoFlow(
   const summary = buildLifeSummary(rs, anchorMultiplier);
   const karma = computeKarma(summary);
 
+  // Commit witnessed memories first so any unlock condition that reads
+  // meta.memoriesWitnessed observes the just-committed count.
+  let nextMeta = commitWitnesses(meta, rs.memoriesWitnessedThisLife);
+
+  // Evaluate echo unlocks using the just-updated meta.
+  const anchorThisLife =
+    rs.character.flags.find((f) => f.startsWith('anchor:'))?.slice(7) ?? 'unknown';
+  const ctx: UnlockContext = {
+    meta: nextMeta,
+    finalRealm: summary.realmReached,
+    finalBodyTemperingLayer: summary.maxBodyTemperingLayer,
+    diedOfOldAge: summary.deathCause === 'old_age',
+    yearsLived: summary.yearsLived,
+    diedThisLifeFlags: rs.character.flags,
+    anchorThisLife,
+    echoProgressCumulative: nextMeta.echoProgress,
+    dominantRegionThisLife: rs.region,
+    regionStreakByRegion: computeRegionStreak(nextMeta, rs.region),
+  };
+  const newlyUnlocked = evaluateUnlocks(echoRegistry, ctx);
+  if (newlyUnlocked.length > 0) {
+    nextMeta = {
+      ...nextMeta,
+      echoesUnlocked: [...nextMeta.echoesUnlocked, ...newlyUnlocked],
+    };
+  }
+
   const entry: LineageEntrySummary = {
-    lifeIndex: meta.lifeCount + 1,
+    lifeIndex: nextMeta.lifeCount + 1,
     name: rs.character.name,
-    anchorId: (rs.character.flags.find((f) => f.startsWith('anchor:'))?.slice(7)) ?? 'unknown',
+    anchorId: anchorThisLife,
     yearsLived: summary.yearsLived,
     realmReached: summary.realmReached,
     deathCause: summary.deathCause,
     karmaEarned: karma.total,
-    echoesUnlockedThisLife: [],  // EchoUnlocker (Task 5) fills this; BardoFlow updated in Task 14
+    echoesUnlockedThisLife: [...newlyUnlocked],
   };
 
-  let nextMeta = meta;
   nextMeta = addKarma(nextMeta, karma.total);
   nextMeta = incrementLifeCount(nextMeta);
   nextMeta = appendLineageEntry(nextMeta, entry);
@@ -65,4 +95,17 @@ export function runBardoFlow(
     karmaBreakdown: karma.breakdown,
     meta: nextMeta,
   };
+}
+
+/**
+ * Counts consecutive trailing lives that died in `region`.
+ *
+ * Phase 2A-2 stub: LineageEntrySummary does not yet store the region of death,
+ * so this returns { [region]: 1 } for the current life only. Consequence:
+ * `died_in_same_region_streak` echoes (e.g. ghost_in_mirror with streak 3)
+ * will NOT unlock via this path. Phase 3 (Imprints) will extend
+ * LineageEntrySummary with `regionOfDeath` and walk backward from the tail.
+ */
+function computeRegionStreak(_meta: MetaState, region: string): Readonly<Record<string, number>> {
+  return { [region]: 1 };
 }

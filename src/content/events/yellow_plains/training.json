@@ -29,7 +29,8 @@
               "narrativeKey": "action.work.plowing",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Body", "amount": 2 }
-              ]
+              ],
+              "witnessMemory": "iron_bamboo_stance"
             },
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
@@ -85,7 +86,8 @@
                 { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
                 { "kind": "attribute_delta", "stat": "Agility", "amount": 1 },
                 { "kind": "insight_delta", "amount": 1 }
-              ]
+              ],
+              "witnessMemory": "hollow_mountain_breath"
             },
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
@@ -139,7 +141,8 @@
               "narrativeKey": "action.travel.urgent",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Agility", "amount": 2 }
-              ]
+              ],
+              "witnessMemory": "iron_bamboo_stance"
             },
             "SUCCESS": {
               "narrativeKey": "action.travel.urgent",

@@ -39,7 +39,8 @@
                 { "kind": "flag_set", "flag": "met_monk" },
                 { "kind": "item_add", "id": "spiritual_stone", "count": 1 },
                 { "kind": "insight_delta", "amount": 3 }
-              ]
+              ],
+              "witnessMemory": "hollow_mountain_breath"
             },
             "PARTIAL": {
               "narrativeKey": "npc.monk.warning",
@@ -149,7 +150,8 @@
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 5 },
                 { "kind": "flag_set", "flag": "read_tome" }
-              ]
+              ],
+              "witnessMemory": "silent_waters_scripture"
             },
             "PARTIAL": {
               "narrativeKey": "emotion.wonder.sudden",

@@ -5,6 +5,7 @@ import { StreakState } from '@/engine/choices/StreakTracker';
 import { NameRegistry } from '@/engine/narrative/NameRegistry';
 import { TurnResult } from '@/engine/core/GameLoop';
 import { BardoResult } from '@/engine/bardo/BardoFlow';
+import { EchoTracker } from '@/engine/meta/EchoTracker';
 
 export interface SeedRunArgs {
   runState: RunState;
@@ -22,6 +23,13 @@ export interface GameStoreState {
   streak: StreakState | null;
   nameRegistry: NameRegistry | null;
   lifetimeSeenEvents: ReadonlyArray<string>;
+  /**
+   * Phase 2A-2 Task 10: life-scoped EchoTracker. Null between lives; reset to
+   * EchoTracker.empty() in seedRun. Held OUTSIDE RunState to avoid bumping the
+   * run-save schema. The bridge commits its snapshot into MetaState.echoProgress
+   * on death via commitTrackerToMeta() before runBardoFlow is invoked.
+   */
+  echoTracker: EchoTracker | null;
 
   turnResult: TurnResult | null;
   bardoResult: BardoResult | null;
@@ -32,6 +40,7 @@ export interface GameStoreState {
   setError: (msg: string | null) => void;
   seedRun: (a: SeedRunArgs) => void;
   updateRun: (rs: RunState, s: StreakState, nr: NameRegistry) => void;
+  setEchoTracker: (t: EchoTracker | null) => void;
   setTurnResult: (tr: TurnResult | null) => void;
   setBardoResult: (br: BardoResult | null) => void;
   appendSeenEvent: (eventId: string) => void;
@@ -50,6 +59,7 @@ const INITIAL: Pick<
   | 'lifetimeSeenEvents'
   | 'turnResult'
   | 'bardoResult'
+  | 'echoTracker'
 > = {
   phase: GamePhase.TITLE,
   isLoading: false,
@@ -60,6 +70,7 @@ const INITIAL: Pick<
   lifetimeSeenEvents: [],
   turnResult: null,
   bardoResult: null,
+  echoTracker: null,
 };
 
 export const useGameStore = create<GameStoreState>((set) => ({
@@ -69,11 +80,27 @@ export const useGameStore = create<GameStoreState>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 
+  // EchoTracker lifecycle asymmetry (Task 10 I3):
+  //   seedRun  -> EchoTracker.empty()  (fresh zero-counter tracker for a new life)
+  //   resetRun -> null                 (session teardown; no life is active)
+  // This matters because `bridge.resolveChoice` does `gs.echoTracker ?? EchoTracker.empty()`
+  // — a null is treated as "no active life", and an empty tracker is "life in progress
+  // with no hits yet". They must NOT be collapsed to a single value.
   seedRun: ({ runState, streak, nameRegistry, lifetimeSeenEvents }) =>
-    set({ runState, streak, nameRegistry, lifetimeSeenEvents }),
+    set({
+      runState,
+      streak,
+      nameRegistry,
+      lifetimeSeenEvents,
+      // Reset the tracker at life start; bridge can override via setEchoTracker
+      // if it ever needs to replay mid-life from a persisted snapshot.
+      echoTracker: EchoTracker.empty(),
+    }),
 
   updateRun: (runState, streak, nameRegistry) =>
     set({ runState, streak, nameRegistry }),
+
+  setEchoTracker: (echoTracker) => set({ echoTracker }),
 
   setTurnResult: (turnResult) => set({ turnResult }),
   setBardoResult: (bardoResult) => set({ bardoResult }),
@@ -93,6 +120,7 @@ export const useGameStore = create<GameStoreState>((set) => ({
       lifetimeSeenEvents: [],
       turnResult: null,
       bardoResult: null,
+      echoTracker: null,
     }),
 
   reset: () => set({ ...INITIAL }),

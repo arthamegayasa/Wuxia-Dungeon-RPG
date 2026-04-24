@@ -20,7 +20,8 @@
           "Luck": [-5, 5]
         },
         "startingItems": [],
-        "startingFlags": []
+        "startingFlags": [],
+        "targetRegion": "yellow_plains"
       },
       "karmaMultiplier": 1.5
     },
@@ -43,7 +44,8 @@
           "Luck": [0, 8]
         },
         "startingItems": [],
-        "startingFlags": ["peasant_birth"]
+        "startingFlags": ["peasant_birth"],
+        "targetRegion": "yellow_plains"
       },
       "karmaMultiplier": 1.0
     }

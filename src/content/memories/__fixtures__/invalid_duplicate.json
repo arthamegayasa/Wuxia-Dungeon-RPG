@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "memories": [
+    {
+      "id": "dup",
+      "name": "A",
+      "description": "",
+      "element": "water",
+      "witnessFlavour": { "fragment": "a", "partial": "b", "complete": "c" },
+      "manifestFlavour": "m",
+      "manifestInsightBonus": 1,
+      "manifestFlag": "f",
+      "requirements": {}
+    },
+    {
+      "id": "dup",
+      "name": "B",
+      "description": "",
+      "element": "water",
+      "witnessFlavour": { "fragment": "a", "partial": "b", "complete": "c" },
+      "manifestFlavour": "m",
+      "manifestInsightBonus": 1,
+      "manifestFlag": "f",
+      "requirements": {}
+    }
+  ]
+}

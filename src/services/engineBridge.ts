@@ -27,8 +27,16 @@ import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
+import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
+import { applyPostOutcomeHooks } from '@/engine/core/PostOutcomeHooks';
 import { loadEvents } from '@/content/events/loader';
 import { loadSnippets } from '@/content/snippets/loader';
+import { loadEchoes } from '@/content/echoes/loader';
+import { loadMemories } from '@/content/memories/loader';
+import { EchoRegistry } from '@/engine/meta/EchoRegistry';
+import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
+import { SoulEcho } from '@/engine/meta/SoulEcho';
+import { ForbiddenMemory } from '@/engine/meta/ForbiddenMemory';
 import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
@@ -39,7 +47,11 @@ import socialJson from '@/content/events/yellow_plains/social.json';
 import dangerJson from '@/content/events/yellow_plains/danger.json';
 import opportunityJson from '@/content/events/yellow_plains/opportunity.json';
 import transitionJson from '@/content/events/yellow_plains/transition.json';
+import bridgeJson from '@/content/events/yellow_plains/bridge.json';
+import meditationJson from '@/content/events/yellow_plains/meditation.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
+import echoPack from '@/content/echoes/echoes.json';
+import memoriesPack from '@/content/memories/memories.json';
 
 // Phase 1D-3 Task 10: Yellow Plains content pool. Flattens all authored regional
 // packs (~50 events) into one selectable array. Snippet library is the single
@@ -51,8 +63,25 @@ const ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(dangerJson),
   ...loadEvents(opportunityJson),
   ...loadEvents(transitionJson),
+  ...loadEvents(bridgeJson),
+  ...loadEvents(meditationJson),
 ];
 const DEFAULT_LIBRARY: SnippetLibrary = loadSnippets(ypSnippets);
+
+// Phase 2A-2 Task 8: the canonical echo registry. Built once at module load from
+// the authored `echoes.json`. `characterFromAnchor` consumes this at spawn to
+// roll any unlocked echoes against the player's `meta.echoesUnlocked` pool.
+// EchoDef (zod-inferred) is structurally compatible with SoulEcho.
+const ECHO_REGISTRY = EchoRegistry.fromList(loadEchoes(echoPack) as ReadonlyArray<SoulEcho>);
+
+// Phase 2A-2 Task 11: the canonical forbidden-memory registry. Built once at
+// module load from the authored `memories.json`. `applyPostOutcomeHooks` reads
+// it on meditation-category events to roll `MemoryManifestResolver`. MemoryDef
+// (zod-inferred) is structurally compatible with ForbiddenMemory — the same
+// pattern as EchoDef → SoulEcho above.
+const MEMORY_REGISTRY = MemoryRegistry.fromList(
+  loadMemories(memoriesPack) as ReadonlyArray<ForbiddenMemory>,
+);
 
 export interface LoadOrInitResult {
   phase: GamePhase;
@@ -350,6 +379,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const runSeed = spawnRng.intRange(0, 0x7fffffff);
       const { character, runState } = characterFromAnchor({
         resolved, name: chosenName, runSeed, rng: spawnRng,
+        meta: currentMetaState(),
+        echoRegistry: ECHO_REGISTRY,
       });
 
       // Tag the character so BardoFlow can extract the anchor id for lineage.
@@ -465,7 +496,26 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         },
       };
 
+      // Phase 2A-2 Task 10 + 11: post-outcome hooks via the shared helper.
+      // IDENTICAL call shape to GameLoop.runTurn — the helper owns both:
+      //   a. `choice_cat.<event.category>` tracker increment (always), and
+      //   b. meditation-gated MemoryManifestResolver roll.
+      // Keeping this as a single call site prevents tracker drift between the
+      // two paths (runTurn vs. bridge) flagged as an Important concern in the
+      // Task 10 reviewer report.
+      const currentTracker = gs.echoTracker ?? EchoTracker.empty();
+      const hooks = applyPostOutcomeHooks({
+        runState: nextRunState,
+        event: pending,
+        meta: currentMetaState(),
+        echoTracker: currentTracker,
+        memoryRegistry: MEMORY_REGISTRY,
+      });
+      nextRunState = hooks.runState;
+      const nextEchoTracker = hooks.echoTracker;
+
       useGameStore.getState().updateRun(nextRunState, nextStreak, gs.nameRegistry);
+      useGameStore.getState().setEchoTracker(nextEchoTracker);
       useGameStore.getState().setTurnResult({
         eventId: pending.id,
         choiceId,
@@ -474,6 +524,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         nextRunState,
         nextStreak,
         nextNameRegistry: gs.nameRegistry,
+        nextEchoTracker,
+        manifested: hooks.manifested,
       });
       useGameStore.getState().appendSeenEvent(pending.id);
       saveRun(sm, nextRunState);
@@ -482,8 +534,13 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const anchorFlag = nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
         const mult = anchorMultiplierFor(anchorId);
-        const bardo = runBardoFlow(nextRunState, currentMetaState(), mult);
+        // Fold the life-scoped tracker into meta.echoProgress BEFORE runBardoFlow
+        // so EchoUnlocker (inside BardoFlow) observes this life's counters.
+        // Scope: keeps runBardoFlow's signature stable from Task 9.
+        const metaWithProgress = commitTrackerToMeta(currentMetaState(), nextEchoTracker);
+        const bardo = runBardoFlow(nextRunState, metaWithProgress, mult, ECHO_REGISTRY);
         useGameStore.getState().setBardoResult(bardo);
+        useGameStore.getState().setEchoTracker(null); // reset for next life
         hydrateMeta(bardo.meta);
         saveMeta(sm, bardo.meta);
         useGameStore.getState().setPhase(GamePhase.BARDO);
@@ -503,8 +560,23 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const anchorFlag = gs.runState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
         const mult = anchorMultiplierFor(anchorId);
-        const bardo = runBardoFlow(gs.runState, currentMetaState(), mult);
+        // Tracker fallback invariant (Task 10 I2):
+        //   The primary death path in `resolveChoice` calls
+        //   `commitTrackerToMeta(...)` BEFORE `setEchoTracker(null)` and BEFORE
+        //   `saveMeta`. So after a reload the persisted meta already holds the
+        //   previous life's counters, and `gs.echoTracker` is either `null`
+        //   (typical — we cleared it) or a lingering non-empty snapshot if the
+        //   reload captured a mid-flight state that never reached commit.
+        //   Either way, passing `EchoTracker.empty()` on the null branch is
+        //   safe: `commitTrackerToMeta(empty)` is a no-op, so echoProgress is
+        //   preserved. A non-empty fallback tracker here would double-count;
+        //   this is accepted as a known belt-and-braces limitation of the
+        //   crash-recovery flow (the player's actual lived counters win).
+        const fallbackTracker = gs.echoTracker ?? EchoTracker.empty();
+        const metaWithProgress = commitTrackerToMeta(currentMetaState(), fallbackTracker);
+        const bardo = runBardoFlow(gs.runState, metaWithProgress, mult, ECHO_REGISTRY);
         useGameStore.getState().setBardoResult(bardo);
+        useGameStore.getState().setEchoTracker(null);
         hydrateMeta(bardo.meta);
         saveMeta(sm, bardo.meta);
         useGameStore.getState().setPhase(GamePhase.BARDO);

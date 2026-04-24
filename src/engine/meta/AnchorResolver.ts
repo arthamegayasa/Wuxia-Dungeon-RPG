@@ -17,8 +17,26 @@ export interface ResolvedAnchor {
   karmaMultiplier: number;
 }
 
-export function resolveAnchor(anchor: AnchorDef, rng: IRng): ResolvedAnchor {
-  const region = rng.weightedPick(anchor.spawn.regions, (r) => r.weight).id;
+export function resolveAnchor(
+  anchor: AnchorDef,
+  rng: IRng,
+  loadedRegions: ReadonlyArray<string> = ['yellow_plains'],
+): ResolvedAnchor {
+  // Primary: targetRegion if loaded.
+  let region: string;
+  if (loadedRegions.includes(anchor.spawn.targetRegion)) {
+    region = anchor.spawn.targetRegion;
+  } else if (
+    anchor.spawn.spawnRegionFallback &&
+    loadedRegions.includes(anchor.spawn.spawnRegionFallback)
+  ) {
+    region = anchor.spawn.spawnRegionFallback;
+  } else {
+    throw new Error(
+      `AnchorResolver: target region '${anchor.spawn.targetRegion}' not loaded and no fallback available (loaded: ${loadedRegions.join(', ')})`,
+    );
+  }
+
   const year = rng.intRange(anchor.spawn.era.minYear, anchor.spawn.era.maxYear);
   const ageYears = rng.intRange(anchor.spawn.age.min, anchor.spawn.age.max);
   const ageDays = ageYears * 365;

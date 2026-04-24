@@ -42,7 +42,8 @@
             },
             "PARTIAL": {
               "narrativeKey": "emotion.fear.sudden",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }],
+              "witnessMemory": "crimson_spear_river"
             },
             "FAILURE": {
               "narrativeKey": "emotion.fear.sudden",
@@ -113,7 +114,8 @@
               "stateDeltas": [
                 { "kind": "hp_delta", "amount": -8 },
                 { "kind": "flag_set", "flag": "slew_beast" }
-              ]
+              ],
+              "witnessMemory": "frost_palm_severing"
             },
             "PARTIAL": {
               "narrativeKey": "emotion.fear.sudden",

@@ -3,15 +3,21 @@ import { createRng } from '@/engine/core/RNG';
 import { getAnchorById } from './Anchor';
 import { resolveAnchor } from './AnchorResolver';
 import { characterFromAnchor } from './characterFromAnchor';
+import { EchoRegistry } from './EchoRegistry';
+import { createEmptyMetaState } from './MetaState';
+import type { SoulEcho } from './SoulEcho';
 
 describe('characterFromAnchor', () => {
   const anchor = getAnchorById('peasant_farmer')!;
+  const emptyRegistry = EchoRegistry.fromList([]);
+  const emptyMeta = createEmptyMetaState();
 
   it('produces a Character with anchor-driven attributes and age', () => {
     const rng = createRng(1);
     const resolved = resolveAnchor(anchor, rng);
     const { character, runState } = characterFromAnchor({
       resolved, name: 'Lin Wei', runSeed: 42, rng,
+      meta: emptyMeta, echoRegistry: emptyRegistry,
     });
 
     // Body baseline 10 + adjustment [0,10] → [10, 20]
@@ -28,11 +34,17 @@ describe('characterFromAnchor', () => {
   it('is deterministic', () => {
     const rng1 = createRng(7);
     const resolved1 = resolveAnchor(anchor, rng1);
-    const out1 = characterFromAnchor({ resolved: resolved1, name: 't', runSeed: 9, rng: rng1 });
+    const out1 = characterFromAnchor({
+      resolved: resolved1, name: 't', runSeed: 9, rng: rng1,
+      meta: emptyMeta, echoRegistry: emptyRegistry,
+    });
 
     const rng2 = createRng(7);
     const resolved2 = resolveAnchor(anchor, rng2);
-    const out2 = characterFromAnchor({ resolved: resolved2, name: 't', runSeed: 9, rng: rng2 });
+    const out2 = characterFromAnchor({
+      resolved: resolved2, name: 't', runSeed: 9, rng: rng2,
+      meta: emptyMeta, echoRegistry: emptyRegistry,
+    });
 
     expect(out1.character.attributes).toEqual(out2.character.attributes);
     expect(out1.character.spiritRoot).toEqual(out2.character.spiritRoot);
@@ -49,7 +61,50 @@ describe('characterFromAnchor', () => {
     };
     const rng = createRng(1);
     const resolved = resolveAnchor(withItem, rng);
-    const { runState } = characterFromAnchor({ resolved, name: 't', runSeed: 1, rng });
+    const { runState } = characterFromAnchor({
+      resolved, name: 't', runSeed: 1, rng,
+      meta: emptyMeta, echoRegistry: emptyRegistry,
+    });
     expect(runState.inventory.find((i) => i.id === 'rice_bowl')?.count).toBe(1);
+  });
+});
+
+describe('characterFromAnchor — echo integration', () => {
+  it('rolls and applies an unlocked echo to the returned character', () => {
+    const ironBody: SoulEcho = {
+      id: 'iron_body', name: 'Iron Body', description: '',
+      tier: 'fragment',
+      unlockCondition: { kind: 'flag_set', flag: 'x' },
+      effects: [{ kind: 'hp_mult', mult: 1.2 }],
+      conflicts: [], reveal: 'birth',
+    };
+    const reg = EchoRegistry.fromList([ironBody]);
+    const meta = { ...createEmptyMetaState(), echoesUnlocked: ['iron_body'] };
+
+    const anchor = getAnchorById('peasant_farmer')!;
+    const resolved = resolveAnchor(anchor, createRng(1));
+    const { character } = characterFromAnchor({
+      resolved,
+      name: 'Test',
+      runSeed: 1,
+      rng: createRng(1),
+      meta,
+      echoRegistry: reg,
+    });
+
+    expect(character.echoes).toEqual(['iron_body']);
+    expect(character.hpMax).toBeGreaterThan(10);
+  });
+
+  it('returns a character with empty echoes when meta has none unlocked', () => {
+    const reg = EchoRegistry.fromList([]);
+    const meta = createEmptyMetaState();
+    const anchor = getAnchorById('peasant_farmer')!;
+    const resolved = resolveAnchor(anchor, createRng(1));
+    const { character } = characterFromAnchor({
+      resolved, name: 'Test', runSeed: 1, rng: createRng(1),
+      meta, echoRegistry: reg,
+    });
+    expect(character.echoes).toEqual([]);
   });
 });

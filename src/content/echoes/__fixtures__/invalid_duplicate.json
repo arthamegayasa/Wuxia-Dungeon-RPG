@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "echoes": [
+    { "id": "dup", "name": "A", "description": "", "tier": "fragment",
+      "unlockCondition": { "kind": "flag_set", "flag": "x" },
+      "effects": [], "conflicts": [], "reveal": "birth" },
+    { "id": "dup", "name": "B", "description": "", "tier": "fragment",
+      "unlockCondition": { "kind": "flag_set", "flag": "x" },
+      "effects": [], "conflicts": [], "reveal": "birth" }
+  ]
+}

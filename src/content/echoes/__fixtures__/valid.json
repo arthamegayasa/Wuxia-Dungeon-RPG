@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "echoes": [
+    {
+      "id": "test_echo",
+      "name": "Test Echo",
+      "description": "For loader tests.",
+      "tier": "fragment",
+      "unlockCondition": { "kind": "flag_set", "flag": "t" },
+      "effects": [{ "kind": "stat_mod", "stat": "Body", "delta": 1 }],
+      "conflicts": [],
+      "reveal": "birth"
+    }
+  ]
+}
