@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createRng } from '@/engine/core/RNG';
-import { getAnchorById } from './Anchor';
+import { AnchorDef, getAnchorById } from './Anchor';
 import { resolveAnchor, ResolvedAnchor } from './AnchorResolver';
 
 describe('resolveAnchor — peasant_farmer', () => {
@@ -76,14 +76,14 @@ describe('resolveAnchor — region fallback', () => {
   });
 
   it('throws when targetRegion missing AND fallback missing AND neither loaded', () => {
-    const bad = { ...getAnchorById('scholars_son')! };
-    (bad as any).spawn = { ...bad.spawn, spawnRegionFallback: undefined };
-    expect(() => resolveAnchor(bad as any, createRng(1), ['azure_peaks'])).toThrow(
+    const src = getAnchorById('scholars_son')!;
+    const bad: AnchorDef = { ...src, spawn: { ...src.spawn, spawnRegionFallback: undefined } };
+    expect(() => resolveAnchor(bad, createRng(1), ['azure_peaks'])).toThrow(
       /region .* not loaded and no fallback/i,
     );
   });
 
-  it('anchors without targetRegion-fallback scheme still work via weighted regions', () => {
+  it('resolves directly when targetRegion is already in loadedRegions (no fallback needed)', () => {
     // peasant_farmer has targetRegion='yellow_plains', which IS loaded.
     const anchor = getAnchorById('peasant_farmer')!;
     const resolved = resolveAnchor(anchor, createRng(1), ['yellow_plains']);
