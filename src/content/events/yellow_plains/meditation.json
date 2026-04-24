@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_MEDITATION_DAWN_SITTING",
+      "category": "meditation",
+      "version": 1,
+      "weight": 15,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minStat": { "Mind": 8 }
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": ["$[CHARACTER] sits, before the sun is high. The breath arrives slowly."],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_sit",
+          "label": "Let the mind settle.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 30, "stats": { "Mind": 2 }, "difficulty": 35 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_MEDITATION_RIVERSIDE",
+      "category": "meditation",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["spring", "summer", "autumn"],
+        "minStat": { "Mind": 6 }
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": ["$[CHARACTER] sits by the river. The water does not explain itself."],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_watch_water",
+          "label": "Watch the water.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Mind": 1, "Spirit": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 3 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_MEDITATION_NIGHT_VIGIL",
+      "category": "meditation",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minStat": { "Mind": 10, "Spirit": 8 }
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": ["$[CHARACTER] keeps vigil. The hours arrive and the hours pass."],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_vigil",
+          "label": "Hold the watch.",
+          "timeCost": "LONG",
+          "check": { "base": 30, "stats": { "Mind": 1, "Spirit": 2 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 8 }]
+            },
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 4 }]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

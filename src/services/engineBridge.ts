@@ -47,6 +47,8 @@ import socialJson from '@/content/events/yellow_plains/social.json';
 import dangerJson from '@/content/events/yellow_plains/danger.json';
 import opportunityJson from '@/content/events/yellow_plains/opportunity.json';
 import transitionJson from '@/content/events/yellow_plains/transition.json';
+import bridgeJson from '@/content/events/yellow_plains/bridge.json';
+import meditationJson from '@/content/events/yellow_plains/meditation.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
 import echoPack from '@/content/echoes/echoes.json';
 import memoriesPack from '@/content/memories/memories.json';
@@ -61,6 +63,8 @@ const ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(dangerJson),
   ...loadEvents(opportunityJson),
   ...loadEvents(transitionJson),
+  ...loadEvents(bridgeJson),
+  ...loadEvents(meditationJson),
 ];
 const DEFAULT_LIBRARY: SnippetLibrary = loadSnippets(ypSnippets);
 
