@@ -1,0 +1,261 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_BRIDGE_MARTIAL_MORNING_DRILL",
+      "category": "life.training",
+      "version": 1,
+      "weight": 50,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 8,
+        "maxAge": 10,
+        "characterFlags": { "require": ["from_martial_family"] }
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": ["$[anchor.opener.martial_family.1]"],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_push",
+          "label": "Push harder than yesterday.",
+          "timeCost": "SHORT",
+          "check": { "base": 30, "stats": { "Body": 1, "Spirit": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -3 }
+              ]
+            }
+          },
+          "flagDeltas": { "set": ["martial_training_started"] }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_BRIDGE_MARTIAL_SPAR_WITH_ELDER",
+      "category": "life.training",
+      "version": 1,
+      "weight": 40,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 8,
+        "maxAge": 10,
+        "characterFlags": { "require": ["from_martial_family"] }
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": ["$[anchor.opener.martial_family.2]"],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_spar",
+          "label": "Step onto the sparring earth.",
+          "timeCost": "SHORT",
+          "check": { "base": 25, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.anger.cold",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -4 }
+              ]
+            }
+          },
+          "flagDeltas": { "set": ["first_spar"] }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_BRIDGE_SCHOLARS_LIBRARY",
+      "category": "life.training",
+      "version": 1,
+      "weight": 50,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 10,
+        "maxAge": 12,
+        "characterFlags": { "require": ["literate"] }
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": ["$[anchor.opener.scholars_son.1]"],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_read",
+          "label": "Pull a scroll on old formations down from the high shelf.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 30, "stats": { "Mind": 2 }, "difficulty": 40 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "npc.elder.wisdom",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          },
+          "flagDeltas": { "set": ["first_formation_concept"] }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_BRIDGE_SCHOLARS_TUTOR_ASSESSMENT",
+      "category": "life.social",
+      "version": 1,
+      "weight": 40,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 11,
+        "maxAge": 13,
+        "characterFlags": { "require": ["literate"] }
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": ["$[anchor.opener.scholars_son.2]"],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_recite",
+          "label": "Recite the passage cleanly and meet the tutor's eye.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 30, "stats": { "Mind": 1, "Charm": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "tutor_favor" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.anger.flash",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -1 },
+                { "kind": "flag_set", "flag": "tutor_suspicion" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_BRIDGE_OUTER_CHORES",
+      "category": "life.training",
+      "version": 1,
+      "weight": 50,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 15,
+        "maxAge": 17,
+        "characterFlags": { "require": ["outer_sect_member"] }
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": ["$[anchor.opener.outer_disciple.1]"],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_sweep",
+          "label": "Sweep the corridor twice and keep your eyes low.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Body": 2 }, "difficulty": 35 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -2 }
+              ]
+            }
+          },
+          "flagDeltas": { "set": ["seen_sect_hierarchy"] }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "YP_BRIDGE_OUTER_OVERHEARD_LESSON",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 15,
+        "maxAge": 18,
+        "characterFlags": { "require": ["outer_sect_member"] }
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": ["$[anchor.opener.outer_disciple.2]"],
+        "body": [],
+        "outro": []
+      },
+      "choices": [
+        {
+          "id": "ch_listen",
+          "label": "Stop outside the hall door. Listen without breathing.",
+          "timeCost": "SHORT",
+          "check": { "base": 20, "stats": { "Mind": 1, "Spirit": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "npc.elder.wisdom",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 }
+              ],
+              "witnessMemory": "silent_waters_scripture"
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    }
+  ]
+}

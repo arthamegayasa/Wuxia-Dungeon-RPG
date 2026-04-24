@@ -6,6 +6,7 @@ import social from './social.json';
 import danger from './danger.json';
 import opportunity from './opportunity.json';
 import transition from './transition.json';
+import bridge from './bridge.json';
 import { loadMemories } from '@/content/memories/loader';
 import memPack from '@/content/memories/memories.json';
 
@@ -17,6 +18,7 @@ describe('Phase 2A-2 witness coverage', () => {
     ...loadEvents(danger),
     ...loadEvents(opportunity),
     ...loadEvents(transition),
+    ...loadEvents(bridge),
   ];
   const memories = loadMemories(memPack);
 
