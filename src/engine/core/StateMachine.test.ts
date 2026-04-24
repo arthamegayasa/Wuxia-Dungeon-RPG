@@ -58,6 +58,16 @@ describe('PhaseMachine', () => {
     }
   });
 
+  it('allows LINEAGE as a modal overlay from TITLE, PLAYING, BARDO', () => {
+    for (const from of [GamePhase.TITLE, GamePhase.PLAYING, GamePhase.BARDO]) {
+      const m = createPhaseMachine(from);
+      m.transition(GamePhase.LINEAGE);
+      expect(m.phase()).toBe(GamePhase.LINEAGE);
+      m.transition(from);
+      expect(m.phase()).toBe(from);
+    }
+  });
+
   it('GAME_OVER_FINAL is terminal from any state (except itself)', () => {
     const m = createPhaseMachine();
     m.transition(GamePhase.CREATION);
