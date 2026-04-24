@@ -91,3 +91,39 @@ describe('DEFAULT_ANCHORS', () => {
     expect(getAnchorById('not_a_real_anchor')).toBeUndefined();
   });
 });
+
+describe('new 2A anchors', () => {
+  it('includes martial_family, scholars_son, outer_disciple', () => {
+    const ids = DEFAULT_ANCHORS.map((a) => a.id);
+    expect(ids).toContain('martial_family');
+    expect(ids).toContain('scholars_son');
+    expect(ids).toContain('outer_disciple');
+  });
+
+  it('martial_family targets yellow_plains directly (no fallback needed)', () => {
+    const a = getAnchorById('martial_family')!;
+    expect(a.spawn.targetRegion).toBe('yellow_plains');
+    expect(a.spawn.spawnRegionFallback).toBeUndefined();
+  });
+
+  it('scholars_son targets imperial_capital but falls back to yellow_plains', () => {
+    const a = getAnchorById('scholars_son')!;
+    expect(a.spawn.targetRegion).toBe('imperial_capital');
+    expect(a.spawn.spawnRegionFallback).toBe('yellow_plains');
+  });
+
+  it('outer_disciple targets azure_peaks but falls back to yellow_plains', () => {
+    const a = getAnchorById('outer_disciple')!;
+    expect(a.spawn.targetRegion).toBe('azure_peaks');
+    expect(a.spawn.spawnRegionFallback).toBe('yellow_plains');
+  });
+
+  it('new anchors have distinct attribute adjustments and starting flags', () => {
+    const m = getAnchorById('martial_family')!;
+    const s = getAnchorById('scholars_son')!;
+    const o = getAnchorById('outer_disciple')!;
+    expect(m.spawn.startingFlags).toContain('from_martial_family');
+    expect(s.spawn.startingFlags).toContain('literate');
+    expect(o.spawn.startingFlags).toContain('outer_sect_member');
+  });
+});

@@ -85,6 +85,68 @@ export const DEFAULT_ANCHORS: ReadonlyArray<AnchorDef> = [
     },
     karmaMultiplier: 1.0,
   },
+  {
+    id: 'martial_family',
+    name: 'Martial Family',
+    description: 'Born among fighters. Your first memories are of a straight back and a heavy fist.',
+    unlock: 'reach_body_tempering_5',
+    spawn: {
+      regions: [{ id: 'yellow_plains', weight: 1 }],
+      targetRegion: 'yellow_plains',
+      era: { minYear: 900, maxYear: 1100 },
+      age: { min: 8, max: 8 },
+      familyTier: 'commoner',
+      attributeModifiers: {
+        Body: [3, 10], Mind: [0, 4], Spirit: [0, 4],
+        Agility: [2, 8], Charm: [0, 4], Luck: [0, 4],
+      },
+      startingItems: [],
+      startingFlags: ['from_martial_family', 'parent_is_fighter'],
+    },
+    karmaMultiplier: 0.9,
+  },
+  {
+    id: 'scholars_son',
+    name: "Scholar's Son",
+    description: 'Born into a house of books. Your fingers learn brush-grip before they learn to grip a fist.',
+    unlock: 'read_ten_tomes_one_life',
+    spawn: {
+      regions: [{ id: 'yellow_plains', weight: 1 }],
+      targetRegion: 'imperial_capital',
+      spawnRegionFallback: 'yellow_plains',
+      era: { minYear: 900, maxYear: 1100 },
+      age: { min: 10, max: 10 },
+      familyTier: 'minor_noble',
+      attributeModifiers: {
+        Body: [0, 2], Mind: [4, 10], Spirit: [0, 4],
+        Agility: [0, 4], Charm: [1, 6], Luck: [0, 4],
+      },
+      startingItems: [],
+      startingFlags: ['literate', 'family_has_library'],
+    },
+    karmaMultiplier: 0.9,
+  },
+  {
+    id: 'outer_disciple',
+    name: 'Outer Disciple',
+    description: 'Born poor, noticed by a sect. You sweep the halls of the stronger.',
+    unlock: 'befriend_sect_disciple',
+    spawn: {
+      regions: [{ id: 'yellow_plains', weight: 1 }],
+      targetRegion: 'azure_peaks',
+      spawnRegionFallback: 'yellow_plains',
+      era: { minYear: 900, maxYear: 1100 },
+      age: { min: 15, max: 15 },
+      familyTier: 'poor',
+      attributeModifiers: {
+        Body: [1, 5], Mind: [1, 5], Spirit: [1, 5],
+        Agility: [0, 4], Charm: [0, 4], Luck: [2, 6],
+      },
+      startingItems: [],
+      startingFlags: ['outer_sect_member', 'sect_id:placeholder_sect'],
+    },
+    karmaMultiplier: 0.8,
+  },
 ];
 
 export function getAnchorById(id: string): AnchorDef | undefined {
