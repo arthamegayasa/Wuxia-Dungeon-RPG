@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { noticeTierFor } from './Types';
+import { noticeTierFor, GamePhase } from './Types';
 
 describe('noticeTierFor', () => {
   it.each([
@@ -17,5 +17,11 @@ describe('noticeTierFor', () => {
     [250, 'heir_of_void'],
   ])('value %i maps to %s', (value, expected) => {
     expect(noticeTierFor(value)).toBe(expected);
+  });
+});
+
+describe('GamePhase enum', () => {
+  it('contains LINEAGE for the lineage screen route', () => {
+    expect(GamePhase.LINEAGE).toBe('LINEAGE');
   });
 });
