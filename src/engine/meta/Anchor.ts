@@ -14,6 +14,7 @@ export const AnchorSchema = z.object({
   description: z.string(),
   unlock: z.union([z.literal('default'), z.string()]),
   spawn: z.object({
+    /** @deprecated superseded by targetRegion + spawnRegionFallback; retained for content-loader schema compatibility. */
     regions: z.array(z.object({
       id: z.string(),
       weight: z.number().positive(),

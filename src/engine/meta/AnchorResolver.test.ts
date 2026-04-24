@@ -61,3 +61,32 @@ describe('resolveAnchor — true_random', () => {
     expect(typeof r.attributeAdjustments.Body).toBe('number');
   });
 });
+
+describe('resolveAnchor — region fallback', () => {
+  it('uses targetRegion when it is in loadedRegions', () => {
+    const anchor = getAnchorById('scholars_son')!;
+    const resolved = resolveAnchor(anchor, createRng(1), ['yellow_plains', 'imperial_capital']);
+    expect(resolved.region).toBe('imperial_capital');
+  });
+
+  it('falls back when targetRegion is not loaded', () => {
+    const anchor = getAnchorById('scholars_son')!;
+    const resolved = resolveAnchor(anchor, createRng(1), ['yellow_plains']);
+    expect(resolved.region).toBe('yellow_plains');
+  });
+
+  it('throws when targetRegion missing AND fallback missing AND neither loaded', () => {
+    const bad = { ...getAnchorById('scholars_son')! };
+    (bad as any).spawn = { ...bad.spawn, spawnRegionFallback: undefined };
+    expect(() => resolveAnchor(bad as any, createRng(1), ['azure_peaks'])).toThrow(
+      /region .* not loaded and no fallback/i,
+    );
+  });
+
+  it('anchors without targetRegion-fallback scheme still work via weighted regions', () => {
+    // peasant_farmer has targetRegion='yellow_plains', which IS loaded.
+    const anchor = getAnchorById('peasant_farmer')!;
+    const resolved = resolveAnchor(anchor, createRng(1), ['yellow_plains']);
+    expect(resolved.region).toBe('yellow_plains');
+  });
+});
