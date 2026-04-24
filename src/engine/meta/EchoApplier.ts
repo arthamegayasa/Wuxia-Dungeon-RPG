@@ -39,6 +39,12 @@ export function applyEchoes(
           if (!extraFlags.includes(eff.flag)) extraFlags.push(eff.flag);
           break;
         default:
+          // Dormant in Phase 2A: body_cultivation_rate_pct, resolver_bonus,
+          // heal_efficacy_pct, mood_swing_pct, stat_mod_pct, event_weight,
+          // old_age_death_roll_pct, imprint_encounter_rate_pct. These effect
+          // kinds validate + ship in the canonical echo roster but are no-ops
+          // here until their consumers land (2B cultivation/resolver wiring,
+          // Phase 3 imprints).
           break;
       }
     }
