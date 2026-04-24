@@ -48,4 +48,20 @@ describe('yellow_plains snippet pack', () => {
       expect(lib.get(k)!.length).toBeGreaterThan(0);
     }
   });
+
+  it('has all 12 reflection keys for Phase 2A-2 interior-thought injection', () => {
+    const moods = ['sorrow', 'rage', 'serenity', 'paranoia', 'resolve', 'melancholy'] as const;
+    const realms = ['mortal', 'body_tempering'] as const;
+    for (const m of moods) {
+      for (const r of realms) {
+        expect(lib.has(`reflection.${m}.${r}`)).toBe(true);
+      }
+    }
+  });
+
+  it('has anchor-opener snippets for all 3 new anchors', () => {
+    expect(lib.has('anchor.opener.martial_family.1')).toBe(true);
+    expect(lib.has('anchor.opener.scholars_son.1')).toBe(true);
+    expect(lib.has('anchor.opener.outer_disciple.1')).toBe(true);
+  });
 });
