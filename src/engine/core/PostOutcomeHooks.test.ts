@@ -129,6 +129,8 @@ describe('applyPostOutcomeHooks', () => {
     };
     const rs = baseRunState();
     const tracker = EchoTracker.empty();
+    const rsBefore = structuredClone(rs);
+    const metaBefore = structuredClone(meta);
     applyPostOutcomeHooks({
       runState: rs,
       event,
@@ -136,7 +138,8 @@ describe('applyPostOutcomeHooks', () => {
       echoTracker: tracker,
       memoryRegistry: reg,
     });
-    expect(rs.manifestAttemptsThisLife).toBe(0);
+    expect(rs).toEqual(rsBefore);
+    expect(meta).toEqual(metaBefore);
     expect(tracker.get('choice_cat.meditation')).toBe(0);
   });
 
