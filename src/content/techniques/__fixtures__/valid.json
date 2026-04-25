@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "techniques": [
+    {
+      "id": "test_technique",
+      "name": "Test Technique",
+      "grade": "mortal",
+      "element": "none",
+      "coreAffinity": ["any"],
+      "requires": {},
+      "qiCost": 1,
+      "effects": [{ "kind": "qi_regen", "amount": 1 }],
+      "description": "A test."
+    }
+  ]
+}
