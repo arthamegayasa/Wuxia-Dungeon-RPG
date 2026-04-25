@@ -1,0 +1,226 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "low_grade_qi_pill",
+      "name": "Low-Grade Qi Pill",
+      "type": "pill",
+      "grade": "mortal",
+      "stackable": true,
+      "effects": [
+        { "kind": "restore_qi", "amount": 20 }
+      ],
+      "description": "A common cultivator's restorative. Tastes faintly of grass."
+    },
+    {
+      "id": "minor_healing_pill",
+      "name": "Minor Healing Pill",
+      "type": "pill",
+      "grade": "mortal",
+      "stackable": true,
+      "effects": [
+        { "kind": "heal_hp", "amount": 30 }
+      ],
+      "description": "Closes wounds the body has not yet given up on."
+    },
+    {
+      "id": "foundation_pill",
+      "name": "Foundation Pill",
+      "type": "pill",
+      "grade": "yellow",
+      "stackable": true,
+      "effects": [
+        { "kind": "pill_bonus", "amount": 25 }
+      ],
+      "description": "Steadies the qi during a breakthrough. The taste is bitter; the hands stop shaking."
+    },
+    {
+      "id": "cleansing_pill",
+      "name": "Cleansing Pill",
+      "type": "pill",
+      "grade": "mortal",
+      "stackable": true,
+      "effects": [
+        { "kind": "deviation_risk", "delta": -10 }
+      ],
+      "description": "Calms turbulent qi. Recommended after reading any scripture with too much red ink."
+    },
+    {
+      "id": "insight_dew",
+      "name": "Insight Dew",
+      "type": "pill",
+      "grade": "yellow",
+      "stackable": true,
+      "effects": [
+        { "kind": "insight_gain", "amount": 10 }
+      ],
+      "description": "A drop on the tongue. The world rearranges itself, briefly, behind the eyes."
+    },
+    {
+      "id": "spirit_gathering_pill",
+      "name": "Spirit Gathering Pill",
+      "type": "pill",
+      "grade": "yellow",
+      "stackable": true,
+      "effects": [
+        { "kind": "restore_qi", "amount": 40 }
+      ],
+      "description": "A sect-pavilion staple. The air around the pill smells of the elder's library."
+    },
+    {
+      "id": "manual_common_qi_circulation",
+      "name": "Manual: Common Qi Circulation",
+      "type": "manual",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "The first text. Ten thousand cultivators have copied it; ten thousand more will.",
+      "teaches": "common_qi_circulation",
+      "completeness": 1.0
+    },
+    {
+      "id": "manual_iron_mountain_body_seal",
+      "name": "Manual: Iron Mountain Body Seal",
+      "type": "manual",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "Bound in coarse cloth. The diagrams show a man becoming a hill.",
+      "teaches": "iron_mountain_body_seal",
+      "completeness": 1.0
+    },
+    {
+      "id": "manual_severing_edge_swordform_fragment",
+      "name": "Manual: Severing Edge Swordform (Fragment)",
+      "type": "manual",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "Half the pages are missing. The swordsman in the diagram has no head.",
+      "teaches": "severing_edge_swordform",
+      "completeness": 0.5,
+      "readerRequires": {
+        "minMind": 8
+      }
+    },
+    {
+      "id": "manual_still_water_heart_sutra",
+      "name": "Manual: Still Water Heart Sutra",
+      "type": "manual",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "Plain rice paper. The brushwork is patient, almost lazy.",
+      "teaches": "still_water_heart_sutra",
+      "completeness": 1.0
+    },
+    {
+      "id": "manual_wind_walking_steps_partial",
+      "name": "Manual: Wind-Walking Steps (Partial)",
+      "type": "manual",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "Three of four chapters. The fourth was, the cover insists, eaten by a goat.",
+      "teaches": "wind_walking_steps",
+      "completeness": 0.75
+    },
+    {
+      "id": "manual_blood_ember_sigil_fragment",
+      "name": "Manual: Blood Ember Sigil (Fragment)",
+      "type": "manual",
+      "grade": "yellow",
+      "stackable": false,
+      "effects": [],
+      "description": "A single page, scorched at the edges. Reading it makes the teeth ache.",
+      "teaches": "blood_ember_sigil",
+      "completeness": 0.25,
+      "readerRequires": {
+        "minMind": 12,
+        "minInsight": 5
+      }
+    },
+    {
+      "id": "outer_sect_iron_sword",
+      "name": "Outer Sect Iron Sword",
+      "type": "weapon",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [
+        { "kind": "choice_bonus", "category": "strike", "bonus": 3 }
+      ],
+      "description": "A practice blade. Heavy. Honest. The hilt fits like a shovel."
+    },
+    {
+      "id": "inner_disciple_robe",
+      "name": "Inner Disciple Robe",
+      "type": "armor",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [
+        { "kind": "choice_bonus", "category": "resist", "bonus": 2 }
+      ],
+      "description": "Pale blue, sect-stitched. Earns a half-bow at the gate."
+    },
+    {
+      "id": "warding_talisman",
+      "name": "Warding Talisman",
+      "type": "talisman",
+      "grade": "yellow",
+      "stackable": true,
+      "effects": [
+        { "kind": "deviation_risk", "delta": -15 }
+      ],
+      "description": "A strip of yellow paper, ink wet to the touch. Burns to a clean black."
+    },
+    {
+      "id": "spirit_gathering_bracelet",
+      "name": "Spirit Gathering Bracelet",
+      "type": "talisman",
+      "grade": "yellow",
+      "stackable": false,
+      "effects": [
+        { "kind": "restore_qi", "amount": 5 }
+      ],
+      "description": "Small jade beads. They warm against the wrist when qi gathers near."
+    },
+    {
+      "id": "paper_qi_block_talisman",
+      "name": "Paper Qi Block Talisman",
+      "type": "talisman",
+      "grade": "mortal",
+      "stackable": true,
+      "effects": [
+        { "kind": "choice_bonus", "category": "evade", "bonus": 10 }
+      ],
+      "description": "Single-use. Burns to a flash that smells of lemon and gunpowder."
+    },
+    {
+      "id": "spiritual_stone",
+      "name": "Spiritual Stone",
+      "type": "misc",
+      "grade": "mortal",
+      "stackable": true,
+      "effects": [],
+      "description": "The cultivator's coin. Gathers qi the way a coin gathers grease."
+    },
+    {
+      "id": "silver_pouch",
+      "name": "Silver Pouch",
+      "type": "misc",
+      "grade": "mortal",
+      "stackable": true,
+      "effects": [],
+      "description": "Mortal coin. Spends well at any market that has not yet learned of qi."
+    },
+    {
+      "id": "sect_token",
+      "name": "Sect Token",
+      "type": "misc",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "Engraved with your name and the sect's. Opens a gate. Closes a debt."
+    }
+  ]
+}
