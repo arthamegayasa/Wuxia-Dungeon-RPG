@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TechniqueSchema, TechniquePackSchema, ItemSchema, ItemPackSchema } from './schema';
+import { TechniqueSchema, TechniquePackSchema, ItemSchema, ItemPackSchema, PillarEventSchema } from './schema';
 
 describe('TechniqueSchema (Phase 2B-1 Task 3)', () => {
   it('accepts a valid minimal mortal-grade technique', () => {
@@ -128,5 +128,24 @@ describe('ItemSchema (Phase 2B-1 Task 8)', () => {
       items: [{ id: 'a', name: 'A', type: 'misc', grade: 'mortal', stackable: true, effects: [], description: '' }],
     });
     expect(p.items).toHaveLength(1);
+  });
+});
+
+describe('PillarEventSchema (Phase 2B-1 Task 17)', () => {
+  it('accepts a tribulation_i definition', () => {
+    const p = PillarEventSchema.parse({
+      id: 'tribulation_i',
+      phases: [
+        { id: 'heart_demon', checkStats: { Mind: 1, Spirit: 1 }, difficulty: 60, failEffect: 'insight_loss_5' },
+        { id: 'first_thunder', checkStats: { Body: 1, Spirit: 1 }, difficulty: 50, failEffect: 'hp_loss_20' },
+        { id: 'second_thunder', checkStats: { Body: 1, Spirit: 1 }, difficulty: 65, failEffect: 'hp_loss_40' },
+        { id: 'third_thunder', checkStats: { Body: 1, Spirit: 1 }, difficulty: 80, failEffect: 'death_or_retry' },
+      ],
+    });
+    expect(p.phases).toHaveLength(4);
+  });
+
+  it('rejects zero-phase pillar', () => {
+    expect(() => PillarEventSchema.parse({ id: 't', phases: [] })).toThrow();
   });
 });

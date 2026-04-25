@@ -344,6 +344,24 @@ export const ItemPackSchema = z.object({
 export type ItemRawDef = z.infer<typeof ItemSchema>;
 export type ItemPack = z.infer<typeof ItemPackSchema>;
 
+// ---- Phase 2B-1 Tribulation pillar schema ----
+// Source: docs/spec/design.md §4.5, §9.4.
+
+const PillarPhaseSchema = z.object({
+  id: z.string().min(1),
+  checkStats: z.record(z.enum(STAT_STRINGS), z.number().optional()),
+  difficulty: z.number().positive(),
+  failEffect: z.string().min(1),
+});
+
+export const PillarEventSchema = z.object({
+  id: z.string().min(1),
+  phases: z.array(PillarPhaseSchema).min(1),
+});
+
+export type PillarPhase = z.infer<typeof PillarPhaseSchema>;
+export type PillarEvent = z.infer<typeof PillarEventSchema>;
+
 // ---- Content pack (Phase 0 loader — now wraps the richer Event schema) ----
 
 export const ContentPackSchema = z.object({
