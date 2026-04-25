@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TechniqueSchema, TechniquePackSchema, ItemSchema, ItemPackSchema, PillarEventSchema } from './schema';
+import { TechniqueSchema, TechniquePackSchema, ItemSchema, ItemPackSchema, PillarEventSchema, RegionSchema, RegionPackSchema } from './schema';
 
 describe('TechniqueSchema (Phase 2B-1 Task 3)', () => {
   it('accepts a valid minimal mortal-grade technique', () => {
@@ -147,5 +147,44 @@ describe('PillarEventSchema (Phase 2B-1 Task 17)', () => {
 
   it('rejects zero-phase pillar', () => {
     expect(() => PillarEventSchema.parse({ id: 't', phases: [] })).toThrow();
+  });
+});
+
+describe('RegionSchema (Phase 2B-2 Task 1)', () => {
+  const minimalRegion = {
+    id: 'yellow_plains',
+    name: 'Yellow Plains',
+    qiDensity: 1.0,
+    climate: {
+      seasonWeights: { spring: 1, summer: 1, autumn: 1, winter: 1 },
+      rainWeight: 0.3,
+    },
+    locales: [{ id: 'farm_village', tagBias: ['pastoral', 'mundane'] }],
+    factionSlots: [],
+    eventPool: ['daily_001'],
+    pillarPool: [],
+    npcArchetypes: [],
+    namePool: {
+      placePrefix: ['Yellow'],
+      placeFeature: ['Plains'],
+    },
+  };
+
+  it('parses a minimal region', () => {
+    const parsed = RegionSchema.parse(minimalRegion);
+    expect(parsed.qiDensity).toBe(1.0);
+    expect(parsed.locales).toHaveLength(1);
+  });
+
+  it('rejects rainWeight outside [0,1]', () => {
+    expect(() => RegionSchema.parse({
+      ...minimalRegion,
+      climate: { ...minimalRegion.climate, rainWeight: 1.5 },
+    })).toThrow();
+  });
+
+  it('RegionPackSchema wraps a list of regions', () => {
+    const pack = RegionPackSchema.parse({ version: 1, regions: [minimalRegion] });
+    expect(pack.regions).toHaveLength(1);
   });
 });

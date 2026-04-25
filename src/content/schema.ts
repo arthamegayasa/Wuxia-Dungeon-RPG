@@ -362,6 +362,55 @@ export const PillarEventSchema = z.object({
 export type PillarPhase = z.infer<typeof PillarPhaseSchema>;
 export type PillarEvent = z.infer<typeof PillarEventSchema>;
 
+// ---- Phase 2B-2 Region schema ----
+// Source: docs/spec/design.md §7.2, §8.1.
+
+const ClimateSchema = z.object({
+  seasonWeights: z.object({
+    spring: z.number().nonnegative(),
+    summer: z.number().nonnegative(),
+    autumn: z.number().nonnegative(),
+    winter: z.number().nonnegative(),
+  }),
+  rainWeight: z.number().min(0).max(1),
+});
+
+const LocaleSchema = z.object({
+  id: z.string().min(1),
+  tagBias: z.array(z.string()).min(1),
+});
+
+const FactionSlotSchema = z.object({
+  id: z.string().min(1),
+  era: z.tuple([z.number().int(), z.number().int()]),
+});
+
+const NamePoolSchema = z.object({
+  placePrefix: z.array(z.string().min(1)).min(1),
+  placeFeature: z.array(z.string().min(1)).min(1),
+});
+
+export const RegionSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  qiDensity: z.number().positive(),
+  climate: ClimateSchema,
+  locales: z.array(LocaleSchema).min(1),
+  factionSlots: z.array(FactionSlotSchema),
+  eventPool: z.array(z.string()).min(1),
+  pillarPool: z.array(z.string()),
+  npcArchetypes: z.array(z.string()),
+  namePool: NamePoolSchema,
+});
+
+export const RegionPackSchema = z.object({
+  version: z.number().int().positive(),
+  regions: z.array(RegionSchema).min(1),
+});
+
+export type RegionDef = z.infer<typeof RegionSchema>;
+export type RegionPack = z.infer<typeof RegionPackSchema>;
+
 // ---- Content pack (Phase 0 loader — now wraps the richer Event schema) ----
 
 export const ContentPackSchema = z.object({
