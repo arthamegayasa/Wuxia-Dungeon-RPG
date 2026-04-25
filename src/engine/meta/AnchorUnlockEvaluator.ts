@@ -6,7 +6,7 @@
 // Scope (Phase 2A-3):
 //   - reach_body_tempering_5  → summary.maxBodyTemperingLayer >= 5
 //   - read_ten_tomes_one_life → flag `read_ten_tomes_one_life` was set this life
-//   - befriend_sect_disciple  → flag `befriended_sect_disciple` was set this life
+//   - befriend_sect_disciple  → flag `befriend_sect_disciple` was set this life
 //
 // The two flag-gated unlocks are AUTHORED-FROM-CONTENT contracts: events that
 // satisfy them set those flags via `flag_set` outcomes. Phase 2A-2 did not
@@ -42,7 +42,7 @@ const RULES: ReadonlyArray<UnlockRule> = [
   },
   {
     anchorId: 'outer_disciple',
-    check: (ctx) => ctx.diedThisLifeFlags.includes('befriended_sect_disciple'),
+    check: (ctx) => ctx.diedThisLifeFlags.includes('befriend_sect_disciple'),
   },
 ];
 

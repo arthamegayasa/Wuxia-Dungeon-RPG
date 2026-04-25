@@ -46,11 +46,11 @@ describe('evaluateAnchorUnlocks', () => {
     expect(out).toContain('scholars_son');
   });
 
-  it('returns ["outer_disciple"] when flag befriended_sect_disciple is set', () => {
+  it('returns ["outer_disciple"] when flag befriend_sect_disciple is set', () => {
     const out = evaluateAnchorUnlocks({
       meta: createEmptyMetaState(),
       summary: summary(),
-      diedThisLifeFlags: ['befriended_sect_disciple'],
+      diedThisLifeFlags: ['befriend_sect_disciple'],
     });
     expect(out).toContain('outer_disciple');
   });
