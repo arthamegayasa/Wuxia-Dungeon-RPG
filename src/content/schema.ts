@@ -134,6 +134,9 @@ export const ChoiceSchema = z.object({
     set: z.array(z.string()).optional(),
     clear: z.array(z.string()).optional(),
   }).optional(),
+  /** If set, this choice is hidden unless the character has learned a technique
+   *  whose `unlock_choice` effect declares the matching choiceId. */
+  unlockedBy: z.string().optional(),
 });
 
 export const EventSchema = z.object({

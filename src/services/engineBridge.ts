@@ -27,6 +27,7 @@ import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import type { TechniqueDef } from '@/engine/cultivation/Technique';
+import { filterUnlockedChoices, unlockedChoiceIds } from '@/engine/choices/ChoiceVisibility';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
@@ -429,9 +430,16 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
           gs.nameRegistry,
           peekRng,
         );
+        const cachedLearnedDefs = gs.runState.learnedTechniques
+          .map((id) => TECHNIQUE_REGISTRY.byId(id))
+          .filter((t): t is NonNullable<typeof t> => t !== null);
+        const cachedVisibleChoices = filterUnlockedChoices(
+          cached.choices,
+          unlockedChoiceIds(cachedLearnedDefs),
+        );
         return buildTurnPreview(
           narrative,
-          cached.choices.map((c) => ({ id: c.id, label: c.label })),
+          cachedVisibleChoices.map((c) => ({ id: c.id, label: c.label })),
         );
       }
       // Stale cache — fall through to a fresh selection.
@@ -477,9 +485,17 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     useGameStore.getState().updateRun(nextRun, gs.streak, gs.nameRegistry);
     saveRun(sm, nextRun);
 
+    const selectedLearnedDefs = gs.runState.learnedTechniques
+      .map((id) => TECHNIQUE_REGISTRY.byId(id))
+      .filter((t): t is NonNullable<typeof t> => t !== null);
+    const selectedVisibleChoices = filterUnlockedChoices(
+      selected.choices,
+      unlockedChoiceIds(selectedLearnedDefs),
+    );
+
     return buildTurnPreview(
       narrative,
-      selected.choices.map((c) => ({ id: c.id, label: c.label })),
+      selectedVisibleChoices.map((c) => ({ id: c.id, label: c.label })),
     );
   }
 
@@ -646,9 +662,13 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       if (!pending) {
         throw new Error(`resolveChoice: pending event ${gs.runState.pendingEventId} not found in pool`);
       }
-      const choice = pending.choices.find((c) => c.id === choiceId);
+      const learnedDefs = gs.runState.learnedTechniques
+        .map((id) => TECHNIQUE_REGISTRY.byId(id))
+        .filter((t): t is NonNullable<typeof t> => t !== null);
+      const visibleChoices = filterUnlockedChoices(pending.choices, unlockedChoiceIds(learnedDefs));
+      const choice = visibleChoices.find((c) => c.id === choiceId);
       if (!choice) {
-        throw new Error(`resolveChoice: choice ${choiceId} not found in event ${pending.id}`);
+        throw new Error(`resolveChoice: choice ${choiceId} not found in event ${pending.id} (or locked)`);
       }
 
       // Seed the turn RNG off the run's current cursor so replays are deterministic.
@@ -662,9 +682,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // the canonical corpus; affinity halving already active here.
       // Phase 2B-2 Task 10: fold mood_modifier effects from learned techniques
       // into dominantMood via moodDeltasFromTechniques (forward note #1).
-      const learnedDefs = gs.runState.learnedTechniques
-        .map((id) => TECHNIQUE_REGISTRY.byId(id))
-        .filter((t): t is NonNullable<typeof t> => t !== null);
+      // learnedDefs already declared above for visibility filtering — reuse it.
       const dominantMood = computeDominantMood(zeroMoodInputs(), moodDeltasFromTechniques(learnedDefs));
       const techBonus = choice.check?.techniqueBonusCategory
         ? resolveLearnedTechniqueBonus({
