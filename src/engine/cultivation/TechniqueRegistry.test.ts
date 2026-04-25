@@ -76,4 +76,15 @@ describe('TechniqueRegistry', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.reason).toMatch(/meridian/i);
   });
+
+  it('canLearn enforces specific meridians gate', () => {
+    const def: TechniqueDef = {
+      ...DEF_A, id: 'd', requires: { meridians: [5, 7] },
+    };
+    const r = TechniqueRegistry.fromList([def]);
+    const c = mortalChar();  // zero open meridians
+    const result = r.canLearn(c, 'd');
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toMatch(/meridian 5/i);
+  });
 });
