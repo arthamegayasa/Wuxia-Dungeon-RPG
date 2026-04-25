@@ -334,3 +334,25 @@ describe('applyOutcome — attempt_realm_crossing (Phase 2B-2 Task 20)', () => {
     expect(next.character.flags).toContain('attempted_tribulation_i');
   });
 });
+
+describe('applyOutcome — region_change (Phase 2B-2 Task 21)', () => {
+  it('region_change StateDelta updates runState.region (Phase 2B-2 Task 21)', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'region_change', regionId: 'azure_peaks' }],
+    });
+    expect(next.region).toBe('azure_peaks');
+  });
+
+  it('region_change preserves all other run state fields', () => {
+    const rs = baseState();
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'region_change', regionId: 'azure_peaks' }],
+    });
+    expect(next.character).toBe(rs.character);
+    expect(next.worldFlags).toBe(rs.worldFlags);
+    expect(next.karmaEarnedBuffer).toBe(rs.karmaEarnedBuffer);
+  });
+});

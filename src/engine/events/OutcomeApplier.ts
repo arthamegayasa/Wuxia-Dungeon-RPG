@@ -147,6 +147,9 @@ function applyDeltaToState(rs: RunState, delta: StateDelta, options: ApplyOutcom
         }
       }
     }
+    case 'region_change':
+      // Phase 2B-2 Task 21: update the active region on the run state.
+      return { ...rs, region: delta.regionId };
   }
 }
 

@@ -15,7 +15,17 @@ describe('StateDelta', () => {
       'karma_delta', 'notice_delta',
       'age_delta_days',
       'attempt_realm_crossing',
+      'region_change',
     ]);
+  });
+
+  it('isStateDelta recognises region_change (Phase 2B-2 Task 21)', () => {
+    expect(isStateDelta({ kind: 'region_change', regionId: 'azure_peaks' })).toBe(true);
+    expect(isStateDelta({ kind: 'region_change', regionId: 'yellow_plains' })).toBe(true);
+    // empty regionId is invalid
+    expect(isStateDelta({ kind: 'region_change', regionId: '' })).toBe(false);
+    // missing regionId
+    expect(isStateDelta({ kind: 'region_change' })).toBe(false);
   });
 
   it('isStateDelta recognises attempt_realm_crossing', () => {

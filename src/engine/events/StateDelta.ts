@@ -22,7 +22,9 @@ export type StateDelta =
   | { kind: 'notice_delta'; amount: number }
   | { kind: 'age_delta_days'; amount: number }
   // Phase 2B-2 Task 20: realm-gate events dispatch into RealmCrossing helpers.
-  | { kind: 'attempt_realm_crossing'; transition: 'bt9_to_qs' | 'qs_to_qc1' | 'qc_sublayer' | 'qc9_to_foundation' };
+  | { kind: 'attempt_realm_crossing'; transition: 'bt9_to_qs' | 'qs_to_qc1' | 'qc_sublayer' | 'qc9_to_foundation' }
+  // Phase 2B-2 Task 21: region-transition events update runState.region.
+  | { kind: 'region_change'; regionId: string };
 
 export const STATE_DELTA_KINDS = [
   'hp_delta', 'qi_delta', 'insight_delta', 'attribute_delta',
@@ -32,6 +34,7 @@ export const STATE_DELTA_KINDS = [
   'karma_delta', 'notice_delta',
   'age_delta_days',
   'attempt_realm_crossing',
+  'region_change',
 ] as const;
 
 export function isStateDelta(v: unknown): v is StateDelta {
@@ -69,6 +72,8 @@ export function isStateDelta(v: unknown): v is StateDelta {
     case 'attempt_realm_crossing':
       return typeof o.transition === 'string' &&
         ['bt9_to_qs', 'qs_to_qc1', 'qc_sublayer', 'qc9_to_foundation'].includes(o.transition as string);
+    case 'region_change':
+      return typeof o.regionId === 'string' && o.regionId.length > 0;
     default:
       return false;
   }

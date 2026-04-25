@@ -93,6 +93,11 @@ const StateDeltaSchema = z.discriminatedUnion('kind', [
     /** Which transition to attempt. */
     transition: z.enum(['bt9_to_qs', 'qs_to_qc1', 'qc_sublayer', 'qc9_to_foundation']),
   }),
+  // Phase 2B-2 Task 21: region-transition events update runState.region.
+  z.object({
+    kind: z.literal('region_change'),
+    regionId: z.string().min(1),
+  }),
 ]);
 
 export const OutcomeSchema = z.object({
