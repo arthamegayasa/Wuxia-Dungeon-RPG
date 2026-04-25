@@ -9,7 +9,7 @@ import {
 import { getAnchorById, DEFAULT_ANCHORS } from '@/engine/meta/Anchor';
 import { resolveAnchor } from '@/engine/meta/AnchorResolver';
 import { characterFromAnchor } from '@/engine/meta/characterFromAnchor';
-import { createRng } from '@/engine/core/RNG';
+import { createRng, derivedRng } from '@/engine/core/RNG';
 import {
   createStreakState, recordOutcome, computeStreakBonus, computeWorldMaliceBuff, tickBuff,
 } from '@/engine/choices/StreakTracker';
@@ -22,8 +22,9 @@ import { resolveCheck } from '@/engine/choices/ChoiceResolver';
 import { resolveOutcome } from '@/engine/choices/OutcomeResolver';
 import { applyOutcome } from '@/engine/events/OutcomeApplier';
 import { advanceTurn } from '@/engine/events/AgeTick';
-import { resolveTechniqueBonus } from '@/engine/cultivation/Technique';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
+import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
@@ -83,6 +84,9 @@ const ECHO_REGISTRY = EchoRegistry.fromList(loadEchoes(echoPack) as ReadonlyArra
 const MEMORY_REGISTRY = MemoryRegistry.fromList(
   loadMemories(memoriesPack) as ReadonlyArray<ForbiddenMemory>,
 );
+
+// Phase 2B-1 Task 7: empty by default. 2B-2 ships the canonical corpus + loader.
+const TECHNIQUE_REGISTRY = TechniqueRegistry.empty();
 
 export interface LoadOrInitResult {
   phase: GamePhase;
@@ -389,9 +393,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     if (gs.runState.pendingEventId) {
       const cached = findEventById(ALL_EVENTS, gs.runState.pendingEventId);
       if (cached) {
-        const peekRng = createRng(
-          ((gs.runState.rngState?.cursor ?? gs.runState.runSeed) + 1) & 0xffffffff,
-        );
+        const cursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
+        const peekRng = derivedRng(cursor, 'narrative');
         const narrative = renderEvent(
           cached,
           compositionContextFromStore(gs),
@@ -407,9 +410,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Stale cache — fall through to a fresh selection.
     }
 
-    const rng = createRng(
-      (gs.runState.rngState?.cursor ?? gs.runState.runSeed) & 0xffffffff,
-    );
+    const cursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
+    const selectorRng = derivedRng(cursor, 'selector');
+    const narrativeRng = derivedRng(cursor, 'narrative');
+    const rng = selectorRng;  // alias for backward-compat in this block
     const selected = selectEvent(
       ALL_EVENTS,
       {
@@ -435,7 +439,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       compositionContextFromStore(gs),
       library,
       gs.nameRegistry,
-      rng,
+      narrativeRng,
     );
 
     // Cache the selection on runState. NOTE: we do NOT advance the rngState
@@ -624,13 +628,19 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Fall back to runSeed if (somehow) cursor is absent.
       const seedCursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
       const rng = createRng(seedCursor & 0xffffffff);
+      const narrativeRng = derivedRng(seedCursor, 'narrative');
 
-      // Phase 1D-1 zero-placeholders: technique registry, inventory effects, echoes,
-      // and memories don't exist yet. resolveTechniqueBonus([]) → 0; itemBonus /
-      // echoBonus / memoryBonus wired in Phase 2+. NOT bugs.
+      // Phase 2B-1 Task 7: registry-backed technique bonus. Empty registry → 0
+      // (no regression vs old resolveTechniqueBonus([]) stub). 2B-2 swaps in
+      // the canonical corpus; affinity halving already active here.
       const dominantMood = computeDominantMood(zeroMoodInputs());
       const techBonus = choice.check?.techniqueBonusCategory
-        ? resolveTechniqueBonus([], choice.check.techniqueBonusCategory)
+        ? resolveLearnedTechniqueBonus({
+            registry: TECHNIQUE_REGISTRY,
+            learnedIds: gs.runState.learnedTechniques,
+            corePath: gs.runState.character.corePath,
+            category: choice.check.techniqueBonusCategory,
+          })
         : 0;
       const moodBonus = choice.check?.techniqueBonusCategory
         ? computeMoodBonus(dominantMood, choice.check.techniqueBonusCategory as CheckCategory)
@@ -653,14 +663,14 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const outcome = resolveOutcome(choice.outcomes, checkResult.tier);
 
       // Render the narrative for this event BEFORE applying deltas so the text
-      // composition uses the state the player just acted on. Uses the same rng as
-      // the check — composer is deterministic off the current cursor.
+      // composition uses the state the player just acted on. Uses the narrative
+      // substream (derivedRng) so the composer is isolated from check/outcome RNG.
       const narrative = renderEvent(
         pending,
         compositionContextFromStore(gs),
         library,
         gs.nameRegistry,
-        rng,
+        narrativeRng,
       );
 
       // Apply outcome, then append to thisLifeSeenEvents AND clear pendingEventId.
@@ -696,6 +706,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Task 10 reviewer report.
       const currentTracker = gs.echoTracker ?? EchoTracker.empty();
       const hooks = applyPostOutcomeHooks({
+        preRunState: gs.runState,
         runState: nextRunState,
         event: pending,
         meta: currentMetaState(),

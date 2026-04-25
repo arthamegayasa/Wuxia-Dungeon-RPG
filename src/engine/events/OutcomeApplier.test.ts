@@ -163,3 +163,62 @@ describe('applyOutcome — memory witness', () => {
     expect(next.memoriesWitnessedThisLife).toEqual([]);
   });
 });
+
+function mkRsForMeridianTest(args: { openMeridians: number[]; corePath?: 'iron_mountain' | null }) {
+  const c = createCharacter({
+    name: 't',
+    attributes: { Body: 5, Mind: 5, Spirit: 5, Agility: 5, Charm: 5, Luck: 5 },
+    rng: createRng(1),
+  });
+  return {
+    character: { ...c, openMeridians: args.openMeridians as any, corePath: args.corePath ?? null },
+    turn: 0, runSeed: 1, rngState: { seed: 1, cursor: 1 },
+    worldFlags: [], thisLifeSeenEvents: [], learnedTechniques: [], inventory: [],
+    region: 'yp', locale: 'x', year: 1000, birthYear: 1000, season: 'spring' as const,
+    heavenlyNotice: 0, karmaEarnedBuffer: 0, deathCause: null,
+    memoriesWitnessedThisLife: [], memoriesManifestedThisLife: [], manifestAttemptsThisLife: 0,
+  };
+}
+
+describe('applyOutcome meridian_open (Phase 2B-1 Task 12)', () => {
+  it('opening 3rd meridian sets Core Path (iron_mountain set = {3, 1, 7})', () => {
+    const rs = mkRsForMeridianTest({ openMeridians: [3, 1] });
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meridian_open', id: 7 }],
+    });
+    expect(next.character.openMeridians).toEqual([3, 1, 7]);
+    expect(next.character.corePath).toBe('iron_mountain');
+  });
+
+  it('opening an already-open meridian is a no-op (idempotent)', () => {
+    const rs = mkRsForMeridianTest({ openMeridians: [3, 1] });
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meridian_open', id: 3 }],
+    });
+    expect(next.character.openMeridians).toEqual([3, 1]);
+    expect(next.character.corePath).toBeNull();
+  });
+
+  it('opening 4th+ meridian does NOT change corePath (locked at 3)', () => {
+    const rs = mkRsForMeridianTest({ openMeridians: [3, 1, 7], corePath: 'iron_mountain' });
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meridian_open', id: 5 }],
+    });
+    expect(next.character.openMeridians).toEqual([3, 1, 7, 5]);
+    expect(next.character.corePath).toBe('iron_mountain');
+  });
+
+  it('opening 3rd with no named match → null (wandering)', () => {
+    // Heart(5,fire) + Small Intestine(6,fire) + Lung(1,metal): 2 fire + 1 metal
+    // → no named match, not same-element, not all different → null.
+    const rs = mkRsForMeridianTest({ openMeridians: [5, 6] });
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meridian_open', id: 1 }],
+    });
+    expect(next.character.corePath).toBeNull();
+  });
+});

@@ -120,3 +120,59 @@ describe('attemptSublayerBreakthrough', () => {
     expect(out.character.cultivationProgress).toBeGreaterThanOrEqual(0);
   });
 });
+
+describe('attemptSublayerBreakthrough polymorphic (Phase 2B-1 Task 14)', () => {
+  function qcChar(layer: number, progress: number = 100) {
+    return {
+      ...createCharacter({
+        name: 'x',
+        attributes: { Body: 5, Mind: 10, Spirit: 5, Agility: 5, Charm: 5, Luck: 5 },
+        rng: createRng(1),
+      }),
+      realm: Realm.QI_CONDENSATION,
+      qiCondensationLayer: layer,
+      cultivationProgress: progress,
+    };
+  }
+
+  it('BT character: bumps bodyTemperingLayer', () => {
+    const c = {
+      ...createCharacter({
+        name: 'x',
+        attributes: { Body: 5, Mind: 10, Spirit: 5, Agility: 5, Charm: 5, Luck: 5 },
+        rng: createRng(1),
+      }),
+      realm: Realm.BODY_TEMPERING,
+      bodyTemperingLayer: 3,
+      cultivationProgress: 100,
+    };
+    const result = attemptSublayerBreakthrough(c, { rng: createRng(42) });
+    if (result.success) {
+      expect(result.character.bodyTemperingLayer).toBeGreaterThan(3);
+      expect(result.character.qiCondensationLayer).toBe(c.qiCondensationLayer);
+    }
+  });
+
+  it('QC character: bumps qiCondensationLayer, NOT bodyTemperingLayer', () => {
+    const c = qcChar(3);
+    const result = attemptSublayerBreakthrough(c, { rng: createRng(42) });
+    if (result.success) {
+      expect(result.character.qiCondensationLayer).toBe(4);
+      expect(result.character.bodyTemperingLayer).toBe(c.bodyTemperingLayer);
+    }
+  });
+
+  it('QC chance formula uses qiCondensationLayer as currentLayer', () => {
+    const bt = { ...qcChar(3), realm: Realm.BODY_TEMPERING, bodyTemperingLayer: 3, qiCondensationLayer: 0 };
+    const qc = qcChar(3);
+    const r1 = attemptSublayerBreakthrough(bt, { rng: createRng(1) });
+    const r2 = attemptSublayerBreakthrough(qc, { rng: createRng(1) });
+    expect(r1.chance).toBe(r2.chance);
+  });
+
+  it('throws for realms without sub-layers (Qi Sensing)', () => {
+    const qs = { ...qcChar(0), realm: Realm.QI_SENSING };
+    expect(() => attemptSublayerBreakthrough(qs, { rng: createRng(1) }))
+      .toThrow(/no sub-layers/);
+  });
+});

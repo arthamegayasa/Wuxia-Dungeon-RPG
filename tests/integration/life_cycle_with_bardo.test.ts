@@ -14,6 +14,7 @@ import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
 import { runTurn } from '@/engine/core/GameLoop';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
+import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 
 // A tiny corpus with one benign event and one fatal event, so a loop will eventually die.
 const EVENTS: EventDef[] = [
@@ -93,6 +94,7 @@ describe('life cycle: create → play → die → bardo → reincarnate', () => 
         echoTracker,
         memoryRegistry: EMPTY_MEMORY_REGISTRY,
         meta,
+        techniqueRegistry: TechniqueRegistry.empty(),
       };
       let result;
       try {

@@ -27,6 +27,7 @@ export interface Character {
   readonly spiritRoot: SpiritRoot;
   readonly realm: Realm;
   readonly bodyTemperingLayer: number;  // 0 when not yet in Body Tempering; 1..9 inside it
+  readonly qiCondensationLayer: number; // 0 when not yet in Qi Condensation; 1..9 inside it
   readonly ageDays: number;
 
   readonly hp: number;
@@ -96,6 +97,7 @@ export function createCharacter(args: CreateCharacterArgs): Character {
     spiritRoot,
     realm: Realm.MORTAL,
     bodyTemperingLayer: 0,
+    qiCondensationLayer: 0,
     ageDays: args.startingAgeDays ?? 0,
     cultivationProgress: 0,
     hp: undefined,

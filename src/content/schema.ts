@@ -241,6 +241,127 @@ export type EchoPack = z.infer<typeof EchoPackSchema>;
 export type MemoryDef = z.infer<typeof MemorySchema>;
 export type MemoryPack = z.infer<typeof MemoryPackSchema>;
 
+// ---- Phase 2B-1 Technique schema ----
+// Source: docs/spec/design.md §9.5.
+
+const TECHNIQUE_GRADES = ['mortal', 'yellow', 'profound', 'earth', 'heaven', 'immortal'] as const;
+const ELEMENTS_WITH_NONE = ['metal', 'wood', 'water', 'fire', 'earth', 'none'] as const;
+const MOOD_STRINGS = ['sorrow', 'rage', 'serenity', 'paranoia', 'resolve', 'melancholy'] as const;
+
+const CORE_AFFINITY_TOKEN = z.union([
+  z.enum([
+    'iron_mountain', 'severing_edge', 'still_water', 'howling_storm',
+    'blood_ember', 'root_and_bough', 'thousand_mirrors', 'hollow_vessel',
+    'shattered_path',
+  ]),
+  z.literal('any'),
+]);
+
+const TechniqueEffectSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('choice_bonus'), category: z.string().min(1), bonus: z.number() }),
+  z.object({ kind: z.literal('qi_regen'), amount: z.number() }),
+  z.object({ kind: z.literal('insight_gain_per_meditation'), amount: z.number() }),
+  z.object({ kind: z.literal('mood_modifier'), mood: z.enum(MOOD_STRINGS), delta: z.number() }),
+  z.object({ kind: z.literal('unlock_choice'), choiceId: z.string().min(1) }),
+  z.object({ kind: z.literal('cultivation_multiplier_pct'), pct: z.number() }),
+]);
+
+const TechniqueRankEffectsSchema = z.object({
+  novice: z.array(TechniqueEffectSchema),
+  adept: z.array(TechniqueEffectSchema),
+  master: z.array(TechniqueEffectSchema),
+});
+
+export const TechniqueSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  grade: z.enum(TECHNIQUE_GRADES),
+  element: z.enum(ELEMENTS_WITH_NONE),
+  coreAffinity: z.array(CORE_AFFINITY_TOKEN).min(1),
+  requires: z.object({
+    realm: z.enum(REALM_STRINGS).optional(),
+    meridians: z.array(z.number().int().min(1).max(12)).optional(),
+    openMeridianCount: z.number().int().nonnegative().optional(),
+  }),
+  qiCost: z.number().nonnegative(),
+  insightCost: z.number().nonnegative().optional(),
+  effects: z.array(TechniqueEffectSchema),
+  description: z.string(),
+  rankPath: TechniqueRankEffectsSchema.optional(),
+});
+
+export const TechniquePackSchema = z.object({
+  version: z.number().int().positive(),
+  techniques: z.array(TechniqueSchema),
+});
+
+export type TechniqueRawDef = z.infer<typeof TechniqueSchema>;
+export type TechniquePack = z.infer<typeof TechniquePackSchema>;
+
+// ---- Phase 2B-1 Item / Manual schemas ----
+// Source: docs/spec/design.md §9.6, §9.7.
+
+const ITEM_TYPES = ['pill', 'manual', 'weapon', 'armor', 'talisman', 'misc'] as const;
+const ITEM_GRADES = TECHNIQUE_GRADES;   // shared 6-tier ladder
+
+const ItemEffectSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('heal_hp'), amount: z.number() }),
+  z.object({ kind: z.literal('restore_qi'), amount: z.number() }),
+  z.object({ kind: z.literal('pill_bonus'), amount: z.number() }),
+  z.object({ kind: z.literal('insight_gain'), amount: z.number() }),
+  z.object({ kind: z.literal('deviation_risk'), delta: z.number() }),
+  z.object({ kind: z.literal('choice_bonus'), category: z.string().min(1), bonus: z.number() }),
+]);
+
+export const ItemSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  type: z.enum(ITEM_TYPES),
+  grade: z.enum(ITEM_GRADES),
+  stackable: z.boolean(),
+  effects: z.array(ItemEffectSchema),
+  description: z.string(),
+  weight: z.number().nonnegative().optional(),
+  // Manual-only fields:
+  teaches: z.string().optional(),
+  completeness: z.union([z.literal(0.25), z.literal(0.5), z.literal(0.75), z.literal(1.0)]).optional(),
+  readerRequires: z.object({
+    minMind: z.number().nonnegative().optional(),
+    minInsight: z.number().nonnegative().optional(),
+  }).optional(),
+}).superRefine((v, ctx) => {
+  if (v.type === 'manual') {
+    if (!v.teaches) ctx.addIssue({ code: 'custom', message: 'manual requires teaches' });
+    if (v.completeness === undefined) ctx.addIssue({ code: 'custom', message: 'manual requires completeness' });
+  }
+});
+
+export const ItemPackSchema = z.object({
+  version: z.number().int().positive(),
+  items: z.array(ItemSchema),
+});
+
+export type ItemRawDef = z.infer<typeof ItemSchema>;
+export type ItemPack = z.infer<typeof ItemPackSchema>;
+
+// ---- Phase 2B-1 Tribulation pillar schema ----
+// Source: docs/spec/design.md §4.5, §9.4.
+
+const PillarPhaseSchema = z.object({
+  id: z.string().min(1),
+  checkStats: z.record(z.enum(STAT_STRINGS), z.number().optional()),
+  difficulty: z.number().positive(),
+  failEffect: z.string().min(1),
+});
+
+export const PillarEventSchema = z.object({
+  id: z.string().min(1),
+  phases: z.array(PillarPhaseSchema).min(1),
+});
+
+export type PillarPhase = z.infer<typeof PillarPhaseSchema>;
+export type PillarEvent = z.infer<typeof PillarEventSchema>;
+
 // ---- Content pack (Phase 0 loader — now wraps the richer Event schema) ----
 
 export const ContentPackSchema = z.object({

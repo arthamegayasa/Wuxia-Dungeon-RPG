@@ -18,8 +18,9 @@ import {
 import { renderEvent, CompositionContext } from '@/engine/narrative/Composer';
 import { SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { NameRegistry } from '@/engine/narrative/NameRegistry';
-import { resolveTechniqueBonus } from '@/engine/cultivation/Technique';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
+import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { MetaState } from '@/engine/meta/MetaState';
@@ -54,6 +55,12 @@ export interface TurnContext {
    * bridge/integration harness is responsible for committing at bardo time.
    */
   meta: MetaState;
+  /**
+   * Phase 2B-1 Task 7: technique registry for affinity-aware bonus resolution.
+   * Pass `TechniqueRegistry.empty()` in tests/contexts that don't need techniques.
+   * 2B-2 replaces with the canonical corpus loader.
+   */
+  techniqueRegistry: TechniqueRegistry;
 }
 
 export interface TurnResult {
@@ -111,11 +118,16 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   );
 
   // 4. Resolve the check
-  // Phase 1D-1 zero-placeholders: technique registry, inventory effects, echoes,
-  // and memories don't exist yet. resolveTechniqueBonus([]) → 0; itemBonus /
-  // echoBonus / memoryBonus wired in Phase 1D-2 / Phase 2+. NOT bugs.
+  // Phase 2B-1 Task 7: registry-backed technique bonus. Empty registry → 0
+  // (no regression vs old resolveTechniqueBonus([]) stub). 2B-2 swaps in
+  // the canonical corpus; affinity halving already active here.
   const techBonus = choice.check?.techniqueBonusCategory
-    ? resolveTechniqueBonus([], choice.check.techniqueBonusCategory)
+    ? resolveLearnedTechniqueBonus({
+        registry: ctx.techniqueRegistry,
+        learnedIds: ctx.runState.learnedTechniques,
+        corePath: ctx.runState.character.corePath,
+        category: choice.check.techniqueBonusCategory,
+      })
     : 0;
   const moodBonus = choice.check?.techniqueBonusCategory
     ? computeMoodBonus(ctx.dominantMood, choice.check.techniqueBonusCategory as CheckCategory)
@@ -160,6 +172,7 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   //    Runs AFTER `applyOutcome` / `advanceTurn` so it observes the final
   //    per-turn state (mirrors the bridge's ordering exactly).
   const hooks = applyPostOutcomeHooks({
+    preRunState: ctx.runState,
     runState: nextRunState,
     event,
     meta: ctx.meta,

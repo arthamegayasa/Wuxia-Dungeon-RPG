@@ -352,6 +352,8 @@ describe('getLineageSnapshot', () => {
         deathCause: 'sickness',
         karmaEarned: 25,
         echoesUnlockedThisLife: ['iron_body'],
+        corePath: null,
+        techniquesLearned: [],
       }],
     });
     const snap = engine.getLineageSnapshot();
@@ -373,9 +375,9 @@ describe('getLineageSnapshot', () => {
       ...createEmptyMetaState(),
       lifeCount: 3,
       lineage: [
-        { lifeIndex: 1, name: 'A', anchorId: 'peasant_farmer', birthYear: 950, deathYear: 970, yearsLived: 20, realmReached: 'Mortal', deathCause: 'old_age', karmaEarned: 5, echoesUnlockedThisLife: [] },
-        { lifeIndex: 2, name: 'B', anchorId: 'peasant_farmer', birthYear: 970, deathYear: 1000, yearsLived: 30, realmReached: 'Mortal', deathCause: 'old_age', karmaEarned: 10, echoesUnlockedThisLife: [] },
-        { lifeIndex: 3, name: 'C', anchorId: 'peasant_farmer', birthYear: 1000, deathYear: 1010, yearsLived: 10, realmReached: 'Mortal', deathCause: 'sickness', karmaEarned: 2, echoesUnlockedThisLife: [] },
+        { lifeIndex: 1, name: 'A', anchorId: 'peasant_farmer', birthYear: 950, deathYear: 970, yearsLived: 20, realmReached: 'Mortal', deathCause: 'old_age', karmaEarned: 5, echoesUnlockedThisLife: [], corePath: null, techniquesLearned: [] },
+        { lifeIndex: 2, name: 'B', anchorId: 'peasant_farmer', birthYear: 970, deathYear: 1000, yearsLived: 30, realmReached: 'Mortal', deathCause: 'old_age', karmaEarned: 10, echoesUnlockedThisLife: [], corePath: null, techniquesLearned: [] },
+        { lifeIndex: 3, name: 'C', anchorId: 'peasant_farmer', birthYear: 1000, deathYear: 1010, yearsLived: 10, realmReached: 'Mortal', deathCause: 'sickness', karmaEarned: 2, echoesUnlockedThisLife: [], corePath: null, techniquesLearned: [] },
       ],
     });
     const snap = engine.getLineageSnapshot();

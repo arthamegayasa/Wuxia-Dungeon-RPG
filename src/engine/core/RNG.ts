@@ -100,3 +100,17 @@ export function createRng(seed: number): IRng {
   const s = (seed | 0) >>> 0;
   return new Rng(s, s);
 }
+
+/**
+ * Derive a sub-stream RNG from a base seed + a label. Pure function of
+ * (baseSeed, label). Used by Phase 2B to split peek vs resolve RNG streams
+ * so repeated peeks don't drift.
+ */
+export function derivedRng(baseSeed: number, label: string): IRng {
+  let h = baseSeed | 0;
+  for (let i = 0; i < label.length; i++) {
+    h = Math.imul(h ^ label.charCodeAt(i), 0x85ebca6b);
+    h ^= h >>> 16;
+  }
+  return createRng(h >>> 0);
+}

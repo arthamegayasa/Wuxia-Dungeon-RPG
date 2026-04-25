@@ -3,6 +3,7 @@
 
 import { IRng } from '@/engine/core/RNG';
 import { Character } from '@/engine/character/Character';
+import { Realm } from '@/engine/core/Types';
 import { isSubLayerFull, PROGRESS_PER_SUBLAYER } from './CultivationProgress';
 import { realmMeta } from './RealmMeta';
 
@@ -41,6 +42,27 @@ export interface AttemptResult {
 
 const PROGRESS_LOST_ON_FAIL = 25;
 
+function currentSublayer(c: Character): number {
+  switch (c.realm) {
+    case Realm.BODY_TEMPERING:  return c.bodyTemperingLayer;
+    case Realm.QI_CONDENSATION: return c.qiCondensationLayer;
+    default: return 0;
+  }
+}
+
+function withIncrementedSublayer(c: Character): Character {
+  const meta = realmMeta(c.realm);
+  const nextValue = (n: number) => Math.min(meta.subLayers, n + 1);
+  switch (c.realm) {
+    case Realm.BODY_TEMPERING:
+      return { ...c, bodyTemperingLayer: nextValue(c.bodyTemperingLayer), cultivationProgress: 0 };
+    case Realm.QI_CONDENSATION:
+      return { ...c, qiCondensationLayer: nextValue(c.qiCondensationLayer), cultivationProgress: 0 };
+    default:
+      throw new Error(`Breakthrough: no sub-layer field for realm ${c.realm}`);
+  }
+}
+
 export function attemptSublayerBreakthrough(c: Character, args: AttemptArgs): AttemptResult {
   if (!isSubLayerFull(c)) {
     throw new Error('attemptSublayerBreakthrough: cultivation progress is not full');
@@ -53,7 +75,7 @@ export function attemptSublayerBreakthrough(c: Character, args: AttemptArgs): At
   const chance = sublayerBreakthroughChance({
     mind: c.attributes.Mind,
     insight: c.insight,
-    currentLayer: c.bodyTemperingLayer,
+    currentLayer: currentSublayer(c),
     pillBonus: args.pillBonus ?? 0,
     safeEnvironmentBonus: args.safeEnvironmentBonus ?? 0,
   });
@@ -62,27 +84,9 @@ export function attemptSublayerBreakthrough(c: Character, args: AttemptArgs): At
   const success = roll <= chance;
 
   if (success) {
-    const nextLayer = Math.min(meta.subLayers, c.bodyTemperingLayer + 1);
-    return {
-      success: true,
-      chance,
-      roll,
-      character: {
-        ...c,
-        bodyTemperingLayer: nextLayer,
-        cultivationProgress: 0,
-      },
-    };
+    return { success: true, chance, roll, character: withIncrementedSublayer(c) };
   }
 
   const nextProgress = Math.max(0, PROGRESS_PER_SUBLAYER - PROGRESS_LOST_ON_FAIL);
-  return {
-    success: false,
-    chance,
-    roll,
-    character: {
-      ...c,
-      cultivationProgress: nextProgress,
-    },
-  };
+  return { success: false, chance, roll, character: { ...c, cultivationProgress: nextProgress } };
 }

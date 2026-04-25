@@ -108,6 +108,7 @@ export const useMetaStore = create<MetaStoreState>((set, get) => ({
       echoProgress: {},
       memoriesWitnessed: { ...s.memoriesWitnessed },
       memoriesManifested: [...s.memoriesManifested],
+      seenTechniques: [],
     };
   },
 
