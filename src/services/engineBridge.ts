@@ -36,6 +36,7 @@ import { loadMemories } from '@/content/memories/loader';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { SoulEcho } from '@/engine/meta/SoulEcho';
+import type { UnlockCondition, EchoEffect } from '@/engine/meta/SoulEcho';
 import { ForbiddenMemory, memoryLevelOf } from '@/engine/meta/ForbiddenMemory';
 import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
@@ -150,10 +151,40 @@ export interface MetaSnapshot {
 
 export type LineageEntry = LineageEntrySummary;
 
+export interface CodexEchoEntry {
+  id: string;
+  name: string;
+  description: string;
+  tier: 'fragment' | 'partial' | 'full';
+  unlocked: boolean;
+  unlockHint: string;
+  effectsSummary: string;
+}
+
+export interface CodexMemoryEntry {
+  id: string;
+  name: string;
+  description: string;
+  element: string;
+  level: 'unseen' | 'fragment' | 'partial' | 'complete';
+  witnessFlavour: string | null;
+  manifested: boolean;
+  manifestFlavour: string | null;
+}
+
+export interface CodexAnchorEntry {
+  id: string;
+  name: string;
+  description: string;
+  unlocked: boolean;
+  unlockHint: string;
+  karmaMultiplier: number;
+}
+
 export interface CodexSnapshot {
-  memories: readonly string[];
-  echoes: readonly string[];
-  anchors: readonly string[];
+  echoes: ReadonlyArray<CodexEchoEntry>;
+  memories: ReadonlyArray<CodexMemoryEntry>;
+  anchors: ReadonlyArray<CodexAnchorEntry>;
 }
 
 export interface EngineBridge {
@@ -167,7 +198,64 @@ export interface EngineBridge {
   listAnchors(): CreationPayload;
   getMetaSummary(): MetaSnapshot;
   getLineage(): ReadonlyArray<LineageEntry>;
-  getCodex(): CodexSnapshot;
+  getCodexSnapshot(): CodexSnapshot;
+}
+
+function describeUnlockCondition(c: UnlockCondition): string {
+  switch (c.kind) {
+    case 'reach_realm':
+      return `Reach ${c.realm}${c.sublayer != null ? ` ${c.sublayer}` : ''}`;
+    case 'choice_category_count':
+      return `Make ${c.count}+ ${c.category} choices across lives`;
+    case 'outcome_count':
+      return `Trigger ${c.outcomeKind} ${c.count}+ times across lives`;
+    case 'lives_as_anchor_max_age':
+      return `Live ${c.lives}+ full lives as ${c.anchor}`;
+    case 'died_with_flag':
+      return `Die with the mark of ${c.flag.replace(/_/g, ' ')}`;
+    case 'flag_set':
+      return `Carry the flag ${c.flag.replace(/_/g, ' ')}`;
+    case 'died_in_same_region_streak':
+      return `Die in ${c.region} ${c.streak} lives running`;
+    case 'reached_insight_cap_lives':
+      return `Hit the insight cap in ${c.lives} lives`;
+    case 'lived_min_years_in_single_life':
+      return `Live ${c.years}+ years in a single life`;
+    case 'reached_realm_without_techniques':
+      return `Reach ${c.realm} without learning a technique`;
+    default:
+      return 'Hidden condition';
+  }
+}
+
+function summarizeEffects(effects: ReadonlyArray<EchoEffect>): string {
+  return effects.map((e) => {
+    switch (e.kind) {
+      case 'stat_mod':       return `${e.delta >= 0 ? '+' : ''}${e.delta} ${e.stat}`;
+      case 'stat_mod_pct':   return `${e.pct >= 0 ? '+' : ''}${e.pct}% ${e.stat}`;
+      case 'hp_mult':        return `×${e.mult.toFixed(2)} HP`;
+      case 'heal_efficacy_pct': return `${e.pct >= 0 ? '+' : ''}${e.pct}% heal efficacy`;
+      case 'body_cultivation_rate_pct': return `${e.pct >= 0 ? '+' : ''}${e.pct}% body cultivation`;
+      case 'mood_swing_pct': return `${e.pct >= 0 ? '+' : ''}${e.pct}% mood swing`;
+      case 'old_age_death_roll_pct': return `${e.pct >= 0 ? '+' : ''}${e.pct}% old-age death roll`;
+      case 'insight_cap_bonus': return `+${e.bonus} insight cap`;
+      case 'starting_flag':  return `Starts with ${e.flag.replace(/_/g, ' ')}`;
+      case 'resolver_bonus': return `+${e.bonus} ${e.category}`;
+      case 'event_weight':   return `×${e.mult.toFixed(2)} ${e.eventTag}`;
+      case 'imprint_encounter_rate_pct': return `${e.pct >= 0 ? '+' : ''}${e.pct}% imprint rate`;
+      default: return '';
+    }
+  }).filter(Boolean).join(' · ');
+}
+
+function describeAnchorUnlock(unlock: string): string {
+  if (unlock === 'default') return 'Available from the start';
+  switch (unlock) {
+    case 'reach_body_tempering_5':  return 'Reach Body Tempering 5 in any past life';
+    case 'read_ten_tomes_one_life': return 'Read 10 tomes in one life';
+    case 'befriend_sect_disciple':  return 'Befriend a sect disciple';
+    default: return unlock.replace(/_/g, ' ');
+  }
 }
 
 interface BridgeOpts {
@@ -694,13 +782,51 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       return useMetaStore.getState().lineage;
     },
 
-    getCodex() {
-      const m = useMetaStore.getState();
-      return {
-        memories: m.unlockedMemories,
-        echoes: m.unlockedEchoes,
-        anchors: m.unlockedAnchors,
-      };
+    getCodexSnapshot(): CodexSnapshot {
+      const meta = currentMetaState();
+      const witnessed = meta.memoriesWitnessed;
+      const manifested = new Set(meta.memoriesManifested);
+      const unlockedEchoes = new Set(meta.echoesUnlocked);
+      const unlockedAnchors = new Set(meta.unlockedAnchors);
+
+      const echoes = ECHO_REGISTRY.all().map<CodexEchoEntry>((e) => ({
+        id: e.id,
+        name: e.name,
+        description: e.description,
+        tier: e.tier,
+        unlocked: unlockedEchoes.has(e.id),
+        unlockHint: describeUnlockCondition(e.unlockCondition),
+        effectsSummary: summarizeEffects(e.effects),
+      }));
+
+      const memories = MEMORY_REGISTRY.all().map<CodexMemoryEntry>((m) => {
+        const count = witnessed[m.id] ?? 0;
+        const level: CodexMemoryEntry['level'] = count <= 0
+          ? 'unseen'
+          : memoryLevelOf(count);
+        const witnessFlavour = level === 'unseen' ? null : (m.witnessFlavour[level as 'fragment' | 'partial' | 'complete'] ?? null);
+        return {
+          id: m.id,
+          name: m.name,
+          description: m.description,
+          element: m.element,
+          level,
+          witnessFlavour,
+          manifested: manifested.has(m.id),
+          manifestFlavour: manifested.has(m.id) ? m.manifestFlavour : null,
+        };
+      });
+
+      const anchors = DEFAULT_ANCHORS.map<CodexAnchorEntry>((a) => ({
+        id: a.id,
+        name: a.name,
+        description: a.description,
+        unlocked: a.unlock === 'default' || unlockedAnchors.has(a.id),
+        unlockHint: describeAnchorUnlock(a.unlock),
+        karmaMultiplier: a.karmaMultiplier,
+      }));
+
+      return { echoes, memories, anchors };
     },
   };
 }

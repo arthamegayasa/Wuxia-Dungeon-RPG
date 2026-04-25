@@ -15,6 +15,10 @@ export interface MetaStoreState {
   ownedUpgrades: string[];
   lineage: LineageEntrySummary[];
   lifetimeSeenEvents: string[];
+  /** Phase 2A Task 6: lifetime witness counter per memory id. */
+  memoriesWitnessed: Record<string, number>;
+  /** Phase 2A Task 6: ids of memories that have ever manifested. */
+  memoriesManifested: string[];
 
   addKarma: (amount: number) => void;
   spendKarma: (amount: number) => boolean;
@@ -40,6 +44,8 @@ const initial = {
   ownedUpgrades: [...INITIAL_META.ownedUpgrades] as string[],
   lineage: [...INITIAL_META.lineage] as LineageEntrySummary[],
   lifetimeSeenEvents: [...INITIAL_META.lifetimeSeenEvents] as string[],
+  memoriesWitnessed: {} as Record<string, number>,
+  memoriesManifested: [] as string[],
 };
 
 export const useMetaStore = create<MetaStoreState>((set, get) => ({
@@ -82,6 +88,9 @@ export const useMetaStore = create<MetaStoreState>((set, get) => ({
       lifeCount: m.lifeCount,
       lineage: [...m.lineage],
       lifetimeSeenEvents: [...m.lifetimeSeenEvents],
+      unlockedEchoes: [...(m.echoesUnlocked ?? [])],
+      memoriesWitnessed: { ...m.memoriesWitnessed },
+      memoriesManifested: [...(m.memoriesManifested ?? [])],
     }),
 
   toMetaState: (): MetaState => {
@@ -97,8 +106,8 @@ export const useMetaStore = create<MetaStoreState>((set, get) => ({
       heavenlyNotice: s.heavenlyNotice,
       echoesUnlocked: [...s.unlockedEchoes],
       echoProgress: {},
-      memoriesWitnessed: {},
-      memoriesManifested: [],
+      memoriesWitnessed: { ...s.memoriesWitnessed },
+      memoriesManifested: [...s.memoriesManifested],
     };
   },
 
@@ -113,5 +122,7 @@ export const useMetaStore = create<MetaStoreState>((set, get) => ({
       ownedUpgrades: [...initial.ownedUpgrades],
       lineage: [...initial.lineage],
       lifetimeSeenEvents: [...initial.lifetimeSeenEvents],
+      memoriesWitnessed: { ...initial.memoriesWitnessed },
+      memoriesManifested: [...initial.memoriesManifested],
     }),
 }));

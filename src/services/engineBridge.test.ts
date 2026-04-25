@@ -4,6 +4,7 @@ import { createEngineBridge } from './engineBridge';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 import { GamePhase } from '@/engine/core/Types';
+import { createEmptyMetaState } from '@/engine/meta/MetaState';
 
 describe('engineBridge.loadOrInit', () => {
   beforeEach(() => {
@@ -261,6 +262,62 @@ describe('engineBridge.reincarnate', () => {
     expect(sm.load('wdr.run')).toBeNull();
     expect(useGameStore.getState().phase).toBe(GamePhase.CREATION);
     expect(result.availableAnchors.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('getCodexSnapshot', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('returns all 10 echoes, all 5 memories, all 5 anchors with locked/unlocked flags', () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    const snap = engine.getCodexSnapshot();
+
+    expect(snap.echoes).toHaveLength(10);
+    expect(snap.memories).toHaveLength(5);
+    expect(snap.anchors).toHaveLength(5);
+
+    // Default state: no echoes/memories unlocked, only `true_random` + `peasant_farmer` anchors.
+    expect(snap.echoes.every((e) => !e.unlocked)).toBe(true);
+    expect(snap.memories.every((m) => m.level === 'unseen')).toBe(true);
+    expect(snap.anchors.find((a) => a.id === 'peasant_farmer')!.unlocked).toBe(true);
+    expect(snap.anchors.find((a) => a.id === 'true_random')!.unlocked).toBe(true);
+    expect(snap.anchors.find((a) => a.id === 'martial_family')!.unlocked).toBe(false);
+
+    // Each echo and memory entry has a name + description.
+    for (const e of snap.echoes) {
+      expect(e.name).toBeTruthy();
+      expect(e.description).toBeTruthy();
+      expect(typeof e.unlockHint).toBe('string');
+    }
+    for (const m of snap.memories) {
+      expect(m.name).toBeTruthy();
+      expect(m.description).toBeTruthy();
+    }
+  });
+
+  it('reflects unlocked echo and witnessed memory state after meta hydration', () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    // Hydrate meta directly via the store.
+    useMetaStore.getState().hydrateFromMetaState({
+      ...createEmptyMetaState(),
+      echoesUnlocked: ['iron_body'],
+      memoriesWitnessed: { 'frost_palm_severing': 4 },  // 4 → partial
+      memoriesManifested: ['frost_palm_severing'],
+      unlockedAnchors: ['true_random', 'peasant_farmer', 'martial_family'],
+    });
+    const snap = engine.getCodexSnapshot();
+
+    expect(snap.echoes.find((e) => e.id === 'iron_body')!.unlocked).toBe(true);
+    const mem = snap.memories.find((m) => m.id === 'frost_palm_severing')!;
+    expect(mem.level).toBe('partial');
+    expect(mem.manifested).toBe(true);
+    expect(snap.anchors.find((a) => a.id === 'martial_family')!.unlocked).toBe(true);
   });
 });
 
