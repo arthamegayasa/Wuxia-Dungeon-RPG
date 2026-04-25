@@ -21,6 +21,7 @@ import { NameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
+import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
 import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
@@ -159,7 +160,12 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   // 6. Apply outcome deltas, then record the event in thisLifeSeenEvents.
   //    Order matters: applyOutcome does a shallow merge on RunState; adding the
   //    seen-event AFTER ensures it is not overwritten.
-  let nextRunState = applyOutcome(ctx.runState, outcome);
+  //    Phase 2B-2 Task 12: precompute techniqueMultiplier for meditation_progress delta.
+  const learnedDefs = ctx.runState.learnedTechniques
+    .map((id) => ctx.techniqueRegistry.byId(id))
+    .filter((t): t is NonNullable<typeof t> => t !== null);
+  const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
+  let nextRunState = applyOutcome(ctx.runState, outcome, { techniqueMultiplier });
   nextRunState = {
     ...nextRunState,
     thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, event.id],

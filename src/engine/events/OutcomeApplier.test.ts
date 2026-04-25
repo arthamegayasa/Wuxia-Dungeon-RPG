@@ -180,6 +180,70 @@ function mkRsForMeridianTest(args: { openMeridians: number[]; corePath?: 'iron_m
   };
 }
 
+describe('meditation_progress StateDelta (Phase 2B-2 Task 12)', () => {
+  it('default multiplier 1.0: progress equals base', () => {
+    const rs = baseState();
+    const startProgress = rs.character.cultivationProgress;
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meditation_progress', base: 30 }],
+    });
+    expect(next.character.cultivationProgress).toBe(Math.min(100, startProgress + 30));
+  });
+
+  it('techniqueMultiplier 1.5 scales progress proportionally', () => {
+    const rs = baseState();
+    const startProgress = rs.character.cultivationProgress;
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meditation_progress', base: 20 }],
+    }, { techniqueMultiplier: 1.5 });
+    expect(next.character.cultivationProgress).toBe(Math.min(100, startProgress + 30));
+  });
+
+  it('insightBonus adds to character.insight', () => {
+    const rs = baseState();
+    const startInsight = rs.character.insight;
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meditation_progress', base: 0, insightBonus: 5 }],
+    });
+    expect(next.character.insight).toBe(startInsight + 5);
+  });
+
+  it('combines progress + insightBonus with multiplier', () => {
+    const rs = baseState();
+    const startInsight = rs.character.insight;
+    const startProgress = rs.character.cultivationProgress;
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meditation_progress', base: 10, insightBonus: 3 }],
+    }, { techniqueMultiplier: 2.0 });
+    expect(next.character.cultivationProgress).toBe(Math.min(100, startProgress + 20));
+    expect(next.character.insight).toBe(startInsight + 3);
+  });
+
+  it('caps cultivationProgress at 100 (PROGRESS_PER_SUBLAYER)', () => {
+    const rs = baseState();
+    const high: typeof rs = { ...rs, character: { ...rs.character, cultivationProgress: 80 } };
+    const next = applyOutcome(high, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'meditation_progress', base: 50 }],
+    });
+    expect(next.character.cultivationProgress).toBe(100);
+  });
+
+  it('existing callers with no options arg still work (backward compat)', () => {
+    const rs = baseState();
+    // cultivation_progress_delta still works unchanged
+    const next = applyOutcome(rs, {
+      narrativeKey: 'k',
+      stateDeltas: [{ kind: 'cultivation_progress_delta', amount: 10 }],
+    });
+    expect(next.character.cultivationProgress).toBe(10);
+  });
+});
+
 describe('applyOutcome meridian_open (Phase 2B-1 Task 12)', () => {
   it('opening 3rd meridian sets Core Path (iron_mountain set = {3, 1, 7})', () => {
     const rs = mkRsForMeridianTest({ openMeridians: [3, 1] });

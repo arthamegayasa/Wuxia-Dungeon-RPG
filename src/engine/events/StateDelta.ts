@@ -13,6 +13,7 @@ export type StateDelta =
   | { kind: 'world_flag_set'; flag: string }
   | { kind: 'world_flag_clear'; flag: string }
   | { kind: 'cultivation_progress_delta'; amount: number }
+  | { kind: 'meditation_progress'; base: number; insightBonus?: number }
   | { kind: 'item_add'; id: string; count: number }
   | { kind: 'item_remove'; id: string; count: number }
   | { kind: 'technique_learn'; id: string }
@@ -24,7 +25,7 @@ export type StateDelta =
 export const STATE_DELTA_KINDS = [
   'hp_delta', 'qi_delta', 'insight_delta', 'attribute_delta',
   'flag_set', 'flag_clear', 'world_flag_set', 'world_flag_clear',
-  'cultivation_progress_delta', 'item_add', 'item_remove',
+  'cultivation_progress_delta', 'meditation_progress', 'item_add', 'item_remove',
   'technique_learn', 'meridian_open',
   'karma_delta', 'notice_delta',
   'age_delta_days',
@@ -45,6 +46,9 @@ export function isStateDelta(v: unknown): v is StateDelta {
     case 'notice_delta':
     case 'age_delta_days':
       return typeof o.amount === 'number';
+    case 'meditation_progress':
+      return typeof o.base === 'number' &&
+        (o.insightBonus === undefined || typeof o.insightBonus === 'number');
     case 'attribute_delta':
       return typeof o.amount === 'number' && typeof o.stat === 'string';
     case 'flag_set':

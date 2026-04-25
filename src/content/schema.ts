@@ -73,6 +73,13 @@ const StateDeltaSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('world_flag_set'), flag: z.string() }),
   z.object({ kind: z.literal('world_flag_clear'), flag: z.string() }),
   z.object({ kind: z.literal('cultivation_progress_delta'), amount: z.number() }),
+  z.object({
+    kind: z.literal('meditation_progress'),
+    /** Base progress amount before technique multiplier is applied. */
+    base: z.number().nonnegative(),
+    /** Optional flat insight bonus added on top of cultivation progress. */
+    insightBonus: z.number().nonnegative().optional(),
+  }),
   z.object({ kind: z.literal('item_add'), id: z.string(), count: z.number().int().positive() }),
   z.object({ kind: z.literal('item_remove'), id: z.string(), count: z.number().int().positive() }),
   z.object({ kind: z.literal('technique_learn'), id: z.string() }),

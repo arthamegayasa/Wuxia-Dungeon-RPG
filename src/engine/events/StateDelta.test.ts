@@ -10,7 +10,7 @@ describe('StateDelta', () => {
     expect(STATE_DELTA_KINDS).toEqual([
       'hp_delta', 'qi_delta', 'insight_delta', 'attribute_delta',
       'flag_set', 'flag_clear', 'world_flag_set', 'world_flag_clear',
-      'cultivation_progress_delta', 'item_add', 'item_remove',
+      'cultivation_progress_delta', 'meditation_progress', 'item_add', 'item_remove',
       'technique_learn', 'meridian_open',
       'karma_delta', 'notice_delta',
       'age_delta_days',
@@ -28,6 +28,8 @@ describe('StateDelta', () => {
       { kind: 'world_flag_set', flag: 'drought_active' },
       { kind: 'world_flag_clear', flag: 'drought_active' },
       { kind: 'cultivation_progress_delta', amount: 15 },
+      { kind: 'meditation_progress', base: 20 },
+      { kind: 'meditation_progress', base: 10, insightBonus: 3 },
       { kind: 'item_add', id: 'water_flask', count: 1 },
       { kind: 'item_remove', id: 'water_flask', count: 1 },
       { kind: 'technique_learn', id: 'TECH_IRON_SHIRT_NOVICE' },

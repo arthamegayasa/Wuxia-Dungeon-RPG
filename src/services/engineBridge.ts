@@ -26,6 +26,7 @@ import { advanceTurn } from '@/engine/events/AgeTick';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
+import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
 import type { TechniqueDef } from '@/engine/cultivation/Technique';
 import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
@@ -727,7 +728,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Apply outcome, then append to thisLifeSeenEvents AND clear pendingEventId.
       // Ordering: applyOutcome does a shallow merge on RunState; the spread after
       // ensures our fields win.
-      let nextRunState = applyOutcome(gs.runState, outcome);
+      // Phase 2B-2 Task 12: pass techniqueMultiplier for meditation_progress delta.
+      // learnedDefs already declared above for visibility filtering — reuse it.
+      const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
+      let nextRunState = applyOutcome(gs.runState, outcome, { techniqueMultiplier });
       nextRunState = {
         ...nextRunState,
         thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, pending.id],

@@ -14,7 +14,12 @@ function removeFlag(c: Character, flag: string): Character {
   return { ...c, flags: c.flags.filter((f) => f !== flag) };
 }
 
-function applyDeltaToState(rs: RunState, delta: StateDelta): RunState {
+export interface ApplyOutcomeOptions {
+  /** Technique cultivation multiplier (from computeCultivationMultiplier). Default 1.0. */
+  techniqueMultiplier?: number;
+}
+
+function applyDeltaToState(rs: RunState, delta: StateDelta, options: ApplyOutcomeOptions = {}): RunState {
   switch (delta.kind) {
     case 'hp_delta':
       return { ...rs, character: applyHp(rs.character, delta.amount) };
@@ -48,6 +53,18 @@ function applyDeltaToState(rs: RunState, delta: StateDelta): RunState {
         return { ...rs, character: { ...rs.character, cultivationProgress: cp } };
       }
       return { ...rs, character: advanceCultivation(rs.character, delta.amount) };
+    case 'meditation_progress': {
+      const multiplier = options.techniqueMultiplier ?? 1.0;
+      const progress = delta.base * multiplier;
+      let next: RunState = { ...rs, character: advanceCultivation(rs.character, progress) };
+      if (delta.insightBonus !== undefined) {
+        next = {
+          ...next,
+          character: applyInsight(next.character, delta.insightBonus),
+        };
+      }
+      return next;
+    }
     case 'item_add': {
       const idx = rs.inventory.findIndex((i) => i.id === delta.id);
       if (idx === -1) {
@@ -85,10 +102,10 @@ function applyDeltaToState(rs: RunState, delta: StateDelta): RunState {
   }
 }
 
-export function applyOutcome(rs: RunState, outcome: Outcome): RunState {
+export function applyOutcome(rs: RunState, outcome: Outcome, options: ApplyOutcomeOptions = {}): RunState {
   let next = rs;
   for (const delta of outcome.stateDeltas ?? []) {
-    next = applyDeltaToState(next, delta as StateDelta);
+    next = applyDeltaToState(next, delta as StateDelta, options);
   }
   if (outcome.noticeDelta !== undefined) {
     const n = Math.max(0, Math.min(100, next.heavenlyNotice + outcome.noticeDelta));
