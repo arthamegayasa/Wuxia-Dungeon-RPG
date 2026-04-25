@@ -144,7 +144,6 @@ export const metaStateMigrations: ReadonlyArray<Migration> = [
     to: 3,
     transform: (old: any): MetaState => ({
       ...old,
-      schemaVersion: 3,
       lineage: (old.lineage ?? []).map((entry: any) => ({
         ...entry,
         birthYear: entry.birthYear ?? 0,
@@ -157,7 +156,6 @@ export const metaStateMigrations: ReadonlyArray<Migration> = [
     to: 4,
     transform: (old: any): MetaState => ({
       ...old,
-      schemaVersion: 4,
       lineage: (old.lineage ?? []).map((entry: any) => ({
         ...entry,
         corePath: entry.corePath ?? null,

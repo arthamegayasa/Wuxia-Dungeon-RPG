@@ -3,6 +3,7 @@ import { runTribulationIPillar, TRIBULATION_I } from './TribulationI';
 import { createCharacter } from '@/engine/character/Character';
 import { createRng } from '@/engine/core/RNG';
 import { Realm } from '@/engine/core/Types';
+import { PillarEventSchema } from '@/content/schema';
 
 function qcNine() {
   return {
@@ -59,5 +60,11 @@ describe('runTribulationIPillar', () => {
     const r1 = runTribulationIPillar(c, { rng: createRng(42), tribulationMode: 'non_fatal' });
     const r2 = runTribulationIPillar(c, { rng: createRng(42), tribulationMode: 'non_fatal' });
     expect(r1.phaseResults).toEqual(r2.phaseResults);
+  });
+
+  describe('TRIBULATION_I matches PillarEventSchema', () => {
+    it('parses cleanly', () => {
+      expect(() => PillarEventSchema.parse(TRIBULATION_I)).not.toThrow();
+    });
   });
 });
