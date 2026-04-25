@@ -88,3 +88,47 @@ export function attemptQiSensingAwakening(
     character: { ...c, cultivationProgress: halfBar },
   };
 }
+
+export interface AttemptQiCondensationEntryArgs extends AttemptCrossingArgs {
+  techniqueCount: number;
+}
+
+/**
+ * Qi Sensing → Qi Condensation 1 entry.
+ * Gate: realm === QI_SENSING, techniqueCount >= 1, bar full.
+ * Chance formula:
+ *   chance = 50 + Mind×0.3 + Insight×0.1 + pillBonus + safeEnv, clamped [15, 95].
+ */
+export function attemptQiCondensationEntry(
+  c: Character,
+  args: AttemptQiCondensationEntryArgs,
+): AttemptCrossingResult {
+  if (c.realm !== Realm.QI_SENSING) {
+    throw new Error(`attemptQiCondensationEntry: requires qi sensing realm, got ${c.realm}`);
+  }
+  if (args.techniqueCount < 1) {
+    throw new Error('attemptQiCondensationEntry: requires at least 1 learned technique');
+  }
+  if (!isSubLayerFull(c)) {
+    throw new Error('attemptQiCondensationEntry: cultivation progress is not full');
+  }
+
+  const raw =
+    50
+    + c.attributes.Mind * 0.3
+    + c.insight * 0.1
+    + (args.pillBonus ?? 0)
+    + (args.safeEnvironmentBonus ?? 0);
+  const chance = Math.min(95, Math.max(15, Math.round(raw)));
+  const roll = args.rng.d100();
+  const success = roll <= chance;
+
+  if (success) {
+    return {
+      success, chance, roll,
+      character: { ...c, realm: Realm.QI_CONDENSATION, qiCondensationLayer: 1, cultivationProgress: 0 },
+    };
+  }
+  const halfBar = Math.floor(PROGRESS_PER_SUBLAYER / 2);
+  return { success, chance, roll, character: { ...c, cultivationProgress: halfBar } };
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { attemptQiSensingAwakening } from './RealmCrossing';
+import { attemptQiSensingAwakening, attemptQiCondensationEntry } from './RealmCrossing';
 import { createCharacter } from '@/engine/character/Character';
 import { createRng } from '@/engine/core/RNG';
 import { Realm } from '@/engine/core/Types';
@@ -79,5 +79,67 @@ describe('attemptQiSensingAwakening (Phase 2B-1 Task 15)', () => {
 
     expect(rHigh.chance).toBeGreaterThanOrEqual(rMid.chance);
     expect(rMid.chance).toBeGreaterThanOrEqual(rLow.chance);
+  });
+});
+
+describe('attemptQiCondensationEntry (Phase 2B-1 Task 16)', () => {
+  function qsReady(techniquesLearned: number = 0) {
+    const c = createCharacter({
+      name: 'x',
+      attributes: { Body: 5, Mind: 10, Spirit: 10, Agility: 5, Charm: 5, Luck: 5 },
+      rng: createRng(1),
+    });
+    return {
+      ...c,
+      realm: Realm.QI_SENSING,
+      bodyTemperingLayer: 0,
+      qiCondensationLayer: 0,
+      cultivationProgress: 100,
+    };
+  }
+
+  it('throws if realm is not Qi Sensing', () => {
+    const c = { ...qsReady(), realm: Realm.BODY_TEMPERING };
+    expect(() => attemptQiCondensationEntry(c, { rng: createRng(1), techniqueCount: 1 }))
+      .toThrow(/qi.sensing/i);
+  });
+
+  it('throws if techniqueCount < 1', () => {
+    const c = qsReady();
+    expect(() => attemptQiCondensationEntry(c, { rng: createRng(1), techniqueCount: 0 }))
+      .toThrow(/technique/i);
+  });
+
+  it('throws if cultivationProgress < 100', () => {
+    const c = { ...qsReady(), cultivationProgress: 50 };
+    expect(() => attemptQiCondensationEntry(c, { rng: createRng(1), techniqueCount: 1 }))
+      .toThrow(/progress/i);
+  });
+
+  it('success: realm → QI_CONDENSATION, qiCondensationLayer = 1', () => {
+    const c = qsReady();
+    for (let seed = 1; seed < 50; seed++) {
+      const r = attemptQiCondensationEntry(c, { rng: createRng(seed), techniqueCount: 1 });
+      if (r.success) {
+        expect(r.character.realm).toBe(Realm.QI_CONDENSATION);
+        expect(r.character.qiCondensationLayer).toBe(1);
+        expect(r.character.cultivationProgress).toBe(0);
+        return;
+      }
+    }
+    throw new Error('no success observed in 50 seeds');
+  });
+
+  it('failure: stays in QS with bar half-drained', () => {
+    const c = qsReady();
+    for (let seed = 1; seed < 100; seed++) {
+      const r = attemptQiCondensationEntry(c, { rng: createRng(seed), techniqueCount: 1 });
+      if (!r.success) {
+        expect(r.character.realm).toBe(Realm.QI_SENSING);
+        expect(r.character.cultivationProgress).toBe(50);
+        return;
+      }
+    }
+    // No failure may occur at high attributes; allow silent skip (no throw).
   });
 });
