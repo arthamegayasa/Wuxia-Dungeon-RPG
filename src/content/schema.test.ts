@@ -46,6 +46,30 @@ describe('TechniqueSchema (Phase 2B-1 Task 3)', () => {
     })).toThrow();
   });
 
+  it('rejects empty coreAffinity array', () => {
+    expect(() => TechniqueSchema.parse({
+      id: 't', name: 'T', grade: 'mortal', element: 'none',
+      coreAffinity: [],
+      requires: {}, qiCost: 0, effects: [], description: '',
+    })).toThrow();
+  });
+
+  it('rejects unknown effect kind', () => {
+    expect(() => TechniqueSchema.parse({
+      id: 't', name: 'T', grade: 'mortal', element: 'none',
+      coreAffinity: ['any'], requires: {}, qiCost: 0,
+      effects: [{ kind: 'fly', amount: 1 } as any],
+      description: '',
+    })).toThrow();
+  });
+
+  it('rejects empty id string', () => {
+    expect(() => TechniqueSchema.parse({
+      id: '', name: 'T', grade: 'mortal', element: 'none',
+      coreAffinity: ['any'], requires: {}, qiCost: 0, effects: [], description: '',
+    })).toThrow();
+  });
+
   it('TechniquePackSchema wraps a list', () => {
     const pack = TechniquePackSchema.parse({
       version: 1,
