@@ -10,6 +10,7 @@ import { computeKarma, LifeSummary } from '@/engine/meta/KarmicInsightRules';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { evaluateUnlocks, UnlockContext } from '@/engine/meta/EchoUnlocker';
 import { commitWitnesses } from '@/engine/meta/MemoryWitnessLogger';
+import { evaluateAnchorUnlocks } from '@/engine/meta/AnchorUnlockEvaluator';
 
 export interface BardoResult {
   summary: LifeSummary;
@@ -71,6 +72,18 @@ export function runBardoFlow(
     nextMeta = {
       ...nextMeta,
       echoesUnlocked: [...nextMeta.echoesUnlocked, ...newlyUnlocked],
+    };
+  }
+
+  const newlyUnlockedAnchors = evaluateAnchorUnlocks({
+    meta: nextMeta,
+    summary,
+    diedThisLifeFlags: rs.character.flags,
+  });
+  if (newlyUnlockedAnchors.length > 0) {
+    nextMeta = {
+      ...nextMeta,
+      unlockedAnchors: [...nextMeta.unlockedAnchors, ...newlyUnlockedAnchors],
     };
   }
 

@@ -175,4 +175,11 @@ describe('runBardoFlow — Phase 2A-2 integration', () => {
     const lastEntry = result.meta.lineage[result.meta.lineage.length - 1]!;
     expect(lastEntry.echoesUnlockedThisLife).not.toContain('iron_body');
   });
+
+  it('appends martial_family to meta.unlockedAnchors when BT layer 5+', () => {
+    const rs = makeRunStateDyingAt({ bodyTemperingLayer: 5, deathCause: 'starvation' });
+    const meta = createEmptyMetaState();
+    const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
+    expect(result.meta.unlockedAnchors).toContain('martial_family');
+  });
 });
