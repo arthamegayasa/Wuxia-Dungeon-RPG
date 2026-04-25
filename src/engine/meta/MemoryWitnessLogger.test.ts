@@ -13,7 +13,7 @@ function baseRunState() {
     rng,
   });
   return createRunState({
-    character, runSeed: 1, region: 'yellow_plains', year: 900, season: 'spring',
+    character, runSeed: 1, region: 'yellow_plains', year: 900, birthYear: 900, season: 'spring',
   });
 }
 

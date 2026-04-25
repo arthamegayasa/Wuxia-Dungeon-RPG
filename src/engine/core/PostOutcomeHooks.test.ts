@@ -35,7 +35,7 @@ function baseRunState() {
     name: 'T', attributes: ATTRS, rng: createRng(1),
   });
   return createRunState({
-    character, runSeed: 42, region: 'yellow_plains', year: 900, season: 'spring',
+    character, runSeed: 42, region: 'yellow_plains', year: 900, birthYear: 900, season: 'spring',
   });
 }
 

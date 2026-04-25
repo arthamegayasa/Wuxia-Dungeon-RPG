@@ -74,10 +74,12 @@ export function characterFromAnchor(args: CharacterFromAnchorArgs): CharacterFro
   const seasons = ['spring', 'summer', 'autumn', 'winter'] as const;
   const season = seasons[resolved.year % 4]!;
 
+  const startingAgeYears = Math.floor(resolved.ageDays / 365);
   const runState = {
     ...createRunState({
       character, runSeed, region: resolved.region,
       year: resolved.year, season,
+      birthYear: resolved.year - startingAgeYears,
     }),
     inventory: [...resolved.startingItems],
   };

@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import type { CreationAnchorView } from '@/services/engineBridge';
 
 export interface CreationScreenProps {
-  anchors: ReadonlyArray<{ id: string; name: string; description: string }>;
+  anchors: ReadonlyArray<CreationAnchorView>;
   defaultName?: string;
   onBegin: (anchorId: string, name: string) => void | Promise<void>;
   onBack: () => void;
@@ -23,21 +24,37 @@ export function CreationScreen(props: CreationScreenProps) {
       </p>
 
       <div className="w-full max-w-2xl flex flex-col gap-3 mb-6">
-        {props.anchors.map((a) => (
-          <button
-            key={a.id}
-            type="button"
-            onClick={() => setSelectedAnchor(a.id)}
-            disabled={props.isLoading}
-            className={`text-left px-4 py-3 border rounded transition
-              ${selectedAnchor === a.id
-                ? 'border-jade-400 bg-ink-800'
-                : 'border-parchment-700 hover:border-parchment-500'}`}
-          >
-            <div className="text-xl text-jade-300">{a.name}</div>
-            <div className="text-sm text-parchment-400">{a.description}</div>
-          </button>
-        ))}
+        {props.anchors.map((a) => {
+          if (a.locked) {
+            return (
+              <button
+                key={a.id}
+                type="button"
+                disabled
+                className="text-left px-4 py-3 border rounded transition border-ash-800 bg-ink-900/40 text-ash-500 cursor-not-allowed"
+              >
+                <div className="text-lg italic">— locked —</div>
+                <div className="text-sm">{a.unlockHint}</div>
+              </button>
+            );
+          }
+          const shimmer = a.freshlyUnlocked ? 'animate-pulse ring-1 ring-jade-400/60 shimmer' : '';
+          return (
+            <button
+              key={a.id}
+              type="button"
+              onClick={() => setSelectedAnchor(a.id)}
+              disabled={props.isLoading}
+              className={`text-left px-4 py-3 border rounded transition ${shimmer}
+                ${selectedAnchor === a.id
+                  ? 'border-jade-400 bg-ink-800'
+                  : 'border-parchment-700 hover:border-parchment-500'}`}
+            >
+              <div className="text-xl text-jade-300">{a.name}</div>
+              <div className="text-sm text-parchment-400">{a.description}</div>
+            </button>
+          );
+        })}
       </div>
 
       <div className="w-full max-w-2xl mb-6">
@@ -50,18 +67,13 @@ export function CreationScreen(props: CreationScreenProps) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={props.isLoading}
-          className="w-full px-3 py-2 bg-ink-900 border border-parchment-700 rounded
-                     text-parchment-100 focus:border-jade-400 focus:outline-none"
+          className="w-full px-3 py-2 bg-ink-900 border border-parchment-700 rounded text-parchment-100 focus:border-jade-400 focus:outline-none"
           placeholder="Lin Wei"
         />
       </div>
 
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={props.onBack}
-          className="px-4 py-2 border border-parchment-700 rounded hover:border-parchment-500"
-        >
+        <button type="button" onClick={props.onBack} className="px-4 py-2 border border-parchment-700 rounded hover:border-parchment-500">
           Back
         </button>
         <button

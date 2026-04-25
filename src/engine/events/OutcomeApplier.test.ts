@@ -9,7 +9,7 @@ const ATTRS = { Body: 20, Mind: 15, Spirit: 10, Agility: 12, Charm: 8, Luck: 30 
 
 function baseState() {
   const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
-  return createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' });
+  return createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' });
 }
 
 describe('applyOutcome — no-op / empty', () => {

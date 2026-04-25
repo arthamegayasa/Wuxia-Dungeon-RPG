@@ -30,7 +30,13 @@ describe('Migrator v1 → v2 for MetaState', () => {
     expect(migrated.lineage[0].echoesUnlockedThisLife).toEqual([]);
   });
 
+  it('backfills lineage entries with birthYear=0, deathYear=yearsLived (v1→v3 chain)', () => {
+    const migrated = migrator.migrate(fixtureV1, 1);
+    expect(migrated.lineage[0].birthYear).toBe(0);
+    expect(migrated.lineage[0].deathYear).toBe(42); // yearsLived from fixture
+  });
+
   it('target schema version matches the current-version constant', () => {
-    expect(METASTATE_SCHEMA_VERSION).toBe(2);
+    expect(METASTATE_SCHEMA_VERSION).toBe(3);
   });
 });

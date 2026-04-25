@@ -18,7 +18,7 @@ function buildTestRunState(overrides = {}) {
     startingAgeDays: 30 * 365,
   });
   return {
-    ...createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' }),
+    ...createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' }),
     deathCause: 'old_age' as const,
     ...overrides,
   };
@@ -27,7 +27,7 @@ function buildTestRunState(overrides = {}) {
 describe('runBardoFlow', () => {
   it('requires a deathCause', () => {
     const c = createCharacter({ name: 't', attributes: { Body: 20, Mind: 10, Spirit: 10, Agility: 10, Charm: 10, Luck: 20 }, rng: createRng(1) });
-    const rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' });
+    const rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' });
     // deathCause: null in fresh RunState
     expect(() => runBardoFlow(rs, createEmptyMetaState(), 1.0, EMPTY_REG))
       .toThrow(/no death cause/i);
@@ -84,6 +84,28 @@ describe('runBardoFlow', () => {
     // With yearsLived=30 → yearsKarma=3; old_age=5; total=8 × 1.0 = 8; + 5 buffer = 13.
     expect(r.karmaEarned).toBe(13);
   });
+
+  it('emits birthYear and deathYear on the new lineage entry', () => {
+    const c = createCharacter({
+      name: 'Ancient One',
+      attributes: { Body: 20, Mind: 10, Spirit: 10, Agility: 10, Charm: 10, Luck: 20 },
+      rng: createRng(1),
+      startingAgeDays: 30 * 365,
+    });
+    const rs = {
+      ...createRunState({
+        character: c, runSeed: 1, region: 'yellow_plains',
+        year: 980, birthYear: 950, season: 'summer',
+      }),
+      deathCause: 'old_age' as const,
+    };
+    const meta = createEmptyMetaState();
+    const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
+    const entry = result.meta.lineage[result.meta.lineage.length - 1]!;
+    expect(entry.birthYear).toBe(950);
+    expect(entry.deathYear).toBe(980);
+    expect(entry.yearsLived).toBe(30);
+  });
 });
 
 function makeRunStateDyingAt(opts: {
@@ -102,7 +124,7 @@ function makeRunStateDyingAt(opts: {
   };
   const rs = createRunState({
     character: withLayer, runSeed: 1, region: 'yellow_plains',
-    year: 1000, season: 'spring',
+    year: 1000, birthYear: 1000, season: 'spring',
   });
   return { ...rs, deathCause: opts.deathCause };
 }
@@ -152,5 +174,19 @@ describe('runBardoFlow — Phase 2A-2 integration', () => {
     expect(result.meta.echoesUnlocked.filter((id) => id === 'iron_body')).toHaveLength(1);
     const lastEntry = result.meta.lineage[result.meta.lineage.length - 1]!;
     expect(lastEntry.echoesUnlockedThisLife).not.toContain('iron_body');
+  });
+
+  it('appends martial_family to meta.unlockedAnchors when BT layer 5+', () => {
+    const rs = makeRunStateDyingAt({ bodyTemperingLayer: 5, deathCause: 'starvation' });
+    const meta = createEmptyMetaState();
+    const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
+    expect(result.meta.unlockedAnchors).toContain('martial_family');
+  });
+
+  it('exposes freshlyUnlockedAnchors on the bardo result', () => {
+    const rs = makeRunStateDyingAt({ bodyTemperingLayer: 5, deathCause: 'starvation' });
+    const meta = createEmptyMetaState();
+    const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
+    expect(result.freshlyUnlockedAnchors).toContain('martial_family');
   });
 });

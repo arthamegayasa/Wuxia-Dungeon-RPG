@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { createSaveManager } from '@/engine/persistence/SaveManager';
 import {
   createEmptyMetaState, loadMeta, saveMeta, addKarma, spendKarma, ownsUpgrade,
-  purchaseUpgrade, unlockAnchor, METASTATE_SCHEMA_VERSION,
+  purchaseUpgrade, unlockAnchor, METASTATE_SCHEMA_VERSION, metaStateMigrations,
+  MetaState,
 } from './MetaState';
 
 describe('MetaState', () => {
@@ -81,5 +82,49 @@ describe('MetaState', () => {
   it('loadMeta returns an empty state when no save exists', () => {
     const loaded = loadMeta(sm);
     expect(loaded).toEqual(createEmptyMetaState());
+  });
+});
+
+describe('MetaState v2 → v3 migration', () => {
+  it('migrates v2 lineage entries to v3 with default birthYear=0, deathYear=yearsLived', () => {
+    const v2 = {
+      schemaVersion: 2,
+      karmaBalance: 100,
+      lifeCount: 1,
+      ownedUpgrades: [],
+      unlockedAnchors: ['true_random', 'peasant_farmer'],
+      lineage: [{
+        lifeIndex: 1,
+        name: 'Old Hu',
+        anchorId: 'peasant_farmer',
+        yearsLived: 47,
+        realmReached: 'Mortal',
+        deathCause: 'old_age',
+        karmaEarned: 30,
+        echoesUnlockedThisLife: ['iron_body'],
+      }],
+      lifetimeSeenEvents: [],
+      heavenlyNotice: 0,
+      echoesUnlocked: ['iron_body'],
+      echoProgress: { 'choice_cat.life.training': 5 },
+      memoriesWitnessed: {},
+      memoriesManifested: [],
+    };
+
+    const migration = metaStateMigrations.find((m) => m.from === 2 && m.to === 3);
+    expect(migration).toBeDefined();
+    const v3 = migration!.transform(v2) as MetaState;
+
+    // Year fields backfilled
+    expect(v3.lineage[0].birthYear).toBe(0);
+    expect(v3.lineage[0].deathYear).toBe(47);  // = yearsLived
+    // Other fields preserved
+    expect(v3.karmaBalance).toBe(100);
+    expect(v3.echoesUnlocked).toEqual(['iron_body']);
+    expect(v3.lineage[0].echoesUnlockedThisLife).toEqual(['iron_body']);
+  });
+
+  it('METASTATE_SCHEMA_VERSION is 3', () => {
+    expect(METASTATE_SCHEMA_VERSION).toBe(3);
   });
 });

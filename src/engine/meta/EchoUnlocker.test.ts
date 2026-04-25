@@ -74,8 +74,8 @@ describe('evaluateUnlocks', () => {
     const meta = {
       ...createEmptyMetaState(),
       lineage: [
-        { lifeIndex: 1, name: 'A', anchorId: 'peasant_farmer', yearsLived: 90, realmReached: 'mortal', deathCause: 'old_age', karmaEarned: 10, echoesUnlockedThisLife: [] },
-        { lifeIndex: 2, name: 'B', anchorId: 'peasant_farmer', yearsLived: 88, realmReached: 'mortal', deathCause: 'old_age', karmaEarned: 10, echoesUnlockedThisLife: [] },
+        { lifeIndex: 1, name: 'A', anchorId: 'peasant_farmer', birthYear: 0, deathYear: 90, yearsLived: 90, realmReached: 'mortal', deathCause: 'old_age', karmaEarned: 10, echoesUnlockedThisLife: [] },
+        { lifeIndex: 2, name: 'B', anchorId: 'peasant_farmer', birthYear: 0, deathYear: 88, yearsLived: 88, realmReached: 'mortal', deathCause: 'old_age', karmaEarned: 10, echoesUnlockedThisLife: [] },
       ],
     };
     const ctx: UnlockContext = {

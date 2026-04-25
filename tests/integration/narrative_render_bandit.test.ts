@@ -39,7 +39,7 @@ const BANDIT_EVENT: EventDef = {
 describe('narrative render — bandit event end-to-end', () => {
   it('produces a paragraph containing all expected elements', () => {
     const c = createCharacter({ name: 'Lin Wei', attributes: ATTRS, rng: createRng(1) });
-    const rs = createRunState({ character: c, runSeed: 42, region: 'yellow_plains', year: 1000, season: 'summer' });
+    const rs = createRunState({ character: c, runSeed: 42, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' });
 
     // Pre-generate a bandit name via registry
     const rng = createRng(rs.runSeed + 1);

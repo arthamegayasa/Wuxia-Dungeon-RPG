@@ -6,13 +6,18 @@ import { createMigrator } from '@/engine/persistence/Migrator';
 import type { Migration } from '@/engine/persistence/Migrator';
 import { getUpgradeById } from './KarmicUpgrade';
 
-export const METASTATE_SCHEMA_VERSION = 2;
+export const METASTATE_SCHEMA_VERSION = 3;
 const META_KEY = 'wdr.meta';
 
 export interface LineageEntrySummary {
   lifeIndex: number;
   name: string;
   anchorId: string;
+  /** Phase 2A-3 Task 3: absolute calendar year of birth. 0 for entries from
+   *  pre-v3 saves (rendered as "Years lived: N" instead of "(Year X – Y)"). */
+  birthYear: number;
+  /** Phase 2A-3 Task 3: absolute calendar year of death = birthYear + yearsLived. */
+  deathYear: number;
   yearsLived: number;
   realmReached: string;
   deathCause: string;
@@ -113,6 +118,8 @@ export const metaStateMigrations: ReadonlyArray<Migration> = [
       lineage: (old.lineage ?? []).map((entry: any) => ({
         ...entry,
         echoesUnlockedThisLife: entry.echoesUnlockedThisLife ?? [],
+        birthYear: entry.birthYear ?? 0,
+        deathYear: entry.deathYear ?? entry.yearsLived ?? 0,
       })),
       lifetimeSeenEvents: old.lifetimeSeenEvents ?? [],
       echoesUnlocked: [],
@@ -120,6 +127,19 @@ export const metaStateMigrations: ReadonlyArray<Migration> = [
       memoriesWitnessed: {},
       memoriesManifested: [],
       heavenlyNotice: 0,
+    }),
+  },
+  {
+    from: 2,
+    to: 3,
+    transform: (old: any): MetaState => ({
+      ...old,
+      schemaVersion: 3,
+      lineage: (old.lineage ?? []).map((entry: any) => ({
+        ...entry,
+        birthYear: entry.birthYear ?? 0,
+        deathYear: entry.deathYear ?? entry.yearsLived ?? 0,
+      })),
     }),
   },
 ];

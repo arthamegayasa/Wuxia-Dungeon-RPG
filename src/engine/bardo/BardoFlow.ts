@@ -10,12 +10,15 @@ import { computeKarma, LifeSummary } from '@/engine/meta/KarmicInsightRules';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { evaluateUnlocks, UnlockContext } from '@/engine/meta/EchoUnlocker';
 import { commitWitnesses } from '@/engine/meta/MemoryWitnessLogger';
+import { evaluateAnchorUnlocks } from '@/engine/meta/AnchorUnlockEvaluator';
 
 export interface BardoResult {
   summary: LifeSummary;
   karmaEarned: number;
   karmaBreakdown: ReturnType<typeof computeKarma>['breakdown'];
   meta: MetaState;
+  /** Phase 2A-3 Task 7: anchor ids freshly added by `evaluateAnchorUnlocks`. UI uses this for shimmer. */
+  freshlyUnlockedAnchors: ReadonlyArray<string>;
 }
 
 export function buildLifeSummary(rs: RunState, anchorMultiplier: number): LifeSummary {
@@ -74,10 +77,24 @@ export function runBardoFlow(
     };
   }
 
+  const newlyUnlockedAnchors = evaluateAnchorUnlocks({
+    meta: nextMeta,
+    summary,
+    diedThisLifeFlags: rs.character.flags,
+  });
+  if (newlyUnlockedAnchors.length > 0) {
+    nextMeta = {
+      ...nextMeta,
+      unlockedAnchors: [...nextMeta.unlockedAnchors, ...newlyUnlockedAnchors],
+    };
+  }
+
   const entry: LineageEntrySummary = {
     lifeIndex: nextMeta.lifeCount + 1,
     name: rs.character.name,
     anchorId: anchorThisLife,
+    birthYear: rs.birthYear,
+    deathYear: rs.birthYear + summary.yearsLived,
     yearsLived: summary.yearsLived,
     realmReached: summary.realmReached,
     deathCause: summary.deathCause,
@@ -94,6 +111,7 @@ export function runBardoFlow(
     karmaEarned: karma.total,
     karmaBreakdown: karma.breakdown,
     meta: nextMeta,
+    freshlyUnlockedAnchors: newlyUnlockedAnchors,
   };
 }
 

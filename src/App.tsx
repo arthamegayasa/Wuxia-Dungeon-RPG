@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 import { GamePhase } from '@/engine/core/Types';
-import { createEngineBridge, EngineBridge, TurnPreview, BardoPayload } from '@/services/engineBridge';
+import {
+  createEngineBridge, EngineBridge, TurnPreview, BardoPayload,
+  CodexSnapshot, LineageSnapshot, CreationAnchorView,
+} from '@/services/engineBridge';
 import { useGameStore } from '@/state/gameStore';
 import { TitleScreen } from '@/components/TitleScreen';
 import { CreationScreen } from '@/components/CreationScreen';
 import { PlayScreen } from '@/components/PlayScreen';
 import { BardoPanel } from '@/components/BardoPanel';
+import { CodexScreen } from '@/components/CodexScreen';
+import { LineageScreen } from '@/components/LineageScreen';
 
 let engineSingleton: EngineBridge | null = null;
 let engineOverride: EngineBridge | null = null;
@@ -37,9 +42,10 @@ export function App() {
   const [preview, setPreview] = useState<TurnPreview | null>(null);
   const [bardoPayload, setBardoPayload] = useState<BardoPayload | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [anchors, setAnchors] = useState<
-    ReadonlyArray<{ id: string; name: string; description: string }>
-  >([]);
+  const [anchors, setAnchors] = useState<ReadonlyArray<CreationAnchorView>>([]);
+  const [codexSnap, setCodexSnap] = useState<CodexSnapshot | null>(null);
+  const [lineageSnap, setLineageSnap] = useState<LineageSnapshot | null>(null);
+  const [returnPhase, setReturnPhase] = useState<GamePhase>(GamePhase.TITLE);
 
   useEffect(() => {
     (async () => {
@@ -115,13 +121,32 @@ export function App() {
     }
   }
 
+  function openCodex() {
+    setReturnPhase(useGameStore.getState().phase);
+    setCodexSnap(getEngine().getCodexSnapshot());
+    useGameStore.getState().setPhase(GamePhase.CODEX);
+  }
+
+  function openLineage() {
+    setReturnPhase(useGameStore.getState().phase);
+    setLineageSnap(getEngine().getLineageSnapshot());
+    useGameStore.getState().setPhase(GamePhase.LINEAGE);
+  }
+
+  function closeOverlay() {
+    useGameStore.getState().setPhase(returnPhase);
+    setCodexSnap(null);
+    setLineageSnap(null);
+  }
+
   if (phase === GamePhase.TITLE) {
     return (
       <TitleScreen
         hasSave={hasSave}
         onNewGame={onNewGame}
         onContinue={onContinue}
-        onOpenCodex={() => {}}
+        onOpenCodex={openCodex}
+        onOpenLineage={openLineage}
       />
     );
   }
@@ -144,9 +169,17 @@ export function App() {
         payload={bardoPayload}
         onBuyUpgrade={onBuyUpgrade}
         onReincarnate={onReincarnate}
+        onOpenCodex={openCodex}
+        onOpenLineage={openLineage}
         isLoading={isLoading}
       />
     );
+  }
+  if (phase === GamePhase.CODEX && codexSnap) {
+    return <CodexScreen snapshot={codexSnap} onBack={closeOverlay} />;
+  }
+  if (phase === GamePhase.LINEAGE && lineageSnap) {
+    return <LineageScreen snapshot={lineageSnap} onBack={closeOverlay} />;
   }
 
   // Transitional fallback - occurs briefly between phase change and state sync.

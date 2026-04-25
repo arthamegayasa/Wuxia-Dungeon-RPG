@@ -7,6 +7,7 @@ export enum GamePhase {
   PLAYING = 'PLAYING',
   BARDO = 'BARDO',
   CODEX = 'CODEX',
+  LINEAGE = 'LINEAGE',
   GAME_OVER_FINAL = 'GAME_OVER_FINAL',
 }
 

@@ -48,7 +48,7 @@ const BANDIT_EVENT: EventDef = {
 describe('choice-event engine — full turn cycle', () => {
   it('resolves a Bandit event end-to-end without crashing', () => {
     const c = createCharacter({ name: 'Lin Wei', attributes: ATTRS, rng: createRng(1) });
-    let rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' });
+    let rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' });
     let streak = createStreakState();
     const turnRng = createRng(100);
 
@@ -111,7 +111,7 @@ describe('choice-event engine — full turn cycle', () => {
 
   it('a CRIT_FAILURE outcome with deathCause sets runState.deathCause', () => {
     const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
-    let rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, season: 'summer' });
+    let rs = createRunState({ character: c, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' });
     const choice = BANDIT_EVENT.choices[0]!;
     const outcome = resolveOutcome(choice.outcomes, 'CRIT_FAILURE');
     rs = applyOutcome(rs, outcome);
