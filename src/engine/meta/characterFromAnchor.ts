@@ -4,9 +4,9 @@
 // Phase 2A-2 Task 8: also rolls + applies any unlocked Soul Echoes at spawn.
 // Slot count is the authoritative Phase 2A-1 formula (`echoSlotsFor(meta)`).
 
-import { Stat } from '@/engine/core/Types';
+import { MeridianId, Stat } from '@/engine/core/Types';
 import { IRng } from '@/engine/core/RNG';
-import { Character, createCharacter } from '@/engine/character/Character';
+import { Character, createCharacter, withOpenedMeridian } from '@/engine/character/Character';
 import { addAttribute, AttributeMap } from '@/engine/character/Attribute';
 import { createRunState, RunState } from '@/engine/events/RunState';
 import { ResolvedAnchor } from './AnchorResolver';
@@ -50,6 +50,15 @@ export function characterFromAnchor(args: CharacterFromAnchorArgs): CharacterFro
   for (const flag of resolved.startingFlags) {
     if (!character.flags.includes(flag)) {
       character = { ...character, flags: [...character.flags, flag] };
+    }
+  }
+
+  // Phase 2B-2 Task 7: apply startingMeridians via withOpenedMeridian.
+  // detectCorePath fires automatically inside withOpenedMeridian, so anchors
+  // that pre-open ≥3 meridians (none today) reveal the path immediately.
+  if (resolved.startingMeridians) {
+    for (const meridianId of resolved.startingMeridians) {
+      character = withOpenedMeridian(character, meridianId as MeridianId);
     }
   }
 

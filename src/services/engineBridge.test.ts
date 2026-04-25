@@ -272,14 +272,14 @@ describe('getCodexSnapshot', () => {
     useMetaStore.getState().reset();
   });
 
-  it('returns all 10 echoes, all 5 memories, all 5 anchors with locked/unlocked flags', () => {
+  it('returns all 10 echoes, all 5 memories, all 6 anchors with locked/unlocked flags', () => {
     const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
     const engine = createEngineBridge({ saveManager: sm });
     const snap = engine.getCodexSnapshot();
 
     expect(snap.echoes).toHaveLength(10);
     expect(snap.memories).toHaveLength(5);
-    expect(snap.anchors).toHaveLength(5);
+    expect(snap.anchors).toHaveLength(6);
 
     // Default state: no echoes/memories unlocked, only `true_random` + `peasant_farmer` anchors.
     expect(snap.echoes.every((e) => !e.unlocked)).toBe(true);
@@ -392,11 +392,11 @@ describe('listAnchors / reincarnate include locked anchors with unlockHint', () 
     useMetaStore.getState().reset();
   });
 
-  it('returns all 5 anchors with locked flag', () => {
+  it('returns all 6 anchors with locked flag', () => {
     const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
     const engine = createEngineBridge({ saveManager: sm });
     const payload = engine.listAnchors();
-    expect(payload.availableAnchors).toHaveLength(5);
+    expect(payload.availableAnchors).toHaveLength(6);
     const farmer = payload.availableAnchors.find((a) => a.id === 'peasant_farmer')!;
     expect(farmer.locked).toBe(false);
     const martial = payload.availableAnchors.find((a) => a.id === 'martial_family')!;

@@ -39,6 +39,10 @@ export const AnchorSchema = z.object({
     targetRegion: z.string().min(1),
     /** Fallback region while targetRegion is not loaded (Phase 2A-2/2B bridge). */
     spawnRegionFallback: z.string().min(1).optional(),
+    /** Meridians (1-12) opened at spawn. Applied via withOpenedMeridian after base construction. */
+    startingMeridians: z.array(z.number().int().min(1).max(12)).optional(),
+    /** Tier bias applied additively to the rolled spirit-root tier index (Phase 2B-3 application). */
+    spiritRootTierBias: z.number().int().optional(),
   }),
   karmaMultiplier: z.number().positive(),
 });
@@ -147,6 +151,29 @@ export const DEFAULT_ANCHORS: ReadonlyArray<AnchorDef> = [
       startingFlags: ['outer_sect_member', 'sect_id:placeholder_sect'],
     },
     karmaMultiplier: 0.8,
+  },
+  {
+    id: 'sect_initiate',
+    name: 'Sect Initiate',
+    description: 'Born within the sect walls. Robes, peaks, and the smell of pill-smoke from the day you opened your eyes.',
+    unlock: 'life_reached_qi_sensing',
+    spawn: {
+      regions: [{ id: 'azure_peaks', weight: 1 }],
+      era: { minYear: 950, maxYear: 1050 },
+      age: { min: 10, max: 10 },
+      familyTier: 'commoner',
+      attributeModifiers: {
+        Body: [0, 4], Mind: [2, 6], Spirit: [2, 6],
+        Agility: [0, 4], Charm: [0, 4], Luck: [0, 4],
+      },
+      startingItems: [{ id: 'inner_disciple_robe', count: 1 }],
+      startingFlags: ['sect_disciple', 'outer_sect_roster'],
+      targetRegion: 'azure_peaks',
+      spawnRegionFallback: 'yellow_plains',
+      startingMeridians: [7],
+      spiritRootTierBias: 1,
+    },
+    karmaMultiplier: 0.85,
   },
 ];
 

@@ -127,3 +127,35 @@ describe('new 2A anchors', () => {
     expect(o.spawn.startingFlags).toContain('outer_sect_member');
   });
 });
+
+describe('sect_initiate anchor (Phase 2B-2 Task 7)', () => {
+  const anchor = DEFAULT_ANCHORS.find((a) => a.id === 'sect_initiate')!;
+
+  it('is present in DEFAULT_ANCHORS', () => {
+    expect(anchor).toBeDefined();
+    expect(anchor.name).toBe('Sect Initiate');
+  });
+
+  it('targets azure_peaks with yellow_plains fallback', () => {
+    expect(anchor.spawn.targetRegion).toBe('azure_peaks');
+    expect(anchor.spawn.spawnRegionFallback).toBe('yellow_plains');
+  });
+
+  it('opens meridian 7 at spawn', () => {
+    expect(anchor.spawn.startingMeridians).toEqual([7]);
+  });
+
+  it('biases spirit-root tier by +1', () => {
+    expect(anchor.spawn.spiritRootTierBias).toBe(1);
+  });
+
+  it('starts at age 10 with the sect_disciple flag', () => {
+    expect(anchor.spawn.age.min).toBe(10);
+    expect(anchor.spawn.age.max).toBe(10);
+    expect(anchor.spawn.startingFlags).toContain('sect_disciple');
+  });
+
+  it('unlocks via life_reached_qi_sensing rule', () => {
+    expect(anchor.unlock).toBe('life_reached_qi_sensing');
+  });
+});

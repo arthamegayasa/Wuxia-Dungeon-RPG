@@ -15,6 +15,10 @@ export interface ResolvedAnchor {
   startingFlags: ReadonlyArray<string>;
   startingItems: ReadonlyArray<{ id: string; count: number }>;
   karmaMultiplier: number;
+  /** Meridians to open at spawn (per Anchor.spawn.startingMeridians). */
+  startingMeridians?: ReadonlyArray<number>;
+  /** Spirit root tier bias (Phase 2B-3 will apply this; passed through here for completeness). */
+  spiritRootTierBias?: number;
 }
 
 export function resolveAnchor(
@@ -60,5 +64,7 @@ export function resolveAnchor(
     startingFlags: [...anchor.spawn.startingFlags],
     startingItems: anchor.spawn.startingItems.map((i) => ({ id: i.id, count: i.count })),
     karmaMultiplier: anchor.karmaMultiplier,
+    startingMeridians: anchor.spawn.startingMeridians,
+    spiritRootTierBias: anchor.spawn.spiritRootTierBias,
   };
 }
