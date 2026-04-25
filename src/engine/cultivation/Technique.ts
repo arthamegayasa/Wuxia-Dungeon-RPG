@@ -78,3 +78,34 @@ export function affinityMultiplier(
   if (corePath === null) return 1.0;
   return t.coreAffinity.includes(corePath) ? 1.0 : 0.5;
 }
+
+export interface ResolveTechniqueBonusArgs {
+  techniques: ReadonlyArray<TechniqueDef>;
+  corePath: CorePathId | null;
+  category: string;
+}
+
+/**
+ * Affinity-aware technique bonus resolution.
+ *
+ * Sums `choice_bonus` effects whose `category` matches, scaled by each
+ * technique's `affinityMultiplier(corePath)`. Result is rounded to the
+ * nearest integer.
+ *
+ * Replaces the deprecated `resolveTechniqueBonus(techniques, category)` at
+ * the GameLoop/engineBridge call sites (see Task 7).
+ */
+export function resolveTechniqueBonusWithAffinity(
+  args: ResolveTechniqueBonusArgs,
+): number {
+  let total = 0;
+  for (const t of args.techniques) {
+    const mult = affinityMultiplier(t, args.corePath);
+    for (const eff of t.effects) {
+      if (eff.kind === 'choice_bonus' && eff.category === args.category) {
+        total += eff.bonus * mult;
+      }
+    }
+  }
+  return Math.round(total);
+}

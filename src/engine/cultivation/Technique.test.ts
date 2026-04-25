@@ -5,6 +5,7 @@ import {
   CoreAffinityToken,
   resolveTechniqueBonus,
   affinityMultiplier,
+  resolveTechniqueBonusWithAffinity,
 } from './Technique';
 
 const IRON_SHIRT: TechniqueDef = {
@@ -119,5 +120,83 @@ describe('affinityMultiplier (Phase 2B-1 Task 5)', () => {
   it('returns 1.0 if any coreAffinity element matches', () => {
     expect(affinityMultiplier(multiT, 'severing_edge')).toBe(1.0);
     expect(affinityMultiplier(multiT, 'blood_ember')).toBe(0.5);
+  });
+});
+
+describe('resolveTechniqueBonusWithAffinity (Phase 2B-1 Task 6)', () => {
+  const ironT: TechniqueDef = {
+    id: 'i', name: 'I', grade: 'mortal', element: 'none',
+    coreAffinity: ['iron_mountain'], requires: {}, qiCost: 0,
+    effects: [{ kind: 'choice_bonus', category: 'strike', bonus: 20 }],
+    description: '',
+  };
+
+  const anyT: TechniqueDef = {
+    ...ironT, id: 'a', coreAffinity: ['any'],
+    effects: [{ kind: 'choice_bonus', category: 'strike', bonus: 10 }],
+  };
+
+  const irrelevant: TechniqueDef = {
+    ...ironT, id: 'x', coreAffinity: ['any'],
+    effects: [{ kind: 'choice_bonus', category: 'evade', bonus: 30 }],
+  };
+
+  it('sums only matching-category bonuses', () => {
+    const b = resolveTechniqueBonusWithAffinity({
+      techniques: [ironT, irrelevant],
+      corePath: 'iron_mountain',
+      category: 'strike',
+    });
+    expect(b).toBe(20);
+  });
+
+  it('applies on-path 1.0 multiplier', () => {
+    const b = resolveTechniqueBonusWithAffinity({
+      techniques: [ironT],
+      corePath: 'iron_mountain',
+      category: 'strike',
+    });
+    expect(b).toBe(20);
+  });
+
+  it('applies off-path 0.5 multiplier (rounded)', () => {
+    const b = resolveTechniqueBonusWithAffinity({
+      techniques: [ironT],
+      corePath: 'severing_edge',
+      category: 'strike',
+    });
+    expect(b).toBe(10);
+  });
+
+  it("'any' affinity gives full bonus regardless of path", () => {
+    const b = resolveTechniqueBonusWithAffinity({
+      techniques: [anyT],
+      corePath: 'severing_edge',
+      category: 'strike',
+    });
+    expect(b).toBe(10);
+  });
+
+  it('null corePath gives full bonus (pre-reveal)', () => {
+    const b = resolveTechniqueBonusWithAffinity({
+      techniques: [ironT],
+      corePath: null,
+      category: 'strike',
+    });
+    expect(b).toBe(20);
+  });
+
+  it('mixed roster: on-path 20 + off-path 10 = 30', () => {
+    const ironAndSev = [
+      ironT,
+      { ...ironT, id: 's', coreAffinity: ['severing_edge' as const],
+        effects: [{ kind: 'choice_bonus' as const, category: 'strike', bonus: 20 }] },
+    ];
+    const b = resolveTechniqueBonusWithAffinity({
+      techniques: ironAndSev,
+      corePath: 'iron_mountain',
+      category: 'strike',
+    });
+    expect(b).toBe(30);
   });
 });
