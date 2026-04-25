@@ -172,6 +172,7 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   //    Runs AFTER `applyOutcome` / `advanceTurn` so it observes the final
   //    per-turn state (mirrors the bridge's ordering exactly).
   const hooks = applyPostOutcomeHooks({
+    preRunState: ctx.runState,
     runState: nextRunState,
     event,
     meta: ctx.meta,

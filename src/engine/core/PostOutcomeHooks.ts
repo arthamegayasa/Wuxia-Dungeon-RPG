@@ -14,8 +14,11 @@ import { MetaState } from '@/engine/meta/MetaState';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { rollManifest } from '@/engine/meta/MemoryManifestResolver';
+import { CorePathId } from '@/engine/core/Types';
 
 export interface PostOutcomeHooksArgs {
+  /** RunState BEFORE applyOutcome — used for transition detection (e.g. corePath reveal). */
+  readonly preRunState: RunState;
   /** RunState AFTER `applyOutcome` has merged the tier's stateDeltas. */
   readonly runState: RunState;
   /** The event just resolved (used for category-keyed hooks). */
@@ -33,6 +36,8 @@ export interface PostOutcomeHooksResult {
   readonly echoTracker: EchoTracker;
   /** Forbidden-memory ids that manifested this turn — surfaced to UI/Bardo. */
   readonly manifested: ReadonlyArray<string>;
+  /** If this turn transitioned corePath from null → set, the new path. Else null. */
+  readonly corePathRevealed: CorePathId | null;
 }
 
 /**
@@ -48,7 +53,12 @@ export interface PostOutcomeHooksResult {
  * §7.3 "memories surface when the mind is still."
  */
 export function applyPostOutcomeHooks(args: PostOutcomeHooksArgs): PostOutcomeHooksResult {
-  const { runState, event, meta, echoTracker, memoryRegistry } = args;
+  const { preRunState, runState, event, meta, echoTracker, memoryRegistry } = args;
+
+  // Transition detection: corePath null → set fires exactly once per life.
+  const pre = preRunState.character.corePath;
+  const post = runState.character.corePath;
+  const corePathRevealed: CorePathId | null = pre === null && post !== null ? post : null;
 
   // 1. EchoTracker increment (always). Key format is the contract between the
   //    two call sites and `EchoUnlocker`'s `choice_cat.<category>` reader.
@@ -56,7 +66,7 @@ export function applyPostOutcomeHooks(args: PostOutcomeHooksArgs): PostOutcomeHo
 
   // 2. Meditation-gated manifest roll.
   if (event.category !== 'meditation') {
-    return { runState, echoTracker: nextEchoTracker, manifested: [] };
+    return { runState, echoTracker: nextEchoTracker, manifested: [], corePathRevealed };
   }
 
   const manifestResult = rollManifest({ runState, meta, registry: memoryRegistry });
@@ -64,5 +74,6 @@ export function applyPostOutcomeHooks(args: PostOutcomeHooksArgs): PostOutcomeHo
     runState: manifestResult.runState,
     echoTracker: nextEchoTracker,
     manifested: manifestResult.manifested,
+    corePathRevealed,
   };
 }

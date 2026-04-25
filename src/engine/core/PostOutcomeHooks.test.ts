@@ -3,6 +3,7 @@ import { EventDef } from '@/content/schema';
 import { createCharacter } from '@/engine/character/Character';
 import { createRunState } from '@/engine/events/RunState';
 import { createRng } from './RNG';
+import { CorePathId, MeridianId } from '@/engine/core/Types';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { MemoryRegistry, EMPTY_MEMORY_REGISTRY } from '@/engine/meta/MemoryRegistry';
 import { ForbiddenMemory } from '@/engine/meta/ForbiddenMemory';
@@ -39,6 +40,24 @@ function baseRunState() {
   });
 }
 
+/** Build a Character with optional corePath / openMeridians overrides. */
+function mkCharacter(overrides: { corePath?: CorePathId | null; openMeridians?: MeridianId[] } = {}) {
+  const base = createCharacter({ name: 'T', attributes: ATTRS, rng: createRng(1) });
+  return {
+    ...base,
+    corePath: overrides.corePath !== undefined ? overrides.corePath : base.corePath,
+    openMeridians: overrides.openMeridians !== undefined ? overrides.openMeridians : base.openMeridians,
+  };
+}
+
+/** Build a RunState with a given character override. */
+function mkRunState(overrides: { character?: ReturnType<typeof mkCharacter> } = {}) {
+  const character = overrides.character ?? mkCharacter();
+  return createRunState({
+    character, runSeed: 42, region: 'yellow_plains', year: 900, birthYear: 900, season: 'spring',
+  });
+}
+
 function memory(id: string, insightBonus = 10): ForbiddenMemory {
   return {
     id, name: id, description: '', element: 'water',
@@ -53,8 +72,10 @@ function memory(id: string, insightBonus = 10): ForbiddenMemory {
 describe('applyPostOutcomeHooks', () => {
   it('increments echoTracker with `choice_cat.<category>` on any event', () => {
     const event = makeEvent('life.training');
+    const rs = baseRunState();
     const result = applyPostOutcomeHooks({
-      runState: baseRunState(),
+      preRunState: rs,
+      runState: rs,
       event,
       meta: createEmptyMetaState(),
       echoTracker: EchoTracker.empty(),
@@ -65,8 +86,10 @@ describe('applyPostOutcomeHooks', () => {
 
   it('returns empty manifested for non-meditation events', () => {
     const event = makeEvent('life.daily');
+    const rs = baseRunState();
     const result = applyPostOutcomeHooks({
-      runState: baseRunState(),
+      preRunState: rs,
+      runState: rs,
       event,
       meta: createEmptyMetaState(),
       echoTracker: EchoTracker.empty(),
@@ -86,8 +109,10 @@ describe('applyPostOutcomeHooks', () => {
       // Boost manifest chance so we observe either manifest OR at minimum the attempt counter bump.
       ownedUpgrades: ['student_of_the_wheel_1', 'student_of_the_wheel_2'],
     };
+    const rs = baseRunState();
     const result = applyPostOutcomeHooks({
-      runState: baseRunState(),
+      preRunState: rs,
+      runState: rs,
       event,
       meta,
       echoTracker: EchoTracker.empty(),
@@ -109,8 +134,10 @@ describe('applyPostOutcomeHooks', () => {
       memoriesWitnessed: { a: 10 },
       ownedUpgrades: ['student_of_the_wheel_1', 'student_of_the_wheel_2'],
     };
+    const rs = baseRunState();
     const result = applyPostOutcomeHooks({
-      runState: baseRunState(),
+      preRunState: rs,
+      runState: rs,
       event,
       meta,
       echoTracker: EchoTracker.empty(),
@@ -132,6 +159,7 @@ describe('applyPostOutcomeHooks', () => {
     const rsBefore = structuredClone(rs);
     const metaBefore = structuredClone(meta);
     applyPostOutcomeHooks({
+      preRunState: rs,
       runState: rs,
       event,
       meta,
@@ -153,14 +181,61 @@ describe('applyPostOutcomeHooks', () => {
     };
     const rs = { ...baseRunState(), runSeed: 77, turn: 5 };
     const r1 = applyPostOutcomeHooks({
-      runState: rs, event, meta,
+      preRunState: rs, runState: rs, event, meta,
       echoTracker: EchoTracker.empty(), memoryRegistry: reg,
     });
     const r2 = applyPostOutcomeHooks({
-      runState: rs, event, meta,
+      preRunState: rs, runState: rs, event, meta,
       echoTracker: EchoTracker.empty(), memoryRegistry: reg,
     });
     expect(r1.manifested).toEqual(r2.manifested);
     expect(r1.runState.character.insight).toBe(r2.runState.character.insight);
+  });
+});
+
+describe('PostOutcomeHooks corePathRevealed signal (Phase 2B-1 Task 13)', () => {
+  it('returns non-null corePathRevealed when transition null → iron_mountain', () => {
+    const preCharacter = mkCharacter({ openMeridians: [3, 1], corePath: null });
+    const postCharacter = mkCharacter({ openMeridians: [3, 1, 7], corePath: 'iron_mountain' });
+    const preRs = mkRunState({ character: preCharacter });
+    const postRs = mkRunState({ character: postCharacter });
+
+    const result = applyPostOutcomeHooks({
+      preRunState: preRs,
+      runState: postRs,
+      event: makeEvent('training'),
+      meta: createEmptyMetaState(),
+      echoTracker: EchoTracker.empty(),
+      memoryRegistry: EMPTY_MEMORY_REGISTRY,
+    });
+    expect(result.corePathRevealed).toBe('iron_mountain');
+  });
+
+  it('returns null corePathRevealed on subsequent turns (path already revealed pre-turn)', () => {
+    const preCharacter = mkCharacter({ openMeridians: [3, 1, 7], corePath: 'iron_mountain' });
+    const postCharacter = mkCharacter({ openMeridians: [3, 1, 7, 5], corePath: 'iron_mountain' });
+    const result = applyPostOutcomeHooks({
+      preRunState: mkRunState({ character: preCharacter }),
+      runState: mkRunState({ character: postCharacter }),
+      event: makeEvent('training'),
+      meta: createEmptyMetaState(),
+      echoTracker: EchoTracker.empty(),
+      memoryRegistry: EMPTY_MEMORY_REGISTRY,
+    });
+    expect(result.corePathRevealed).toBeNull();
+  });
+
+  it('returns null corePathRevealed when path stays null', () => {
+    const preRs = mkRunState({ character: mkCharacter({ corePath: null }) });
+    const postRs = mkRunState({ character: mkCharacter({ corePath: null }) });
+    const result = applyPostOutcomeHooks({
+      preRunState: preRs,
+      runState: postRs,
+      event: makeEvent('training'),
+      meta: createEmptyMetaState(),
+      echoTracker: EchoTracker.empty(),
+      memoryRegistry: EMPTY_MEMORY_REGISTRY,
+    });
+    expect(result.corePathRevealed).toBeNull();
   });
 });

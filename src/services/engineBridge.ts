@@ -705,6 +705,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Task 10 reviewer report.
       const currentTracker = gs.echoTracker ?? EchoTracker.empty();
       const hooks = applyPostOutcomeHooks({
+        preRunState: gs.runState,
         runState: nextRunState,
         event: pending,
         meta: currentMetaState(),
