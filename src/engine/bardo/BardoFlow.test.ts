@@ -85,6 +85,22 @@ describe('runBardoFlow', () => {
     expect(r.karmaEarned).toBe(13);
   });
 
+  it('summary.maxRealm reflects the character realm at death (Phase 2B-2 Task 8)', () => {
+    const c = createCharacter({
+      name: 'Qi Seeker',
+      attributes: { Body: 20, Mind: 10, Spirit: 10, Agility: 10, Charm: 10, Luck: 20 },
+      rng: createRng(1),
+      startingAgeDays: 30 * 365,
+    });
+    const charAtQiSensing = { ...c, realm: Realm.QI_SENSING };
+    const rs = {
+      ...createRunState({ character: charAtQiSensing, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' }),
+      deathCause: 'old_age' as const,
+    };
+    const result = runBardoFlow(rs, createEmptyMetaState(), 1.0, EMPTY_REG);
+    expect(result.summary.maxRealm).toBe(Realm.QI_SENSING);
+  });
+
   it('emits birthYear and deathYear on the new lineage entry', () => {
     const c = createCharacter({
       name: 'Ancient One',

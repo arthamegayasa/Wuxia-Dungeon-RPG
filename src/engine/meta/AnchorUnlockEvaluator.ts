@@ -3,10 +3,11 @@
 // player's `meta.unlockedAnchors` list grows when the criteria from
 // `AnchorDef.unlock` are satisfied.
 //
-// Scope (Phase 2A-3):
+// Scope (Phase 2A-3 + Phase 2B-2):
 //   - reach_body_tempering_5  → summary.maxBodyTemperingLayer >= 5
 //   - read_ten_tomes_one_life → flag `read_ten_tomes_one_life` was set this life
 //   - befriend_sect_disciple  → flag `befriend_sect_disciple` was set this life
+//   - life_reached_qi_sensing → summary.maxRealm >= QI_SENSING (Sect Initiate gateway)
 //
 // The two flag-gated unlocks are AUTHORED-FROM-CONTENT contracts: events that
 // satisfy them set those flags via `flag_set` outcomes. Phase 2A-2 did not
@@ -17,8 +18,13 @@
 // (e.g. `literate` from scholars_son anchor) because they would auto-unlock
 // the anchor on the player's first scholars_son life.
 
+import { REALM_ORDER, Realm } from '@/engine/core/Types';
 import { MetaState } from './MetaState';
 import { LifeSummary } from './KarmicInsightRules';
+
+function realmRank(r: Realm): number {
+  return REALM_ORDER.indexOf(r);
+}
 
 export interface AnchorUnlockContext {
   readonly meta: MetaState;
@@ -43,6 +49,10 @@ const RULES: ReadonlyArray<UnlockRule> = [
   {
     anchorId: 'outer_disciple',
     check: (ctx) => ctx.diedThisLifeFlags.includes('befriend_sect_disciple'),
+  },
+  {
+    anchorId: 'sect_initiate',
+    check: (ctx) => realmRank(ctx.summary.maxRealm) >= realmRank(Realm.QI_SENSING),
   },
 ];
 
