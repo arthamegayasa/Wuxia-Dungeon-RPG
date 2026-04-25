@@ -8,6 +8,7 @@ import {
   applyInsight,
   ageDays,
   Character,
+  refreshDerived,
 } from './Character';
 
 const BASELINE_ATTRS = {
@@ -91,5 +92,27 @@ describe('Character type contracts', () => {
     const c: Character = createCharacter({ name: 't', attributes: BASELINE_ATTRS, rng: createRng(5) });
     // hpMax must equal 30 + Body*2 + layer*10
     expect(c.hpMax).toBe(30 + c.attributes.Body * 2 + c.bodyTemperingLayer * 10);
+  });
+});
+
+describe('Character.qiCondensationLayer (Phase 2B-1 Task 11)', () => {
+  it('createCharacter defaults qiCondensationLayer to 0', () => {
+    const c = createCharacter({
+      name: 'x',
+      attributes: { Body: 5, Mind: 5, Spirit: 5, Agility: 5, Charm: 5, Luck: 5 },
+      rng: createRng(1),
+    });
+    expect(c.qiCondensationLayer).toBe(0);
+  });
+
+  it('refreshDerived preserves qiCondensationLayer', () => {
+    const c = createCharacter({
+      name: 'x',
+      attributes: { Body: 5, Mind: 5, Spirit: 5, Agility: 5, Charm: 5, Luck: 5 },
+      rng: createRng(1),
+    });
+    const withLayer = { ...c, qiCondensationLayer: 3 };
+    const fresh = refreshDerived(withLayer);
+    expect(fresh.qiCondensationLayer).toBe(3);
   });
 });
