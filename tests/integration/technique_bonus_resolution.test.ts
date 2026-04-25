@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { TechniqueDef } from '@/engine/cultivation/Technique';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
-import { TECHNIQUE_REGISTRY } from '@/services/engineBridge';
+import { TECHNIQUE_REGISTRY, __loadGameplayContent } from '@/services/engineBridge';
 
 describe('Integration: technique bonus resolution respects corePath (Phase 2B-1 exit #3)', () => {
   const sevEdgeStrike: TechniqueDef = {
@@ -78,6 +78,9 @@ describe('Integration: technique bonus resolution respects corePath (Phase 2B-1 
 });
 
 describe('canonical corpus technique bonus resolution (Phase 2B-2 Task 9)', () => {
+  // Phase 2B-2 Task 24: TECHNIQUE_REGISTRY is lazy-loaded; populate before running.
+  beforeAll(async () => { await __loadGameplayContent(); });
+
   it('iron_mountain_body_seal applies +15 to body_check on-path', () => {
     const bonus = resolveLearnedTechniqueBonus({
       registry: TECHNIQUE_REGISTRY,

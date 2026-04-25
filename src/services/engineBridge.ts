@@ -36,11 +36,7 @@ import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
 import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
 import { applyPostOutcomeHooks } from '@/engine/core/PostOutcomeHooks';
 import { loadEvents } from '@/content/events/loader';
-import { loadItems } from '@/content/items/loader';
-import { loadSnippets, mergeSnippetPacks } from '@/content/snippets/loader';
-import { loadTechniques } from '@/content/techniques/loader';
-import { loadEchoes } from '@/content/echoes/loader';
-import { loadMemories } from '@/content/memories/loader';
+import { loadSnippets, mergeSnippetPacks, mergeSnippetLibraries } from '@/content/snippets/loader';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { ItemRegistry, ItemDef } from '@/engine/cultivation/ItemRegistry';
@@ -51,6 +47,7 @@ import { ForbiddenMemory, memoryLevelOf } from '@/engine/meta/ForbiddenMemory';
 import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
+import { loadAzurePeaksContent } from './azurePeaksLoader';
 
 import dailyJson from '@/content/events/yellow_plains/daily.json';
 import trainingJson from '@/content/events/yellow_plains/training.json';
@@ -61,16 +58,14 @@ import transitionJson from '@/content/events/yellow_plains/transition.json';
 import bridgeJson from '@/content/events/yellow_plains/bridge.json';
 import meditationJson from '@/content/events/yellow_plains/meditation.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
-import apSnippets from '@/content/snippets/azure_peaks.json';
-import echoPack from '@/content/echoes/echoes.json';
-import memoriesPack from '@/content/memories/memories.json';
-import techniquesJson from '@/content/techniques/techniques.json';
-import itemsJson from '@/content/items/items.json';
+// NOTE: azure_peaks content, techniques, items, echoes, and memories are NOT imported
+// eagerly here. Phase 2B-2 Task 24 lazy-loads them via azurePeaksLoader.ts on first
+// beginLife call, keeping the cold-start bundle under the 450 KB hard limit.
 
 // Phase 1D-3 Task 10: Yellow Plains content pool. Flattens all authored regional
-// packs (~50 events) into one selectable array. Snippet library is the single
-// Yellow Plains pack (~80 leaves) that backs narrative composition.
-const ALL_EVENTS: ReadonlyArray<EventDef> = [
+// packs (~50 events) into one selectable array.
+// Phase 2B-2 Task 24: mutable so AP events can be spliced in on lazy-load.
+let ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(dailyJson),
   ...loadEvents(trainingJson),
   ...loadEvents(socialJson),
@@ -80,37 +75,67 @@ const ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(bridgeJson),
   ...loadEvents(meditationJson),
 ];
-// Phase 2B-2 Task 22: merge YP + AP snippet packs. Task 24 will lazy-load AP as
-// a separate chunk; for now both packs ship eagerly at module load.
-const DEFAULT_LIBRARY: SnippetLibrary = mergeSnippetPacks([ypSnippets, apSnippets]);
+// Phase 2B-2 Task 24: starts as YP-only; AP snippets appended on first AP need.
+// (Replaces the earlier eager merge from Task 22 which pulled AP into the cold bundle.)
+let DEFAULT_LIBRARY: SnippetLibrary = mergeSnippetPacks([ypSnippets]);
 
-// Phase 2A-2 Task 8: the canonical echo registry. Built once at module load from
-// the authored `echoes.json`. `characterFromAnchor` consumes this at spawn to
-// roll any unlocked echoes against the player's `meta.echoesUnlocked` pool.
-// EchoDef (zod-inferred) is structurally compatible with SoulEcho.
-const ECHO_REGISTRY = EchoRegistry.fromList(loadEchoes(echoPack) as ReadonlyArray<SoulEcho>);
+// Phase 2B-2 Task 24: guard flag so AP content is only spliced once per session.
+let azurePeaksLoaded = false;
 
-// Phase 2A-2 Task 11: the canonical forbidden-memory registry. Built once at
-// module load from the authored `memories.json`. `applyPostOutcomeHooks` reads
-// it on meditation-category events to roll `MemoryManifestResolver`. MemoryDef
-// (zod-inferred) is structurally compatible with ForbiddenMemory — the same
-// pattern as EchoDef → SoulEcho above.
-const MEMORY_REGISTRY = MemoryRegistry.fromList(
-  loadMemories(memoriesPack) as ReadonlyArray<ForbiddenMemory>,
-);
+/**
+ * Ensure Azure Peaks content AND all gameplay registries are loaded.
+ * Idempotent — subsequent calls are no-ops.
+ * Must be awaited at `beginLife` (all anchors) and before any AP event selection.
+ */
+async function ensureAzurePeaksLoaded(): Promise<void> {
+  if (azurePeaksLoaded) return;
+  const ap = await loadAzurePeaksContent();
 
-// Phase 2B-2 Task 9: hydrate registries at module load.
-// (Phase 2B-2 Task 24 will switch Azure Peaks to lazy load via the
-// REGION_REGISTRY mutable container.)
-const TECHNIQUE_DEFS_RAW = loadTechniques(techniquesJson);
-// TechniqueRawDef and TechniqueDef are structurally identical post-zod-validation.
-const TECHNIQUE_DEFS: ReadonlyArray<TechniqueDef> = TECHNIQUE_DEFS_RAW as ReadonlyArray<TechniqueDef>;
-export const TECHNIQUE_REGISTRY = TechniqueRegistry.fromList(TECHNIQUE_DEFS);
+  // Merge AP events into the event pool.
+  ALL_EVENTS = [...ALL_EVENTS, ...ap.events];
 
-const ITEM_DEFS_RAW = loadItems(itemsJson);
-// ItemRawDef (zod-inferred) is structurally identical to ItemDef post-validation.
-const ITEM_DEFS: ReadonlyArray<ItemDef> = ITEM_DEFS_RAW as ReadonlyArray<ItemDef>;
-export const ITEM_REGISTRY = ItemRegistry.fromList(ITEM_DEFS);
+  // Merge AP region into the region registry.
+  REGION_REGISTRY.current = RegionRegistry.fromList([
+    ...REGION_REGISTRY.current.all(),
+    ap.region,
+  ]);
+
+  // Merge AP snippets into the library.
+  DEFAULT_LIBRARY = mergeSnippetLibraries(DEFAULT_LIBRARY, ap.snippets);
+
+  // Hydrate gameplay registries (techniques, items, echoes, memories).
+  TECHNIQUE_REGISTRY = TechniqueRegistry.fromList(
+    ap.techniques as ReadonlyArray<TechniqueDef>,
+  );
+  ITEM_REGISTRY = ItemRegistry.fromList(
+    ap.items as ReadonlyArray<ItemDef>,
+  );
+  ECHO_REGISTRY = EchoRegistry.fromList(ap.echoes);
+  MEMORY_REGISTRY = MemoryRegistry.fromList(ap.memories);
+
+  azurePeaksLoaded = true;
+}
+
+// Phase 2B-2 Task 24: registries are mutable live-binding exports initialised to
+// empty stubs at module load and populated on first beginLife call.
+// External importers (tests, GameLoop) see the live value via ESM live bindings.
+// loadOrInit does not use any registry — only beginLife and subsequent gameplay calls do.
+
+// Echo registry — populated by ensureAzurePeaksLoaded from echoes.json.
+// eslint-disable-next-line prefer-const
+export let ECHO_REGISTRY: EchoRegistry = EchoRegistry.fromList([]);
+
+// Memory registry — populated by ensureAzurePeaksLoaded from memories.json.
+// eslint-disable-next-line prefer-const
+export let MEMORY_REGISTRY: MemoryRegistry = MemoryRegistry.fromList([]);
+
+// Technique registry — populated by ensureAzurePeaksLoaded from techniques.json.
+// eslint-disable-next-line prefer-const
+export let TECHNIQUE_REGISTRY: TechniqueRegistry = TechniqueRegistry.fromList([]);
+
+// Item registry — populated by ensureAzurePeaksLoaded from items.json.
+// eslint-disable-next-line prefer-const
+export let ITEM_REGISTRY: ItemRegistry = ItemRegistry.fromList([]);
 
 // Region registry starts empty; Task 24 lazy-loads azure_peaks.json on first need.
 // Container is a stable reference object so Task 24 can hot-swap `current`.
@@ -353,10 +378,12 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
   const sm = opts.saveManager ?? createSaveManager({
     storage: () => localStorage, gameVersion: '0.1.0',
   });
-  // Snippet library used by the Composer. Phase 1D-3 Task 10 wires the authored
+  // Snippet library getter used by the Composer. Phase 1D-3 Task 10 wires the authored
   // Yellow Plains corpus (~80 leaves) as the default. Tests/adapters can still
   // override via opts.library for determinism.
-  const library = opts.library ?? DEFAULT_LIBRARY;
+  // Phase 2B-2 Task 24: use a getter so DEFAULT_LIBRARY reflects the post-lazy-load
+  // merged state (YP + AP). opts.library override is respected for tests.
+  const getLibrary = (): SnippetLibrary => opts.library ?? DEFAULT_LIBRARY;
   const now = opts.now ?? (() => Date.now());
 
   function currentMetaState(): MetaState {
@@ -416,10 +443,17 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
    * every click re-selected a (potentially different) event and the UI's click
    * could hit a choiceId that no longer existed.
    */
-  function doPeek(): TurnPreview {
+  async function doPeek(): Promise<TurnPreview> {
     const gs = useGameStore.getState();
     if (!gs.runState || !gs.streak || !gs.nameRegistry) {
       throw new Error('peekNextEvent: no active run in store');
+    }
+
+    // Phase 2B-2 Task 24: ensure gameplay content chunk is loaded (resume path).
+    // Normal flow: beginLife already awaited this. This guard covers the case where
+    // a page reload restores a saved run and the user resumes directly into doPeek.
+    if (!azurePeaksLoaded) {
+      await ensureAzurePeaksLoaded();
     }
 
     // Cached peek: re-render the already-selected event.
@@ -431,7 +465,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const narrative = renderEvent(
           cached,
           compositionContextFromStore(gs),
-          library,
+          getLibrary(),
           gs.nameRegistry,
           peekRng,
         );
@@ -476,7 +510,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     const narrative = renderEvent(
       selected,
       compositionContextFromStore(gs),
-      library,
+      getLibrary(),
       gs.nameRegistry,
       narrativeRng,
     );
@@ -614,8 +648,16 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const anchor = getAnchorById(anchorId);
       if (!anchor) throw new Error(`beginLife: unknown anchor ${anchorId}`);
 
+      // Phase 2B-2 Task 24: always load the gameplay content chunk before spawning.
+      // This ensures TECHNIQUE_REGISTRY, ITEM_REGISTRY, ECHO_REGISTRY, and
+      // MEMORY_REGISTRY are populated for the life about to start, regardless of
+      // anchor. Also loads AP content so targetRegion is honoured for AP anchors.
+      await ensureAzurePeaksLoaded();
+
+      const loadedRegions = ['yellow_plains', 'azure_peaks'];
+
       const spawnRng = createRng(now() & 0xffffffff);
-      const resolved = resolveAnchor(anchor, spawnRng);
+      const resolved = resolveAnchor(anchor, spawnRng, loadedRegions);
       const runSeed = spawnRng.intRange(0, 0x7fffffff);
       const { character, runState } = characterFromAnchor({
         resolved, name: chosenName, runSeed, rng: spawnRng,
@@ -657,6 +699,12 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       if (!gs.runState || !gs.streak || !gs.nameRegistry) {
         throw new Error('resolveChoice: no active run in store');
       }
+
+      // Phase 2B-2 Task 24: ensure gameplay content chunk is loaded (resume path).
+      if (!azurePeaksLoaded) {
+        await ensureAzurePeaksLoaded();
+      }
+
       if (!gs.runState.pendingEventId) {
         throw new Error('resolveChoice: no pending event — call peekNextEvent first');
       }
@@ -725,7 +773,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const narrative = renderEvent(
         pending,
         compositionContextFromStore(gs),
-        library,
+        getLibrary(),
         gs.nameRegistry,
         narrativeRng,
       );
@@ -965,4 +1013,14 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       return { echoes, memories, anchors };
     },
   };
+}
+
+/**
+ * Test-only: eagerly load all gameplay content (techniques, items, echoes, memories,
+ * Azure Peaks region+events+snippets) and populate the live-binding registries.
+ * Equivalent to what `beginLife` does at the start of each life.
+ * Call this in test `beforeEach` or test body before asserting on registry contents.
+ */
+export async function __loadGameplayContent(): Promise<void> {
+  return ensureAzurePeaksLoaded();
 }
