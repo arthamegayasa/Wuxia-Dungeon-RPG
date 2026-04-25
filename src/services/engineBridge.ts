@@ -22,8 +22,9 @@ import { resolveCheck } from '@/engine/choices/ChoiceResolver';
 import { resolveOutcome } from '@/engine/choices/OutcomeResolver';
 import { applyOutcome } from '@/engine/events/OutcomeApplier';
 import { advanceTurn } from '@/engine/events/AgeTick';
-import { resolveTechniqueBonus } from '@/engine/cultivation/Technique';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
+import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
@@ -83,6 +84,9 @@ const ECHO_REGISTRY = EchoRegistry.fromList(loadEchoes(echoPack) as ReadonlyArra
 const MEMORY_REGISTRY = MemoryRegistry.fromList(
   loadMemories(memoriesPack) as ReadonlyArray<ForbiddenMemory>,
 );
+
+// Phase 2B-1 Task 7: empty by default. 2B-2 ships the canonical corpus + loader.
+const TECHNIQUE_REGISTRY = TechniqueRegistry.empty();
 
 export interface LoadOrInitResult {
   phase: GamePhase;
@@ -625,12 +629,17 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const seedCursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
       const rng = createRng(seedCursor & 0xffffffff);
 
-      // Phase 1D-1 zero-placeholders: technique registry, inventory effects, echoes,
-      // and memories don't exist yet. resolveTechniqueBonus([]) → 0; itemBonus /
-      // echoBonus / memoryBonus wired in Phase 2+. NOT bugs.
+      // Phase 2B-1 Task 7: registry-backed technique bonus. Empty registry → 0
+      // (no regression vs old resolveTechniqueBonus([]) stub). 2B-2 swaps in
+      // the canonical corpus; affinity halving already active here.
       const dominantMood = computeDominantMood(zeroMoodInputs());
       const techBonus = choice.check?.techniqueBonusCategory
-        ? resolveTechniqueBonus([], choice.check.techniqueBonusCategory)
+        ? resolveLearnedTechniqueBonus({
+            registry: TECHNIQUE_REGISTRY,
+            learnedIds: gs.runState.learnedTechniques,
+            corePath: gs.runState.character.corePath,
+            category: choice.check.techniqueBonusCategory,
+          })
         : 0;
       const moodBonus = choice.check?.techniqueBonusCategory
         ? computeMoodBonus(dominantMood, choice.check.techniqueBonusCategory as CheckCategory)

@@ -11,6 +11,7 @@ import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { MemoryRegistry, EMPTY_MEMORY_REGISTRY } from '@/engine/meta/MemoryRegistry';
 import { ForbiddenMemory } from '@/engine/meta/ForbiddenMemory';
 import { createEmptyMetaState } from '@/engine/meta/MetaState';
+import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { runTurn, TurnContext } from './GameLoop';
 
 const ATTRS = { Body: 28, Mind: 20, Spirit: 15, Agility: 35, Charm: 22, Luck: 42 };
@@ -97,6 +98,7 @@ function makeCtx(opts: {
     echoTracker: EchoTracker.empty(),
     memoryRegistry: opts.memoryRegistry ?? EMPTY_MEMORY_REGISTRY,
     meta: opts.meta ?? createEmptyMetaState(),
+    techniqueRegistry: TechniqueRegistry.empty(),
   };
 }
 
