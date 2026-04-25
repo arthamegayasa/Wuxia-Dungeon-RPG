@@ -37,7 +37,7 @@ import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
 import { applyPostOutcomeHooks } from '@/engine/core/PostOutcomeHooks';
 import { loadEvents } from '@/content/events/loader';
 import { loadItems } from '@/content/items/loader';
-import { loadSnippets } from '@/content/snippets/loader';
+import { loadSnippets, mergeSnippetPacks } from '@/content/snippets/loader';
 import { loadTechniques } from '@/content/techniques/loader';
 import { loadEchoes } from '@/content/echoes/loader';
 import { loadMemories } from '@/content/memories/loader';
@@ -61,6 +61,7 @@ import transitionJson from '@/content/events/yellow_plains/transition.json';
 import bridgeJson from '@/content/events/yellow_plains/bridge.json';
 import meditationJson from '@/content/events/yellow_plains/meditation.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
+import apSnippets from '@/content/snippets/azure_peaks.json';
 import echoPack from '@/content/echoes/echoes.json';
 import memoriesPack from '@/content/memories/memories.json';
 import techniquesJson from '@/content/techniques/techniques.json';
@@ -79,7 +80,9 @@ const ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(bridgeJson),
   ...loadEvents(meditationJson),
 ];
-const DEFAULT_LIBRARY: SnippetLibrary = loadSnippets(ypSnippets);
+// Phase 2B-2 Task 22: merge YP + AP snippet packs. Task 24 will lazy-load AP as
+// a separate chunk; for now both packs ship eagerly at module load.
+const DEFAULT_LIBRARY: SnippetLibrary = mergeSnippetPacks([ypSnippets, apSnippets]);
 
 // Phase 2A-2 Task 8: the canonical echo registry. Built once at module load from
 // the authored `echoes.json`. `characterFromAnchor` consumes this at spawn to

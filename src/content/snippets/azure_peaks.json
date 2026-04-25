@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "leaves": {
+    "sect.dawn": [
+      { "text": "The dawn bell rings; the courtyard is still cold.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Bell. Dawn. Cold stone.", "weight": 1, "tags": ["terse"] },
+      { "text": "First light over Nine-Peak. The disciples are not yet awake.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "sect.dusk": [
+      { "text": "Dusk settles on the sect. Lanterns appear in the elder quarters one by one.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Dusk. The mountain goes quiet.", "weight": 1, "tags": ["terse"] }
+    ],
+    "sect.midday": [
+      { "text": "Noon in the sect. A brief stillness between the morning drills and the afternoon scripture.", "weight": 1, "tags": ["serious"] },
+      { "text": "Midday. The sun finds no shade on the outer courtyard stones.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "sect.locales.outer_sect_courtyard": [
+      { "text": "The outer courtyard, swept clean before dawn, already dusty from a hundred drills.", "weight": 1, "tags": ["serious"] },
+      { "text": "Flagstones worn smooth by ten thousand footsteps. The courtyard asks no questions.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Outer courtyard. Stakes for sparring. Racks for weapons. The smell of effort.", "weight": 1, "tags": ["terse"] }
+    ],
+    "sect.locales.scripture_hall": [
+      { "text": "The scripture hall, smelling of old paper and lamp oil, its shelves reaching the rafters.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Rows of jade slips and yellowed tomes. The scripture hall never quite warms.", "weight": 1, "tags": ["serious"] },
+      { "text": "Candlelight on old text. The scripture hall forgives nothing misread.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "sect.locales.meditation_cave": [
+      { "text": "The meditation caves cut into the north face. Qi pools there, heavy and old.", "weight": 1, "tags": ["lyrical", "ominous"] },
+      { "text": "A cave in the cliff. Cold stone, near-darkness, the breath of the mountain.", "weight": 1, "tags": ["serious"] },
+      { "text": "Meditation cave. Silence deep enough to drown in.", "weight": 1, "tags": ["terse", "lyrical"] }
+    ],
+    "sect.locales.beast_pass": [
+      { "text": "The Beast Pass, where the mountain's spirit-beasts test the disciples who dare it.", "weight": 1, "tags": ["serious", "ominous"] },
+      { "text": "Narrow trail, claw-gouged rock. The beasts have been here. Recently.", "weight": 1, "tags": ["terse", "ominous"] },
+      { "text": "Above the Beast Pass, the sky looks different — heavier, like it is watching.", "weight": 1, "tags": ["lyrical", "ominous"] }
+    ],
+    "sect.locales.alchemy_pavilion": [
+      { "text": "The alchemy pavilion, its chimney trailing sweet-bitter smoke at all hours.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Smoke and heat and the smell of burning herbs. The pavilion never sleeps.", "weight": 1, "tags": ["serious"] },
+      { "text": "Alchemy pavilion. Everything is stained. The air here can make you cough for an hour.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "sect.locales.elder_quarters": [
+      { "text": "The elder quarters, their doors lacquered red, their windows never open to disciples.", "weight": 1, "tags": ["serious"] },
+      { "text": "Past the pine grove: the elder quarters. Heavy and silent.", "weight": 1, "tags": ["terse", "ominous"] }
+    ],
+    "sect.elder.demeanor": [
+      { "text": "The elder speaks slowly, as though measuring each word against ten thousand days of practice.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The elder's voice is flat, clipped. Wasted syllables are wasted qi.", "weight": 1, "tags": ["terse", "serious"] },
+      { "text": "The elder looks up from the jade slip, expression unreadable, then back down. A test, maybe.", "weight": 1, "tags": ["ominous"] }
+    ],
+    "sect.senior_brother.tone": [
+      { "text": "The senior brother crosses his arms. His assessment is complete before he speaks.", "weight": 1, "tags": ["serious"] },
+      { "text": "Senior Brother speaks with the casual authority of someone who has already survived this.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "sect.junior_sister.tone": [
+      { "text": "The junior sister's question is earnest. She doesn't yet know to hide it.", "weight": 1, "tags": ["tender"] },
+      { "text": "Junior Sister hesitates, then asks anyway. Bravery, or ignorance — hard to tell.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "sect.robe": [
+      { "text": "The grey outer-sect robe, stiff at the collar, smelling of the storage chest.", "weight": 1, "tags": ["terse"] },
+      { "text": "Outer-sect grey. It tells everyone what you are, before you open your mouth.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "pill.smoke": [
+      { "text": "The pill dissolves on the tongue in a burst of bitter heat, then warmth spreading to the meridians.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Bitter. Then nothing. Then a warmth below the ribs.", "weight": 1, "tags": ["terse"] }
+    ],
+    "realm.qi_sensing.awaken": [
+      { "text": "The world holds its breath. Then — something opens, like a second pair of eyes behind the first.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Qi Sensing First Layer. The meridians stop being walls. For the first time, there is a door.", "weight": 1, "tags": ["serious"] },
+      { "text": "A trembling in the meridians. Then clarity, sudden as a bell. This is what they meant.", "weight": 1, "tags": ["tender"] }
+    ],
+    "technique.manifest.fire": [
+      { "text": "The technique moves through the meridians like a coal that will not cool.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Fire qi. The hands warm before the form is complete.", "weight": 1, "tags": ["terse"] }
+    ],
+    "technique.manifest.sword": [
+      { "text": "The sword intent sharpens in the chest, a pressure that wants a direction.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Edge. The sensation is always of an edge that isn't there yet.", "weight": 1, "tags": ["terse", "ominous"] }
+    ],
+    "technique.manifest.body": [
+      { "text": "The body technique settles into the bones like ballast — heavy, solid, true.", "weight": 1, "tags": ["serious"] },
+      { "text": "Not speed. Not force. The body technique teaches stillness first.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "technique.manifest.wind": [
+      { "text": "The wind technique moves through the form like a thought: present, then gone.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Light. The technique makes everything lighter. The feet nearly leave the stone.", "weight": 1, "tags": ["terse"] }
+    ],
+    "terrain.azure_peaks.peak": [
+      { "text": "The peak, bare rock above the cloud line, the wind here older than the sect.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Above. Always above. The peaks have no interest in below.", "weight": 1, "tags": ["terse", "ominous"] }
+    ],
+    "terrain.azure_peaks.vale": [
+      { "text": "The Crystal Vale, mist-threaded, its bamboo thickets hiding springs that taste of mineral cold.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Down in the vale, the air is green and damp. Sound does not carry far.", "weight": 1, "tags": ["serious"] }
+    ],
+    "terrain.azure_peaks.pavilion": [
+      { "text": "A stone pavilion at the cliff's edge, built for cultivation, claimed by wind.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The mountain pavilion. Three walls and an open face toward the abyss.", "weight": 1, "tags": ["terse", "ominous"] }
+    ],
+    "ap.dawn.peak": [
+      { "text": "First light cuts across the high peaks, leaving the courtyard in cold shadow.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Before dawn, the sect is still. The peaks glow before anything else.", "weight": 1, "tags": ["tender"] },
+      { "text": "Dawn on the mountain. The cold does not ask permission.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.outer.courtyard": [
+      { "text": "The outer courtyard, its stones damp from the night, awaits the morning drill.", "weight": 1, "tags": ["serious"] },
+      { "text": "Courtyard. Empty now, but the day is coming.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.alchemy.pavilion": [
+      { "text": "Smoke curls from the pavilion chimney before the sun is up.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The pavilion is always warm. The elixirs see to that.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.scripture.hall.candle": [
+      { "text": "A single candle at a reading desk. The scripture hall before the others arrive.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Candle-lit hall. The texts do not care what hour it is.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.meditation.cave": [
+      { "text": "The meditation cave, its qi dense enough to taste, the silence absolute.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Cold stone. Thick qi. The cave demands nothing, offers everything.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.beast.pass.lower": [
+      { "text": "The lower Beast Pass, where first-year disciples are tested and sometimes carried home.", "weight": 1, "tags": ["serious"] },
+      { "text": "Lower pass. The beasts here are smaller. Their scars on the rock are not.", "weight": 1, "tags": ["terse", "ominous"] }
+    ],
+    "ap.elder.quarters": [
+      { "text": "The elder quarters, lacquered doors, the smell of aged elixir and old wood.", "weight": 1, "tags": ["serious"] },
+      { "text": "A summons to the elder quarters is never trivial.", "weight": 1, "tags": ["ominous"] }
+    ],
+    "ap.outer.dining.hall": [
+      { "text": "The outer dining hall, its tables crowded, its smell of steam and cheap grain.", "weight": 1, "tags": ["tender"] },
+      { "text": "Three hundred outer disciples. One hall. The food runs out from the edges in.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "ap.mountain.path": [
+      { "text": "The mountain path, switchbacking up through pine and mist, the top invisible.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Path up the mountain. Stone steps cut by old hands, worn by young feet.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.market.stalls": [
+      { "text": "The sect's outer market, its stalls cluttered with cultivation materials and dubious claims.", "weight": 1, "tags": ["serious"] },
+      { "text": "Market stalls. Everything costs more than it should.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "ap.gate.qs.sky": [
+      { "text": "The sky above the Nine-Peak Gate is cloudless, pitiless. The test does not care if you are ready.", "weight": 1, "tags": ["serious"] },
+      { "text": "Gate of Qi Sensing. The meridians ache with anticipation.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "ap.gate.qc.sky": [
+      { "text": "Storm clouds on the horizon as the Qi Condensation threshold approaches. Coincidence, the elders say.", "weight": 1, "tags": ["lyrical", "ominous"] },
+      { "text": "The sky changes at Qi Condensation. The heavens, apparently, are paying attention.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.gate.qc5.storm": [
+      { "text": "Halfway through Qi Condensation — the midpoint storm, the old texts call it. They are not wrong.", "weight": 1, "tags": ["lyrical", "ominous"] },
+      { "text": "QC Fifth Layer. The qi rebels before it submits. Thunder, internal and external both.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.gate.qc9.heavens": [
+      { "text": "The ninth layer of Qi Condensation. The sect grows quiet. The elders watch without speaking.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "QC Ninth. The heavens open one eye. The next step is Foundation Establishment — or death.", "weight": 1, "tags": ["ominous"] }
+    ],
+    "ap.gate.tech.scroll": [
+      { "text": "A technique scroll, its jade case cracked, its contents intact. An opportunity.", "weight": 1, "tags": ["serious"] },
+      { "text": "The scroll sits on the reading stand. The technique inside has been waiting for the right reader.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "ap.action.circulate.deep": [
+      { "text": "The qi flows unobstructed, every meridian open, every breath a tide.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Deep circulation. The body forgets it is tired.", "weight": 1, "tags": ["tender"] }
+    ],
+    "ap.action.circulate.steady": [
+      { "text": "The qi moves in its familiar circuit. Not brilliant, but clean.", "weight": 1, "tags": ["serious"] },
+      { "text": "Steady. The meridians ask nothing impossible today.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.circulate.scattered": [
+      { "text": "The qi tangles at the third meridian, as it always does. Another day of waiting.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Scattered. The mind wanders and takes the qi with it.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.spar.victory": [
+      { "text": "The opponent hits the ground. A moment of silence, then acknowledgment.", "weight": 1, "tags": ["serious"] },
+      { "text": "Victory. Brief. The technique that won it will need to win again.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.spar.draw": [
+      { "text": "Both cultivators step back, breathing hard. The outcome: unresolved.", "weight": 1, "tags": ["serious"] },
+      { "text": "A draw. Neither graceful. Both earned.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.spar.bruised": [
+      { "text": "The counter comes faster than expected. The ground teaches what the drill did not.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Bruised. The lesson will leave marks.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.meditate.deep": [
+      { "text": "Deep in the cave's silence, time folds. An hour passes like a breath.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "The mind empties. The qi fills what's left.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.meditate.steady": [
+      { "text": "Steady cultivation. Not transcendence, but progress. Progress is enough.", "weight": 1, "tags": ["serious"] },
+      { "text": "The meditation holds. Quiet and methodical. Forward.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.meditate.shallow": [
+      { "text": "The surface only. The deeper silence refuses entry today.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Shallow. The mind will not settle. Something outside keeps pulling.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.action.meditate.scattered": [
+      { "text": "The meditation collapses into thought. An hour wasted to the sound of one's own anxieties.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Scattered. Nothing settles. Start again tomorrow.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.chore.done": [
+      { "text": "The task is done. No one notices. This is what outer disciples are for.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Done. The sect runs on labor like this, invisible and constant.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.action.chore.skimped": [
+      { "text": "Good enough. The sect has not noticed yet. It probably will.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.errand.delivered": [
+      { "text": "The delivery reaches its destination intact. A small trust, built.", "weight": 1, "tags": ["tender"] },
+      { "text": "Delivered. The steward nods once, which is more than most get.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.action.errand.dropped": [
+      { "text": "The jar slips. The contents are not recoverable. The elder will hear of it.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Dropped. The sound it makes is exactly as bad as feared.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.errand.refused": [
+      { "text": "The refusal is noted. Not immediately punished. But noted.", "weight": 1, "tags": ["ominous"] }
+    ],
+    "ap.action.meal.rest": [
+      { "text": "The meal hall is loud. The food is plain. Rest is relative.", "weight": 1, "tags": ["terse"] },
+      { "text": "A full bowl, a bench, an hour to breathe. The body asks for little; today, it receives it.", "weight": 1, "tags": ["tender"] }
+    ],
+    "ap.action.meal.rumor": [
+      { "text": "Between bites, a rumor: an inner disciple has reached Foundation Establishment. The table goes quiet.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Rumor travels faster than sect bulletins. Someone heard something. Now everyone has.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.action.meal.silent": [
+      { "text": "Eat alone. The noise of three hundred cultivators is its own kind of silence.", "weight": 1, "tags": ["bitter"] }
+    ],
+    "ap.action.scripture.absorbed": [
+      { "text": "The text opens. The technique behind the words becomes visible, then almost audible.", "weight": 1, "tags": ["lyrical"] },
+      { "text": "Absorbed. The knowledge sits in the meridians before it sits in the mind.", "weight": 1, "tags": ["serious"] }
+    ],
+    "ap.action.scripture.steady": [
+      { "text": "The text yields its meaning in order, page by page. Progress.", "weight": 1, "tags": ["serious"] },
+      { "text": "Steady reading. The technique reveals itself in stages. Good.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.scripture.smudged": [
+      { "text": "The ink is faded, the character unclear. A day spent guessing at a text.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Smudged. The copy was poor to begin with. The learning is partial.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.herb.bounty": [
+      { "text": "The vale is generous today — the right herbs in the right places, easily gathered.", "weight": 1, "tags": ["tender"] },
+      { "text": "Bounty. Even the mountain has good days.", "weight": 1, "tags": ["lyrical"] }
+    ],
+    "ap.action.herb.found": [
+      { "text": "A useful find: not rare, but useful. The satchel feels worthwhile.", "weight": 1, "tags": ["serious"] },
+      { "text": "Found. The herb is smaller than ideal but fresh.", "weight": 1, "tags": ["terse"] }
+    ],
+    "ap.action.herb.empty": [
+      { "text": "The usual spots are picked clean. Someone was here first.", "weight": 1, "tags": ["bitter"] },
+      { "text": "Empty. The mountain keeps its own schedule.", "weight": 1, "tags": ["terse"] }
+    ]
+  }
+}
