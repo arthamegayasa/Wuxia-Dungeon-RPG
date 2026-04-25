@@ -109,3 +109,24 @@ export function resolveTechniqueBonusWithAffinity(
   }
   return Math.round(total);
 }
+
+/**
+ * Sum `cultivation_multiplier_pct` effects across techniques.
+ * Returns 1 + Σpct/100. Empty → 1.0 (the neutral multiplier).
+ *
+ * `pct` is in PERCENTAGE POINTS, not a fraction — pct=20 means +20%
+ * (multiplier 1.20). The `cultivationGainRate.techniqueMultiplier`
+ * parameter at [src/engine/cultivation/CultivationProgress.ts:13](../../../src/engine/cultivation/CultivationProgress.ts:13)
+ * consumes this directly as a multiplicative factor (default 1.0).
+ */
+export function computeCultivationMultiplier(
+  techniques: ReadonlyArray<TechniqueDef>,
+): number {
+  let pctSum = 0;
+  for (const t of techniques) {
+    for (const eff of t.effects) {
+      if (eff.kind === 'cultivation_multiplier_pct') pctSum += eff.pct;
+    }
+  }
+  return 1 + pctSum / 100;
+}

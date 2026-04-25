@@ -6,6 +6,7 @@ import {
   resolveTechniqueBonus,
   affinityMultiplier,
   resolveTechniqueBonusWithAffinity,
+  computeCultivationMultiplier,
 } from './Technique';
 
 const IRON_SHIRT: TechniqueDef = {
@@ -198,5 +199,44 @@ describe('resolveTechniqueBonusWithAffinity (Phase 2B-1 Task 6)', () => {
       category: 'strike',
     });
     expect(b).toBe(30);
+  });
+});
+
+describe('computeCultivationMultiplier (Phase 2B-1 Task 10)', () => {
+  it('empty → 1.0', () => {
+    expect(computeCultivationMultiplier([])).toBe(1.0);
+  });
+
+  it('single +20% → 1.2', () => {
+    const t: TechniqueDef = {
+      id: 't', name: 'T', grade: 'mortal', element: 'none',
+      coreAffinity: ['any'], requires: {}, qiCost: 0,
+      effects: [{ kind: 'cultivation_multiplier_pct', pct: 20 }],
+      description: '',
+    };
+    expect(computeCultivationMultiplier([t])).toBeCloseTo(1.2, 3);
+  });
+
+  it('multiple sum additively: 15% + 25% = 1.4', () => {
+    const mkT = (pct: number): TechniqueDef => ({
+      id: `t${pct}`, name: 'T', grade: 'mortal', element: 'none',
+      coreAffinity: ['any'], requires: {}, qiCost: 0,
+      effects: [{ kind: 'cultivation_multiplier_pct', pct }],
+      description: '',
+    });
+    expect(computeCultivationMultiplier([mkT(15), mkT(25)])).toBeCloseTo(1.4, 3);
+  });
+
+  it('ignores non-cultivation effects', () => {
+    const t: TechniqueDef = {
+      id: 't', name: 'T', grade: 'mortal', element: 'none',
+      coreAffinity: ['any'], requires: {}, qiCost: 0,
+      effects: [
+        { kind: 'choice_bonus', category: 'strike', bonus: 50 },
+        { kind: 'cultivation_multiplier_pct', pct: 10 },
+      ],
+      description: '',
+    };
+    expect(computeCultivationMultiplier([t])).toBeCloseTo(1.1, 3);
   });
 });
