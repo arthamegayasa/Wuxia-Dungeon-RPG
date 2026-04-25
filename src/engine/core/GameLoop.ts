@@ -4,7 +4,7 @@
 // Pure function: takes a TurnContext + choiceId + rng, returns the updated state slices.
 
 import { IRng } from './RNG';
-import { Mood, OutcomeTier, CheckCategory } from './Types';
+import { Mood, OutcomeTier } from './Types';
 import { EventDef } from '@/content/schema';
 import { RunState } from '@/engine/events/RunState';
 import { applyOutcome } from '@/engine/events/OutcomeApplier';
@@ -19,6 +19,7 @@ import { renderEvent, CompositionContext } from '@/engine/narrative/Composer';
 import { SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { NameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { checkCategoryFromEvent } from '@/engine/narrative/CheckCategoryFromEvent';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
@@ -136,8 +137,8 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
         category: choice.check.techniqueBonusCategory,
       })
     : 0;
-  const moodBonus = choice.check?.techniqueBonusCategory
-    ? computeMoodBonus(ctx.dominantMood, choice.check.techniqueBonusCategory as CheckCategory)
+  const moodBonus = choice.check
+    ? computeMoodBonus(ctx.dominantMood, checkCategoryFromEvent(event.category))
     : 0;
 
   const result = resolveCheck({

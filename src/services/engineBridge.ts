@@ -1,6 +1,6 @@
 // Real engineBridge — adapter from UI → engine. Source: docs/spec/design.md §2, §11.
 
-import { GamePhase, CheckCategory } from '@/engine/core/Types';
+import { GamePhase } from '@/engine/core/Types';
 import { SaveManager, createSaveManager } from '@/engine/persistence/SaveManager';
 import { loadRun, saveRun, clearRun } from '@/engine/persistence/RunSave';
 import {
@@ -24,6 +24,7 @@ import { resolveOutcome } from '@/engine/choices/OutcomeResolver';
 import { applyOutcome } from '@/engine/events/OutcomeApplier';
 import { advanceTurn } from '@/engine/events/AgeTick';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { checkCategoryFromEvent } from '@/engine/narrative/CheckCategoryFromEvent';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
@@ -694,8 +695,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
             category: choice.check.techniqueBonusCategory,
           })
         : 0;
-      const moodBonus = choice.check?.techniqueBonusCategory
-        ? computeMoodBonus(dominantMood, choice.check.techniqueBonusCategory as CheckCategory)
+      const moodBonus = choice.check
+        ? computeMoodBonus(dominantMood, checkCategoryFromEvent(pending.category))
         : 0;
 
       const checkResult = resolveCheck({
