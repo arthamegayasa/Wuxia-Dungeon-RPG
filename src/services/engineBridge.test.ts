@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createSaveManager } from '@/engine/persistence/SaveManager';
-import { createEngineBridge } from './engineBridge';
+import { createEngineBridge, TECHNIQUE_REGISTRY } from './engineBridge';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 import { GamePhase } from '@/engine/core/Types';
@@ -437,4 +437,14 @@ describe('BardoPayload reveal fields', () => {
     }
     throw new Error('did not reach bardo within 600 turns');
   }, 30000);
+});
+
+describe('engineBridge dominantMood with techniques (Phase 2B-2 Task 10)', () => {
+  it('TECHNIQUE_REGISTRY hydrated still_water_heart_sutra has mood_modifier serenity', () => {
+    const t = TECHNIQUE_REGISTRY.byId('still_water_heart_sutra')!;
+    expect(t).toBeDefined();
+    const moodEffect = t.effects.find((e) => e.kind === 'mood_modifier');
+    expect(moodEffect).toBeDefined();
+    expect((moodEffect as any).mood).toBe('serenity');
+  });
 });

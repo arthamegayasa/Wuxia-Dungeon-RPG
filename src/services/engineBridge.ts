@@ -16,6 +16,7 @@ import {
 import { SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
+import { moodDeltasFromTechniques } from '@/engine/narrative/MoodFromTechniques';
 import { renderEvent, CompositionContext } from '@/engine/narrative/Composer';
 import { selectEvent } from '@/engine/events/EventSelector';
 import { resolveCheck } from '@/engine/choices/ChoiceResolver';
@@ -327,12 +328,15 @@ function compositionContextFromStore(
   gs: ReturnType<typeof useGameStore.getState>,
 ): CompositionContext {
   if (!gs.runState) throw new Error('compositionContextFromStore: no runState');
+  const learnedDefs = gs.runState.learnedTechniques
+    .map((id) => TECHNIQUE_REGISTRY.byId(id))
+    .filter((t): t is NonNullable<typeof t> => t !== null);
   return {
     characterName: gs.runState.character.name,
     region: gs.runState.region,
     season: gs.runState.season,
     realm: gs.runState.character.realm,
-    dominantMood: computeDominantMood(zeroMoodInputs()),
+    dominantMood: computeDominantMood(zeroMoodInputs(), moodDeltasFromTechniques(learnedDefs)),
     turnIndex: gs.runState.turn,
     runSeed: gs.runState.runSeed,
     extraVariables: {},
@@ -656,7 +660,12 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Phase 2B-1 Task 7: registry-backed technique bonus. Empty registry → 0
       // (no regression vs old resolveTechniqueBonus([]) stub). 2B-2 swaps in
       // the canonical corpus; affinity halving already active here.
-      const dominantMood = computeDominantMood(zeroMoodInputs());
+      // Phase 2B-2 Task 10: fold mood_modifier effects from learned techniques
+      // into dominantMood via moodDeltasFromTechniques (forward note #1).
+      const learnedDefs = gs.runState.learnedTechniques
+        .map((id) => TECHNIQUE_REGISTRY.byId(id))
+        .filter((t): t is NonNullable<typeof t> => t !== null);
+      const dominantMood = computeDominantMood(zeroMoodInputs(), moodDeltasFromTechniques(learnedDefs));
       const techBonus = choice.check?.techniqueBonusCategory
         ? resolveLearnedTechniqueBonus({
             registry: TECHNIQUE_REGISTRY,
