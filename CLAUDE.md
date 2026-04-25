@@ -36,13 +36,13 @@ For **large phases** (e.g., Phase 2+), brainstorm first via `superpowers:brainst
 
 ## Full roadmap (from spec §13)
 
-The spec defines 6 major phases (0–5). Each ships a standalone playable build with an explicit exit criterion. Phases 0 + 1 are **complete** (7 PRs merged). Phases 2–5 remain.
+The spec defines 6 major phases (0–5). Each ships a standalone playable build with an explicit exit criterion. Phases 0, 1, and 2A are **complete** (11 PRs merged). Phase 2B–5 remain.
 
 | Phase | Title | Deliverable | Status |
 |-------|-------|-------------|--------|
-| **0** | Foundation | Engine skeleton, RNG, SaveManager, TitleScreen, CI | ✅ merged (see 1D-1 table below for full breakdown) |
+| **0** | Foundation | Engine skeleton, RNG, SaveManager, TitleScreen, CI | ✅ merged (see Phase 1 table below for full breakdown) |
 | **1** | The Mortal's Burden | Vertical slice: Peasant Farmer anchor, Yellow Plains, Body Tempering, 50 events, karma cycle | ✅ **complete** — delivered across 1A/1B/1C/1D-1/1D-2/1D-3 |
-| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI | 🧠 needs brainstorming to split into 2A/2B/2C |
+| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI | 🟡 2A ✅ complete (inheritance + reveal UI, 4 PRs) — 2B pending (Azure Peaks + techniques + core paths + realm expansion) |
 | **3** | The Heavens Notice | Heavenly Notice system + Karmic Imprints + Karmic Hunters + Tribulations I-II + Foundation/Core realms + Bone Marshes + cross-life Threads + world map | ⏳ pending |
 | **4** | Mind Benders | Pillar puzzles + NPC persistence + faction state + Imperial Capital + Northern Wastes + Nascent Soul realms + Tribulations III-IV | ⏳ pending |
 | **5** | Ascension | Sunken Isles + Void Refinement + Immortal realms + Tribulations V-IX + 5 true endings + PWA | ⏳ pending |
@@ -69,42 +69,77 @@ Phase 1 was split into 7 sub-phases executed between 2026-04-21 and 2026-04-23.
 
 **Branch tags**: `phase-0-complete` at commit `e25a969`. **Phase 1 complete** at merge commit `2e61259`.
 
+## Phase 2A completion — detailed
+
+Phase 2A was rescoped during brainstorming (PR #8): the original 2A (inheritance engine) + 2B (Codex/Lineage UI) were merged into a single sub-phase delivered as 2A-1 / 2A-2 / 2A-3 so echoes/memories ship with their reveal UI. The old 2C (Azure Peaks + techniques + core paths + realm expansion) was rescoped as the new **Phase 2B**. Executed 2026-04-23 → 2026-04-25.
+
+| Sub-phase | Scope | Tests | PR / Commit |
+|-----------|-------|-------|-------------|
+| 2A spec + 2A-1 plan | Docs-only: Phase 2A spec (490 lines, `docs/superpowers/specs/2026-04-23-phase-2a-inheritance-and-reveal-design.md`) + 2A-1 plan (2829 lines). Locks 2A-1/2A-2/2A-3 decomposition; rescopes old 2C → new 2B. | +0 | [#8](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/8) → `83a196c` |
+| 2A-1 | Engine foundations: Soul Echo engine (types + `EchoRegistry` + `EchoTracker` + `EchoUnlocker` w/ 10 unlock-condition kinds + `EchoRoller` w/ conflict resolution + `EchoApplier` + `Character.echoes`), Forbidden Memory engine (`memoryLevelOf` fragment/partial/complete + `MemoryRegistry` + `MemoryWitnessLogger` per-life dedup + `MemoryManifestResolver` §7.3 formula w/ derived-seed RNG isolated from resolver stream, max 3 attempts/life), MoodFilter completion (`MoodAdjectiveDict` 20×6 word-boundary substitution + `InteriorThoughtInjector` Mind×mood-bias w/ derived-seed + snippet fallback chain), MetaState v1→v2 migration (fixture-tested), `engineBridge` v2 awareness, Composer `renderEvent` wires both post-passes | +71 | [#9](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/9) → `f1efa86` |
+| 2A-2 | Content + engine wiring: 10 canonical echoes (§3.1 roster) + 5 forbidden memories (§3.2) + 3 new anchors (Martial Family / Scholar's Son / Outer Disciple) + 18 narrative post-pass snippets (reflection + anchor openers) + 10 witness-memory retrofits on Yellow Plains events + 6 anchor-bridging events + 3 meditation events. Engine wiring: echo roll + apply at spawn (`characterFromAnchor`), witness commit + echo-unlock evaluation + lineage annotation in `runBardoFlow`, `EchoTracker` threaded through `runTurn`/`resolveChoice` via shared `PostOutcomeHooks` helper, meditation-event manifestation roll via same helper. Closes exit #2/3/4/7. | +53 | [#10](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/10) → `337f315` |
+| 2A-3 | Reveal UI: `CodexScreen` (Memories/Echoes/Anchors tabs w/ rich snapshots), `LineageScreen` (LifeCards w/ year range + anchor + realm + cause + echoes-this-life), `BardoPanel` reveal sections (manifested memories / witnessed memories / echoes unlocked) + Codex/Lineage entry buttons, `CreationScreen` locked-anchor silhouettes + shimmer on fresh-unlock, `TitleScreen` Lineage entry point. Bridge: `getCodexSnapshot`, `getLineageSnapshot`, extended `BardoPayload` reveal arrays, `locked-anchors` in `CreationPayload`. `AnchorUnlockEvaluator` wired at `runBardoFlow` (closes 2A-2 anchor-unlock-evaluator-deferred trade-off). `MetaState` v2→v3 adds `birthYear`/`deathYear` to `LineageEntrySummary`. `GamePhase.LINEAGE` added + routed in App.tsx. Full 5-life UI integration test. Closes exit #5/6/8. | +43 | [#12](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/12) → `59155d9` |
+
+**Phase 2A aggregate:** 4 PRs (1 docs-only + 3 implementation), 527 → 694 tests on main (+167, across 74 → 102 test files), ~3 days elapsed.
+
+**Phase 2A exit criteria** (all ✅):
+
+1. ✅ Echo inheritance Life N → Life N+1 deterministic (`tests/integration/echo_inheritance.test.ts`)
+2. ✅ Forbidden Memory witnessed in Life N can manifest in Life N+5 (`tests/integration/memory_manifestation.test.ts`)
+3. ✅ MoodFilter adjective + interior-thought variance (`tests/integration/mood_filter_variance.test.ts`)
+4. ✅ 5 distinct anchors registered (`Anchor.test.ts` — `true_random` + `peasant_farmer` + 3 new)
+5. ✅ Codex surfaces real Memories/Echoes/Anchors data (`playable_life_2a.test.tsx` test 1)
+6. ✅ Lineage shows year range / anchor / realm / cause / echoes-this-life per past life (`playable_life_2a.test.tsx` test 1)
+7. ✅ MetaState v1→v2 save migration preserves Phase 1 karma + upgrades (`Migrator.v1_to_v2.test.ts`)
+8. ✅ Full 5-life UI-driven integration loop (`playable_life_2a.test.tsx` test 2)
+
+**Test count on main**: 694 (across 102 files). Build: 434.76 KB raw / 120.99 KB gzip. Phase 3 budget 450 KB raw — 15 KB headroom.
+
+**Branch tag (suggested)**: `phase-2a-complete` at merge commit `59155d9`.
+
 ## Resuming work — next action
 
-**Phase 1 is complete.** The game is playable end-to-end: Title → anchor pick → named character → real Yellow Plains life (50 events, 80 snippets) → eventual death → bardo summary + karma breakdown + upgrade shop → reincarnate.
+**Phase 2A is complete.** On top of Phase 1's playable life, the game now rolls Soul Echoes at spawn from unlocks earned in past lives, logs Forbidden Memory witnesses that can manifest 1-5 lives later, applies MoodFilter to narrative output, unlocks anchors through play (4 of 5 unlocked by repeating 5-life loop), and surfaces all of it via Codex + Lineage + enhanced Bardo + enhanced Creation.
 
-The next step is to **brainstorm Phase 2 scope** via the `superpowers:brainstorming` skill. Phase 2 is the largest so far; recommend splitting into 2-3 sub-phases.
+The next step is to **brainstorm Phase 2B scope** via the `superpowers:brainstorming` skill. Phase 2B (the rescoped old 2C) is itself a substantial sub-phase; recommend splitting into 2-3 sub-sub-phases.
 
-**Phase 2 candidate decomposition (to refine in brainstorming):**
+**Phase 2B candidate scope (to refine in brainstorming):**
 
-- **Phase 2A — Cross-life inheritance:** Echo system (§7.2, 10 echoes with conflict resolution), Forbidden Memory system (§7.3, witness logging + manifestation roll), MoodFilter narrative tweaks (§6.4), +3 anchors (Martial Family / Scholar's Son / Outer Disciple), store + save-envelope changes.
-- **Phase 2B — Codex + Lineage UI:** Codex screen (§11.4 — Memories/Echoes/Anchors tabs), Lineage screen (§11.5 — drill into past lives from bardo), unlock-animation polish.
-- **Phase 2C — Second region + techniques + core paths:** Azure Peaks region + content authoring (events + snippets), technique registry + 10 basic techniques integrated with choice resolver (`technique_learn` stateDelta + `techniqueBonusCategory` checks), core-path detection + bonus application, realm expansion (Qi Sensing + Qi Condensation 1-9), 200-leaf snippet library target.
+- **Azure Peaks region** — second region per spec §8, with content authoring: ~30-50 events (transition from Yellow Plains + region-specific daily/training/social/danger/opportunity), snippet additions aiming for 200-leaf total library.
+- **Technique registry** — central registry so `technique_learn` stateDelta maps to real techniques; 10 basic techniques (mortal / Body Tempering / Qi Sensing tier); integrate into choice resolver via `techniqueBonusCategory` checks; inventory / character-sheet surfacing.
+- **Core Path detection + bonus application** — per spec §3.6, 5 paths (Martial / Sword / Body / Alchemy / Array), detection from attribute/meridian/event-history pattern, bonus application affecting at least 5 choice resolvers (exit criterion).
+- **Realm expansion** — Qi Sensing 1-9 + Qi Condensation 1-9 on top of existing Body Tempering 1-9, sub-layer breakthrough content and gating on Azure Peaks progression.
+- **Item registry** — central registry so Phase 1D-3 opaque items (`spiritual_stone`, `minor_healing_pill`, `silver_pouch`) become real and can affect checks / inventory UI.
+- **Phase 1 lingering fixes** (optional, bundle permitting) — peek/resolve RNG stream split, `getCurrentPendingPreview` non-advancing resume path, unconsumed event flags (`married`, `apprentice`, etc.) wired into follow-up events.
 
-**Phase 2 exit criteria** (§13):
-1. A Life N+1 character inherits echoes from Life N in a reproducible way.
-2. Forbidden Memory witnessed in Life N can manifest in Life N+5.
-3. Core Path detection affects at least 5 choice resolvers.
+**Phase 2B exit criteria** (§13 — the three unsatisfied Phase 2 criteria plus the implicit ones from spec):
+
+1. Player can play a life fully set in Azure Peaks (not Yellow Plains) with region-appropriate events.
+2. At least 10 basic techniques are learnable via choice outcomes and meaningfully modify later checks.
+3. Core Path detection fires in-life and affects at least 5 choice resolvers reproducibly.
+4. Qi Sensing 1 → Qi Condensation 9 progression is reachable and testable.
 
 **Exact first steps for a new session:**
 
 ```bash
 cd "D:/Claude Code/Wuxia RPG"
 git status                           # confirm clean, on main
+git pull --ff-only                   # pick up any merged work
 ```
 
-Then invoke `superpowers:brainstorming` to explore Phase 2 scope. Expected output: 2-3 separate sub-plan specs (e.g., `docs/superpowers/specs/YYYY-MM-DD-phase-2a-echoes-memories.md`, etc.), each driving its own implementation plan written via `superpowers:writing-plans`.
+Then invoke `superpowers:brainstorming` to explore Phase 2B scope. Expected output: 1 spec doc at `docs/superpowers/specs/YYYY-MM-DD-phase-2b-azure-peaks-techniques-paths.md` + 2-3 sub-phase plan files (e.g., `2B-1 technique + path engine`, `2B-2 Azure Peaks content`, `2B-3 realm expansion + integration`), each driving its own implementation via `superpowers:subagent-driven-development` + `superpowers:writing-plans`.
 
-## Known lingering items (from Phase 1)
+## Known lingering items (Phase 1 + 2A)
 
-These are accepted Phase-1 trade-offs that Phase 2 should address, documented so they aren't re-fixed mid-flight:
+These are accepted trade-offs from prior phases that later phases should address, documented so they aren't re-fixed mid-flight:
 
-- **Cached-peek narrative drift**: `peekNextEvent` uses `cursor+1` for local RNG, `resolveChoice` uses `cursor`. Repeated peeks without resolving return the same event/choices but slightly varied narrative. Phase 2 should split peek/resolve RNG streams cleanly.
-- **`onContinue` consumes a turn on resume**: calls `peekNextEvent`, which runs the selector and advances turn state. Phase 2 can add a `getCurrentPendingPreview()` path that re-renders the stored `pendingEventId` without running the selector.
-- **Event flags unconsumed**: Phase 1D-3 events set ~20 flags (e.g., `married`, `friend_of_elder`, `apprentice`, `has_child`) that no current event gates on. Phase 2 authors follow-up events that branch on these.
-- **Item registry absent**: events reference `spiritual_stone`, `minor_healing_pill`, `silver_pouch` via `item_add` deltas. No central item registry yet — items are opaque strings. Phase 2 introduces a registry so items can affect checks and show in inventory.
-- **Technique registry absent**: `technique_learn` stateDelta is supported but no technique corpus ships. Phase 2C adds 10 basic techniques + registry + check bonus wiring.
-- **Bundle growth budget**: 388 KB raw / 110 KB gzip after 1D-3. Spec §13 allows growth through Phase 3 (450 KB raw target); audit size at each phase boundary.
+- **Cached-peek narrative drift** (Phase 1): `peekNextEvent` uses `cursor+1` for local RNG, `resolveChoice` uses `cursor`. Repeated peeks without resolving return the same event/choices but slightly varied narrative. Phase 2B should split peek/resolve RNG streams cleanly.
+- **`onContinue` consumes a turn on resume** (Phase 1): calls `peekNextEvent`, which runs the selector and advances turn state. Phase 2B can add a `getCurrentPendingPreview()` path that re-renders the stored `pendingEventId` without running the selector.
+- **Event flags unconsumed** (Phase 1): Phase 1D-3 events set ~20 flags (e.g., `married`, `friend_of_elder`, `apprentice`, `has_child`) that no current event gates on. Phase 2A-2 added witness-memory + anchor-bridging events but did not exhaustively wire these; Phase 2B content authoring should branch on them.
+- **Item registry absent** (Phase 1): events reference `spiritual_stone`, `minor_healing_pill`, `silver_pouch` via `item_add` deltas. No central item registry yet — items are opaque strings. Phase 2B introduces a registry so items can affect checks and show in inventory.
+- **Technique registry absent** (Phase 1): `technique_learn` stateDelta is supported but no technique corpus ships. Phase 2B adds 10 basic techniques + registry + check bonus wiring.
+- ~~**Anchor-unlock evaluator not wired**~~ (Phase 2A-2, **closed** in 2A-3): 2A-2 shipped the evaluator class but did not wire it into `runBardoFlow`. 2A-3 wired it (`feat(meta): anchor unlock evaluator wired at bardo` → `b03365c`) so `meta.unlockedAnchors` now grows through play.
+- **Bundle growth budget**: 434.76 KB raw / 120.99 KB gzip after 2A-3. Spec §13 allows growth through Phase 3 (450 KB raw target) — **15 KB headroom remaining**. Phase 2B must audit carefully; Azure Peaks content + technique registry + realm expansion will push close to the budget.
 
 ## Tone & communication preferences
 
@@ -141,13 +176,17 @@ When working on a subsystem, re-read the relevant spec section first:
 - **Mood baseline**: `computeDominantMood(zeroMoodInputs())` returns `'serenity'` via explicit early-return — plan's priority loop alone would return `melancholy`. Test expectations win.
 - **`MeridianId` is numeric 1-12** (not string ids like `'heart_meridian'`). Events using `meridian_open` stateDelta pass integer ids.
 - **`DeathCause` enum includes `drowning`, `beast`, `childbirth`** — not all causes fit the obvious categories. Check `src/engine/core/Types.ts` before assuming a cause needs to be mapped to `disease`.
-- **`peekNextEvent` rng uses `cursor + 1`**: to avoid mutating the resolver's seed trajectory. Acceptable Phase 1 compromise; Phase 2 should redesign peek/resolve RNG streams.
+- **`peekNextEvent` rng uses `cursor + 1`**: to avoid mutating the resolver's seed trajectory. Acceptable Phase 1 compromise; Phase 2B should redesign peek/resolve RNG streams.
+- **`MetaState` schema version is `3`** (Phase 2A-3 bump). `v1 → v2` added echo/memory/unlocks/v2 fields; `v2 → v3` added `birthYear`/`deathYear` to `LineageEntrySummary`. Future bumps are cumulative — don't drop prior fields.
+- **`GamePhase` is an exhaustive `Record<GamePhase, ...>` keyed map in `StateMachine.ts`**. Adding a new `GamePhase` value (e.g., Phase 2A-3's `LINEAGE`) will NOT break the test suite — the tsc `--noEmit` check is the only signal. `npm run typecheck` is a **required** gate, not optional.
+- **`MemoryManifestResolver` uses a derived-seed RNG** (isolated from the resolver stream). Don't refactor it to share the turn-level `IRng` without re-validating the determinism integration tests.
 
 ## Don't do
 
 - Don't rewrite history. Commits on main are final.
 - Don't modify files in other phase-locked subsystems unless your current task requires it (and the plan permits it).
 - Don't add runtime dependencies beyond the locked set in `package.json` without explicit user approval.
-- Don't regress Phase 1 exit criterion — the `tests/integration/playable_life.test.ts` and `tests/integration/ui_full_cycle.test.tsx` must stay green.
-- Don't replace `peasant_farmer` / `true_random` anchor defaults — Phase 2 adds new anchors, doesn't replace.
-- Don't delete the Yellow Plains content — Phase 2 authors a second region (Azure Peaks) alongside, doesn't replace.
+- Don't regress Phase 1 or Phase 2A exit criteria — `tests/integration/playable_life.test.ts`, `ui_full_cycle.test.tsx`, `echo_inheritance.test.ts`, `memory_manifestation.test.ts`, `mood_filter_variance.test.ts`, `life_cycle_with_bardo.test.ts`, and `playable_life_2a.test.tsx` must all stay green.
+- Don't replace `peasant_farmer` / `true_random` / `martial_family` / `scholars_son` / `outer_disciple` anchor defaults — Phase 2B may add more, doesn't replace.
+- Don't delete the Yellow Plains content — Phase 2B authors Azure Peaks alongside, doesn't replace.
+- Don't downgrade `MetaState` schema version (currently `3`). Migrators are cumulative (`v1 → v2 → v3`); any future bump is additive and must preserve all prior fields.
