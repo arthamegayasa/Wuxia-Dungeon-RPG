@@ -3,6 +3,21 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BardoPanel } from './BardoPanel';
 
+const basePayload = {
+  lifeIndex: 1,
+  years: 30,
+  realm: 'Mortal',
+  deathCause: 'old_age',
+  karmaEarned: 5,
+  karmaBreakdown: {},
+  karmaBalance: 5,
+  ownedUpgrades: [],
+  availableUpgrades: [],
+  manifestedThisLife: [],
+  witnessedThisLife: [],
+  echoesUnlockedThisLife: [],
+};
+
 const PAYLOAD = {
   lifeIndex: 1,
   years: 42,
@@ -26,6 +41,9 @@ const PAYLOAD = {
     { id: 'heavenly_patience_1', name: 'Heavenly Patience I', description: 'Insight cap +20',
       cost: 100, affordable: false, requirementsMet: true, owned: false },
   ],
+  manifestedThisLife: [],
+  witnessedThisLife: [],
+  echoesUnlockedThisLife: [],
 };
 
 describe('BardoPanel', () => {
@@ -82,5 +100,75 @@ describe('BardoPanel', () => {
     render(<BardoPanel payload={PAYLOAD} onBuyUpgrade={() => {}} onReincarnate={onRe} />);
     await userEvent.click(screen.getByRole('button', { name: /reincarnate/i }));
     expect(onRe).toHaveBeenCalledOnce();
+  });
+
+  it('renders the manifested-memory reveal section when present', () => {
+    render(<BardoPanel
+      payload={{
+        ...basePayload,
+        manifestedThisLife: [{ id: 'frost_palm_severing', name: 'Frost Palm Severing', level: 'partial', manifestFlavour: 'memory.manifest.frost_palm_severing.1' }],
+        witnessedThisLife: [],
+        echoesUnlockedThisLife: [],
+      }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+    />);
+    expect(screen.getByText(/you remembered/i)).toBeInTheDocument();
+    expect(screen.getByText('Frost Palm Severing')).toBeInTheDocument();
+  });
+
+  it('renders the witnessed-memory compact list', () => {
+    render(<BardoPanel
+      payload={{
+        ...basePayload,
+        manifestedThisLife: [],
+        witnessedThisLife: [{ id: 'silent_waters_scripture', name: 'Scripture of Silent Waters', level: 'fragment' }],
+        echoesUnlockedThisLife: [],
+      }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+    />);
+    expect(screen.getByText(/you saw/i)).toBeInTheDocument();
+    expect(screen.getByText(/scripture of silent waters/i)).toBeInTheDocument();
+  });
+
+  it('renders the echo-unlock cards for echoes unlocked this life', () => {
+    render(<BardoPanel
+      payload={{
+        ...basePayload,
+        manifestedThisLife: [],
+        witnessedThisLife: [],
+        echoesUnlockedThisLife: [{ id: 'iron_body', name: 'Iron Body', description: 'Your bones remember.' }],
+      }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+    />);
+    expect(screen.getByText(/iron body/i)).toBeInTheDocument();
+  });
+
+  it('hides each reveal section when its array is empty', () => {
+    render(<BardoPanel
+      payload={{ ...basePayload, manifestedThisLife: [], witnessedThisLife: [], echoesUnlockedThisLife: [] }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+    />);
+    expect(screen.queryByText(/you remembered/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/you saw/i)).not.toBeInTheDocument();
+  });
+
+  it('renders Codex and Lineage entry buttons that fire callbacks', async () => {
+    const onOpenCodex = vi.fn();
+    const onOpenLineage = vi.fn();
+    render(<BardoPanel
+      payload={{ ...basePayload, manifestedThisLife: [], witnessedThisLife: [], echoesUnlockedThisLife: [] }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+      onOpenCodex={onOpenCodex}
+      onOpenLineage={onOpenLineage}
+    />);
+    await userEvent.click(screen.getByRole('button', { name: /codex/i }));
+    await userEvent.click(screen.getByRole('button', { name: /lineage/i }));
+    expect(onOpenCodex).toHaveBeenCalledOnce();
+    expect(onOpenLineage).toHaveBeenCalledOnce();
   });
 });
