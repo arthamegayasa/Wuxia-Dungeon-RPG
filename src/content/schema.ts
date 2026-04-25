@@ -298,6 +298,52 @@ export const TechniquePackSchema = z.object({
 export type TechniqueRawDef = z.infer<typeof TechniqueSchema>;
 export type TechniquePack = z.infer<typeof TechniquePackSchema>;
 
+// ---- Phase 2B-1 Item / Manual schemas ----
+// Source: docs/spec/design.md §9.6, §9.7.
+
+const ITEM_TYPES = ['pill', 'manual', 'weapon', 'armor', 'talisman', 'misc'] as const;
+const ITEM_GRADES = TECHNIQUE_GRADES;   // shared 6-tier ladder
+
+const ItemEffectSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('heal_hp'), amount: z.number() }),
+  z.object({ kind: z.literal('restore_qi'), amount: z.number() }),
+  z.object({ kind: z.literal('pill_bonus'), amount: z.number() }),
+  z.object({ kind: z.literal('insight_gain'), amount: z.number() }),
+  z.object({ kind: z.literal('deviation_risk'), delta: z.number() }),
+  z.object({ kind: z.literal('choice_bonus'), category: z.string().min(1), bonus: z.number() }),
+]);
+
+export const ItemSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  type: z.enum(ITEM_TYPES),
+  grade: z.enum(ITEM_GRADES),
+  stackable: z.boolean(),
+  effects: z.array(ItemEffectSchema),
+  description: z.string(),
+  weight: z.number().nonnegative().optional(),
+  // Manual-only fields:
+  teaches: z.string().optional(),
+  completeness: z.union([z.literal(0.25), z.literal(0.5), z.literal(0.75), z.literal(1.0)]).optional(),
+  readerRequires: z.object({
+    minMind: z.number().nonnegative().optional(),
+    minInsight: z.number().nonnegative().optional(),
+  }).optional(),
+}).superRefine((v, ctx) => {
+  if (v.type === 'manual') {
+    if (!v.teaches) ctx.addIssue({ code: 'custom', message: 'manual requires teaches' });
+    if (v.completeness === undefined) ctx.addIssue({ code: 'custom', message: 'manual requires completeness' });
+  }
+});
+
+export const ItemPackSchema = z.object({
+  version: z.number().int().positive(),
+  items: z.array(ItemSchema),
+});
+
+export type ItemRawDef = z.infer<typeof ItemSchema>;
+export type ItemPack = z.infer<typeof ItemPackSchema>;
+
 // ---- Content pack (Phase 0 loader — now wraps the richer Event schema) ----
 
 export const ContentPackSchema = z.object({

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TechniqueSchema, TechniquePackSchema } from './schema';
+import { TechniqueSchema, TechniquePackSchema, ItemSchema, ItemPackSchema } from './schema';
 
 describe('TechniqueSchema (Phase 2B-1 Task 3)', () => {
   it('accepts a valid minimal mortal-grade technique', () => {
@@ -80,5 +80,53 @@ describe('TechniqueSchema (Phase 2B-1 Task 3)', () => {
       }],
     });
     expect(pack.techniques).toHaveLength(1);
+  });
+});
+
+describe('ItemSchema (Phase 2B-1 Task 8)', () => {
+  it('accepts a pill', () => {
+    const parsed = ItemSchema.parse({
+      id: 'minor_healing_pill', name: 'Minor Healing Pill',
+      type: 'pill', grade: 'mortal', stackable: true,
+      effects: [{ kind: 'heal_hp', amount: 30 }],
+      description: '',
+    });
+    expect(parsed.id).toBe('minor_healing_pill');
+  });
+
+  it('accepts a manual with completeness 0.25', () => {
+    const parsed = ItemSchema.parse({
+      id: 'manual_x_fragment', name: 'Fragment Manual',
+      type: 'manual', grade: 'yellow', stackable: false,
+      effects: [],
+      description: '',
+      teaches: 'technique_x',
+      completeness: 0.25,
+    });
+    expect(parsed.completeness).toBe(0.25);
+  });
+
+  it('rejects manual with invalid completeness (e.g. 0.6)', () => {
+    expect(() => ItemSchema.parse({
+      id: 'm', name: 'M', type: 'manual', grade: 'mortal', stackable: false,
+      effects: [], description: '', teaches: 't', completeness: 0.6,
+    })).toThrow();
+  });
+
+  it('accepts a weapon with choice_bonus', () => {
+    const parsed = ItemSchema.parse({
+      id: 'sword', name: 'Sword', type: 'weapon', grade: 'mortal', stackable: false,
+      effects: [{ kind: 'choice_bonus', category: 'strike', bonus: 3 }],
+      description: '',
+    });
+    expect(parsed.type).toBe('weapon');
+  });
+
+  it('ItemPackSchema wraps a list', () => {
+    const p = ItemPackSchema.parse({
+      version: 1,
+      items: [{ id: 'a', name: 'A', type: 'misc', grade: 'mortal', stackable: true, effects: [], description: '' }],
+    });
+    expect(p.items).toHaveLength(1);
   });
 });
