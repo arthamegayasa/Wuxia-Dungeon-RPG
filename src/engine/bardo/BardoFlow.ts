@@ -100,6 +100,8 @@ export function runBardoFlow(
     deathCause: summary.deathCause,
     karmaEarned: karma.total,
     echoesUnlockedThisLife: [...newlyUnlocked],
+    corePath: rs.character.corePath ?? null,
+    techniquesLearned: [...rs.learnedTechniques],
   };
 
   nextMeta = addKarma(nextMeta, karma.total);

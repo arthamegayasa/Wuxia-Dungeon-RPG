@@ -124,7 +124,7 @@ describe('MetaState v2 → v3 migration', () => {
     expect(v3.lineage[0].echoesUnlockedThisLife).toEqual(['iron_body']);
   });
 
-  it('METASTATE_SCHEMA_VERSION is 3', () => {
-    expect(METASTATE_SCHEMA_VERSION).toBe(3);
+  it('METASTATE_SCHEMA_VERSION is 4', () => {
+    expect(METASTATE_SCHEMA_VERSION).toBe(4);
   });
 });

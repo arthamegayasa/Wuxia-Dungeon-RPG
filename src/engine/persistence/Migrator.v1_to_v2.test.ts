@@ -37,6 +37,6 @@ describe('Migrator v1 → v2 for MetaState', () => {
   });
 
   it('target schema version matches the current-version constant', () => {
-    expect(METASTATE_SCHEMA_VERSION).toBe(3);
+    expect(METASTATE_SCHEMA_VERSION).toBe(4);
   });
 });

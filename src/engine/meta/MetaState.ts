@@ -6,7 +6,7 @@ import { createMigrator } from '@/engine/persistence/Migrator';
 import type { Migration } from '@/engine/persistence/Migrator';
 import { getUpgradeById } from './KarmicUpgrade';
 
-export const METASTATE_SCHEMA_VERSION = 3;
+export const METASTATE_SCHEMA_VERSION = 4;
 const META_KEY = 'wdr.meta';
 
 export interface LineageEntrySummary {
@@ -23,6 +23,10 @@ export interface LineageEntrySummary {
   deathCause: string;
   karmaEarned: number;
   echoesUnlockedThisLife: ReadonlyArray<string>;
+  /** Phase 2B-1: core path locked at 3rd meridian open (null if character died before 3). */
+  corePath: string | null;
+  /** Phase 2B-1: ids of techniques learned in this life (in order learned). */
+  techniquesLearned: ReadonlyArray<string>;
 }
 
 export interface MetaState {
@@ -42,6 +46,8 @@ export interface MetaState {
   readonly echoProgress: Readonly<Record<string, number>>;
   /** Ids of forbidden memories that have ever manifested across all lives. Task 14 field. */
   readonly memoriesManifested: ReadonlyArray<string>;
+  /** Phase 2B-1: cumulative ids of techniques the player has seen in any life (UI Codex). */
+  readonly seenTechniques: ReadonlyArray<string>;
 }
 
 export function createEmptyMetaState(): MetaState {
@@ -57,6 +63,7 @@ export function createEmptyMetaState(): MetaState {
     memoriesWitnessed: {},
     echoProgress: {},
     memoriesManifested: [],
+    seenTechniques: [],
   };
 }
 
@@ -120,6 +127,8 @@ export const metaStateMigrations: ReadonlyArray<Migration> = [
         echoesUnlockedThisLife: entry.echoesUnlockedThisLife ?? [],
         birthYear: entry.birthYear ?? 0,
         deathYear: entry.deathYear ?? entry.yearsLived ?? 0,
+        corePath: entry.corePath ?? null,
+        techniquesLearned: entry.techniquesLearned ?? [],
       })),
       lifetimeSeenEvents: old.lifetimeSeenEvents ?? [],
       echoesUnlocked: [],
@@ -127,6 +136,7 @@ export const metaStateMigrations: ReadonlyArray<Migration> = [
       memoriesWitnessed: {},
       memoriesManifested: [],
       heavenlyNotice: 0,
+      seenTechniques: [],
     }),
   },
   {
@@ -140,6 +150,20 @@ export const metaStateMigrations: ReadonlyArray<Migration> = [
         birthYear: entry.birthYear ?? 0,
         deathYear: entry.deathYear ?? entry.yearsLived ?? 0,
       })),
+    }),
+  },
+  {
+    from: 3,
+    to: 4,
+    transform: (old: any): MetaState => ({
+      ...old,
+      schemaVersion: 4,
+      lineage: (old.lineage ?? []).map((entry: any) => ({
+        ...entry,
+        corePath: entry.corePath ?? null,
+        techniquesLearned: entry.techniquesLearned ?? [],
+      })),
+      seenTechniques: old.seenTechniques ?? [],
     }),
   },
 ];
