@@ -9,7 +9,7 @@ import {
 import { getAnchorById, DEFAULT_ANCHORS } from '@/engine/meta/Anchor';
 import { resolveAnchor } from '@/engine/meta/AnchorResolver';
 import { characterFromAnchor } from '@/engine/meta/characterFromAnchor';
-import { createRng } from '@/engine/core/RNG';
+import { createRng, derivedRng } from '@/engine/core/RNG';
 import {
   createStreakState, recordOutcome, computeStreakBonus, computeWorldMaliceBuff, tickBuff,
 } from '@/engine/choices/StreakTracker';
@@ -393,9 +393,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     if (gs.runState.pendingEventId) {
       const cached = findEventById(ALL_EVENTS, gs.runState.pendingEventId);
       if (cached) {
-        const peekRng = createRng(
-          ((gs.runState.rngState?.cursor ?? gs.runState.runSeed) + 1) & 0xffffffff,
-        );
+        const cursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
+        const peekRng = derivedRng(cursor, 'narrative');
         const narrative = renderEvent(
           cached,
           compositionContextFromStore(gs),
@@ -411,9 +410,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Stale cache — fall through to a fresh selection.
     }
 
-    const rng = createRng(
-      (gs.runState.rngState?.cursor ?? gs.runState.runSeed) & 0xffffffff,
-    );
+    const cursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
+    const selectorRng = derivedRng(cursor, 'selector');
+    const narrativeRng = derivedRng(cursor, 'narrative');
+    const rng = selectorRng;  // alias for backward-compat in this block
     const selected = selectEvent(
       ALL_EVENTS,
       {
@@ -439,7 +439,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       compositionContextFromStore(gs),
       library,
       gs.nameRegistry,
-      rng,
+      narrativeRng,
     );
 
     // Cache the selection on runState. NOTE: we do NOT advance the rngState
@@ -628,6 +628,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Fall back to runSeed if (somehow) cursor is absent.
       const seedCursor = gs.runState.rngState?.cursor ?? gs.runState.runSeed;
       const rng = createRng(seedCursor & 0xffffffff);
+      const narrativeRng = derivedRng(seedCursor, 'narrative');
 
       // Phase 2B-1 Task 7: registry-backed technique bonus. Empty registry → 0
       // (no regression vs old resolveTechniqueBonus([]) stub). 2B-2 swaps in
@@ -662,14 +663,14 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const outcome = resolveOutcome(choice.outcomes, checkResult.tier);
 
       // Render the narrative for this event BEFORE applying deltas so the text
-      // composition uses the state the player just acted on. Uses the same rng as
-      // the check — composer is deterministic off the current cursor.
+      // composition uses the state the player just acted on. Uses the narrative
+      // substream (derivedRng) so the composer is isolated from check/outcome RNG.
       const narrative = renderEvent(
         pending,
         compositionContextFromStore(gs),
         library,
         gs.nameRegistry,
-        rng,
+        narrativeRng,
       );
 
       // Apply outcome, then append to thisLifeSeenEvents AND clear pendingEventId.

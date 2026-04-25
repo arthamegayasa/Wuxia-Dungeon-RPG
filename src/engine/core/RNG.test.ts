@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createRng, Rng } from './RNG';
+import { createRng, derivedRng, Rng } from './RNG';
 
 describe('RNG', () => {
   it('is deterministic for the same seed', () => {
@@ -93,5 +93,22 @@ describe('RNG', () => {
     const frozen = rng.state();
     const resumed = Rng.fromState(frozen);
     expect(resumed.next()).toBe(createRng(77).next_nth(3));
+  });
+});
+
+describe('derivedRng (Phase 2B-1 Task 18)', () => {
+  it('same base seed + same label → same derivative stream', () => {
+    const a = derivedRng(123, 'selector');
+    const b = derivedRng(123, 'selector');
+    expect(a.d100()).toBe(b.d100());
+    expect(a.d100()).toBe(b.d100());
+  });
+
+  it('different labels produce different streams', () => {
+    const s = derivedRng(123, 'selector');
+    const n = derivedRng(123, 'narrative');
+    const sample1 = Array.from({ length: 5 }, () => s.d100());
+    const sample2 = Array.from({ length: 5 }, () => n.d100());
+    expect(sample1).not.toEqual(sample2);
   });
 });
