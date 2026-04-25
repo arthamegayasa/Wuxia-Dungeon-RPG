@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "regions": [
+    {
+      "id": "azure_peaks",
+      "name": "Azure Peaks",
+      "qiDensity": 1.5,
+      "climate": {
+        "seasonWeights": { "spring": 0.3, "summer": 0.25, "autumn": 0.25, "winter": 0.2 },
+        "rainWeight": 0.3
+      },
+      "locales": [
+        { "id": "outer_sect_courtyard", "tagBias": ["social", "study"] },
+        { "id": "scripture_hall", "tagBias": ["study", "manual_discovery"] },
+        { "id": "meditation_cave", "tagBias": ["training", "meditate"] },
+        { "id": "beast_pass", "tagBias": ["danger", "hunt"] },
+        { "id": "alchemy_pavilion", "tagBias": ["opportunity", "pill"] },
+        { "id": "elder_quarters", "tagBias": ["social", "bond"] }
+      ],
+      "factionSlots": [
+        { "id": "azure_cloud_sect", "era": [0, 1100] },
+        { "id": "broken_mountain_cult", "era": [200, 800] }
+      ],
+      "eventPool": ["AP_*"],
+      "pillarPool": ["tribulation_i"],
+      "npcArchetypes": [],
+      "namePool": {
+        "placePrefix": ["Azure", "Cloudcrane", "Soaring", "Crystal", "Whispering", "Nine-Peak"],
+        "placeFeature": ["Peak", "Hall", "Vale", "Pavilion", "Scripture House", "Sword Pool"]
+      }
+    }
+  ]
+}
