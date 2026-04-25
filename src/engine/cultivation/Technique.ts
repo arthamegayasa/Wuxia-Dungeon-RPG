@@ -62,3 +62,19 @@ export function resolveTechniqueBonus(
   }
   return total;
 }
+
+/**
+ * Affinity multiplier for a technique given the character's core path.
+ *   1.0 if coreAffinity includes 'any'
+ *   1.0 if corePath is null (character hasn't revealed a path yet)
+ *   1.0 if coreAffinity includes the character's corePath
+ *   0.5 otherwise (off-path)
+ */
+export function affinityMultiplier(
+  t: TechniqueDef,
+  corePath: CorePathId | null,
+): number {
+  if (t.coreAffinity.includes('any')) return 1.0;
+  if (corePath === null) return 1.0;
+  return t.coreAffinity.includes(corePath) ? 1.0 : 0.5;
+}
