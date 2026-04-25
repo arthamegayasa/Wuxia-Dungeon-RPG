@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "items": [
+    { "id": "dup", "name": "A", "type": "pill", "grade": "mortal", "stackable": true, "effects": [], "description": "A." },
+    { "id": "dup", "name": "B", "type": "pill", "grade": "mortal", "stackable": true, "effects": [], "description": "B." }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "test_pill",
+      "name": "Test Pill",
+      "type": "pill",
+      "grade": "mortal",
+      "stackable": true,
+      "effects": [{ "kind": "heal_hp", "amount": 10 }],
+      "description": "A test pill."
+    },
+    {
+      "id": "test_manual",
+      "name": "Test Manual",
+      "type": "manual",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "A test manual.",
+      "teaches": "common_qi_circulation",
+      "completeness": 1.0
+    }
+  ]
+}

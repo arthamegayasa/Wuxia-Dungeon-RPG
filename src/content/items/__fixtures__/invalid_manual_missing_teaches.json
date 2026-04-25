@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "broken_manual",
+      "name": "Broken Manual",
+      "type": "manual",
+      "grade": "mortal",
+      "stackable": false,
+      "effects": [],
+      "description": "Missing teaches field."
+    }
+  ]
+}
