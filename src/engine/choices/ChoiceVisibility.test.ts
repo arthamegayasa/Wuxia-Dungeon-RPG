@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { unlockedChoiceIds, filterUnlockedChoices } from './ChoiceVisibility';
+import { unlockedChoiceIds, filterUnlockedChoices, visibleChoicesForCharacter } from './ChoiceVisibility';
 import { TechniqueDef } from '@/engine/cultivation/Technique';
+import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { Choice } from '@/content/schema';
 
 const wsTechnique: TechniqueDef = {
@@ -77,5 +78,23 @@ describe('filterUnlockedChoices (Phase 2B-2 Task 11)', () => {
       new Set(['traverse_difficult_terrain']),
     );
     expect(result.map((c) => c.id)).toEqual(['ch_wait', 'ch_run']);
+  });
+});
+
+describe('visibleChoicesForCharacter (Phase 2B-2 Task 11 refactor)', () => {
+  it('end-to-end: resolves learned ids through registry + filters', () => {
+    const ws: TechniqueDef = {
+      id: 'wind_walking_steps', name: 'X', grade: 'mortal', element: 'none',
+      coreAffinity: ['howling_storm', 'any'], requires: {}, qiCost: 3,
+      effects: [{ kind: 'unlock_choice', choiceId: 'flee_mounted_pursuer' }],
+      description: '',
+    };
+    const registry = TechniqueRegistry.fromList([ws]);
+    const choices = [
+      { id: 'flee', label: 'Flee', timeCost: 'SHORT' as const, outcomes: { SUCCESS: { narrativeKey: 'a' }, FAILURE: { narrativeKey: 'a' } }, unlockedBy: 'flee_mounted_pursuer' },
+      { id: 'fight', label: 'Fight', timeCost: 'SHORT' as const, outcomes: { SUCCESS: { narrativeKey: 'a' }, FAILURE: { narrativeKey: 'a' } } },
+    ] as const;
+    const visible = visibleChoicesForCharacter(choices as any, ['wind_walking_steps'], registry);
+    expect(visible.map((c) => c.id)).toEqual(['flee', 'fight']);
   });
 });

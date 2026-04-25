@@ -27,7 +27,7 @@ import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import type { TechniqueDef } from '@/engine/cultivation/Technique';
-import { filterUnlockedChoices, unlockedChoiceIds } from '@/engine/choices/ChoiceVisibility';
+import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
@@ -430,12 +430,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
           gs.nameRegistry,
           peekRng,
         );
-        const cachedLearnedDefs = gs.runState.learnedTechniques
-          .map((id) => TECHNIQUE_REGISTRY.byId(id))
-          .filter((t): t is NonNullable<typeof t> => t !== null);
-        const cachedVisibleChoices = filterUnlockedChoices(
+        const cachedVisibleChoices = visibleChoicesForCharacter(
           cached.choices,
-          unlockedChoiceIds(cachedLearnedDefs),
+          gs.runState.learnedTechniques,
+          TECHNIQUE_REGISTRY,
         );
         return buildTurnPreview(
           narrative,
@@ -485,12 +483,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     useGameStore.getState().updateRun(nextRun, gs.streak, gs.nameRegistry);
     saveRun(sm, nextRun);
 
-    const selectedLearnedDefs = gs.runState.learnedTechniques
-      .map((id) => TECHNIQUE_REGISTRY.byId(id))
-      .filter((t): t is NonNullable<typeof t> => t !== null);
-    const selectedVisibleChoices = filterUnlockedChoices(
+    const selectedVisibleChoices = visibleChoicesForCharacter(
       selected.choices,
-      unlockedChoiceIds(selectedLearnedDefs),
+      gs.runState.learnedTechniques,
+      TECHNIQUE_REGISTRY,
     );
 
     return buildTurnPreview(
@@ -662,10 +658,15 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       if (!pending) {
         throw new Error(`resolveChoice: pending event ${gs.runState.pendingEventId} not found in pool`);
       }
+      const visibleChoices = visibleChoicesForCharacter(
+        pending.choices,
+        gs.runState.learnedTechniques,
+        TECHNIQUE_REGISTRY,
+      );
+      // learnedDefs needed for mood (Task 10 mood integration)
       const learnedDefs = gs.runState.learnedTechniques
         .map((id) => TECHNIQUE_REGISTRY.byId(id))
         .filter((t): t is NonNullable<typeof t> => t !== null);
-      const visibleChoices = filterUnlockedChoices(pending.choices, unlockedChoiceIds(learnedDefs));
       const choice = visibleChoices.find((c) => c.id === choiceId);
       if (!choice) {
         throw new Error(`resolveChoice: choice ${choiceId} not found in event ${pending.id} (or locked)`);

@@ -21,7 +21,7 @@ import { NameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
-import { filterUnlockedChoices, unlockedChoiceIds } from '@/engine/choices/ChoiceVisibility';
+import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { MetaState } from '@/engine/meta/MetaState';
@@ -104,10 +104,11 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   }
 
   // 2. Find choice — filter by unlock_choice gates from learned techniques.
-  const learnedDefs = ctx.runState.learnedTechniques
-    .map((id) => ctx.techniqueRegistry.byId(id))
-    .filter((t): t is NonNullable<typeof t> => t !== null);
-  const visibleChoices = filterUnlockedChoices(event.choices, unlockedChoiceIds(learnedDefs));
+  const visibleChoices = visibleChoicesForCharacter(
+    event.choices,
+    ctx.runState.learnedTechniques,
+    ctx.techniqueRegistry,
+  );
   const choice = visibleChoices.find((c) => c.id === choiceId);
   if (!choice) {
     throw new Error(`runTurn: choice ${choiceId} not found in event ${event.id} (or locked)`);
