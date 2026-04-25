@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   TechniqueDef,
+  TechniqueEffect,
+  CoreAffinityToken,
   resolveTechniqueBonus,
 } from './Technique';
 
@@ -55,5 +57,32 @@ describe('resolveTechniqueBonus', () => {
       ],
     };
     expect(resolveTechniqueBonus([t], 'melee_skill')).toBe(5);
+  });
+});
+
+describe('TechniqueEffect expansion (Phase 2B-1 Task 2)', () => {
+  it('accepts mood_modifier kind', () => {
+    const e: TechniqueEffect = { kind: 'mood_modifier', mood: 'serenity', delta: 2 };
+    expect(e.kind).toBe('mood_modifier');
+  });
+
+  it('accepts unlock_choice kind', () => {
+    const e: TechniqueEffect = { kind: 'unlock_choice', choiceId: 'flee_pursuer' };
+    expect(e.kind).toBe('unlock_choice');
+  });
+
+  it('accepts cultivation_multiplier_pct kind', () => {
+    const e: TechniqueEffect = { kind: 'cultivation_multiplier_pct', pct: 20 };
+    expect(e.kind).toBe('cultivation_multiplier_pct');
+  });
+
+  it('CoreAffinityToken allows "any"', () => {
+    const t: CoreAffinityToken = 'any';
+    expect(t).toBe('any');
+  });
+
+  it('CoreAffinityToken allows a CorePathId', () => {
+    const t: CoreAffinityToken = 'iron_mountain';
+    expect(t).toBe('iron_mountain');
   });
 });
