@@ -241,6 +241,63 @@ export type EchoPack = z.infer<typeof EchoPackSchema>;
 export type MemoryDef = z.infer<typeof MemorySchema>;
 export type MemoryPack = z.infer<typeof MemoryPackSchema>;
 
+// ---- Phase 2B-1 Technique schema ----
+// Source: docs/spec/design.md §9.5.
+
+const TECHNIQUE_GRADES = ['mortal', 'yellow', 'profound', 'earth', 'heaven', 'immortal'] as const;
+const ELEMENTS_WITH_NONE = ['metal', 'wood', 'water', 'fire', 'earth', 'none'] as const;
+const MOOD_STRINGS = ['sorrow', 'rage', 'serenity', 'paranoia', 'resolve', 'melancholy'] as const;
+
+const CORE_AFFINITY_TOKEN = z.union([
+  z.enum([
+    'iron_mountain', 'severing_edge', 'still_water', 'howling_storm',
+    'blood_ember', 'root_and_bough', 'thousand_mirrors', 'hollow_vessel',
+    'shattered_path',
+  ]),
+  z.literal('any'),
+]);
+
+const TechniqueEffectSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('choice_bonus'), category: z.string().min(1), bonus: z.number() }),
+  z.object({ kind: z.literal('qi_regen'), amount: z.number() }),
+  z.object({ kind: z.literal('insight_gain_per_meditation'), amount: z.number() }),
+  z.object({ kind: z.literal('mood_modifier'), mood: z.enum(MOOD_STRINGS), delta: z.number() }),
+  z.object({ kind: z.literal('unlock_choice'), choiceId: z.string().min(1) }),
+  z.object({ kind: z.literal('cultivation_multiplier_pct'), pct: z.number() }),
+]);
+
+const TechniqueRankEffectsSchema = z.object({
+  novice: z.array(TechniqueEffectSchema),
+  adept: z.array(TechniqueEffectSchema),
+  master: z.array(TechniqueEffectSchema),
+});
+
+export const TechniqueSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  grade: z.enum(TECHNIQUE_GRADES),
+  element: z.enum(ELEMENTS_WITH_NONE),
+  coreAffinity: z.array(CORE_AFFINITY_TOKEN).min(1),
+  requires: z.object({
+    realm: z.enum(REALM_STRINGS).optional(),
+    meridians: z.array(z.number().int().min(1).max(12)).optional(),
+    openMeridianCount: z.number().int().nonnegative().optional(),
+  }),
+  qiCost: z.number().nonnegative(),
+  insightCost: z.number().nonnegative().optional(),
+  effects: z.array(TechniqueEffectSchema),
+  description: z.string(),
+  rankPath: TechniqueRankEffectsSchema.optional(),
+});
+
+export const TechniquePackSchema = z.object({
+  version: z.number().int().positive(),
+  techniques: z.array(TechniqueSchema),
+});
+
+export type TechniqueRawDef = z.infer<typeof TechniqueSchema>;
+export type TechniquePack = z.infer<typeof TechniquePackSchema>;
+
 // ---- Content pack (Phase 0 loader — now wraps the richer Event schema) ----
 
 export const ContentPackSchema = z.object({
