@@ -4,8 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { CreationScreen } from './CreationScreen';
 
 const ANCHORS = [
-  { id: 'peasant_farmer', name: 'Peasant Farmer', description: 'Born to the soil.' },
-  { id: 'true_random', name: 'True Random', description: 'Let the Heavens decide.' },
+  { id: 'peasant_farmer', name: 'Peasant Farmer', description: 'Born to the soil.', locked: false, unlockHint: 'Available from the start', freshlyUnlocked: false },
+  { id: 'true_random', name: 'True Random', description: 'Let the Heavens decide.', locked: false, unlockHint: 'Available from the start', freshlyUnlocked: false },
+  { id: 'martial_family', name: 'Martial Family', description: 'Hard fists.', locked: true, unlockHint: 'Reach Body Tempering 5 in any past life', freshlyUnlocked: false },
+  { id: 'scholars_son', name: "Scholar's Son", description: 'Books.', locked: true, unlockHint: 'Read 10 tomes in one life', freshlyUnlocked: false },
 ];
 
 describe('CreationScreen', () => {
@@ -48,5 +50,25 @@ describe('CreationScreen', () => {
   it('shows a loading state and disables inputs when isLoading=true', () => {
     render(<CreationScreen anchors={ANCHORS} onBegin={() => {}} onBack={() => {}} isLoading />);
     expect(screen.getByRole('button', { name: /begin life/i })).toBeDisabled();
+  });
+
+  it('renders locked anchors as silhouettes and disables their selection', async () => {
+    render(<CreationScreen anchors={ANCHORS} onBegin={() => {}} onBack={() => {}} />);
+    // Silhouette text appears.
+    expect(screen.getByText(/reach body tempering 5 in any past life/i)).toBeInTheDocument();
+    // Locked names are NOT in the document.
+    expect(screen.queryByText('Martial Family')).not.toBeInTheDocument();
+    // Click the silhouette: selection should not change. Find the locked card by hint.
+    const lockedCard = screen.getByText(/reach body tempering 5/i).closest('button')!;
+    expect(lockedCard).toBeDisabled();
+  });
+
+  it('renders freshly-unlocked anchors with a shimmer indicator', () => {
+    const fresh = ANCHORS.map((a) =>
+      a.id === 'martial_family' ? { ...a, locked: false, freshlyUnlocked: true } : a,
+    );
+    render(<CreationScreen anchors={fresh} onBegin={() => {}} onBack={() => {}} />);
+    const card = screen.getByText('Martial Family').closest('button')!;
+    expect(card.className).toMatch(/shimmer|animate-pulse/i);
   });
 });
