@@ -25,17 +25,22 @@ import { advanceTurn } from '@/engine/events/AgeTick';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
+import type { TechniqueDef } from '@/engine/cultivation/Technique';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
 import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
 import { applyPostOutcomeHooks } from '@/engine/core/PostOutcomeHooks';
 import { loadEvents } from '@/content/events/loader';
+import { loadItems } from '@/content/items/loader';
 import { loadSnippets } from '@/content/snippets/loader';
+import { loadTechniques } from '@/content/techniques/loader';
 import { loadEchoes } from '@/content/echoes/loader';
 import { loadMemories } from '@/content/memories/loader';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
+import { ItemRegistry, ItemDef } from '@/engine/cultivation/ItemRegistry';
+import { RegionRegistry } from '@/engine/world/RegionRegistry';
 import { SoulEcho } from '@/engine/meta/SoulEcho';
 import type { UnlockCondition, EchoEffect } from '@/engine/meta/SoulEcho';
 import { ForbiddenMemory, memoryLevelOf } from '@/engine/meta/ForbiddenMemory';
@@ -54,6 +59,8 @@ import meditationJson from '@/content/events/yellow_plains/meditation.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
 import echoPack from '@/content/echoes/echoes.json';
 import memoriesPack from '@/content/memories/memories.json';
+import techniquesJson from '@/content/techniques/techniques.json';
+import itemsJson from '@/content/items/items.json';
 
 // Phase 1D-3 Task 10: Yellow Plains content pool. Flattens all authored regional
 // packs (~50 events) into one selectable array. Snippet library is the single
@@ -85,8 +92,24 @@ const MEMORY_REGISTRY = MemoryRegistry.fromList(
   loadMemories(memoriesPack) as ReadonlyArray<ForbiddenMemory>,
 );
 
-// Phase 2B-1 Task 7: empty by default. 2B-2 ships the canonical corpus + loader.
-const TECHNIQUE_REGISTRY = TechniqueRegistry.empty();
+// Phase 2B-2 Task 9: hydrate registries at module load.
+// (Phase 2B-2 Task 24 will switch Azure Peaks to lazy load via the
+// REGION_REGISTRY mutable container.)
+const TECHNIQUE_DEFS_RAW = loadTechniques(techniquesJson);
+// TechniqueRawDef and TechniqueDef are structurally identical post-zod-validation.
+const TECHNIQUE_DEFS: ReadonlyArray<TechniqueDef> = TECHNIQUE_DEFS_RAW as ReadonlyArray<TechniqueDef>;
+export const TECHNIQUE_REGISTRY = TechniqueRegistry.fromList(TECHNIQUE_DEFS);
+
+const ITEM_DEFS_RAW = loadItems(itemsJson);
+// ItemRawDef (zod-inferred) is structurally identical to ItemDef post-validation.
+const ITEM_DEFS: ReadonlyArray<ItemDef> = ITEM_DEFS_RAW as ReadonlyArray<ItemDef>;
+export const ITEM_REGISTRY = ItemRegistry.fromList(ITEM_DEFS);
+
+// Region registry starts empty; Task 24 lazy-loads azure_peaks.json on first need.
+// Container is a stable reference object so Task 24 can hot-swap `current`.
+export const REGION_REGISTRY: { current: RegionRegistry } = {
+  current: RegionRegistry.empty(),
+};
 
 export interface LoadOrInitResult {
   phase: GamePhase;
