@@ -1,0 +1,429 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_OPPORTUNITY_CAVE_DISCOVERY",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 8,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.mountain.path] The trail narrows until it is barely a goat path, and then the goat path disappears. $[CHARACTER] pushes through a curtain of hanging moss and finds a cave mouth, perfectly circular, breathing cold air.",
+          "Inside, a jade lectern stands alone on a raised stone. A single scorched page rests on it, covered in seal script that pulses faintly red."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_cave_decipher_the_seal",
+          "label": "Study the script. It is dangerous — but so is ignorance.",
+          "timeCost": "LONG",
+          "check": { "base": 20, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 70, "techniqueBonusCategory": "lore_scholarship" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.cave_discovery.absorbed",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_blood_ember_sigil_fragment", "count": 1 },
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "flag_set", "flag": "found_blood_ember_cave" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.cave_discovery.secured",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_blood_ember_sigil_fragment", "count": 1 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "found_blood_ember_cave" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.cave_discovery.singed",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -10 },
+                { "kind": "qi_delta", "amount": -8 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.cave_discovery.repelled",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -18 },
+                { "kind": "qi_delta", "amount": -12 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.cave_discovery.deviated",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -30 },
+                { "kind": "qi_delta", "amount": -20 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_cave_mark_and_report",
+          "label": "Memorize the location. Report it to the elders. Let them handle it.",
+          "timeCost": "SHORT",
+          "check": { "base": 50, "stats": { "Charm": 1, "Mind": 1 }, "difficulty": 45, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.cave_discovery.reported",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "found_blood_ember_cave" },
+                { "kind": "flag_set", "flag": "reported_to_elders" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.cave_discovery.dismissed",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_OPPORTUNITY_ELDERS_GIFT",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[ap.elder.quarters] The head elder summons $[CHARACTER] without explanation. By the time $[CHARACTER] arrives, the elder has already turned back to the window.",
+          "'You have shown patience this season. I do not say this often.' A wrapped scroll sits on the table. 'Do not thank me. Read it until you understand it.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_elders_gift_accept_and_study",
+          "label": "Accept with both hands and a bow. Begin reading the same evening.",
+          "timeCost": "SHORT",
+          "check": { "base": 40, "stats": { "Spirit": 2, "Mind": 1 }, "difficulty": 50, "techniqueBonusCategory": "insight_puzzle" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.elders_gift.mastered",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_still_water_heart_sutra", "count": 1 },
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "meditation_progress", "base": 15, "insightBonus": 2 },
+                { "kind": "flag_set", "flag": "gifted_by_elder" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.elders_gift.received",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_still_water_heart_sutra", "count": 1 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "gifted_by_elder" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.elders_gift.received",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_still_water_heart_sutra", "count": 1 },
+                { "kind": "flag_set", "flag": "gifted_by_elder" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.elders_gift.confused",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_still_water_heart_sutra", "count": 1 },
+                { "kind": "flag_set", "flag": "gifted_by_elder" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_elders_gift_ask_for_context",
+          "label": "Ask the elder what the sutra is for. Understand before you read.",
+          "timeCost": "SHORT",
+          "check": { "base": 35, "stats": { "Charm": 1, "Mind": 1 }, "difficulty": 55, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.elders_gift.explained",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_still_water_heart_sutra", "count": 1 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "gifted_by_elder" },
+                { "kind": "flag_set", "flag": "elder_approved_curiosity" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.elders_gift.scolded",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_still_water_heart_sutra", "count": 1 },
+                { "kind": "flag_set", "flag": "gifted_by_elder" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_OPPORTUNITY_MARKET_LUCKY_FIND",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 12,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[ap.market.stalls] The sect's monthly exchange fair. Disciples trade spirit stones for pellets, scrolls, and things best not described. $[CHARACTER] notices an old vendor asleep behind a pile of water-stained texts.",
+          "Under the pile: a half-legible scroll, a small vial sealed with wax, and a price tag that has been written over three times. The lowest figure is still a bargain."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_market_buy_the_scroll",
+          "label": "Buy the scroll. A partial technique manual is worth more than a full-priced nothing.",
+          "timeCost": "SHORT",
+          "check": { "base": 30, "stats": { "Mind": 2, "Luck": 1 }, "difficulty": 55, "techniqueBonusCategory": "lore_scholarship" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.market_lucky_find.pristine_scroll",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_wind_walking_steps_partial", "count": 1 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "lucky_market_find" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.market_lucky_find.good_scroll",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_wind_walking_steps_partial", "count": 1 },
+                { "kind": "flag_set", "flag": "lucky_market_find" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.market_lucky_find.mediocre_scroll",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "manual_wind_walking_steps_partial", "count": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.market_lucky_find.overpriced",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_market_buy_the_vial",
+          "label": "Take the vial. Insight dew at this price is not a coincidence — it is a test.",
+          "timeCost": "SHORT",
+          "check": { "base": 40, "stats": { "Luck": 2, "Charm": 1 }, "difficulty": 45, "techniqueBonusCategory": "insight_puzzle" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.market_lucky_find.dew_found",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "insight_dew", "count": 2 },
+                { "kind": "flag_set", "flag": "lucky_market_find" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.market_lucky_find.counterfeit",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_OPPORTUNITY_SPIRIT_BEAST_BEFRIEND",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["beast_pass"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.beast.pass.lower] A small creature sits on a flat rock near the stream — fox-shaped but wrong, ears too long, fur faintly iridescent.",
+          "It is watching $[CHARACTER] with the unnerving intelligence of something that has been watching cultivators for a very long time. It does not flee. It waits."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_beast_befriend_sit_and_wait",
+          "label": "Sit down on the opposite bank. Do not reach out. Let it decide.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 35, "stats": { "Spirit": 2, "Charm": 1 }, "difficulty": 55, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.spirit_beast.bonded",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "friend_of_spirit_beast" },
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "attribute_delta", "stat": "Spirit", "amount": 1 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.spirit_beast.accepted",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "friend_of_spirit_beast" },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.spirit_beast.wary",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.spirit_beast.fled",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.spirit_beast.nipped",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_beast_befriend_offer_food",
+          "label": "Offer a handful of dried spirit berries from your pack. See if it wants a trade.",
+          "timeCost": "SHORT",
+          "check": { "base": 40, "stats": { "Charm": 2, "Luck": 1 }, "difficulty": 50, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.spirit_beast.bribed",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "friend_of_spirit_beast" },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.spirit_beast.ignored",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_OPPORTUNITY_TREASURE_HUNT",
+      "category": "life.opportunity",
+      "version": 1,
+      "weight": 14,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.mountain.path] A rumor circulates among the outer disciples: a cache of spirit stones, sealed behind a minor formation, somewhere in the eastern cliffs. The elder who left them has not returned this decade.",
+          "$[CHARACTER] finds the cliff. The formation is old and tired, its edges visibly crumbling. Whether the stones are still inside is another question."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_treasure_break_formation",
+          "label": "Crack the formation open. Brute-force the seals with raw qi.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 30, "stats": { "Spirit": 2, "Body": 1 }, "difficulty": 60, "techniqueBonusCategory": "insight_puzzle" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.treasure_hunt.cracked_clean",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 5 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "found_treasure_cache" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.treasure_hunt.opened",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 5 },
+                { "kind": "qi_delta", "amount": -10 },
+                { "kind": "flag_set", "flag": "found_treasure_cache" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.treasure_hunt.partial_break",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 2 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.treasure_hunt.rebound",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -12 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.treasure_hunt.formation_collapse",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -25 },
+                { "kind": "qi_delta", "amount": -20 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_treasure_read_the_seals",
+          "label": "Read the formation seals. There is a pattern — find the weak point.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 35, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 55, "techniqueBonusCategory": "lore_scholarship" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.treasure_hunt.cracked_clean",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 5 },
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "flag_set", "flag": "found_treasure_cache" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.treasure_hunt.opened",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 5 },
+                { "kind": "flag_set", "flag": "found_treasure_cache" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.treasure_hunt.partial_break",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 2 },
+                { "kind": "qi_delta", "amount": -8 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.treasure_hunt.stumped",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    }
+  ]
+}
