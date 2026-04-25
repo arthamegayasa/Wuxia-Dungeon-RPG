@@ -87,6 +87,12 @@ const StateDeltaSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('karma_delta'), amount: z.number() }),
   z.object({ kind: z.literal('notice_delta'), amount: z.number() }),
   z.object({ kind: z.literal('age_delta_days'), amount: z.number().int().nonnegative() }),
+  // Phase 2B-2 Task 20: realm-gate events dispatch into RealmCrossing helpers.
+  z.object({
+    kind: z.literal('attempt_realm_crossing'),
+    /** Which transition to attempt. */
+    transition: z.enum(['bt9_to_qs', 'qs_to_qc1', 'qc_sublayer', 'qc9_to_foundation']),
+  }),
 ]);
 
 export const OutcomeSchema = z.object({

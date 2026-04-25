@@ -14,7 +14,17 @@ describe('StateDelta', () => {
       'technique_learn', 'meridian_open',
       'karma_delta', 'notice_delta',
       'age_delta_days',
+      'attempt_realm_crossing',
     ]);
+  });
+
+  it('isStateDelta recognises attempt_realm_crossing', () => {
+    expect(isStateDelta({ kind: 'attempt_realm_crossing', transition: 'bt9_to_qs' })).toBe(true);
+    expect(isStateDelta({ kind: 'attempt_realm_crossing', transition: 'qs_to_qc1' })).toBe(true);
+    expect(isStateDelta({ kind: 'attempt_realm_crossing', transition: 'qc_sublayer' })).toBe(true);
+    expect(isStateDelta({ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' })).toBe(true);
+    // invalid transition string
+    expect(isStateDelta({ kind: 'attempt_realm_crossing', transition: 'invalid_transition' })).toBe(false);
   });
 
   it('isStateDelta recognises each concrete shape', () => {

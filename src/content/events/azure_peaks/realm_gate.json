@@ -1,0 +1,421 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_GATE_QS_AWAKENING",
+      "category": "life.realm_gate",
+      "version": 1,
+      "weight": 200,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "customPredicate": "bt9_cultivation_full"
+      },
+      "timeCost": "EPOCH",
+      "text": {
+        "intro": [
+          "$[ap.gate.qs.sky] The summit catches the last light. $[CHARACTER] has been still since dawn, qi cycling through all nine tempered layers in a single breath.",
+          "The barrier between mortal refinement and true qi sensing shimmers — thin as morning ice, vast as the valley below."
+        ],
+        "body": [
+          "The body has been hardened to its limit. Now comes the true test: whether the spirit can break through to feel the world's own qi."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_qs_awakening_attempt",
+          "label": "Attempt the Qi Sensing awakening.",
+          "timeCost": "EPOCH",
+          "check": { "base": 50, "stats": { "Mind": 2, "Spirit": 3 }, "difficulty": 60, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.gate.qs.awakening.crit",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "bt9_to_qs" },
+                { "kind": "insight_delta", "amount": 8 },
+                { "kind": "flag_set", "flag": "qi_sensing_awakened" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qs.awakening.success",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "bt9_to_qs" },
+                { "kind": "flag_set", "flag": "qi_sensing_awakened" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.gate.qs.awakening.partial",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "bt9_to_qs" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qs.awakening.fail",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": -50 },
+                { "kind": "hp_delta", "amount": -10 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.gate.qs.awakening.crit_fail",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": -75 },
+                { "kind": "hp_delta", "amount": -20 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_qs_awakening_defer",
+          "label": "Withdraw — the moment is not yet right.",
+          "timeCost": "SHORT",
+          "check": { "base": 100, "difficulty": 0 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qs.awakening.defer",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 5 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qs.awakening.defer",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_GATE_FIRST_TECHNIQUE_LEARN",
+      "category": "life.realm_gate",
+      "version": 1,
+      "weight": 200,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "customPredicate": "qs_no_techniques"
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.gate.tech.scroll] An outer elder presses a rough-bound scroll into $[CHARACTER]'s hands.",
+          "'Every practitioner begins with this. Common Qi Circulation. Boring, yes. But boring keeps you alive.'"
+        ],
+        "body": [
+          "The technique is simple: guide qi through the primary meridian loop, steady the breath, repeat. But doing it correctly for the first time opens a door that cannot be closed."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_technique_learn_attempt",
+          "label": "Study the scroll and attempt to grasp the technique.",
+          "timeCost": "LONG",
+          "check": { "base": 40, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.gate.tech.learn.crit",
+              "stateDeltas": [
+                { "kind": "technique_learn", "id": "common_qi_circulation" },
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "meditation_progress", "base": 10 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.tech.learn.success",
+              "stateDeltas": [
+                { "kind": "technique_learn", "id": "common_qi_circulation" },
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
+                { "kind": "meditation_progress", "base": 5 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.gate.tech.learn.partial",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.tech.learn.fail",
+              "stateDeltas": []
+            }
+          }
+        },
+        {
+          "id": "ch_technique_observe_only",
+          "label": "Read through it once without attempting to circulate qi.",
+          "timeCost": "SHORT",
+          "check": { "base": 100, "difficulty": 0 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.tech.observe",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.tech.observe",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_GATE_QC1_ENTRY",
+      "category": "life.realm_gate",
+      "version": 1,
+      "weight": 200,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "customPredicate": "qs_with_techniques_full"
+      },
+      "timeCost": "EPOCH",
+      "text": {
+        "intro": [
+          "$[ap.gate.qc.sky] The Azure Peaks shudder as $[CHARACTER]'s qi reaches a natural ceiling.",
+          "The Qi Sensing realm has been pushed to its limit. Now it must be condensed — gathered inward, compressed, crystallized into something denser and more enduring."
+        ],
+        "body": [
+          "This is the transition that separates a qi-sensitive cultivator from one who can truly shape the world's energy. One technique already understood. The foundation is there."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_qc1_attempt",
+          "label": "Begin the condensation ritual. Compress everything into the first layer.",
+          "timeCost": "EPOCH",
+          "check": { "base": 50, "stats": { "Mind": 2, "Spirit": 2 }, "difficulty": 65, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.gate.qc.entry.crit",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qs_to_qc1" },
+                { "kind": "insight_delta", "amount": 10 },
+                { "kind": "flag_set", "flag": "qi_condensation_entered" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qc.entry.success",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qs_to_qc1" },
+                { "kind": "flag_set", "flag": "qi_condensation_entered" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.gate.qc.entry.partial",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qs_to_qc1" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qc.entry.fail",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": -50 },
+                { "kind": "qi_delta", "amount": -10 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.gate.qc.entry.crit_fail",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": -75 },
+                { "kind": "hp_delta", "amount": -15 },
+                { "kind": "qi_delta", "amount": -20 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_qc1_defer",
+          "label": "Consolidate at the peak of Qi Sensing a while longer.",
+          "timeCost": "SHORT",
+          "check": { "base": 100, "difficulty": 0 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qc.entry.defer",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qc.entry.defer",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_GATE_QC5_TRIAL",
+      "category": "life.realm_gate",
+      "version": 1,
+      "weight": 200,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "customPredicate": "qc5_full"
+      },
+      "timeCost": "EPOCH",
+      "text": {
+        "intro": [
+          "$[ap.gate.qc5.storm] The sky above the Azure Peaks darkens at the fifth compression layer.",
+          "The elder who placed $[CHARACTER] here said only: 'The fifth wall is not a wall. It is a mirror. What you see in it is your problem.'"
+        ],
+        "body": [
+          "Five layers of condensed qi press outward and inward simultaneously. A breakthrough here means the path to Foundation Formation is no longer theoretical."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_qc5_sublayer_attempt",
+          "label": "Force the breakthrough — compress the fifth layer into the sixth.",
+          "timeCost": "EPOCH",
+          "check": { "base": 45, "stats": { "Mind": 2, "Spirit": 2, "Body": 1 }, "difficulty": 70, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.gate.qc5.trial.crit",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qc_sublayer" },
+                { "kind": "insight_delta", "amount": 8 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qc5.trial.success",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qc_sublayer" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.gate.qc5.trial.partial",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qc_sublayer" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qc5.trial.fail",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": -50 },
+                { "kind": "hp_delta", "amount": -12 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.gate.qc5.trial.crit_fail",
+              "stateDeltas": [
+                { "kind": "cultivation_progress_delta", "amount": -75 },
+                { "kind": "hp_delta", "amount": -25 },
+                { "kind": "qi_delta", "amount": -20 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_qc5_meditate_further",
+          "label": "Meditate deeper to prepare the mirror layer.",
+          "timeCost": "LONG",
+          "check": { "base": 60, "stats": { "Mind": 1, "Spirit": 2 }, "difficulty": 50, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qc5.meditate.success",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 0, "insightBonus": 4 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qc5.meditate.fail",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 0, "insightBonus": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_GATE_QC9_TRIBULATION_SETUP",
+      "category": "life.realm_gate",
+      "version": 1,
+      "weight": 200,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "customPredicate": "qc9_full"
+      },
+      "timeCost": "EPOCH",
+      "text": {
+        "intro": [
+          "$[ap.gate.qc9.heavens] Nine layers of condensed qi, packed into $[CHARACTER]'s core like folded iron.",
+          "The Heavens have begun to notice. A pressure descends from above — not an attack, not yet. A question."
+        ],
+        "body": [
+          "Foundation Formation requires passing the first Tribulation: a trial by heaven's own judgment. The technique-masters call it inevitable. They also call it survivable — barely."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_qc9_tribulation_begin",
+          "label": "Stand and answer the Heaven's question. Begin Tribulation I.",
+          "timeCost": "EPOCH",
+          "check": { "base": 40, "stats": { "Mind": 2, "Spirit": 3, "Body": 1 }, "difficulty": 75, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.gate.qc9.tribulation.crit",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qc9_to_foundation" },
+                { "kind": "insight_delta", "amount": 15 },
+                { "kind": "karma_delta", "amount": 5 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qc9.tribulation.success",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qc9_to_foundation" },
+                { "kind": "insight_delta", "amount": 8 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.gate.qc9.tribulation.partial",
+              "stateDeltas": [
+                { "kind": "attempt_realm_crossing", "transition": "qc9_to_foundation" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qc9.tribulation.fail",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -30 },
+                { "kind": "cultivation_progress_delta", "amount": -50 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.gate.qc9.tribulation.crit_fail",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -50 },
+                { "kind": "cultivation_progress_delta", "amount": -75 },
+                { "kind": "notice_delta", "amount": 10 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_qc9_tribulation_defer",
+          "label": "Do not yet answer. Wait for a more fortuitous moment.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 100, "difficulty": 0 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.gate.qc9.tribulation.defer",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.gate.qc9.tribulation.defer",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

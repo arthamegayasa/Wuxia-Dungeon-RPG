@@ -96,6 +96,7 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
       season: ctx.runState.season,
       heavenlyNotice: ctx.runState.heavenlyNotice,
       ageYears: Math.floor(ctx.runState.character.ageDays / 365),
+      learnedTechniques: ctx.runState.learnedTechniques,
     },
     ctx.lifetimeSeenEvents,
     ctx.runState.thisLifeSeenEvents,
@@ -166,7 +167,7 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
     .map((id) => ctx.techniqueRegistry.byId(id))
     .filter((t): t is NonNullable<typeof t> => t !== null);
   const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
-  let nextRunState = applyOutcome(ctx.runState, outcome, { techniqueMultiplier });
+  let nextRunState = applyOutcome(ctx.runState, outcome, { techniqueMultiplier, rng });
   nextRunState = {
     ...nextRunState,
     thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, event.id],

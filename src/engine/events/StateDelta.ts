@@ -20,7 +20,9 @@ export type StateDelta =
   | { kind: 'meridian_open'; id: MeridianId }
   | { kind: 'karma_delta'; amount: number }
   | { kind: 'notice_delta'; amount: number }
-  | { kind: 'age_delta_days'; amount: number };
+  | { kind: 'age_delta_days'; amount: number }
+  // Phase 2B-2 Task 20: realm-gate events dispatch into RealmCrossing helpers.
+  | { kind: 'attempt_realm_crossing'; transition: 'bt9_to_qs' | 'qs_to_qc1' | 'qc_sublayer' | 'qc9_to_foundation' };
 
 export const STATE_DELTA_KINDS = [
   'hp_delta', 'qi_delta', 'insight_delta', 'attribute_delta',
@@ -29,6 +31,7 @@ export const STATE_DELTA_KINDS = [
   'technique_learn', 'meridian_open',
   'karma_delta', 'notice_delta',
   'age_delta_days',
+  'attempt_realm_crossing',
 ] as const;
 
 export function isStateDelta(v: unknown): v is StateDelta {
@@ -63,6 +66,9 @@ export function isStateDelta(v: unknown): v is StateDelta {
       return typeof o.id === 'string';
     case 'meridian_open':
       return typeof o.id === 'number';
+    case 'attempt_realm_crossing':
+      return typeof o.transition === 'string' &&
+        ['bt9_to_qs', 'qs_to_qc1', 'qc_sublayer', 'qc9_to_foundation'].includes(o.transition as string);
     default:
       return false;
   }

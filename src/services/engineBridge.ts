@@ -460,6 +460,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         season: gs.runState.season,
         heavenlyNotice: gs.runState.heavenlyNotice,
         ageYears: Math.floor(gs.runState.character.ageDays / 365),
+        learnedTechniques: gs.runState.learnedTechniques,
       },
       gs.lifetimeSeenEvents,
       gs.runState.thisLifeSeenEvents,
@@ -732,7 +733,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Phase 2B-2 Task 12: pass techniqueMultiplier for meditation_progress delta.
       // learnedDefs already declared above for visibility filtering — reuse it.
       const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
-      let nextRunState = applyOutcome(gs.runState, outcome, { techniqueMultiplier });
+      let nextRunState = applyOutcome(gs.runState, outcome, { techniqueMultiplier, rng });
       nextRunState = {
         ...nextRunState,
         thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, pending.id],

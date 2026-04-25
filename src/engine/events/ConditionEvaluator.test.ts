@@ -130,9 +130,14 @@ describe('evaluateConditions', () => {
     expect(evaluateConditions(cs, ctx({ ageYears: 20, region: 'azure_peaks' }))).toBe(false);
   });
 
-  it('customPredicate is not supported in Phase 1B and returns false when set', () => {
-    // Phase 1B defers the predicate registry. Event using one is simply rejected.
-    expect(evaluateConditions({ customPredicate: 'some_predicate' }, ctx())).toBe(false);
+  it('unknown customPredicate returns false (fail-closed)', () => {
+    // Phase 2B-2: registry now consulted, but unknown names still fail closed.
+    expect(evaluateConditions({ customPredicate: 'some_unknown_predicate_xyz' }, ctx())).toBe(false);
+  });
+
+  it('known customPredicate is evaluated: bt9_cultivation_full returns false for mortal realm', () => {
+    // mortal realm → bt9_cultivation_full should be false (realm mismatch)
+    expect(evaluateConditions({ customPredicate: 'bt9_cultivation_full' }, ctx())).toBe(false);
   });
 
   it('ignores undefined values in minStat / maxStat records (zod v4 emits all enum keys)', () => {
