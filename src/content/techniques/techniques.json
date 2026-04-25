@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "techniques": [
+    {
+      "id": "iron_mountain_body_seal",
+      "name": "Iron Mountain Body Seal",
+      "grade": "mortal",
+      "element": "earth",
+      "coreAffinity": ["iron_mountain"],
+      "requires": {
+        "openMeridianCount": 1
+      },
+      "qiCost": 5,
+      "effects": [
+        { "kind": "choice_bonus", "category": "body_check", "bonus": 15 },
+        { "kind": "choice_bonus", "category": "resist", "bonus": 10 }
+      ],
+      "description": "Stand like the mountain. Take the blow as the cliff takes the wave.",
+      "rankPath": {
+        "novice": [
+          { "kind": "choice_bonus", "category": "body_check", "bonus": 15 },
+          { "kind": "choice_bonus", "category": "resist", "bonus": 10 }
+        ],
+        "adept": [
+          { "kind": "choice_bonus", "category": "body_check", "bonus": 25 },
+          { "kind": "choice_bonus", "category": "resist", "bonus": 18 }
+        ],
+        "master": [
+          { "kind": "choice_bonus", "category": "body_check", "bonus": 40 },
+          { "kind": "choice_bonus", "category": "resist", "bonus": 30 }
+        ]
+      }
+    },
+    {
+      "id": "severing_edge_swordform",
+      "name": "Severing Edge Swordform",
+      "grade": "mortal",
+      "element": "metal",
+      "coreAffinity": ["severing_edge"],
+      "requires": {
+        "openMeridianCount": 1
+      },
+      "qiCost": 8,
+      "effects": [
+        { "kind": "choice_bonus", "category": "strike", "bonus": 18 },
+        { "kind": "choice_bonus", "category": "duel", "bonus": 12 }
+      ],
+      "description": "One stroke. The cut answers before the question is asked.",
+      "rankPath": {
+        "novice": [
+          { "kind": "choice_bonus", "category": "strike", "bonus": 18 },
+          { "kind": "choice_bonus", "category": "duel", "bonus": 12 }
+        ],
+        "adept": [
+          { "kind": "choice_bonus", "category": "strike", "bonus": 28 },
+          { "kind": "choice_bonus", "category": "duel", "bonus": 22 }
+        ],
+        "master": [
+          { "kind": "choice_bonus", "category": "strike", "bonus": 45 },
+          { "kind": "choice_bonus", "category": "duel", "bonus": 35 }
+        ]
+      }
+    },
+    {
+      "id": "still_water_heart_sutra",
+      "name": "Still Water Heart Sutra",
+      "grade": "mortal",
+      "element": "water",
+      "coreAffinity": ["still_water"],
+      "requires": {},
+      "qiCost": 3,
+      "effects": [
+        { "kind": "insight_gain_per_meditation", "amount": 2 },
+        { "kind": "mood_modifier", "mood": "serenity", "delta": 1 },
+        { "kind": "cultivation_multiplier_pct", "pct": 10 }
+      ],
+      "description": "Sit. Let the surface still. The depth does not need to be touched."
+    },
+    {
+      "id": "howling_storm_step",
+      "name": "Howling Storm Step",
+      "grade": "mortal",
+      "element": "none",
+      "coreAffinity": ["howling_storm"],
+      "requires": {
+        "openMeridianCount": 2
+      },
+      "qiCost": 4,
+      "effects": [
+        { "kind": "choice_bonus", "category": "evade", "bonus": 20 },
+        { "kind": "unlock_choice", "choiceId": "flee_mounted_pursuer" }
+      ],
+      "description": "Run. The wind owes the swift no apology."
+    },
+    {
+      "id": "blood_ember_sigil",
+      "name": "Blood Ember Sigil",
+      "grade": "yellow",
+      "element": "fire",
+      "coreAffinity": ["blood_ember"],
+      "requires": {
+        "realm": "qi_sensing",
+        "openMeridianCount": 3
+      },
+      "qiCost": 10,
+      "insightCost": 5,
+      "effects": [
+        { "kind": "choice_bonus", "category": "intimidate", "bonus": 15 },
+        { "kind": "mood_modifier", "mood": "rage", "delta": 2 }
+      ],
+      "description": "Mark the air with a sigil that smolders. The ember knows your enemies' names."
+    },
+    {
+      "id": "thousand_mirrors_mnemonic",
+      "name": "Thousand Mirrors Mnemonic",
+      "grade": "mortal",
+      "element": "none",
+      "coreAffinity": ["thousand_mirrors"],
+      "requires": {},
+      "qiCost": 2,
+      "effects": [
+        { "kind": "choice_bonus", "category": "study", "bonus": 12 },
+        { "kind": "choice_bonus", "category": "social", "bonus": 8 }
+      ],
+      "description": "Hold a thousand faces in the mind, each remembering what the others forget."
+    },
+    {
+      "id": "common_qi_circulation",
+      "name": "Common Qi Circulation",
+      "grade": "mortal",
+      "element": "none",
+      "coreAffinity": ["any"],
+      "requires": {},
+      "qiCost": 0,
+      "effects": [
+        { "kind": "qi_regen", "amount": 1 },
+        { "kind": "cultivation_multiplier_pct", "pct": 5 }
+      ],
+      "description": "The first lesson. Qi moves where breath moves."
+    },
+    {
+      "id": "novice_fireball",
+      "name": "Novice Fireball",
+      "grade": "mortal",
+      "element": "fire",
+      "coreAffinity": ["blood_ember", "iron_mountain"],
+      "requires": {
+        "openMeridianCount": 1
+      },
+      "qiCost": 6,
+      "effects": [
+        { "kind": "choice_bonus", "category": "strike", "bonus": 10 }
+      ],
+      "description": "A small flame, hot enough to surprise."
+    },
+    {
+      "id": "golden_bell_defense",
+      "name": "Golden Bell Defense",
+      "grade": "yellow",
+      "element": "metal",
+      "coreAffinity": ["iron_mountain"],
+      "requires": {
+        "realm": "qi_sensing"
+      },
+      "qiCost": 7,
+      "effects": [
+        { "kind": "choice_bonus", "category": "resist", "bonus": 22 }
+      ],
+      "description": "A bell rings around the body. The blade hears the bell, not the flesh."
+    },
+    {
+      "id": "wind_walking_steps",
+      "name": "Wind-Walking Steps",
+      "grade": "mortal",
+      "element": "none",
+      "coreAffinity": ["howling_storm", "any"],
+      "requires": {},
+      "qiCost": 3,
+      "effects": [
+        { "kind": "choice_bonus", "category": "evade", "bonus": 10 },
+        { "kind": "unlock_choice", "choiceId": "traverse_difficult_terrain" }
+      ],
+      "description": "Each footfall a half-step lighter than the last. The wind takes the rest."
+    }
+  ]
+}
