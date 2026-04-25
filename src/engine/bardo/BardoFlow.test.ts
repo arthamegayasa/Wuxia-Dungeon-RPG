@@ -182,4 +182,11 @@ describe('runBardoFlow — Phase 2A-2 integration', () => {
     const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
     expect(result.meta.unlockedAnchors).toContain('martial_family');
   });
+
+  it('exposes freshlyUnlockedAnchors on the bardo result', () => {
+    const rs = makeRunStateDyingAt({ bodyTemperingLayer: 5, deathCause: 'starvation' });
+    const meta = createEmptyMetaState();
+    const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
+    expect(result.freshlyUnlockedAnchors).toContain('martial_family');
+  });
 });

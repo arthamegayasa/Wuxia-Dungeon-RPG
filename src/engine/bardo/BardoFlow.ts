@@ -17,6 +17,8 @@ export interface BardoResult {
   karmaEarned: number;
   karmaBreakdown: ReturnType<typeof computeKarma>['breakdown'];
   meta: MetaState;
+  /** Phase 2A-3 Task 7: anchor ids freshly added by `evaluateAnchorUnlocks`. UI uses this for shimmer. */
+  freshlyUnlockedAnchors: ReadonlyArray<string>;
 }
 
 export function buildLifeSummary(rs: RunState, anchorMultiplier: number): LifeSummary {
@@ -109,6 +111,7 @@ export function runBardoFlow(
     karmaEarned: karma.total,
     karmaBreakdown: karma.breakdown,
     meta: nextMeta,
+    freshlyUnlockedAnchors: newlyUnlockedAnchors,
   };
 }
 

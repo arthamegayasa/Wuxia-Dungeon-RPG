@@ -321,6 +321,88 @@ describe('getCodexSnapshot', () => {
   });
 });
 
+describe('getLineageSnapshot', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('returns empty array on a fresh meta state', () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    const snap = engine.getLineageSnapshot();
+    expect(snap.entries).toEqual([]);
+  });
+
+  it('resolves anchor names + carries year range and echo unlocks', () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    useMetaStore.getState().hydrateFromMetaState({
+      ...createEmptyMetaState(),
+      lifeCount: 1,
+      lineage: [{
+        lifeIndex: 1,
+        name: 'Lin Wei',
+        anchorId: 'peasant_farmer',
+        birthYear: 950,
+        deathYear: 980,
+        yearsLived: 30,
+        realmReached: 'Mortal',
+        deathCause: 'sickness',
+        karmaEarned: 25,
+        echoesUnlockedThisLife: ['iron_body'],
+      }],
+    });
+    const snap = engine.getLineageSnapshot();
+    expect(snap.entries).toHaveLength(1);
+    const e = snap.entries[0];
+    expect(e.lifeIndex).toBe(1);
+    expect(e.name).toBe('Lin Wei');
+    expect(e.anchorName).toBe('Peasant Farmer');
+    expect(e.birthYear).toBe(950);
+    expect(e.deathYear).toBe(980);
+    expect(e.yearsLived).toBe(30);
+    expect(e.echoesUnlockedThisLife).toEqual([{ id: 'iron_body', name: 'Iron Body' }]);
+  });
+
+  it('returns most-recent-life-first ordering', () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    useMetaStore.getState().hydrateFromMetaState({
+      ...createEmptyMetaState(),
+      lifeCount: 3,
+      lineage: [
+        { lifeIndex: 1, name: 'A', anchorId: 'peasant_farmer', birthYear: 950, deathYear: 970, yearsLived: 20, realmReached: 'Mortal', deathCause: 'old_age', karmaEarned: 5, echoesUnlockedThisLife: [] },
+        { lifeIndex: 2, name: 'B', anchorId: 'peasant_farmer', birthYear: 970, deathYear: 1000, yearsLived: 30, realmReached: 'Mortal', deathCause: 'old_age', karmaEarned: 10, echoesUnlockedThisLife: [] },
+        { lifeIndex: 3, name: 'C', anchorId: 'peasant_farmer', birthYear: 1000, deathYear: 1010, yearsLived: 10, realmReached: 'Mortal', deathCause: 'sickness', karmaEarned: 2, echoesUnlockedThisLife: [] },
+      ],
+    });
+    const snap = engine.getLineageSnapshot();
+    expect(snap.entries.map((e) => e.lifeIndex)).toEqual([3, 2, 1]);
+  });
+});
+
+describe('listAnchors / reincarnate include locked anchors with unlockHint', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('returns all 5 anchors with locked flag', () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    const payload = engine.listAnchors();
+    expect(payload.availableAnchors).toHaveLength(5);
+    const farmer = payload.availableAnchors.find((a) => a.id === 'peasant_farmer')!;
+    expect(farmer.locked).toBe(false);
+    const martial = payload.availableAnchors.find((a) => a.id === 'martial_family')!;
+    expect(martial.locked).toBe(true);
+    expect(martial.unlockHint).toMatch(/body tempering/i);
+  });
+});
+
 describe('BardoPayload reveal fields', () => {
   beforeEach(() => {
     localStorage.clear();

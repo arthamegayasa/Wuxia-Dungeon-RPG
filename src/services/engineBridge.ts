@@ -136,8 +136,17 @@ export interface BardoPayload {
   echoesUnlockedThisLife: ReadonlyArray<RevealedEcho>;
 }
 
+export interface CreationAnchorView {
+  id: string;
+  name: string;
+  description: string;
+  locked: boolean;
+  unlockHint: string;
+  freshlyUnlocked: boolean;   // true iff anchorId is in the most recent bardo's freshly-unlocked set
+}
+
 export interface CreationPayload {
-  availableAnchors: ReadonlyArray<{ id: string; name: string; description: string }>;
+  availableAnchors: ReadonlyArray<CreationAnchorView>;
 }
 
 export interface MetaSnapshot {
@@ -187,6 +196,24 @@ export interface CodexSnapshot {
   anchors: ReadonlyArray<CodexAnchorEntry>;
 }
 
+export interface LineageEntryView {
+  lifeIndex: number;
+  name: string;
+  anchorId: string;
+  anchorName: string;
+  birthYear: number;          // 0 means "absolute year unknown" (pre-v3 entries)
+  deathYear: number;
+  yearsLived: number;
+  realmReached: string;
+  deathCause: string;
+  karmaEarned: number;
+  echoesUnlockedThisLife: ReadonlyArray<{ id: string; name: string }>;
+}
+
+export interface LineageSnapshot {
+  entries: ReadonlyArray<LineageEntryView>;
+}
+
 export interface EngineBridge {
   loadOrInit(): Promise<LoadOrInitResult>;
   beginLife(anchorId: string, chosenName: string): Promise<TurnPreview>;
@@ -198,6 +225,7 @@ export interface EngineBridge {
   listAnchors(): CreationPayload;
   getMetaSummary(): MetaSnapshot;
   getLineage(): ReadonlyArray<LineageEntry>;
+  getLineageSnapshot(): LineageSnapshot;
   getCodexSnapshot(): CodexSnapshot;
 }
 
@@ -422,6 +450,30 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       narrative,
       selected.choices.map((c) => ({ id: c.id, label: c.label })),
     );
+  }
+
+  function buildCreationPayload(): CreationPayload {
+    const meta = currentMetaState();
+    const unlocked = new Set<string>(meta.unlockedAnchors);
+    // Default-unlock anchors are always present.
+    for (const a of DEFAULT_ANCHORS) {
+      if (a.unlock === 'default') unlocked.add(a.id);
+    }
+    // freshly-unlocked: read from the just-completed bardo result, if any.
+    const fresh = new Set<string>(useGameStore.getState().bardoResult?.freshlyUnlockedAnchors ?? []);
+    return {
+      availableAnchors: DEFAULT_ANCHORS.map((a) => {
+        const isUnlocked = a.unlock === 'default' || unlocked.has(a.id);
+        return {
+          id: a.id,
+          name: a.name,
+          description: a.description,
+          locked: !isUnlocked,
+          unlockHint: describeAnchorUnlock(a.unlock),
+          freshlyUnlocked: fresh.has(a.id),
+        };
+      }),
+    };
   }
 
   function buildBardoPayload(): BardoPayload {
@@ -746,24 +798,11 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       clearRun(sm);
       useGameStore.getState().resetRun();
       useGameStore.getState().setPhase(GamePhase.CREATION);
-      return {
-        availableAnchors: DEFAULT_ANCHORS
-          .filter((a) => a.unlock === 'default'
-            || useMetaStore.getState().unlockedAnchors.includes(a.id))
-          .map((a) => ({ id: a.id, name: a.name, description: a.description })),
-      };
+      return buildCreationPayload();
     },
 
     listAnchors() {
-      const meta = currentMetaState();
-      const available = DEFAULT_ANCHORS.filter((a) =>
-        a.unlock === 'default' || meta.unlockedAnchors.includes(a.id),
-      );
-      return {
-        availableAnchors: available.map((a) => ({
-          id: a.id, name: a.name, description: a.description,
-        })),
-      };
+      return buildCreationPayload();
     },
 
     getMetaSummary() {
@@ -780,6 +819,32 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
 
     getLineage() {
       return useMetaStore.getState().lineage;
+    },
+
+    getLineageSnapshot(): LineageSnapshot {
+      const meta = currentMetaState();
+      const sorted = [...meta.lineage].sort((a, b) => b.lifeIndex - a.lifeIndex);
+      const entries: LineageEntryView[] = sorted.map((entry) => {
+        const anchor = getAnchorById(entry.anchorId);
+        const echoes = entry.echoesUnlockedThisLife.map((id) => {
+          const e = ECHO_REGISTRY.get(id);
+          return { id, name: e?.name ?? id };
+        });
+        return {
+          lifeIndex: entry.lifeIndex,
+          name: entry.name,
+          anchorId: entry.anchorId,
+          anchorName: anchor?.name ?? entry.anchorId,
+          birthYear: entry.birthYear,
+          deathYear: entry.deathYear,
+          yearsLived: entry.yearsLived,
+          realmReached: entry.realmReached,
+          deathCause: entry.deathCause,
+          karmaEarned: entry.karmaEarned,
+          echoesUnlockedThisLife: echoes,
+        };
+      });
+      return { entries };
     },
 
     getCodexSnapshot(): CodexSnapshot {
