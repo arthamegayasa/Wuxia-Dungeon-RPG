@@ -27,6 +27,15 @@ Design spec §13's Phase 2 exit conditions cover inheritance (done by 2A), **plu
 
 **North star for 2B:** every life in Azure Peaks *feels like a sect story* — sect hierarchy mentioned in events, a first technique learned by mid-life, core-path identity revealed at the 3rd meridian, inventory of manuals/pills/stones visible on the screen, Qi Sensing awakening as a discrete narrative beat.
 
+**Plan corrections (2026-04-25, after code exploration):**
+
+1. `Character.techniques` / `Character.inventory` in §3.1 / §3.2 — Phase 1 already stores these on `RunState` as `learnedTechniques` and `inventory`. 2B-1 reuses the existing fields (no migration).
+2. `TechniqueEffect` 5 kinds in §3.1 — existing implementation has 3; 2B-1 adds `mood_modifier`, `unlock_choice`, and a new `cultivation_multiplier_pct` (to source the `techniqueMultiplier` parameter in `cultivationGainRate`).
+3. `meridian_open` StateDelta currently bypasses `withOpenedMeridian`; 2B-1 Task 12 refactors.
+4. `attemptSublayerBreakthrough` currently hardcoded to Body Tempering; 2B-1 Task 14 refactors polymorphic by realm.
+5. Spirit-root penalty table for the Qi Sensing awakening formula (unspecified in spec §4.2) is shipped in Task 15 as tunable constants: `{none: 999 (locks out), mottled: 15, single_element: 5, dual_element: 0, heavenly: 0}`.
+6. `resolveTechniqueBonus` in [Technique.ts:34](../../../src/engine/cultivation/Technique.ts:34) has no affinity awareness; 2B-1 Task 6 extends the signature to take `corePath` and Task 7 switches the two call sites (GameLoop + engineBridge).
+
 ---
 
 ## 2. Scope & exit criteria
