@@ -36,7 +36,7 @@ import { loadMemories } from '@/content/memories/loader';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { SoulEcho } from '@/engine/meta/SoulEcho';
-import { ForbiddenMemory } from '@/engine/meta/ForbiddenMemory';
+import { ForbiddenMemory, memoryLevelOf } from '@/engine/meta/ForbiddenMemory';
 import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
@@ -101,6 +101,19 @@ export interface TurnPreview {
   choices: Array<{ id: string; label: string }>;
 }
 
+export interface RevealedMemory {
+  id: string;
+  name: string;
+  level: 'fragment' | 'partial' | 'complete';
+  manifestFlavour?: string;  // present iff manifested this life (the snippet key)
+}
+
+export interface RevealedEcho {
+  id: string;
+  name: string;
+  description: string;
+}
+
 export interface BardoPayload {
   lifeIndex: number;
   years: number;
@@ -114,6 +127,12 @@ export interface BardoPayload {
     id: string; name: string; description: string; cost: number;
     affordable: boolean; requirementsMet: boolean; owned: boolean;
   }>;
+  /** Phase 2A-3: memories that manifested this life (10a reveal). */
+  manifestedThisLife: ReadonlyArray<RevealedMemory>;
+  /** Phase 2A-3: memories witnessed this life (10b reveal). Compact list. */
+  witnessedThisLife: ReadonlyArray<RevealedMemory>;
+  /** Phase 2A-3: echoes whose unlock condition fired this life (10c reveal). */
+  echoesUnlockedThisLife: ReadonlyArray<RevealedEcho>;
 }
 
 export interface CreationPayload {
@@ -322,6 +341,35 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     const meta = currentMetaState();
     if (!gs.bardoResult) throw new Error('buildBardoPayload: no bardoResult in store');
     const br = gs.bardoResult;
+    const rs = gs.runState!;
+
+    const witnessedIds = rs.memoriesWitnessedThisLife;
+    const manifestedIds = rs.memoriesManifestedThisLife;
+
+    const witnessedThisLife: RevealedMemory[] = witnessedIds.map((id) => {
+      const m = MEMORY_REGISTRY.get(id);
+      const lifetimeCount = meta.memoriesWitnessed[id] ?? 0;
+      const level = lifetimeCount > 0 ? memoryLevelOf(lifetimeCount) : 'fragment';
+      return { id, name: m?.name ?? id, level };
+    });
+
+    const manifestedThisLife: RevealedMemory[] = manifestedIds.map((id) => {
+      const m = MEMORY_REGISTRY.get(id);
+      const lifetimeCount = meta.memoriesWitnessed[id] ?? 1;
+      const level = memoryLevelOf(Math.max(1, lifetimeCount));
+      return {
+        id, name: m?.name ?? id, level,
+        manifestFlavour: m?.manifestFlavour,
+      };
+    });
+
+    // The just-pushed lineage entry is the last one; pull echo ids from there.
+    const lastEntry = meta.lineage[meta.lineage.length - 1];
+    const echoesUnlockedThisLife: RevealedEcho[] = (lastEntry?.echoesUnlockedThisLife ?? []).map((id) => {
+      const e = ECHO_REGISTRY.get(id);
+      return { id, name: e?.name ?? id, description: e?.description ?? '' };
+    });
+
     return {
       lifeIndex: meta.lifeCount,
       years: br.summary.yearsLived,
@@ -340,6 +388,9 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       karmaBalance: meta.karmaBalance,
       ownedUpgrades: meta.ownedUpgrades,
       availableUpgrades: decorateUpgrades(meta),
+      manifestedThisLife,
+      witnessedThisLife,
+      echoesUnlockedThisLife,
     };
   }
 

@@ -263,3 +263,37 @@ describe('engineBridge.reincarnate', () => {
     expect(result.availableAnchors.length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe('BardoPayload reveal fields', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('exposes manifestedThisLife / witnessedThisLife / echoesUnlockedThisLife after death', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 2 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'Hu');
+    // Pump turns until BARDO transition.
+    for (let i = 0; i < 600; i++) {
+      const next = await engine.peekNextEvent().catch(() => null);
+      if (!next) break;
+      const choiceId = next.choices[0]?.id;
+      if (!choiceId) break;
+      const result = await engine.resolveChoice(choiceId);
+      if ('karmaEarned' in result) {
+        // Bardo reached.
+        expect(result).toHaveProperty('manifestedThisLife');
+        expect(result).toHaveProperty('witnessedThisLife');
+        expect(result).toHaveProperty('echoesUnlockedThisLife');
+        expect(Array.isArray(result.manifestedThisLife)).toBe(true);
+        expect(Array.isArray(result.witnessedThisLife)).toBe(true);
+        expect(Array.isArray(result.echoesUnlockedThisLife)).toBe(true);
+        return;
+      }
+    }
+    throw new Error('did not reach bardo within 600 turns');
+  }, 30000);
+});
