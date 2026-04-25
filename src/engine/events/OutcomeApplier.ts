@@ -2,7 +2,7 @@
 // Pure; returns a new state.
 
 import { Outcome } from '@/content/schema';
-import { applyHp, applyQi, applyInsight, ageDays, withFlag, Character } from '@/engine/character/Character';
+import { applyHp, applyQi, applyInsight, ageDays, withFlag, withOpenedMeridian, Character } from '@/engine/character/Character';
 import { advanceCultivation } from '@/engine/cultivation/CultivationProgress';
 import { RunState } from './RunState';
 import { StateDelta } from './StateDelta';
@@ -71,16 +71,9 @@ function applyDeltaToState(rs: RunState, delta: StateDelta): RunState {
       if (rs.learnedTechniques.includes(delta.id)) return rs;
       return { ...rs, learnedTechniques: [...rs.learnedTechniques, delta.id] };
     case 'meridian_open':
-      // Delegated to the character module in a later phase (actual opening + deviation flow).
-      // For Phase 1B, simply add the id if not present.
-      if (rs.character.openMeridians.includes(delta.id)) return rs;
-      return {
-        ...rs,
-        character: {
-          ...rs.character,
-          openMeridians: [...rs.character.openMeridians, delta.id],
-        },
-      };
+      // Phase 2B-1 Task 12: route through withOpenedMeridian so detectCorePath
+      // fires on the 3rd meridian. Idempotent on already-open ids.
+      return { ...rs, character: withOpenedMeridian(rs.character, delta.id) };
     case 'karma_delta':
       return { ...rs, karmaEarnedBuffer: rs.karmaEarnedBuffer + delta.amount };
     case 'notice_delta': {
