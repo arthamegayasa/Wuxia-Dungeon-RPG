@@ -5,9 +5,10 @@ export interface TitleScreenProps {
   onNewGame: () => void;
   onContinue: () => void;
   onOpenCodex: () => void;
+  onOpenLineage: () => void;
 }
 
-export function TitleScreen({ hasSave, onNewGame, onContinue, onOpenCodex }: TitleScreenProps): React.JSX.Element {
+export function TitleScreen({ hasSave, onNewGame, onContinue, onOpenCodex, onOpenLineage }: TitleScreenProps): React.JSX.Element {
   return (
     <div className="h-full w-full flex items-center justify-center bg-ink-900 text-parchment-100 font-serif">
       <div className="max-w-xl w-full px-8 text-center">
@@ -40,6 +41,13 @@ export function TitleScreen({ hasSave, onNewGame, onContinue, onOpenCodex }: Tit
             className="py-3 px-6 border border-ash-700 text-ash-300 hover:bg-ash-900/30 transition"
           >
             Codex
+          </button>
+          <button
+            type="button"
+            onClick={onOpenLineage}
+            className="py-3 px-6 border border-ash-700 text-ash-300 hover:bg-ash-900/30 transition"
+          >
+            Lineage
           </button>
         </div>
 
