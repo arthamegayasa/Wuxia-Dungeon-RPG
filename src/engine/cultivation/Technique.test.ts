@@ -3,7 +3,6 @@ import {
   TechniqueDef,
   TechniqueEffect,
   CoreAffinityToken,
-  resolveTechniqueBonus,
   affinityMultiplier,
   resolveTechniqueBonusWithAffinity,
   computeCultivationMultiplier,
@@ -38,30 +37,6 @@ const FLAME_PALM: TechniqueDef = {
   ],
   description: '…',
 };
-
-describe('resolveTechniqueBonus', () => {
-  it('returns 0 for unknown category', () => {
-    expect(resolveTechniqueBonus([], 'melee_skill')).toBe(0);
-    expect(resolveTechniqueBonus([IRON_SHIRT], 'melee_skill')).toBe(0);
-  });
-
-  it('sums bonuses across learned techniques for the given category', () => {
-    expect(resolveTechniqueBonus([IRON_SHIRT, FLAME_PALM], 'melee_skill')).toBe(20);
-    expect(resolveTechniqueBonus([IRON_SHIRT, FLAME_PALM], 'brute_force')).toBe(10);
-    expect(resolveTechniqueBonus([IRON_SHIRT, FLAME_PALM], 'resist_physical')).toBe(15);
-  });
-
-  it('ignores non-choice_bonus effects', () => {
-    const t: TechniqueDef = {
-      ...IRON_SHIRT,
-      effects: [
-        { kind: 'qi_regen', amount: 2 },
-        { kind: 'choice_bonus', category: 'melee_skill', bonus: 5 },
-      ],
-    };
-    expect(resolveTechniqueBonus([t], 'melee_skill')).toBe(5);
-  });
-});
 
 describe('TechniqueEffect expansion (Phase 2B-1 Task 2)', () => {
   it('accepts mood_modifier kind', () => {

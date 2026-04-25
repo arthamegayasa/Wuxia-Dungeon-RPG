@@ -11,7 +11,7 @@ import { advanceTurn } from '@/engine/events/AgeTick';
 import {
   createStreakState, recordOutcome, computeStreakBonus, computeWorldMaliceBuff, tickBuff,
 } from '@/engine/choices/StreakTracker';
-import { resolveTechniqueBonus } from '@/engine/cultivation/Technique';
+import { resolveTechniqueBonusWithAffinity } from '@/engine/cultivation/Technique';
 
 const ATTRS = { Body: 28, Mind: 20, Spirit: 15, Agility: 35, Charm: 22, Luck: 42 };
 
@@ -72,7 +72,11 @@ describe('choice-event engine — full turn cycle', () => {
       check: choice.check,
       characterStats: rs.character.attributes,
       characterSkills: {},
-      techniqueBonus: resolveTechniqueBonus([], 'melee_skill'),
+      techniqueBonus: resolveTechniqueBonusWithAffinity({
+        techniques: [],
+        corePath: null,
+        category: 'melee_skill',
+      }),
       itemBonus: 0, echoBonus: 0, memoryBonus: 0, moodBonus: 0,
       worldMalice: computeWorldMaliceBuff(streak),
       streakBonus: computeStreakBonus(streak),
