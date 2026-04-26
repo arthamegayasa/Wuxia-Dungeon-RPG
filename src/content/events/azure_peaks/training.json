@@ -6,34 +6,35 @@
       "category": "life.training",
       "version": 1,
       "weight": 25,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"] },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.elder.quarters] The elder's eyes are closed. $[CHARACTER] waits at the threshold until a single finger lifts.",
-          "'Sit. Show me your qi. Don't hide it — I can smell a blocked meridian from across the room.'"
+          "The elder's quarters sit at the back of the East Court, behind two layers of carved cedar screens and a small stone garden that no outer disciple is permitted to cross unattended. The smell, when the door slides open, is sandalwood and old paper and the faint metallic edge of qi that has been refined for too many decades to ever fully dissipate.",
+          "$[CHARACTER] waits at the threshold until a single finger lifts. 'Sit,' the elder says, eyes still half-closed. 'Show me your qi. Don't hide it — I can smell a blocked meridian from across the room.'"
+        ],
+        "body": [
+          "$[CHARACTER] sinks into the lotus on the offered cushion and lets the breath drop into the dantian the way the senior brothers have shown — slowly, without any ambition to impress. The qi rises in the meridians of the arms and chest the way it has been rising for months: warmly, steadily, with one stubborn cold patch behind the breastbone where the fifth meridian has refused to open.",
+          "The elder says nothing for a long time. Then, without opening his eyes, he raises one hand and presses two fingertips against the air between them — not touching, not within an arm's reach, but the cold patch behind the breastbone responds at once, the way a pond responds to a stone dropped from very high. A small rippling. A small loosening. $[CHARACTER]'s next breath goes a fraction deeper than any breath has gone before.",
+          "'There,' the elder says quietly. 'You feel the catch?' $[CHARACTER] does. The elder's qi has touched the meridian without entering it — has only suggested to it that it might wish to be open — and the meridian, which had spent half a year refusing the disciple's own clumsier prodding, has agreed. The two fingertips withdraw. The cold patch is no longer cold. It is warm. It is open. It is the elder's, and now it is $[CHARACTER]'s, and there will be a whole evening's meditation tonight to settle into the new shape of it."
+        ],
+        "outro": [
+          "When $[CHARACTER] finally opens his eyes, the elder has already returned to whatever inner stillness he keeps. The single finger lifts again, this time toward the door. 'Out. Sit somewhere quiet. Don't speak to anyone for two hours. The meridian will be tender.' $[CHARACTER] bows and goes."
         ]
       },
       "choices": [
         {
-          "id": "ch_guidance_focused",
-          "label": "Sit in stillness and follow the elder's directions.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 35, "stats": { "Spirit": 2, "Mind": 1 }, "difficulty": 55, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.guidance.breakthrough",
-              "stateDeltas": [
-                { "kind": "meridian_open", "id": 5 },
-                { "kind": "meditation_progress", "base": 20, "insightBonus": 3 },
-                { "kind": "insight_delta", "amount": 4 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.guidance.steady",
               "stateDeltas": [
                 { "kind": "meridian_open", "id": 5 },
-                { "kind": "meditation_progress", "base": 10 }
+                { "kind": "meditation_progress", "base": 10 },
+                { "kind": "insight_delta", "amount": 2 }
               ]
             },
             "PARTIAL": {
@@ -43,37 +44,7 @@
                 { "kind": "insight_delta", "amount": 1 }
               ]
             },
-            "FAILURE": {
-              "narrativeKey": "ap.action.guidance.missed",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.guidance.backlash",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -8 },
-                { "kind": "qi_delta", "amount": -5 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_guidance_passive",
-          "label": "Listen but do not push. Watch the elder's technique.",
-          "timeCost": "MEDIUM",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.guidance.observe",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "observed_elder_technique" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.guidance.observe",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            }
+            "FAILURE": { "narrativeKey": "ap.action.guidance.missed", "stateDeltas": [] }
           }
         }
       ],
@@ -84,6 +55,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["alchemy_pavilion"]
@@ -91,34 +63,29 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.alchemy.pavilion] The pavilion smells of burnt pine and concentrated qi. An outer disciple presses a bound manual into $[CHARACTER]'s hands.",
-          "'Iron Mountain Body Seal. Study the diagrams. The pill makes the qi pliable — but if you don't follow the sequence, it'll crack a bone.'"
+          "The Alchemy Pavilion at evening is a different room than the Alchemy Pavilion at noon — the burners banked low, the great copper cauldron at the centre cooling with a faint metallic tick, the walls of stoppered porcelain jars catching the last red light through the high lattice windows.",
+          "An outer disciple presses a bound manual into $[CHARACTER]'s hands. The cover is dark blue silk over wood; the title is stamped in silver. 'Iron Mountain Body Seal. Study the diagrams. The pill makes the qi pliable — but if you don't follow the sequence, it'll crack a bone.' He sets a small porcelain box on the bench. 'Two breaths between the pill and the first sequence. No more, no less.'"
+        ],
+        "body": [
+          "$[CHARACTER] opens the box. The pill inside is the size of a small bean, dark amber, smelling faintly of iron and roasted pine. It is heavier than its size warrants — densely compressed qi, the elders teach, packed beyond what the eye can register. $[CHARACTER] places it on the tongue. It dissolves at once, with a strange dry warmth, and the warmth begins to spread outward from the throat into the chest, into the dantian, into the meridians along the spine.",
+          "The manual lies open at the first diagram. Iron Mountain Body Seal: a sequence of nine internal pressure-points, each held for the count of three full breaths, each releasing into the next without hurry. $[CHARACTER]'s qi, made pliable by the pill, moves to the first point with an obedient ease that no mortal effort has ever produced. The body itself responds — the bones along the forearms grow heavier, denser, the way clay grows denser under the slow patient pressure of a potter's hand.",
+          "By the fifth point the room around $[CHARACTER] has receded to a faint distant glow. The chest cavity feels enormous. The qi inside it has a weight and a shape it has never had before. The sixth point is the difficult one — the diagram warns of the risk of cardiac shock if the pressure is held too long — and $[CHARACTER] holds it for exactly the count of three and releases. The seventh and eighth come more easily. The ninth, at the base of the skull, takes longer than the others, and when it releases there is a faint clear ringing somewhere behind the eyes — the body acknowledging that something has changed in it, permanently, and that the change is now its to keep."
+        ],
+        "outro": [
+          "When $[CHARACTER] opens the eyes the outer disciple is sitting cross-legged across the bench with arms folded, watching with the careful neutrality of a witness who has seen this go wrong before and is relieved that this time it has not. He nods once. 'Iron Mountain. The seal holds. Drink water tonight. Sleep heavily. Tomorrow you'll feel it.'"
         ]
       },
       "choices": [
         {
-          "id": "ch_pill_breakthrough_attempt",
-          "label": "Consume the pill, open the manual, and attempt the seal.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "preconditions": {
-            "requiresItem": ["manual_iron_mountain_body_seal"]
-          },
-          "check": { "base": 30, "stats": { "Body": 2, "Spirit": 1 }, "difficulty": 60, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.pill_breakthrough.mastered",
-              "stateDeltas": [
-                { "kind": "item_remove", "id": "manual_iron_mountain_body_seal", "count": 1 },
-                { "kind": "technique_learn", "id": "iron_mountain_body_seal" },
-                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
-                { "kind": "flag_set", "flag": "learned_iron_mountain_body_seal" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.pill_breakthrough.learned",
               "stateDeltas": [
-                { "kind": "item_remove", "id": "manual_iron_mountain_body_seal", "count": 1 },
                 { "kind": "technique_learn", "id": "iron_mountain_body_seal" },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
                 { "kind": "flag_set", "flag": "learned_iron_mountain_body_seal" }
               ]
             },
@@ -132,35 +99,8 @@
             "FAILURE": {
               "narrativeKey": "ap.action.pill_breakthrough.backlash",
               "stateDeltas": [
-                { "kind": "hp_delta", "amount": -12 },
-                { "kind": "qi_delta", "amount": -8 }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.pill_breakthrough.deviate",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -25 },
-                { "kind": "qi_delta", "amount": -15 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_pill_study_only",
-          "label": "Read the manual first. Don't attempt the pill yet.",
-          "timeCost": "MEDIUM",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.pill_breakthrough.studying",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 3 },
-                { "kind": "flag_set", "flag": "studied_iron_mountain_manual" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.pill_breakthrough.studying",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "qi_delta", "amount": -5 }
               ]
             }
           }
@@ -173,6 +113,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 40,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["outer_sect_courtyard"]
@@ -180,26 +121,24 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.outer.courtyard] A senior disciple marks a circle in the dust with a stick.",
-          "'Common Qi Circulation. Again. Until the qi moves by instinct, not intention.' $[CHARACTER] sets stance."
+          "Mid-morning. The outer courtyard has been swept clear since dawn, the autumn leaves hauled away in two willow baskets, the flagstones pale and clean.",
+          "A senior disciple — a thin sharp-eyed woman called Senior Sister Rou, whom the outer disciples both fear and quietly idolise — marks a circle in the dust at the courtyard's centre with the tip of a stick. 'Common Qi Circulation. Again. Until the qi moves by instinct, not intention.' $[CHARACTER] sets stance inside the circle."
+        ],
+        "body": [
+          "Common Qi Circulation is the first technique every Azure Peaks disciple learns and the last technique any Azure Peaks elder forgets — the bedrock loop, the foundation under all foundations, the one piece of footwork that has never been improved on because it cannot be improved on. The qi enters the dantian, travels up the spine to the crown, down the front centreline back to the dantian, and out into the meridians of the arms and legs in turn. Twelve breaths to a complete cycle. Twelve cycles to a complete sequence.",
+          "$[CHARACTER] begins. The first cycle is awkward — the qi sticks at the crown, hesitates at the throat, has to be coaxed back down through the chest. Senior Sister Rou is watching from the cloister's edge, arms folded, expression neutral. By the third cycle the qi is moving more smoothly. By the sixth the path has begun to feel less like a route to be remembered and more like a current to be ridden. By the ninth $[CHARACTER] notices, with a faint surprise, that the conscious mind has stopped naming the steps. The qi is moving on its own.",
+          "Senior Sister Rou steps off the cloister wall and walks once around the circle. She does not speak. She watches the breathing. She watches the small almost-invisible movements of $[CHARACTER]'s shoulders and abdomen with each cycle. At the end of the twelfth cycle she stops in front of the circle, gives a single small approving nod, and says only: 'Yes.' Then she walks off without further word, leaving $[CHARACTER] standing in the dusted ring with the qi still circling on its own behind the navel."
+        ],
+        "outro": [
+          "$[CHARACTER] holds the stance a few breaths longer, just to feel the new ease of it. The technique has settled. It is not yet mastery. It is the first step before mastery — the body's quiet agreement to do this work without supervision. The bell for second hour rings, distant and clear."
         ]
       },
       "choices": [
         {
-          "id": "ch_drill_disciplined",
-          "label": "Drill the circulation until it flows without effort.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 40, "stats": { "Spirit": 1, "Mind": 1 }, "difficulty": 45, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.drill.mastered",
-              "stateDeltas": [
-                { "kind": "technique_learn", "id": "common_qi_circulation" },
-                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
-                { "kind": "meditation_progress", "base": 12, "insightBonus": 2 },
-                { "kind": "qi_delta", "amount": 5 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.drill.learned",
               "stateDeltas": [
@@ -220,30 +159,6 @@
               "stateDeltas": [
                 { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" }
               ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.drill.scattered",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -3 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_drill_casual",
-          "label": "Go through the motions without real effort.",
-          "timeCost": "SHORT",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.drill.scattered",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
-                { "kind": "meditation_progress", "base": 2 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.drill.scattered",
-              "stateDeltas": []
             }
           }
         }
@@ -255,6 +170,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 20,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["meditation_cave"]
@@ -262,26 +178,24 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.meditation.cave] A fellow disciple kneels behind $[CHARACTER], palms flat against the spine.",
-          "'Third meridian. It's the stubborn one. I'll guide the qi; you hold the path open. Don't tense up.'"
+          "The meditation cave at dusk is a different shape than the meditation cave at dawn — the one entrance dimming to a pale amber rectangle, the stone walls fading to the soft grey of an old robe, the silence somehow heavier and more attentive.",
+          "A fellow disciple — a quiet Hokian boy whose name $[CHARACTER] has only recently learned to be Junior Brother Wei — kneels behind $[CHARACTER]'s cushion with palms flat against the spine. 'Third meridian. It's the stubborn one. I'll guide the qi; you hold the path open. Don't tense up.'"
+        ],
+        "body": [
+          "$[CHARACTER] settles into the lotus and lets the breath go long. Junior Brother Wei's palms are warm — palpably warmer than skin should be — and there is a steady low pressure behind them that is not muscular pressure but the pressure of qi moving outward from his own dantian into the small space between his palms and $[CHARACTER]'s back.",
+          "The third meridian runs along the inside of the right shoulder-blade, down past the seventh rib, and into the small knot of qi that the elders call the lower lake. It has been refusing to open for nine months. Whenever $[CHARACTER] approaches it alone, it tightens like a hand closing into a fist. With Wei's qi behind it — not pushing, only present, only steady — the meridian seems to forget its old quarrel.",
+          "There is a moment when something shifts. $[CHARACTER] cannot name it. Wei's hands have not moved, the pressure has not changed, the breathing has not altered. But the meridian, which a breath ago was a small closed thing, is now an open passage, and the qi that has been waiting in the dantian for nine months floods through it at once, with a cool clear sensation like spring water finding a long-dry channel. Wei's hands withdraw. He exhales once, shakily — the cost of guiding-qi has been his to pay — and sits back on his heels."
+        ],
+        "outro": [
+          "$[CHARACTER] opens the eyes slowly. Wei is wiping his palms on his robe, looking pleased and tired. 'Done,' he says. 'Don't try to use it for two days. Let it set.' Outside the cave the dusk has deepened into early night, and the first stars have come up over the eastern ridge."
         ]
       },
       "choices": [
         {
-          "id": "ch_meridian_trust",
-          "label": "Relax and let the fellow disciple guide your qi.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 30, "stats": { "Spirit": 2 }, "difficulty": 50, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.meridian.opened",
-              "stateDeltas": [
-                { "kind": "meridian_open", "id": 3 },
-                { "kind": "qi_delta", "amount": 8 },
-                { "kind": "insight_delta", "amount": 3 },
-                { "kind": "flag_set", "flag": "third_meridian_opened" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.meridian.opened",
               "stateDeltas": [
@@ -294,42 +208,13 @@
               "narrativeKey": "ap.action.meridian.partial",
               "stateDeltas": [
                 { "kind": "qi_delta", "amount": 2 },
-                { "kind": "hp_delta", "amount": -4 }
+                { "kind": "hp_delta", "amount": -2 }
               ]
             },
             "FAILURE": {
               "narrativeKey": "ap.action.meridian.blocked",
               "stateDeltas": [
-                { "kind": "hp_delta", "amount": -10 }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.meridian.backlash",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -20 },
-                { "kind": "qi_delta", "amount": -10 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_meridian_solo",
-          "label": "Decline the help. Attempt to open the meridian alone.",
-          "timeCost": "LONG",
-          "check": { "base": 15, "stats": { "Spirit": 2, "Body": 1 }, "difficulty": 65, "techniqueBonusCategory": "cultivation_attempt" },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.meridian.solo_success",
-              "stateDeltas": [
-                { "kind": "meridian_open", "id": 3 },
-                { "kind": "insight_delta", "amount": 5 },
-                { "kind": "flag_set", "flag": "third_meridian_opened" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.meridian.blocked",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -6 }
+                { "kind": "hp_delta", "amount": -5 }
               ]
             }
           }
@@ -342,6 +227,7 @@
       "category": "life.training.body",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["beast_pass"]
@@ -349,68 +235,41 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.beast.pass.lower] A training pen: wooden walls, padded poles, and a young mountain boar fitted with a leather harness.",
-          "The sect handler nods. '$[CHARACTER]. Don't draw blood — yours or its.' The boar snorts."
+          "The training pen at the edge of Beast Pass is a circle of wooden walls reinforced with iron strapping, with padded poles every three paces and a sand-floored centre that has absorbed the impacts of three generations of disciples. The smell is of worked leather and animal sweat and the faint mineral ozone of qi-broken sweat.",
+          "The sect handler — a broad-chested veteran named Master Khor whose left arm carries the tooth-scars of three different beasts — nods as $[CHARACTER] climbs the gate. 'Mountain boar. Young one. Don't draw blood — yours or its.' The boar in the pen snorts once and lowers its head."
+        ],
+        "body": [
+          "The boar is smaller than a full mountain boar but only by a quarter — still half again as heavy as $[CHARACTER], still tipped with twin curving tusks of yellowed bone. The leather harness around its shoulders is for the handler's safety, not the disciple's. $[CHARACTER] takes a wooden practice staff from the rack at the gate, sets the back foot, and breathes the way Master Khor demonstrated on the first day: from the dantian, slow, the qi rising into the arms but not yet committed.",
+          "The boar charges. $[CHARACTER] sidesteps — not with the legs alone, but with a small clean burst of qi through the right meridian that turns the body half a step faster than mortal reflex permits. The boar's shoulder hammers past where $[CHARACTER] was a heartbeat ago. The staff catches the flank as it passes, a clean firm tap, not enough to hurt, enough to register. Master Khor grunts approval from the gate.",
+          "The boar wheels and charges again. This time $[CHARACTER] stands the line — staff angled across the chest, qi banked into the front meridians of the legs the way Master Khor has taught — and meets the charge head-on. The impact is enormous. $[CHARACTER]'s heels skid two inches in the sand. The staff holds. The boar's momentum dies against it. For one long animal moment the two of them are pressed together, breathing each other's heat, and then the boar grunts and steps back and lowers its head, and the contest is over. Not a victory. An understanding."
+        ],
+        "outro": [
+          "Master Khor opens the gate. The boar trots out into the side pen as if it has done this many times. He looks at $[CHARACTER] with the considering eye of a man who has watched a great many disciples meet a great many boars. 'Better than last week,' he says. 'Worse than next week, if you bother to come back.' He turns away. The lesson is over."
         ]
       },
       "choices": [
         {
-          "id": "ch_beast_spar_frontal",
-          "label": "Meet the boar head-on. Break its charge.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Body": 2, "Agility": 1 }, "difficulty": 55, "techniqueBonusCategory": "melee_skill" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.beast_spar.dominated",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
-                { "kind": "meditation_progress", "base": 10, "insightBonus": 2 },
-                { "kind": "flag_set", "flag": "beast_spar_winner" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.beast_spar.held",
               "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "hp_delta", "amount": -3 }
               ]
             },
             "PARTIAL": {
               "narrativeKey": "ap.action.beast_spar.bruised",
               "stateDeltas": [
-                { "kind": "hp_delta", "amount": -5 },
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+                { "kind": "hp_delta", "amount": -8 }
               ]
             },
             "FAILURE": {
               "narrativeKey": "ap.action.beast_spar.thrown",
               "stateDeltas": [
                 { "kind": "hp_delta", "amount": -12 }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.beast_spar.trampled",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -25 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_beast_spar_dodge",
-          "label": "Step aside. Use the boar's momentum against it.",
-          "timeCost": "MEDIUM",
-          "check": { "base": 35, "stats": { "Agility": 2 }, "difficulty": 45, "techniqueBonusCategory": "dodge_flee" },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.beast_spar.sidestepped",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.beast_spar.bruised",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -8 }
               ]
             }
           }
@@ -423,6 +282,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 35,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["scripture_hall"]
@@ -430,25 +290,24 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.scripture.hall.candle] A different scroll today — one the librarian keeps behind the locked cabinet.",
-          "$[CHARACTER] unrolls it carefully. The qi principles inside are dense, layered. Some passages loop back on themselves."
+          "A different scroll today. Not the model text laid out on the public desk — that is the Common Qi Circulation, copied a thousand times by a thousand disciples — but a scroll the librarian keeps in the locked cedar cabinet at the back of the hall, behind a small bronze grille and under a layer of yellow silk dust-cover.",
+          "$[CHARACTER] has been granted access for one afternoon. The librarian sets the scroll on the desk, indicates the small reading-lamp, and withdraws to the far end of the hall without a word. The qi-principles inside this scroll are dense, layered, and in places contradict themselves on purpose. The text knows it is dangerous; that is part of the test."
+        ],
+        "body": [
+          "The first reading is a slow disorientation. Every sentence makes sense in isolation; every paragraph as a whole begins to slide. $[CHARACTER] reads the first column twice, then a third time, before allowing the brush-tip to move toward the second. The lamp's small flame steadies the shadows on the parchment.",
+          "By the third column there is the first of the deliberate paradoxes — a passage that asserts the qi must be guided downward to ascend, and ascended to descend, and that any disciple who reads this passage as a contradiction has not yet earned the right to read past it. $[CHARACTER] sits very still for a long time. Then the small clicked recognition arrives, somewhere behind the eyes, and the paradox is no longer a paradox: the text is describing not the qi's path but the breath's relation to it. The breath descends; the qi, suspended in the descending breath, ascends within the descending vessel. Both directions at once. Both true.",
+          "The afternoon passes in this slow careful way. By the time the lamp has burned down a finger's width $[CHARACTER] has worked through six columns of the scroll and understood, perhaps, two of them properly. The other four sit in memory like seeds in winter ground, waiting for some later season to germinate. The librarian, when he returns to roll the scroll, says only: 'Come back next week. Read the seventh column. Don't try to read past it until you understand it.'"
+        ],
+        "outro": [
+          "Walking back to the disciple hall, $[CHARACTER] passes Senior Sister Rou at the courtyard gate. She glances at the inkstain on the cuff and the slow blink of someone whose mind has been somewhere else. She says nothing. The corner of her mouth tightens in something that is not quite a smile but is not nothing either."
         ]
       },
       "choices": [
         {
-          "id": "ch_scripture_deep_study",
-          "label": "Read slowly. Let each concept settle before the next.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 30, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 50, "techniqueBonusCategory": "lore_scholarship" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.scripture.epiphany",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 6 },
-                { "kind": "meditation_progress", "base": 18, "insightBonus": 3 },
-                { "kind": "flag_set", "flag": "scripture_deep_insight" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.scripture.absorbed",
               "stateDeltas": [
@@ -468,28 +327,6 @@
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 1 }
               ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.scripture.smudged",
-              "stateDeltas": []
-            }
-          }
-        },
-        {
-          "id": "ch_scripture_skim",
-          "label": "Skim for the key principles. Don't waste a full day.",
-          "timeCost": "MEDIUM",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.scripture.steady",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 },
-                { "kind": "meditation_progress", "base": 4 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.scripture.smudged",
-              "stateDeltas": []
             }
           }
         }
