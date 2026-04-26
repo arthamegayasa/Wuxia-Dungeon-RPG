@@ -6,35 +6,38 @@
       "category": "life.daily",
       "version": 1,
       "weight": 90,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"] },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[ap.dawn.peak] $[CHARACTER] sits cross-legged on the cold stone of the outer courtyard.",
-          "The sect bell has not yet rung; the disciples not yet gathered."
+          "Dawn finds the Azure Peaks half-drowned in mist. The lower terraces are a pale white sea, and only the black tile of the inner sanctum's roof breaks above it like the back of a sleeping animal.",
+          "$[CHARACTER] sits cross-legged on the cold stone of the outer courtyard, hands resting palm-up on the knees. The sect bell has not yet rung. The other disciples are still curled in their straw rooms below."
+        ],
+        "body": [
+          "Lotus posture. The breath in slowly through the nose, drawn down past the heart, gathered in the hollow place beneath the navel that mortals never know they possess. The dantian. Hold. The breath out through the mouth in a thin, traceable stream of fog.",
+          "By the twentieth breath the qi in the air has stopped being abstract. It is a presence, a weight, the difference between drinking water and drinking thin wine. The meridians along the inside of the arms hum faintly with it. Small rivers waking from a long sleep — the wrist, the elbow, the shoulder, then the spine. $[CHARACTER] does not push. The old elders teach that pushing breaks the channel; only listening opens it.",
+          "There is a moment, somewhere between the fortieth breath and the fiftieth, when the boundary between the body and the air on the courtyard stones grows thin. The qi outside and the qi inside are no longer two things. They are one thing, lent to the lungs for the time of one breath. When $[CHARACTER] exhales, that lent thing returns to the air. When the inhalation begins again, it returns to the body. A small tide. The old, original tide."
+        ],
+        "outro": [
+          "When the bell finally rings — single, low, long — $[CHARACTER] opens the eyes onto a courtyard turning gold with the climbed sun. The mist has burned off. The inner-sanctum tiles glitter. Senior Brother Tang passes silently along the cloister and does not glance over."
         ]
       },
       "choices": [
         {
-          "id": "ch_circulate_focused",
-          "label": "Circulate qi with full focus.",
-          "timeCost": "SHORT",
-          "check": { "base": 30, "stats": { "Spirit": 1 }, "difficulty": 35, "techniqueBonusCategory": "meditate" },
-          "outcomes": {
-            "CRIT_SUCCESS": { "narrativeKey": "ap.action.circulate.deep", "stateDeltas": [{ "kind": "meditation_progress", "base": 20, "insightBonus": 2 }] },
-            "SUCCESS":      { "narrativeKey": "ap.action.circulate.steady", "stateDeltas": [{ "kind": "meditation_progress", "base": 12 }] },
-            "PARTIAL":      { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 6 }] },
-            "FAILURE":      { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [] },
-            "CRIT_FAILURE": { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [{ "kind": "qi_delta", "amount": -3 }] }
-          }
-        },
-        {
-          "id": "ch_circulate_idle",
-          "label": "Sit, but let the mind drift.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
           "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 3 }] },
-            "FAILURE": { "narrativeKey": "ap.action.circulate.scattered" }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.circulate.steady",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 12 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 6 }] },
+            "FAILURE": { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [] }
           }
         }
       ],
@@ -45,33 +48,38 @@
       "category": "life.daily",
       "version": 1,
       "weight": 70,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"] },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.alchemy.pavilion] An elder waves $[CHARACTER] over.",
-          "'Boy. Girl. Whichever. Take this jar to the Crystal Vale steward, and don't drop it.'"
+          "The Alchemy Pavilion smells of burnt pine and concentrated qi the way other halls smell of incense — a presence so constant that the disciples who work there stop noticing, and the ones who pass through stop only on the threshold to inhale once before going in.",
+          "$[CHARACTER] is crossing the lower cloister with a basket of swept-out leaves when an elder waves from the pavilion's open shutter. 'Boy. Girl. Whichever. Take this jar to the Crystal Vale steward, and don't drop it.'"
+        ],
+        "body": [
+          "The jar is sealed with red wax over its bamboo lid, and the wax is stamped with the elder's chop. The clay is warm to the touch — not from the kiln, but from whatever lives inside it. There is a thin, faint sound when $[CHARACTER] lifts it, like the tap of a fingernail against the inside of the wall, although nothing is moving in the courtyard.",
+          "Crystal Vale is six li down the lower trail, past the disciple terraces and the small jade-pillar bridge that crosses the upper waterfall. The path is paved with cut blue stone where the sect's elders walk, and packed earth elsewhere. $[CHARACTER] keeps the jar tucked in the crook of one arm and the other hand free for balance. The early air is cold; the qi here is dense enough that breathing it feels almost like drinking.",
+          "Halfway down, where the trail switchbacks past the ruined shrine to a forgotten ancestor, a pair of inner disciples come up the other way and step aside without slowing. Their eyes flick to the wax seal. One of them gives the smallest possible nod — a courtesy, not a greeting. $[CHARACTER] passes on. The jar's faint tapping has not stopped."
+        ],
+        "outro": [
+          "At Crystal Vale the steward — a whip-thin woman with ink-stained sleeves — takes the jar with both hands, glances at the seal, and tucks a single low-grade spirit stone into $[CHARACTER]'s palm. 'Tell the elder it arrived warm. He'll know what that means.' The walk back uphill is longer than the walk down was."
         ]
       },
       "choices": [
         {
-          "id": "ch_run_errand",
-          "label": "Carry the jar carefully.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 50, "stats": { "Agility": 1, "Luck": 1 }, "difficulty": 40 },
           "outcomes": {
-            "SUCCESS":      { "narrativeKey": "ap.action.errand.delivered", "stateDeltas": [{ "kind": "item_add", "id": "spiritual_stone", "count": 1 }, { "kind": "flag_set", "flag": "trusted_with_errands" }] },
-            "FAILURE":      { "narrativeKey": "ap.action.errand.dropped", "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }] },
-            "CRIT_FAILURE": { "narrativeKey": "ap.action.errand.dropped", "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }] }
-          }
-        },
-        {
-          "id": "ch_refuse_errand",
-          "label": "Pretend not to hear.",
-          "timeCost": "SHORT",
-          "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.errand.refused" },
-            "FAILURE": { "narrativeKey": "ap.action.errand.refused" }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.errand.delivered",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 1 },
+                { "kind": "flag_set", "flag": "trusted_with_errands" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.errand.delivered", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.errand.delivered", "stateDeltas": [] }
           }
         }
       ],
@@ -82,32 +90,39 @@
       "category": "life.daily",
       "version": 1,
       "weight": 60,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"], "locales": ["scripture_hall"] },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.scripture.hall.candle] $[CHARACTER] takes brush in hand. The text is the Common Qi Circulation, copied for the thousandth time by the thousandth disciple."
+          "The Scripture Hall is a long stone room with a single row of low writing-desks down its length, lacquered black with three centuries of disciple ink, and a single thick candle at the head of each desk against the autumn dimness.",
+          "$[CHARACTER] takes brush in hand. The text is the Common Qi Circulation, copied for the thousandth time by the thousandth disciple. The librarian has set out the model scroll at the desk's head, the rice-paper sheaf to the right, the inkstone to the left, the small porcelain water-pot in the corner."
+        ],
+        "body": [
+          "Stroke. The brush bites the paper. The first character is the radical for breath, and the breath itself is the lesson — the librarian has said this many times. The hand moves before the mind has agreed to it. Stroke, lift, dip, stroke. Half a column down, a small mistake — the third character's hook is slightly too sharp — and $[CHARACTER] pauses, considers, and lets it stand. The librarian will see it; the librarian will not say anything; the librarian's silence is the lesson.",
+          "By the second hour the candle has burned a finger's width down. The hall is so quiet that the only sounds are the small wet tick of brush meeting paper and, at the far end, an older disciple's slow steady inhalation as he reads under his breath. Outside, the wind has lifted, and somewhere in the high pines a bell hung in a cedar swings once and is still.",
+          "Halfway down the seventh column the qi-character — the one that looks like steam rising from a cooking-pot — comes out of the brush whole and right, and there is a small click of recognition somewhere behind the eyes. The character is not just a shape. It is a thing. The breath is a thing. The thing the brush has just made is the breath looking at itself. $[CHARACTER] copies the next character and the next, and the small clicked recognition does not leave."
+        ],
+        "outro": [
+          "When the candle gutters and the hall begins its slow dimming, the librarian moves down the row collecting the day's pages. He glances at $[CHARACTER]'s sheaf, raises one eyebrow a quarter-inch, and moves on. Nothing said. The lesson is in what was not."
         ]
       },
       "choices": [
         {
-          "id": "ch_copy_carefully",
-          "label": "Copy with care, follow each stroke.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 35, "stats": { "Mind": 2 }, "difficulty": 45, "techniqueBonusCategory": "study" },
           "outcomes": {
-            "CRIT_SUCCESS": { "narrativeKey": "ap.action.scripture.absorbed", "stateDeltas": [{ "kind": "insight_delta", "amount": 4 }, { "kind": "meditation_progress", "base": 8, "insightBonus": 1 }, { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" }] },
-            "SUCCESS":      { "narrativeKey": "ap.action.scripture.steady", "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }, { "kind": "meditation_progress", "base": 4 }, { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" }] },
-            "FAILURE":      { "narrativeKey": "ap.action.scripture.smudged", "stateDeltas": [] }
-          }
-        },
-        {
-          "id": "ch_copy_quickly",
-          "label": "Copy fast, finish the quota.",
-          "timeCost": "MEDIUM",
-          "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.scripture.smudged", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
-            "FAILURE": { "narrativeKey": "ap.action.scripture.smudged" }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.scripture.steady",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "meditation_progress", "base": 4 },
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.scripture.smudged", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.scripture.smudged", "stateDeltas": [] }
           }
         }
       ],
@@ -118,31 +133,37 @@
       "category": "life.daily",
       "version": 1,
       "weight": 80,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"] },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.outer.courtyard] $[CHARACTER] sweeps the courtyard. Every leaf has fallen since the bell rang at dawn."
+          "The outer courtyard at the foot of the East Court is paved with grey flagstone, each stone the breadth of two palms, fitted by some forgotten formation-master so that no weed can find its way up between them.",
+          "And yet every morning the leaves come down. The wind is the wind; the cedars are the cedars; the courtyard fills itself with red and gold at the rate at which $[CHARACTER] can sweep it empty."
+        ],
+        "body": [
+          "The broom is bamboo, the bristles tied with wet hemp that has been re-tied so many times the knots are the size of walnuts. $[CHARACTER] sweeps in slow long strokes from the base of the cloister wall outward, the way the steward demonstrated on the first morning. Step. Stroke. Step. Stroke. The leaves gather and gather and become a small red drift at the courtyard's edge.",
+          "Two outer disciples cross the courtyard with armfuls of folded robes for the laundry house. One of them is a girl whose name $[CHARACTER] has not yet learned but whose face $[CHARACTER] now knows — narrow, watchful, a small scar across the bridge of the nose. She steps around the swept leaves without looking at them, and without looking at $[CHARACTER]. This too is a courtesy, of a kind.",
+          "By the time the courtyard is clear the sun has climbed above the east cloister roof, and the shadow of the great bronze incense-burner has retracted to a small black puddle directly beneath it. $[CHARACTER]'s back has the steady warm ache of work that has been done correctly. Two more leaves come down off the cedar above the south wall and settle, slowly, on the swept stone."
+        ],
+        "outro": [
+          "The steward passes through, glances at the courtyard, glances at $[CHARACTER], says nothing. The two new leaves wait to be addressed. They are part of tomorrow."
         ]
       },
       "choices": [
         {
-          "id": "ch_chore_diligent",
-          "label": "Sweep until the stone shines.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 60, "stats": { "Body": 1 }, "difficulty": 30 },
           "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.chore.done", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Body", "amount": 1 }] },
-            "FAILURE": { "narrativeKey": "ap.action.chore.done" }
-          }
-        },
-        {
-          "id": "ch_chore_lazy",
-          "label": "Push leaves to the corner. Good enough.",
-          "timeCost": "SHORT",
-          "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.chore.skimped" },
-            "FAILURE": { "narrativeKey": "ap.action.chore.skimped" }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.chore.done",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.chore.done", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.chore.done", "stateDeltas": [] }
           }
         }
       ],
@@ -153,34 +174,38 @@
       "category": "life.daily",
       "version": 1,
       "weight": 70,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"], "locales": ["outer_sect_courtyard"] },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.outer.courtyard] An older outer disciple gestures at $[CHARACTER]. 'Spar with me. Wood swords. Don't make me hit you twice.'"
+          "The outer-sect sparring circle has been worn into the courtyard's flagstone by a thousand bare feet over a hundred years — a faint dust-darker oval visible only when the morning light slants the right way. The wooden practice swords are kept in a rack against the eastern cloister wall, leaning together like tired soldiers.",
+          "An older outer disciple gestures at $[CHARACTER]. 'Spar with me. Wood swords. Don't make me hit you twice.' His tone is bored. His eyes are not."
+        ],
+        "body": [
+          "The wood is heavier than $[CHARACTER] expects, the balance forward, the grip slightly too thick for the hand. The senior moves first — a clean diagonal cut from the shoulder, no flourish, the kind of strike that has been corrected so many times in his own sparring that it has become invisible to him. $[CHARACTER] catches it on the high block and feels the impact through the wrist into the elbow. The wrist holds.",
+          "The senior steps off and resets. There is a small approving tightening at the corner of his mouth. The second exchange is faster — feint to the head, real cut to the hip, and $[CHARACTER] is half a beat slow. The wooden blade catches the flank with the dull soft thud that, in three breaths, will become a long bruise. Step back. Reset. The senior does not press the hit.",
+          "By the fifth exchange there is a kind of conversation between the two swords. $[CHARACTER]'s qi is moving in the meridians of the sword-arm — not channelled, not directed, only present, the way a faint warmth is present near a banked stove. The senior notices it. He says nothing, but his next strike comes a fraction less hard, and the one after that a fraction less still, and at the end of the round he steps back, lowers his sword, nods once, and walks off without speaking."
+        ],
+        "outro": [
+          "$[CHARACTER] returns the sword to the rack. The bruise on the flank will be the colour of a plum by evening. The wrist still hums faintly. Somewhere above the cloister roof a hawk is calling. The morning is not yet done."
         ]
       },
       "choices": [
         {
-          "id": "ch_spar_aggressive",
-          "label": "Press the attack.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 30, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 50, "techniqueBonusCategory": "strike" },
           "outcomes": {
-            "CRIT_SUCCESS": { "narrativeKey": "ap.action.spar.victory", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Body", "amount": 2 }, { "kind": "flag_set", "flag": "spar_winner" }] },
-            "SUCCESS":      { "narrativeKey": "ap.action.spar.draw", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Body", "amount": 1 }] },
-            "FAILURE":      { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }] },
-            "CRIT_FAILURE": { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -15 }] }
-          }
-        },
-        {
-          "id": "ch_spar_evade",
-          "label": "Stay defensive, dodge until time.",
-          "timeCost": "MEDIUM",
-          "check": { "base": 50, "stats": { "Agility": 2 }, "difficulty": 40, "techniqueBonusCategory": "evade" },
-          "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.spar.draw", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Agility", "amount": 1 }] },
-            "FAILURE": { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }] }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.spar.draw",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "hp_delta", "amount": -3 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }] },
+            "FAILURE": { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }] }
           }
         }
       ],
@@ -191,32 +216,38 @@
       "category": "life.meditation",
       "version": 1,
       "weight": 75,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"], "locales": ["meditation_cave"] },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.meditation.cave] The cave is dim. $[CHARACTER] sits on the cushion the previous disciple wore thin."
+          "The meditation cave at the back of the outer disciple compound is a small natural hollow widened over generations by patient picks — barely tall enough to stand in, wide enough for four cushions in a row. The stone is the dark grey of the mountain's bones. The air inside is colder than the air outside, and faintly, persistently, smells of old incense.",
+          "$[CHARACTER] takes the cushion the previous disciple wore thin. There are three more cushions and no other disciples this hour."
+        ],
+        "body": [
+          "Lotus. Hands cupped in the lap, left over right, the thumbs barely touching. Three slow breaths to settle. The eyes do not need to close — half-closed is sufficient — but $[CHARACTER] closes them anyway. The cave's small darkness becomes the larger darkness behind the eyelids, and the two darknesses become indistinguishable.",
+          "The breath slows. The heart slows. The qi at the dantian, which all morning has been a low warm pool, begins to move in slow circular currents — not yet circulated through the meridians, only stirred, the way water stirs in a clay basin when nothing has touched it but its own weight. Below conscious direction, somewhere beneath the place where decision happens, the qi finds the start of the small loop the elders call the Beggar's Cycle and begins, very slowly, to walk it.",
+          "Time becomes strange. Outside, somewhere on the trail above the cave, a bird is calling — three notes, pause, three notes. Each call seems to take a small forever to complete. Between the second and third notes the qi has gone twice around the loop. Between the third call and the next bird's answer it has gone four times. $[CHARACTER] has the very faint distant awareness that the bone-cold of the cave floor through the cushion has stopped registering. The body has banked itself low. The mind is going somewhere very quiet."
+        ],
+        "outro": [
+          "When the awareness returns it returns the way light returns to a room — not at once, but in stages. The cave is dimmer than it was; the light has shifted a quarter-turn around the entrance; the qi at the dantian is denser than it was at sitting, and steadier. $[CHARACTER] uncurls the legs slowly. The right one is asleep. The other one is not."
         ]
       },
       "choices": [
         {
-          "id": "ch_meditate_deep",
-          "label": "Sink. Let the mind go quiet.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 40, "stats": { "Spirit": 2 }, "difficulty": 50, "techniqueBonusCategory": "meditate" },
           "outcomes": {
-            "CRIT_SUCCESS": { "narrativeKey": "ap.action.meditate.deep", "stateDeltas": [{ "kind": "meditation_progress", "base": 25, "insightBonus": 3 }] },
-            "SUCCESS":      { "narrativeKey": "ap.action.meditate.steady", "stateDeltas": [{ "kind": "meditation_progress", "base": 15 }] },
-            "FAILURE":      { "narrativeKey": "ap.action.meditate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 4 }] }
-          }
-        },
-        {
-          "id": "ch_meditate_shallow",
-          "label": "Stay surface, listen for footsteps.",
-          "timeCost": "MEDIUM",
-          "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.meditate.shallow", "stateDeltas": [{ "kind": "meditation_progress", "base": 6 }] },
-            "FAILURE": { "narrativeKey": "ap.action.meditate.shallow" }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.meditate.steady",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 15 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.meditate.shallow", "stateDeltas": [{ "kind": "meditation_progress", "base": 6 }] },
+            "FAILURE": { "narrativeKey": "ap.action.meditate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 4 }] }
           }
         }
       ],
@@ -227,32 +258,38 @@
       "category": "life.daily",
       "version": 1,
       "weight": 60,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"], "seasons": ["spring", "summer", "autumn"] },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.beast.pass.lower] $[CHARACTER] climbs the lower slopes with a rattan basket. The sect needs herbs; the elders, when they cannot get them, become irritable."
+          "The lower slopes of the Beast Pass are a tangled territory — neither sect-tended garden nor true wilderness — where the herbs the alchemy elders need grow at their own pace, in their own ravines, on their own terms.",
+          "$[CHARACTER] climbs out of the cloister gate before second bell with a rattan basket over one shoulder and a bone-handled trowel tucked in the sash. The sect needs heart-leaf root and the small white silver-fern by the second decade of the month; the elders, when they cannot get them, become irritable in ways that fall on the outer disciples first."
+        ],
+        "body": [
+          "The trail thins to a goat-track within the first li, and then to barely a suggestion of trampled grass within the second. The qi here is wilder than in the cultivated terraces — looser, less tame, threaded through with the small bright presences of growing things. $[CHARACTER]'s meridians register it the way ears register distant music — a presence at the edge of attention, not a thing to be focused on.",
+          "Heart-leaf grows in the moist hollows where two small streams meet. Silver-fern grows on the north faces of the broken granite outcrops, in clumps the size of a fist. $[CHARACTER] works methodically, the way the herb-elder demonstrated — finger and thumb at the base of the stalk, twist not pull, the trowel only for the deeper roots. By midmorning the basket holds half a day's worth of heart-leaf and a small handful of silver-fern wrapped in damp moss.",
+          "Past noon, in a shaded ravine where the stream runs clear over grey stones, $[CHARACTER] finds something the elder did not assign — a single low cluster of pale violet flowers at the edge of a flat rock, the leaves serrated, the stamens almost gold. The herb-elder has shown drawings of this. Spirit-stone moss. Small but real. $[CHARACTER] cuts it carefully and wraps it separately from the rest. A small bonus. The basket comes back heavier than it went out."
+        ],
+        "outro": [
+          "Back at the cloister the herb-elder takes the basket without a word, sets the assigned bundles on her workbench, and pauses at the wrapped spirit-stone moss. She glances up. 'You found this where?' $[CHARACTER] tells her. She nods, says 'Good,' and does not speak again."
         ]
       },
       "choices": [
         {
-          "id": "ch_herb_thorough",
-          "label": "Search every ravine.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 35, "stats": { "Mind": 1, "Luck": 2 }, "difficulty": 45 },
           "outcomes": {
-            "CRIT_SUCCESS": { "narrativeKey": "ap.action.herb.bounty", "stateDeltas": [{ "kind": "item_add", "id": "low_grade_qi_pill", "count": 1 }, { "kind": "item_add", "id": "spiritual_stone", "count": 2 }] },
-            "SUCCESS":      { "narrativeKey": "ap.action.herb.found", "stateDeltas": [{ "kind": "item_add", "id": "spiritual_stone", "count": 1 }] },
-            "FAILURE":      { "narrativeKey": "ap.action.herb.empty" }
-          }
-        },
-        {
-          "id": "ch_herb_safe",
-          "label": "Stay near the path.",
-          "timeCost": "MEDIUM",
-          "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.herb.empty" },
-            "FAILURE": { "narrativeKey": "ap.action.herb.empty" }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.herb.found",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "spiritual_stone", "count": 1 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.herb.empty", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.herb.empty", "stateDeltas": [] }
           }
         }
       ],
@@ -263,31 +300,35 @@
       "category": "life.daily",
       "version": 1,
       "weight": 90,
+      "kind": "beat",
       "conditions": { "regions": ["azure_peaks"] },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[ap.outer.dining.hall] Supper. Plain rice, sect-grown vegetables, and the rumor of a roast on the seventh day."
+          "The outer dining hall is a long low building of dark cedar timbers and a tile roof, set at the foot of the East Court terrace where the three lower trails meet. The benches are plain. The bowls are plain. The food is plain.",
+          "$[CHARACTER] takes a bowl from the stack at the door and joins the queue. Supper tonight is rice with sect-grown vegetables, and the rumour, which has circulated the outer disciples since the sun dropped behind the western peak, of a roast on the seventh day."
+        ],
+        "body": [
+          "The kitchen disciple ladles rice into the bowl with the practiced indifference of someone who does this two hundred times an evening. A second disciple adds the vegetables — green stems boiled, a slab of pickled radish, a single small dried mushroom whose presence is a kindness rather than a calculation. $[CHARACTER] takes the bowl and threads between the long tables to the spot at the end where the senior brothers do not sit and the new disciples have not yet learned to claim.",
+          "The rice is good. The sect's terraces grow it well. There is a kind of qi in the food itself — a faint, present, slightly metallic warmth at the back of the throat after the first three swallows, the way well-water from a spirit-vein tastes — that is not an ordinary peasant table's rice. The body recognises it before the mouth does. The hands holding the bowl steady.",
+          "Across the hall a small knot of inner disciples are arguing very quietly about a sword form. One of them gestures with the chopsticks; the next one makes a small dismissive sound; the third laughs once, brief, into the bowl. They do not look at the outer disciples' end of the hall. The outer disciples do not look at them. This is the geography of the room and it has been the geography of the room since long before $[CHARACTER] arrived."
+        ],
+        "outro": [
+          "When the bowl is empty $[CHARACTER] returns it to the wash-pile by the kitchen door. The walk back along the lower terrace is short. The mountain air at evening is sharp and clean and very cold; the body, fed, banks its small new warmth carefully against the night."
         ]
       },
       "choices": [
         {
-          "id": "ch_eat_rest",
-          "label": "Eat, then rest.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
           "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.meal.rest", "stateDeltas": [{ "kind": "hp_delta", "amount": 5 }] },
-            "FAILURE": { "narrativeKey": "ap.action.meal.rest" }
-          }
-        },
-        {
-          "id": "ch_eat_ask_around",
-          "label": "Eat. Ask the table for sect news.",
-          "timeCost": "SHORT",
-          "check": { "base": 50, "stats": { "Charm": 1 }, "difficulty": 35, "techniqueBonusCategory": "social" },
-          "outcomes": {
-            "SUCCESS": { "narrativeKey": "ap.action.meal.rumor", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }, { "kind": "flag_set", "flag": "knows_recent_sect_rumor" }] },
-            "FAILURE": { "narrativeKey": "ap.action.meal.silent" }
+            "SUCCESS": {
+              "narrativeKey": "ap.action.meal.rest",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": 5 }]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.meal.rest", "stateDeltas": [{ "kind": "hp_delta", "amount": 2 }] },
+            "FAILURE": { "narrativeKey": "ap.action.meal.rest", "stateDeltas": [] }
           }
         }
       ],
