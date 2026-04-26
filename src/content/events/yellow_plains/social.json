@@ -6,52 +6,41 @@
       "category": "life.social",
       "version": 1,
       "weight": 20,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.village] The village elder sits beneath the banyan, back straight despite the years.",
-          "$[CHARACTER] crouches by his stool. $[npc.elder.wisdom]"
+          "The village elder sits beneath the old banyan most afternoons, back kept straight by an iron will rather than by any remaining strength of the spine. He is one hundred and three. He remembers two emperors before the present one.",
+          "$[CHARACTER] crouches by his low stool, hands folded as is right."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The elder does not look at him. The elder looks at the leaves of the banyan, which are turning their pale undersides to a wind that has not arrived yet. After a long while he begins to speak — not in answer to any asked question, because $[CHARACTER] has asked nothing, but as if continuing a conversation begun a long time ago with someone now dead.",
+          "He talks about a winter when half the village died. He talks about the old salt road and how it was lost to bandits in his grandfather's time. He talks about a girl he loved when he was the young farmer's age who married a man from the next county and died bearing twins, and how he still remembers the exact angle of her chin when she laughed. The voice is dry and even and sometimes very faintly amused.",
+          "Listening, the boy understands that the old man is not teaching anything. The old man is simply offering — the way one offers a bowl of water — what he has. The years, the mistakes, the small remembered light. To take it, $[CHARACTER] must be quiet. To take it well, he must let what he hears change the shape of what he thinks he already knows."
+        ],
+        "outro": [
+          "When the elder finally falls silent the wind has come up. The banyan sighs. The old man's eyes close, half-smiling, and $[CHARACTER] withdraws without a word."
+        ]
       },
       "choices": [
         {
-          "id": "ch_listen",
-          "label": "Listen closely to what the old man says.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 30, "stats": { "Charm": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "npc.elder.wisdom",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 4 },
-                { "kind": "flag_set", "flag": "friend_of_elder" }
-              ],
-              "witnessMemory": "silent_waters_scripture"
-            },
             "SUCCESS": {
               "narrativeKey": "npc.elder.wisdom",
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 2 },
                 { "kind": "flag_set", "flag": "friend_of_elder" }
-              ]
+              ],
+              "witnessMemory": "silent_waters_scripture"
             },
-            "PARTIAL": {
-              "narrativeKey": "npc.elder.warning",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "npc.elder.wisdom", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "npc.elder.wisdom", "stateDeltas": [] }
           }
         }
       ],
@@ -62,51 +51,37 @@
       "category": "life.social",
       "version": 1,
       "weight": 15,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] A sibling's voice rises sharp in the small room — about grain, about chores, about an old slight.",
-          "$[CHARACTER] feels the heat climb up the neck."
+          "It begins, as it always begins, over nothing. A bowl moved. A chore left undone. A single ill-considered word said too loud across the small room of a small house.",
+          "A sibling's voice rises sharp. $[CHARACTER] feels the heat climb up the neck."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The argument is older than the words it uses now. Beneath the grain and the chores it is the long question of who in the family will be the one who carries the weight, who will be the one who escapes, who will be the one whose smaller share of love was finally enough. Two voices, raised; two faces that have been the same face since both were too small to speak.",
+          "The grandmother in the corner does not look up from her sewing. She has heard this before. She will hear it again. There is no winning a fight with a sibling — only ending it, which is something different. The needle goes in, comes out. The scolding voices climb, climb, plateau, slowly fall.",
+          "Eventually it is $[CHARACTER] who breaks the rhythm — not with a clever word but with silence, the simple refusal to add the next sentence. The other voice keeps going for one more beat, then stops. The room rearranges itself around the silence. The grandmother sets down her sewing, makes a small sound that could be approval or could be only the noise of an old throat clearing, and asks if anyone will fetch the water before the dark."
+        ],
+        "outro": [
+          "By nightfall the bowl is washed. The unresolved thing remains, smaller now, set aside on its own small shelf where the family keeps such things."
+        ]
       },
       "choices": [
         {
-          "id": "ch_smooth",
-          "label": "Keep the peace. Swallow the pride.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 30 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.hope.small",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.hope.small",
               "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.anger.flash",
-              "stateDeltas": []
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.anger.flash",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -1 },
-                { "kind": "flag_set", "flag": "sibling_tension" }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.anger.cold",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -1 },
-                { "kind": "flag_set", "flag": "sibling_tension" }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] }
           }
         }
       ],
@@ -117,22 +92,29 @@
       "category": "life.social",
       "version": 1,
       "weight": 12,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] A parent looks up from the rice pot, voice low, almost shy.",
-          "They say $[CHARACTER] has worked hard this season. Only that. Nothing more."
+          "Inside the hut at the end of an ordinary day. The cooking fire is low. The smell of millet porridge and wild onion holds the room.",
+          "A parent looks up from the pot, voice low, almost shy."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The words are very few. They are not poetry. They are the kind of words a peasant uses, in a peasant's voice, in a peasant's house — and they say only that $[CHARACTER] has worked hard this season and that the parent has noticed.",
+          "Nothing more. There is no embrace. Peasants do not embrace their grown children; they have not the room or the habit. The parent goes back to stirring the pot, eyes lowered, the back of the neck slightly red as it always becomes when a thing not usually said has been said. The boy stands at the doorway with the bucket still in hand.",
+          "It is not what the words mean. It is the difficulty of having said them at all. A whole afternoon of work had gone into the small bravery of that sentence — the parent rehearsing it at the well, at the fire, between chores. $[CHARACTER] knows this without having been told. The rest of the evening passes quietly. The bucket is set down. The porridge is eaten. The lamp is put out. But the small warm thing under the chest does not put itself out so easily."
+        ],
+        "outro": [
+          "Some hours of ordinary, hard, undeserved life are paid for by a single sentence delivered shyly across a smoke-darkened kitchen."
+        ]
       },
       "choices": [
         {
-          "id": "ch_receive",
-          "label": "Bow your head. Take the words.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "INSTANT",
           "outcomes": {
             "SUCCESS": {
@@ -142,13 +124,8 @@
                 { "kind": "flag_set", "flag": "parental_approval" }
               ]
             },
-            "FAILURE": {
-              "narrativeKey": "emotion.hope.small",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 },
-                { "kind": "flag_set", "flag": "parental_approval" }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] }
           }
         }
       ],
@@ -159,58 +136,41 @@
       "category": "life.social",
       "version": 1,
       "weight": 18,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.inn_yard] A village rival — broader of shoulder, louder of mouth — blocks the path.",
-          "He grins the way boys grin before something stupid. $[CHARACTER] plants the feet."
+          "The Liu boy from across the lane is broader of shoulder, louder of mouth, and has always taken a particular interest in finding ways to make $[CHARACTER]'s afternoons more difficult.",
+          "Today he steps into the lane with that particular grin — the one boys wear before something stupid is about to happen."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "There is no real anger in it. There is hardly even any real malice. It is only that the Liu boy, like a young dog, does not yet know what to do with his own muscle, and so he uses it on whatever stands in front of him. $[CHARACTER] plants the feet. The dust of the lane is fine and pale and rises with the smallest disturbance.",
+          "The shove comes — open hand to the chest, hard enough to rock the boy back a half-step but not hard enough to fell him. $[CHARACTER] returns it. The Liu boy is briefly delighted, the way the young dog is delighted to find a willing playmate. They go at each other in the lane — bare-knuckle, no skill, all weight and grunt and laughter half-mixed with anger.",
+          "Three minutes. Maybe four. Then it ends the way these things end — both winded, both bruised, neither willing to be the first to admit that there is no point continuing. The Liu boy spits in the dust, calls $[CHARACTER] a name that is not really an insult, and walks off rubbing his jaw. $[CHARACTER] watches him go. There is a kind of friendship in this. There is also a kind of measure being taken — by both, on both."
+        ],
+        "outro": [
+          "By evening the bruise on the cheekbone is the colour of an early plum. The Liu boy, somewhere across the lane, is wearing the same one."
+        ]
       },
       "choices": [
         {
-          "id": "ch_face",
-          "label": "Face him down. Match his grin.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 20, "stats": { "Body": 1, "Charm": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.fight.desperate",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "bested_rival" }
-              ],
-              "witnessMemory": "frost_palm_severing"
-            },
             "SUCCESS": {
               "narrativeKey": "action.fight.desperate",
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 1 },
                 { "kind": "flag_set", "flag": "bested_rival" }
-              ]
+              ],
+              "witnessMemory": "frost_palm_severing"
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.anger.cold",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -4 },
-                { "kind": "flag_set", "flag": "bested_by_rival" }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.anger.cold",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -6 },
-                { "kind": "flag_set", "flag": "bested_by_rival" }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "action.fight.desperate", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.fight.desperate", "stateDeltas": [] }
           }
         }
       ],
@@ -221,32 +181,31 @@
       "category": "life.social",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.road] A stranger sits in the ditch, axle snapped, cart tilted.",
-          "He looks up as $[CHARACTER] approaches. $[npc.traveler.stranger]"
+          "On the road back from the market, two li from any village: a stranger sits in the ditch, his ox-cart tilted, the right axle snapped clean through. The ox stands in its harness chewing without concern.",
+          "He looks up as $[CHARACTER] approaches. His robe is plain but well-mended; his face is the colour of old tea."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "There is the small calculation, then. The sun is already low over the western fields. The walk home is still longer than it has been short. The body is tired and the supper is waiting. But the stranger's cart is heavy and his arms are old and the ditch is steep, and the road tonight will not be safe for a man and an ox stuck in plain view.",
+          "$[CHARACTER] sets down the bundle. The stranger's eyes shift very slightly. Together, the two of them put shoulders to the cart, lift, brace, lift again. The axle is past mending here, but with a stout branch wedged from beneath, the cart can be made to limp the last li to the wheelwright at the next village.",
+          "The work takes longer than it should. The stranger, while they work, asks $[CHARACTER]'s name and does not give his own. He asks where the boy is from and what the boy's father's name was and whether the boy has ever thought of the road. The questions are gentle. They are also, very faintly, the questions of someone who is looking for something, although what he is looking for $[CHARACTER] cannot say."
+        ],
+        "outro": [
+          "When the cart is moving the stranger nods once, presses a small wrapped sweet into the boy's palm, and says only: \"You will see me again or you will not. Both are good.\""
+        ]
       },
       "choices": [
         {
-          "id": "ch_help",
-          "label": "Shoulder the cart with him.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "npc.traveler.thank",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 4 },
-                { "kind": "flag_set", "flag": "helped_stranger" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "npc.traveler.thank",
               "stateDeltas": [
@@ -254,36 +213,8 @@
                 { "kind": "flag_set", "flag": "helped_stranger" }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 },
-                { "kind": "flag_set", "flag": "helped_stranger" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
-            }
-          }
-        },
-        {
-          "id": "ch_walk_on",
-          "label": "Keep walking. The sun is low.",
-          "timeCost": "INSTANT",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "flag_set", "flag": "walked_past" }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "flag_set", "flag": "walked_past" }]
-            }
+            "PARTIAL": { "narrativeKey": "npc.traveler.thank", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "npc.traveler.thank", "stateDeltas": [] }
           }
         }
       ],
@@ -294,22 +225,25 @@
       "category": "life.social",
       "version": 1,
       "weight": 8,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.road] A child sits in the dust by the road, ribs counting through thin cloth.",
-          "$[npc.child.cry] $[CHARACTER] feels the weight of the bundle at the hip."
+          "On the long road between the two market villages, in the cold first hour of an autumn afternoon, a child sits in the dust at the road's edge. Six years old, perhaps. Seven. The ribs count clearly through the thin cloth of an over-large shirt that was once someone else's.",
+          "The child does not beg. The child does not even raise the eyes. The child only sits, looking past $[CHARACTER]'s sandals at nothing in particular."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The bundle at the boy's hip is his own day's food — two flatbreads, a hard-boiled egg, a small twist of salt for the long walk. Enough for one. Not enough for two. Not really enough for one if the road is longer than expected and the wind cold, as it will be.",
+          "The thing $[CHARACTER] does next will be remembered or it will not. The road is long; many such children sit beside it; a man cannot save every one. And yet — the small face, the small ribs, the silence that is not the silence of dignity but the silence of a child who has run out of other sounds — these are the things by which a soul is, very quietly, weighed."
+        ]
       },
       "choices": [
         {
           "id": "ch_feed",
-          "label": "Share your food.",
+          "label": "Kneel down. Share the bread. The road can wait.",
           "timeCost": "SHORT",
           "outcomes": {
             "SUCCESS": {
@@ -332,7 +266,7 @@
         },
         {
           "id": "ch_walk_on",
-          "label": "Keep walking. There is not enough for two.",
+          "label": "Lower the eyes. Keep walking. There is not enough for two.",
           "timeCost": "INSTANT",
           "outcomes": {
             "SUCCESS": {
@@ -352,13 +286,14 @@
           }
         }
       ],
-      "repeat": "unlimited"
+      "repeat": "once_per_life"
     },
     {
       "id": "YP_SOCIAL_MARRIAGE_PROPOSAL",
       "category": "life.social",
       "version": 1,
       "weight": 8,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 16
@@ -366,16 +301,17 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.village] A matchmaker crosses the threshold with tea and careful words.",
-          "The name of a family. The name of a person. $[CHARACTER] is asked — quietly, gravely — what answer to send back."
+          "Old Mother Gao the matchmaker crosses the threshold one evening with a small jar of tea wrapped in red cloth and the gravely formal manner she puts on for these occasions only. She sits at the low table. She drinks the tea $[CHARACTER]'s mother pours her. She speaks for a long time about nothing in particular before, gently, she comes to the matter."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "A name. A family. A girl two villages over — sixteen, healthy, mother dead but the father respected. The dowry would be small. The match would be fair. The boy is at the right age. The family is at the right need. There is no trick in the offer. The matchmaker is honest, in her fashion; she would not have crossed three li in the cooling evening if there were not a real chance.",
+          "$[CHARACTER]'s mother does not look at him. The grandmother in the corner does not look up from her sewing. The room understands that this answer must be the boy's, not the family's — and that the answer, whatever it is, will set the shape of every year remaining. To accept is to become, finally and at last, the man the village has been waiting for the boy to become. To refuse is to keep open something thin and unnamed: the door to a road, perhaps; the small light of an other-life still imaginable."
+        ]
       },
       "choices": [
         {
           "id": "ch_accept",
-          "label": "Accept the match.",
+          "label": "Accept the match. The hearth is warm; let it be enough.",
           "timeCost": "MEDIUM",
           "outcomes": {
             "SUCCESS": {
@@ -422,22 +358,29 @@
       "category": "life.social",
       "version": 1,
       "weight": 15,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] A childhood friend comes to the door with a small jar of rice wine and half a radish.",
-          "$[CHARACTER] adds what little the pot has. The lamp burns low and long."
+          "Old Wei from the next lane comes to the door at the blue hour, a small clay jar of cheap rice wine in one hand and half a radish in the other, grinning with the particular shy boldness of a friend who knows he is not really invited and yet will not be refused.",
+          "$[CHARACTER] adds what little the family pot has — a bowl of porridge, a pinch of pickled greens — and lights the second wick of the lamp."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The two of them sit at the low table. The wine is harsh — sour at the front, fierce at the back, the kind of village brew that is still half its own ferment — and the first cup makes the eyes water and the chest warm in equal measure. Wei laughs at his own face in the small bronze mirror on the shelf and says he looks like his father, which is what every man says at every table when the wine has begun to do its work.",
+          "They talk about the field. About a girl Wei almost spoke to at the market. About the way the old smith's apprentice has been seen carrying the headman's daughter's water jar back from the well — three days running now, which means a thing. They tell the same three stories they have been telling each other since they were ten. The same stories are still funny.",
+          "The lamp burns low. The jar empties. There is a silence at one point that is not awkward but only the small silence of two friends who do not have to speak to keep being friends. Outside, a dog. Inside, the small slow breathing of a household asleep around them. Wei clasps the boy's wrist, hard, very briefly, and says nothing — and that, too, is one of the languages of friendship, learned without lessons."
+        ],
+        "outro": [
+          "When Wei is gone the radish remains, half-eaten on the plate. $[CHARACTER] sets it aside for the morning meal. The lamp is blown out. The dark is a softer dark than usual."
+        ]
       },
       "choices": [
         {
-          "id": "ch_share",
-          "label": "Eat, drink, talk until the oil runs out.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
           "outcomes": {
             "SUCCESS": {
@@ -449,14 +392,8 @@
               ],
               "witnessMemory": "iron_bamboo_stance"
             },
-            "FAILURE": {
-              "narrativeKey": "action.eat.simple",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": 3 },
-                { "kind": "qi_delta", "amount": 1 },
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "action.eat.simple", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.eat.simple", "stateDeltas": [] }
           }
         }
       ],
@@ -467,22 +404,29 @@
       "category": "life.social",
       "version": 1,
       "weight": 20,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.village] Red paper on every door. Drums. A neighbor's daughter rides out in a borrowed chair.",
-          "$[CHARACTER] stands among the crowd. For one afternoon the village is only laughter and the smell of pork."
+          "Red paper on every door of the lane. Drums from the headman's yard since dawn. The small grand procession winds out of the village at noon — a borrowed sedan-chair painted red, the bride's two cousins on either side, the family in their best mended clothes.",
+          "$[CHARACTER] stands among the crowd of neighbours, a copper coin pressed into the palm to be tossed into the chair as it passes."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The chair sways past. A small face inside, half-glimpsed through the drawn curtain — the bride is twelve, perhaps thirteen, and trying very hard not to cry. She is going to a man eight years her elder in a village half a day's walk distant. She will be back in three days for the formal visit, then not for a year, perhaps two. This is how the village goes on.",
+          "Afterwards, the feast in the headman's yard. There is roast pork — there is actual roast pork, hot from the spit, glistening with its own thin sweet fat — and there is millet wine and there are sticky-rice cakes wrapped in lotus leaves. $[CHARACTER] eats like a man who has not eaten meat in three months, because he has not. The grease runs down the wrist. The wrist is wiped on the trouser-leg. The pork tastes the way the gods must taste, if the gods have meat at their tables.",
+          "Late, when the sun is the colour of the wine and the drums have gone hoarse, the men of the village dance — slow round dances learned from grandfathers, the steps half-forgotten and half-improvised. $[CHARACTER] is pulled in. Strangers' hands hold his hands. The circle turns. Someone is singing about the moon and a fisherman, an old song, no one quite remembers all the verses. It does not matter."
+        ],
+        "outro": [
+          "Walking home in the lantern-light, the belly full and the head soft and the faces of the neighbours warm in the dark — for one evening the village is whole."
+        ]
       },
       "choices": [
         {
-          "id": "ch_attend",
-          "label": "Raise a cup with the neighbors.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
           "outcomes": {
             "SUCCESS": {
@@ -492,13 +436,8 @@
                 { "kind": "qi_delta", "amount": 1 }
               ]
             },
-            "FAILURE": {
-              "narrativeKey": "emotion.hope.dawn",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 },
-                { "kind": "qi_delta", "amount": 1 }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "emotion.hope.dawn", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.hope.dawn", "stateDeltas": [] }
           }
         }
       ],
@@ -509,22 +448,29 @@
       "category": "life.social",
       "version": 1,
       "weight": 15,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.burial_mound] White cloth on the gate. A neighbor has gone before the frost.",
-          "$[CHARACTER] stands at the edge of the pit. $[emotion.grief.fresh]"
+          "White cloth on the gate of the Yang house. A neighbour has gone before the frost — the old aunt who used to give the children cracked candy at the New Year, who could not remember anyone's name in the last two years but would smile at every face as if she ought to.",
+          "$[CHARACTER] stands at the edge of the small dug pit on the burial mound east of the village."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The Daoist priest hired from the next village has done his short service. The paper money has been burned; the smoke went up grey-black against a grey-blue sky and was taken away by the wind that always moves over the mound. The small jar of unhusked rice has been set at the head of the grave for the journey. The grandsons and granddaughters stand in their borrowed white robes, eyes red from a duty more than a grief, because the old aunt had lived long and slept easy and gone in her own bed.",
+          "The men of the village take turns with the spade. One handful of earth, then another, then a third. The first thuds on the wood of the cheap pine coffin are the worst — small dull punctuations of finality, after which the rest is only filling. $[CHARACTER] takes his turn. The earth is cool and heavy. The wrist remembers the weight afterward.",
+          "When it is done the village stands a while at the mound. No one speaks much. A grandson wipes the eyes once, looks away, looks back. The wind moves through the long dry grass at the mound's edge. Somewhere far off a child is calling another child by name. The world goes on. The old aunt does not. This is the lesson of every funeral and the boy has heard it before, but each time the lesson is heard it is heard newly, and the body grows by a small dark increment around it."
+        ],
+        "outro": [
+          "Walking home from the mound the boy notices, as if for the first time, the way the late light falls on his own hand."
+        ]
       },
       "choices": [
         {
-          "id": "ch_mourn",
-          "label": "Stay until the last handful of earth.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
           "outcomes": {
             "SUCCESS": {
@@ -534,13 +480,8 @@
                 { "kind": "flag_set", "flag": "witnessed_death" }
               ]
             },
-            "FAILURE": {
-              "narrativeKey": "emotion.grief.fresh",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "witnessed_death" }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "emotion.grief.fresh", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.grief.fresh", "stateDeltas": [] }
           }
         }
       ],
