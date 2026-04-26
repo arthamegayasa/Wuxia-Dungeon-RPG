@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { InventoryPanel } from './InventoryPanel';
-import { CharSheetPanel } from './CharSheetPanel';
-import { TribulationPanel } from './TribulationPanel';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import type { TurnPreview } from '@/services/engineBridge';
+
+const InventoryPanel = lazy(() => import('./InventoryPanel').then((m) => ({ default: m.InventoryPanel })));
+const CharSheetPanel = lazy(() => import('./CharSheetPanel').then((m) => ({ default: m.CharSheetPanel })));
+const TribulationPanel = lazy(() => import('./TribulationPanel').then((m) => ({ default: m.TribulationPanel })));
 
 export interface PlayScreenProps {
   preview: TurnPreview;
@@ -76,25 +77,31 @@ export function PlayScreen({ preview, onChoose, isLoading }: PlayScreenProps) {
       </main>
 
       {inventoryOpen && (
-        <InventoryPanel
-          items={preview.inventory}
-          onClose={() => setInventoryOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <InventoryPanel
+            items={preview.inventory}
+            onClose={() => setInventoryOpen(false)}
+          />
+        </Suspense>
       )}
       {charSheetOpen && (
-        <CharSheetPanel
-          corePath={preview.corePath}
-          corePathRevealedThisTurn={preview.corePathRevealedThisTurn}
-          techniques={preview.learnedTechniques}
-          openMeridians={preview.openMeridians}
-          onClose={() => setCharSheetOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <CharSheetPanel
+            corePath={preview.corePath}
+            corePathRevealedThisTurn={preview.corePathRevealedThisTurn}
+            techniques={preview.learnedTechniques}
+            openMeridians={preview.openMeridians}
+            onClose={() => setCharSheetOpen(false)}
+          />
+        </Suspense>
       )}
       {showTribulation && preview.tribulation && (
-        <TribulationPanel
-          payload={preview.tribulation}
-          onContinue={() => setTribulationDismissed(true)}
-        />
+        <Suspense fallback={null}>
+          <TribulationPanel
+            payload={preview.tribulation}
+            onContinue={() => setTribulationDismissed(true)}
+          />
+        </Suspense>
       )}
     </div>
   );

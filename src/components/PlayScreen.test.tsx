@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PlayScreen } from './PlayScreen';
 
@@ -90,14 +90,14 @@ describe('Phase 2B-3: PlayScreen renders TribulationPanel inline', () => {
     fatal: false,
   };
 
-  it('shows TribulationPanel when preview.tribulation is present', () => {
+  it('shows TribulationPanel when preview.tribulation is present', async () => {
     render(
       <PlayScreen
         preview={{ ...PREVIEW, tribulation: trib }}
         onChoose={() => {}}
       />
     );
-    expect(screen.getByText(/the heavens stir/i)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText(/the heavens stir/i)).toBeInTheDocument());
   });
   it('hides TribulationPanel after the user clicks Continue', async () => {
     render(
@@ -106,6 +106,7 @@ describe('Phase 2B-3: PlayScreen renders TribulationPanel inline', () => {
         onChoose={() => {}}
       />
     );
+    await waitFor(() => screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     expect(screen.queryByText(/the heavens stir/i)).not.toBeInTheDocument();
   });
@@ -122,13 +123,13 @@ describe('Phase 2B-3: PlayScreen overlay toggles', () => {
     />);
     expect(screen.queryByRole('heading', { name: /^inventory$/i })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: /inventory/i }));
-    expect(screen.getByRole('heading', { name: /^inventory$/i })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole('heading', { name: /^inventory$/i })).toBeInTheDocument());
     await userEvent.click(screen.getByRole('button', { name: /close/i }));
     expect(screen.queryByRole('heading', { name: /^inventory$/i })).not.toBeInTheDocument();
   });
   it('toggles character sheet visibility via header button', async () => {
     render(<PlayScreen preview={PREVIEW} onChoose={() => {}} />);
     await userEvent.click(screen.getByRole('button', { name: /character/i }));
-    expect(screen.getByRole('heading', { name: /^character$/i })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole('heading', { name: /^character$/i })).toBeInTheDocument());
   });
 });
