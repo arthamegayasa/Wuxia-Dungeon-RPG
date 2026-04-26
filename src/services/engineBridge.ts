@@ -57,6 +57,11 @@ import opportunityJson from '@/content/events/yellow_plains/opportunity.json';
 import transitionJson from '@/content/events/yellow_plains/transition.json';
 import bridgeJson from '@/content/events/yellow_plains/bridge.json';
 import meditationJson from '@/content/events/yellow_plains/meditation.json';
+import beatsWeatherJson from '@/content/events/yellow_plains/beats_weather.json';
+import beatsRoutineJson from '@/content/events/yellow_plains/beats_routine.json';
+import beatsAtmosphereJson from '@/content/events/yellow_plains/beats_atmosphere.json';
+import beatsInnerJson from '@/content/events/yellow_plains/beats_inner.json';
+import beatsDreamJson from '@/content/events/yellow_plains/beats_dream.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
 // NOTE: azure_peaks content, techniques, items, echoes, and memories are NOT imported
 // eagerly here. Phase 2B-2 Task 24 lazy-loads them via azurePeaksLoader.ts on first
@@ -74,6 +79,11 @@ let ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(transitionJson),
   ...loadEvents(bridgeJson),
   ...loadEvents(meditationJson),
+  ...loadEvents(beatsWeatherJson),
+  ...loadEvents(beatsRoutineJson),
+  ...loadEvents(beatsAtmosphereJson),
+  ...loadEvents(beatsInnerJson),
+  ...loadEvents(beatsDreamJson),
 ];
 // Phase 2B-2 Task 24: starts as YP-only; AP snippets appended on first AP need.
 // (Replaces the earlier eager merge from Task 22 which pulled AP into the cold bundle.)
