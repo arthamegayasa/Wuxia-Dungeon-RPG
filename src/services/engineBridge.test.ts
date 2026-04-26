@@ -504,6 +504,39 @@ describe('Phase 2B-3: corePathRevealed → gameStore wiring', () => {
   });
 });
 
+describe('Phase 2B-3: LineageEntryView surfaces corePath + techniqueCount', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('reads corePath and techniquesLearned.length from the lineage entry', () => {
+    useMetaStore.getState().hydrateFromMetaState({
+      ...createEmptyMetaState(),
+      lifeCount: 1,
+      lineage: [{
+        lifeIndex: 1,
+        name: 'Test',
+        anchorId: 'peasant_farmer',
+        birthYear: 100, deathYear: 145,
+        yearsLived: 45,
+        realmReached: 'qi_condensation',
+        deathCause: 'old_age',
+        karmaEarned: 12,
+        echoesUnlockedThisLife: [],
+        corePath: 'iron_mountain',
+        techniquesLearned: ['iron_mountain_body_seal', 'still_water_heart_sutra'],
+      }],
+    });
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    const snap = engine.getLineageSnapshot();
+    expect(snap.entries[0]!.corePath).toBe('iron_mountain');
+    expect(snap.entries[0]!.techniqueCount).toBe(2);
+  });
+});
+
 describe('Phase 2B-3: BardoPayload surfaces corePath + techniques', () => {
   beforeEach(() => {
     localStorage.clear();

@@ -20,6 +20,8 @@ const POPULATED: LineageSnapshot = {
       deathCause: 'tribulation',
       karmaEarned: 80,
       echoesUnlockedThisLife: [{ id: 'iron_body', name: 'Iron Body' }],
+      corePath: 'iron_mountain',
+      techniqueCount: 2,
     },
     {
       lifeIndex: 1,
@@ -33,6 +35,8 @@ const POPULATED: LineageSnapshot = {
       deathCause: 'sickness',
       karmaEarned: 25,
       echoesUnlockedThisLife: [],
+      corePath: null,
+      techniqueCount: 0,
     },
   ],
 };

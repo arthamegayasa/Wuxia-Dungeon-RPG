@@ -311,6 +311,8 @@ export interface LineageEntryView {
   deathCause: string;
   karmaEarned: number;
   echoesUnlockedThisLife: ReadonlyArray<{ id: string; name: string }>;
+  corePath: string | null;
+  techniqueCount: number;
 }
 
 export interface LineageSnapshot {
@@ -1035,6 +1037,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
           deathCause: entry.deathCause,
           karmaEarned: entry.karmaEarned,
           echoesUnlockedThisLife: echoes,
+          corePath: entry.corePath,
+          techniqueCount: entry.techniquesLearned.length,
         };
       });
       return { entries };
