@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_BEAT_INNER_SENIOR_COMPARISON",
+      "category": "life.inner",
+      "version": 1,
+      "weight": 45,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "minAge": 14
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "Senior Brother Tang has just walked across the courtyard with the small unhurried certainty of a disciple at the second sublayer of Qi Sensing — the dantian visible to anyone with the eyes for it as a small steady warmth, the breath even, the bearing settled.",
+          "$[CHARACTER] watches him go and feels the small sour thing turn over in the chest."
+        ],
+        "body": [
+          "It is not, exactly, jealousy. The texts call it the lesser comparison, and the texts warn against it, but the texts have never quite said why it comes. It comes anyway. $[CHARACTER] is three months in this season's intake. Tang is at the end of his second year. The arithmetic of cultivation is not a thing the texts let a junior disciple ignore: at this rate, by the time $[CHARACTER] is at Tang's sublayer, Tang will be three sublayers further on, and the gap will not have closed but widened.",
+          "$[CHARACTER] sits on the low stone bench by the cloister wall. The body, which is cooling from the morning's drill, is a body $[CHARACTER] has had three months to know. It is not Tang's body. It will not become Tang's body. The dantian, which is the small banked warmth at the belly, is the dantian $[CHARACTER] was born with — not the larger steadier flame Tang carries, not the still-larger flame the inner cohort moves with as a matter of unremarkable fact.",
+          "And yet. The thought comes very quietly, the way the better thoughts always come, beneath the louder thought: this is not what the practice is for. The practice is not for catching Tang. The practice is for the small daily work of becoming the thing that the body, this body, can become. Tang's path is Tang's path. The bench is cool against the back of the legs. The high pines move once in a small breeze. The sour thing in the chest does not entirely leave, but it has been seen, and being seen, it has lost some of its edge."
+        ],
+        "outro": [
+          "When $[CHARACTER] rises from the bench and goes to the morning meal, the small comparison has not been resolved — it will not be resolved this morning, perhaps not this year — but it has been observed cleanly, and observation is the first half of the practice."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.inner.comparison",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "envy_of_senior_brother" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.inner.comparison", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.inner.comparison", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_INNER_UNWORTHY_THOUGHT",
+      "category": "life.inner",
+      "version": 1,
+      "weight": 40,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "minAge": 14
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The breakthrough attempt is set for the third hour after midnight in the small unused side cloister behind the scripture hall. $[CHARACTER] has prepared for a week — three pills from the kitchen disciple's careful hoard, a careful audit of the meridians, the small chosen cushion in its chosen corner.",
+          "An hour before the attempt, sitting alone in the dormitory cell, the unworthy thought arrives."
+        ],
+        "body": [
+          "It is small and clean and very loud in the small private space of the chest. $[CHARACTER] is not ready. The texts say a disciple is ready for sublayer-breakthrough when the dantian is full and the will is settled, and $[CHARACTER]'s dantian is full but the will — the will is a thing the texts do not know how to measure from the outside, and from the inside the will tonight is shaking.",
+          "Worse: the will is shaking for the wrong reasons. Not from doubt of the body's preparedness. From the small ugly suspicion that this attempt is being made not for the practice but for the small social calculation of being seen, in two days' time, to have advanced. Tang advanced last month. Pan is rumoured to be attempting next week. To not attempt tonight would be to fall behind in a race the texts have spent six hundred years insisting is not a race.",
+          "$[CHARACTER] sits with the thought. It does not soften. The texts have no comfortable thing to say about the unworthy thought before the breakthrough; the texts have only the small hard observation that the disciple who notices the unworthy thought has at least, by noticing it, declined to be entirely owned by it. The body, which is sitting on the cushion in the small cold cell, breathes once long and once short. The dantian, which is full, does not care whose race is being run. The dantian is only full. It is also not, perhaps, the dantian's fault that the disciple it lives in is at this hour a disciple the disciple does not entirely admire."
+        ],
+        "outro": [
+          "When the bell at the third hour sounds, $[CHARACTER] rises and walks to the side cloister. The thought has not gone. The attempt will be made anyway, with the thought sitting beside it on the cushion, and the attempt's success or failure will have the thought's small witness in it either way."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.inner.unworthy",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "unworthy_breakthrough_thought" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.inner.unworthy", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.inner.unworthy", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_INNER_FIRST_QI_AWARENESS",
+      "category": "life.inner",
+      "version": 1,
+      "weight": 40,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "minAge": 14
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "It happens at the eighteenth breath of an ordinary morning meditation, with no warning of any kind, and afterward $[CHARACTER] will not be able to name what was different about that breath rather than the ones before it.",
+          "What is different is that for the first time the qi is no longer an idea."
+        ],
+        "body": [
+          "Until now $[CHARACTER] has known qi the way a junior disciple knows it: as a word in the texts, as a small banked warmth at the dantian, as a thing the elders speak of and the senior brothers reference and the body sometimes vaguely senses in the way the body vaguely senses the weather. The texts say a real practitioner feels qi as a tactile thing. The texts have been polite about how long this takes.",
+          "On the eighteenth breath the qi is suddenly tactile. It is not a metaphor. There is a small bright thread running from the dantian up the front of the body to the throat, and another thread along the inside of each arm down to the palm, and a fourth and fifth that $[CHARACTER] can follow only if he turns the inner attention toward them. The threads have weight. They have temperature. They have a small cool pulse, the way a stream in a high meadow has a pulse that the body feels through the soles of the bare feet.",
+          "$[CHARACTER] does not move. The instinct is to chase the sensation, and the texts have warned about that — chasing it, the texts say, is the surest way to lose it. So $[CHARACTER] sits very still and lets the threads be what they are: the long awaited entirely unspectacular evidence that the practice has, at last, taken hold of the body the texts said it would. The dantian is brighter than it was an hour ago. The threads are real. The first sublayer of Qi Sensing has, in this small ordinary morning, opened its small ordinary door."
+        ],
+        "outro": [
+          "When the bell sounds the close of the meditation $[CHARACTER] opens the eyes onto the same ordinary cushion in the same ordinary inner court. The threads are still there, faintly. They will be there from now on. The world, which is the same world it was an hour ago, has acquired a small new dimension that only $[CHARACTER]'s body can read."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.inner.first_qi",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "attribute_delta", "stat": "Spirit", "amount": 1 },
+                { "kind": "flag_set", "flag": "first_qi_awareness" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.inner.first_qi", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.inner.first_qi", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
