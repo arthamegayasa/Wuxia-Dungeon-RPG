@@ -15,10 +15,15 @@ describe('UI integration: full cycle', () => {
     __resetEngineSingleton();
   });
 
-  it('flows from Title -> Creation -> Play -> Bardo -> spend karma -> Creation via clicks', { timeout: 30000 }, async () => {
+  it('flows from Title -> Creation -> Play -> Bardo -> spend karma -> Creation via clicks', { timeout: 120000 }, async () => {
     // Inject a deterministic engine so beginLife's spawn RNG no longer draws
-    // from Date.now(). Seed=2 is empirically stable: the 600-iteration click
-    // loop reaches BARDO against the Yellow Plains content pool.
+    // from Date.now(). Seed=2 is empirically stable: the click loop reaches
+    // BARDO against the Yellow Plains + Azure Peaks content pool.
+    //
+    // Phase 2C bumped the iteration cap (600 -> 6000) and the timeout
+    // (30s -> 120s) because novel-mode pacing makes beats dominate decisions
+    // ~4-8:1, so a single life now spans 200-800 turns (vs ~50-100 in
+    // Phase 1/2A/2B). Game logic is unchanged — just test patience.
     const engine = createEngineBridge({ now: () => 2 });
     __setEngineOverride(engine);
 
@@ -44,7 +49,7 @@ describe('UI integration: full cycle', () => {
     // Nav-button filter: PlayScreen now has overlay-toggle buttons (Character,
     // Inventory) in addition to choice buttons. Exclude those so we don't
     // waste iterations toggling overlays instead of advancing gameplay.
-    for (let i = 0; i < 600; i++) {
+    for (let i = 0; i < 6000; i++) {
       if (useGameStore.getState().phase === GamePhase.BARDO) break;
       const buttons = screen.queryAllByRole('button')
         .filter((b) => !(b as HTMLButtonElement).disabled)
