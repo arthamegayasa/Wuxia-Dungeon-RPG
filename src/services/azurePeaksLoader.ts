@@ -40,6 +40,11 @@ export function loadAzurePeaksContent(): Promise<AzurePeaksContent> {
       opportunityMod,
       realmGateMod,
       transitionMod,
+      beatsWeatherMod,
+      beatsRoutineMod,
+      beatsAtmosphereMod,
+      beatsInnerMod,
+      beatsDreamMod,
       snippetMod,
       techniquesMod,
       itemsMod,
@@ -61,6 +66,11 @@ export function loadAzurePeaksContent(): Promise<AzurePeaksContent> {
       import('@/content/events/azure_peaks/opportunity.json'),
       import('@/content/events/azure_peaks/realm_gate.json'),
       import('@/content/events/azure_peaks/transition.json'),
+      import('@/content/events/azure_peaks/beats_weather.json'),
+      import('@/content/events/azure_peaks/beats_routine.json'),
+      import('@/content/events/azure_peaks/beats_atmosphere.json'),
+      import('@/content/events/azure_peaks/beats_inner.json'),
+      import('@/content/events/azure_peaks/beats_dream.json'),
       import('@/content/snippets/azure_peaks.json'),
       import('@/content/techniques/techniques.json'),
       import('@/content/items/items.json'),
@@ -87,6 +97,12 @@ export function loadAzurePeaksContent(): Promise<AzurePeaksContent> {
       ...eventsLoader.loadEvents(opportunityMod.default),
       ...eventsLoader.loadEvents(realmGateMod.default),
       ...eventsLoader.loadEvents(transitionMod.default),
+      // Phase 2C-3b: novel-mode beat files (lazy chunk).
+      ...eventsLoader.loadEvents(beatsWeatherMod.default),
+      ...eventsLoader.loadEvents(beatsRoutineMod.default),
+      ...eventsLoader.loadEvents(beatsAtmosphereMod.default),
+      ...eventsLoader.loadEvents(beatsInnerMod.default),
+      ...eventsLoader.loadEvents(beatsDreamMod.default),
     ];
 
     const snippets = snippetsLoader.loadSnippets(snippetMod.default);

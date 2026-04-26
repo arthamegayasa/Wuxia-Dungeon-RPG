@@ -137,9 +137,10 @@ describe('Azure Peaks playable life (Phase 2B-2 Task 25)', () => {
   it('AP_GATE_QS_AWAKENING is selectable when character is at BT9 + cultivation full', async () => {
     // Deterministic test: bypass event-selector randomness by constructing runState
     // with character already at body_tempering layer 9 + cultivationProgress 100.
-    // The bt9_cultivation_full predicate must pass; weight 200 gives ~18.8% per pick
-    // out of the full AP pool (total pool weight ~1064). 50 attempts gives <0.01%
-    // failure probability, making this test effectively deterministic.
+    // The bt9_cultivation_full predicate must pass; weight 200 gives ~8.9% per pick
+    // out of the full AP pool (total pool weight ~2254 after Phase 2C-3b novel beats).
+    // 150 attempts gives <0.01% failure probability, making this test effectively
+    // deterministic.
     //
     // Strategy: peek → check pendingEventId → if not the gate event, resolve with
     // first choice, re-inject BT9 state (clearing pendingEventId + region), then retry.
@@ -179,8 +180,8 @@ describe('Azure Peaks playable life (Phase 2B-2 Task 25)', () => {
     injectBt9State();
 
     let foundGate = false;
-    // 50 attempts: P(never selected) = (1 - 200/1064)^50 < 0.01% → effectively guaranteed.
-    for (let i = 0; i < 50; i++) {
+    // 150 attempts: P(never selected) = (1 - 200/2254)^150 < 0.01% → effectively guaranteed.
+    for (let i = 0; i < 150; i++) {
       const preview = await engine.peekNextEvent();
       const pendingId = useGameStore.getState().runState?.pendingEventId;
 
@@ -202,8 +203,9 @@ describe('Azure Peaks playable life (Phase 2B-2 Task 25)', () => {
 
   it('AP_GATE_FIRST_TECHNIQUE_LEARN is selectable when character is at QS with no techniques', async () => {
     // Deterministic test: set character to qi_sensing with zero learned techniques.
-    // The qs_no_techniques predicate must pass; weight 200 gives ~18.8% per pick
-    // out of the full AP pool. 50 attempts gives <0.01% failure probability.
+    // The qs_no_techniques predicate must pass; weight 200 gives ~8.9% per pick
+    // out of the full AP pool (~2254 after Phase 2C-3b novel beats). 150 attempts
+    // gives <0.01% failure probability.
     //
     // Same strategy as the BT9 gate test: peek → check pendingEventId → if not the
     // gate event, resolve, re-inject QS state, retry.
@@ -245,8 +247,8 @@ describe('Azure Peaks playable life (Phase 2B-2 Task 25)', () => {
     injectQsNoTechState();
 
     let foundGate = false;
-    // 50 attempts: P(never selected) = (1 - 200/1064)^50 < 0.01% → effectively guaranteed.
-    for (let i = 0; i < 50; i++) {
+    // 150 attempts: P(never selected) = (1 - 200/2254)^150 < 0.01% → effectively guaranteed.
+    for (let i = 0; i < 150; i++) {
       const preview = await engine.peekNextEvent();
       const pendingId = useGameStore.getState().runState?.pendingEventId;
 
