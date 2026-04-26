@@ -1,16 +1,7 @@
+import type { TurnPreview } from '@/services/engineBridge';
+
 export interface PlayScreenProps {
-  preview: {
-    narrative: string;
-    name: string;
-    ageYears: number;
-    hpCurrent: number;
-    hpMax: number;
-    qiCurrent: number;
-    qiMax: number;
-    realm: string;
-    insight: number;
-    choices: Array<{ id: string; label: string }>;
-  };
+  preview: TurnPreview;
   onChoose: (choiceId: string) => void | Promise<void>;
   isLoading?: boolean;
 }
@@ -22,6 +13,7 @@ export function PlayScreen({ preview, onChoose, isLoading }: PlayScreenProps) {
         <div>
           <span className="text-jade-300 mr-3">{preview.name}</span>
           <span className="text-parchment-400">age {preview.ageYears}</span>
+          <span className="text-parchment-500 ml-2">· {preview.regionName}</span>
         </div>
         <div className="flex gap-4 text-parchment-300">
           <span>HP {preview.hpCurrent} / {preview.hpMax}</span>

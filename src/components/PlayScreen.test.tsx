@@ -17,6 +17,13 @@ const PREVIEW = {
     { id: 'ch_walk', label: 'Walk on.' },
     { id: 'ch_chase', label: 'Chase it.' },
   ],
+  region: 'azure_peaks',
+  regionName: 'Azure Peaks',
+  corePath: null,
+  corePathRevealedThisTurn: false,
+  learnedTechniques: [],
+  inventory: [],
+  openMeridians: [],
 };
 
 describe('PlayScreen', () => {
@@ -61,5 +68,12 @@ describe('PlayScreen', () => {
       />,
     );
     expect(screen.getByText(/waiting/i)).toBeInTheDocument();
+  });
+});
+
+describe('Phase 2B-3: PlayScreen region indicator', () => {
+  it('renders the region name in the header', () => {
+    render(<PlayScreen preview={PREVIEW} onChoose={() => {}} />);
+    expect(screen.getByText(/azure peaks/i)).toBeInTheDocument();
   });
 });
