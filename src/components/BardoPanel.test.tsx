@@ -16,6 +16,8 @@ const basePayload = {
   manifestedThisLife: [],
   witnessedThisLife: [],
   echoesUnlockedThisLife: [],
+  corePath: null,
+  techniquesLearnedThisLife: [],
 };
 
 const PAYLOAD = {
@@ -44,6 +46,8 @@ const PAYLOAD = {
   manifestedThisLife: [],
   witnessedThisLife: [],
   echoesUnlockedThisLife: [],
+  corePath: null,
+  techniquesLearnedThisLife: [],
 };
 
 describe('BardoPanel', () => {
@@ -170,5 +174,40 @@ describe('BardoPanel', () => {
     await userEvent.click(screen.getByRole('button', { name: /lineage/i }));
     expect(onOpenCodex).toHaveBeenCalledOnce();
     expect(onOpenLineage).toHaveBeenCalledOnce();
+  });
+});
+
+describe('Phase 2B-3: BardoPanel reveals techniques + core path', () => {
+  it('shows the learned techniques list when techniquesLearnedThisLife is non-empty', () => {
+    render(<BardoPanel
+      payload={{
+        ...basePayload,
+        techniquesLearnedThisLife: [
+          { id: 'iron_body_fist', name: 'Iron Body Fist', description: 'Hardens the dantian wall.' },
+        ],
+      }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+    />);
+    expect(screen.getByText(/techniques learned/i)).toBeInTheDocument();
+    expect(screen.getByText(/iron body fist/i)).toBeInTheDocument();
+  });
+  it('shows the locked core path when corePath is set', () => {
+    render(<BardoPanel
+      payload={{ ...basePayload, corePath: 'iron_mountain' }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+    />);
+    expect(screen.getByText(/core path/i)).toBeInTheDocument();
+    expect(screen.getByText(/iron mountain/i)).toBeInTheDocument();
+  });
+  it('omits the core path section when corePath is null', () => {
+    render(<BardoPanel
+      payload={{ ...basePayload, corePath: null }}
+      onBuyUpgrade={() => {}}
+      onReincarnate={() => {}}
+    />);
+    // Look for a heading specifically — "core path" must not appear as a section heading.
+    expect(screen.queryByRole('heading', { name: /^core path$/i })).not.toBeInTheDocument();
   });
 });
