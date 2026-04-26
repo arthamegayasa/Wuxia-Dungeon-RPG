@@ -70,3 +70,38 @@ describe('CodexScreen', () => {
     expect(onBack).toHaveBeenCalledOnce();
   });
 });
+
+describe('Phase 2B-3: CodexScreen Techniques tab', () => {
+  it('shows the Techniques tab in the tablist', () => {
+    const snap = { echoes: [], memories: [], anchors: [], techniques: [] };
+    render(<CodexScreen snapshot={snap} onBack={() => {}} />);
+    expect(screen.getByRole('tab', { name: /techniques/i })).toBeInTheDocument();
+  });
+  it('renders an empty-state message when no techniques in registry', async () => {
+    const snap = { echoes: [], memories: [], anchors: [], techniques: [] };
+    render(<CodexScreen snapshot={snap} onBack={() => {}} />);
+    await userEvent.click(screen.getByRole('tab', { name: /techniques/i }));
+    expect(screen.getByText(/no techniques catalogued/i)).toBeInTheDocument();
+  });
+  it('lists each technique with seen / learned distinction', async () => {
+    const snap = {
+      echoes: [], memories: [], anchors: [],
+      techniques: [
+        { id: 'iron_body_fist',     name: 'Iron Body Fist',     description: 'Hardens the dantian.', grade: 'mortal' as const, seen: true,  learned: true  },
+        { id: 'still_water_breath', name: 'Still Water Breath', description: 'Slows the breath.',    grade: 'yellow' as const, seen: true,  learned: false },
+        { id: 'severing_edge_form', name: 'Severing Edge Form', description: '—',                    grade: 'yellow' as const, seen: false, learned: false },
+      ],
+    };
+    render(<CodexScreen snapshot={snap} onBack={() => {}} />);
+    await userEvent.click(screen.getByRole('tab', { name: /techniques/i }));
+    expect(screen.getByText(/iron body fist/i)).toBeInTheDocument();
+    expect(screen.getByText(/learned/i)).toBeInTheDocument();
+    expect(screen.getByText(/still water breath/i)).toBeInTheDocument();
+    // The "seen" tag should appear at least once for the learned-false-seen-true case.
+    const seenTags = screen.getAllByText(/^seen$/i);
+    expect(seenTags.length).toBeGreaterThan(0);
+    // Unseen technique renders as "— locked —"
+    const lockedItems = screen.getAllByText(/— locked —/i);
+    expect(lockedItems.length).toBeGreaterThan(0);
+  });
+});
