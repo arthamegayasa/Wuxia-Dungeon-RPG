@@ -1,0 +1,226 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_BEAT_WEATHER_MOUNTAIN_MIST",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 80,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The mountain mist on the Azure Peaks is not the mist of the lower country. It does not lie on the field; it climbs. It comes up out of the gorges before the sun is up and rises in slow white columns past the cloister wall, finding the carved cedar screens, the lacquered eaves, the small stone lanterns at the path's edge, and softening each in turn until the world is half a sleeve of itself.",
+          "$[CHARACTER] is on the meditation terrace at the second hour before dawn, and the mist arrives the way it arrives every cold morning here — without sound, and without any sense of arriving at all."
+        ],
+        "body": [
+          "The terrace is jade flagstones laid in a fan around the central altar. They are wet now, with the small clean wetness that is not rain. The mist does not fall on $[CHARACTER]; it surrounds him. The robe's silver edging beads with it. The breath, going out, is indistinguishable from the air it goes into. The dantian, banked through the night, brightens by a half-shade — the qi-density of the Peaks is no rumour, and the mist seems to carry a thinner, finer thread of it than the open mountain air does.",
+          "Senior Brother Tang, somewhere across the terrace at his own cushion, is invisible. There are perhaps eight other disciples up at this hour, and the mist has turned them all into the same indistinct shape — kneeling forms, half-erased, breathing slowly into the small white world that has come up out of the gorges to find them. The bell at the East Court will not ring for the dawn rite for another half-hour. Until it does, the cloister is the mist and the mist is the cloister.",
+          "$[CHARACTER] settles the breath. The first long inhale draws something cool and sweet — sandalwood from yesterday's altar, wet stone, and beneath them the fainter spice of the high pines — into the lungs. The mind, which had been busy with the small worries of the previous evening, smooths itself against the mist the way water smooths against a flat stone. There is a small thought that this is what the texts must mean when they speak of a mountain teaching the body without a single word."
+        ],
+        "outro": [
+          "When the dawn bell sounds the mist will already be lifting, climbing past the eaves toward the high cliffs above the cloister, leaving the terrace damp and bright and ordinary again. But the breath has been changed by the morning. The breath remembers."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.weather.mountain_mist",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Spirit", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.weather.mountain_mist", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.weather.mountain_mist", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_WEATHER_PLUM_BLOSSOM_SNOW",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 70,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "seasons": ["spring"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The plum trees in the small inner garden between the scripture hall and the elder's quarters bloomed three days ago — a careful pale pink against the still-bare branches — and last night, in the sudden way of late-winter weather on the Peaks, a thin wet snow fell.",
+          "$[CHARACTER] crosses the garden path at first light and stops at the bridge over the carp-pond, looking."
+        ],
+        "body": [
+          "The blossoms are still on the boughs. The snow is on top of them — a careful white skin laid over the careful pink — so that each branch carries two seasons at once, the petal and the snow refusing to choose between themselves. The garden is otherwise very still. The carp under the thin ice of the pond move only with the slowest of fin-twitches. Senior Sister Rou, who must have walked through here before $[CHARACTER], has left a single line of footprints in the path's snow that the morning is already softening at the edges.",
+          "The smell is the small clean smell of plum and cold water and the sandalwood that drifts always faintly from the elder's quarters at this hour. A petal, jarred by some small movement of the air that $[CHARACTER] cannot feel, falls. It carries its small cap of snow with it, and the two land together on the bridge's railing, and there the petal is the colour of the dawn's first light and the snow is the colour of nothing at all.",
+          "$[CHARACTER] stands a long moment at the bridge. The body knows, with a knowing that does not need to be put into words, that there is a thing here that the texts call beauty and that the texts have never quite been able to say cleanly. The plum and the snow have said it without trying. The mind, which had been busy on the way to the scripture hall with a passage from the third commentary, sets the passage gently aside. The passage will wait."
+        ],
+        "outro": [
+          "When the bell sounds for the morning lecture $[CHARACTER] turns and walks on. The bridge holds its small loaded silence for whoever comes next. The plum and the snow keep each other's company in the space between the seasons."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.weather.plum_snow",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Spirit", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.weather.plum_snow", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.weather.plum_snow", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_WEATHER_QI_STORM",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 60,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "A qi-storm is gathering over the high cliffs. The outer disciples know the signs — the thin pale ring around the noon sun, the way the cicadas in the lower terraces have all fallen silent at once, the small uneasy flickering of the wall-talismans in the inner cloister.",
+          "$[CHARACTER] is at the eastern wall when the first pulse arrives."
+        ],
+        "body": [
+          "It is not a sound. It is a pressure. The air itself seems to bend, very briefly, as though the mountain has taken a slow deep breath and is holding it. The wall-talismans crackle once, then settle. A senior brother on patrol along the inner colonnade lifts his head and meets $[CHARACTER]'s eye across the courtyard with the small wordless acknowledgement of one who has felt the pulse and is counting.",
+          "The second pulse comes a count of nine after the first. Stronger. The dantian, which had been a quiet warmth at the belly, brightens sharply — not painfully, but unmistakably, as though some larger qi-current has just brushed against the small private one and woken it. The high cliffs above the cloister have begun to glow very faintly where they catch the light, an almost-imperceptible blue at their edges. The texts call this the mountain breathing. The texts are, for once, exactly right.",
+          "By the third pulse the inner cloister is in motion in a quiet practised way. The elders are walking, not hurrying, to the central altar to settle the array-stones. The outer disciples are kneeling where they stand, eyes closed, drawing the storm's stray qi into the dantian the way a careful drinker draws the last good cup from a jar that is otherwise spent. $[CHARACTER] does the same. The breath goes deep. The qi comes in. For a long held minute the storm passes through the body without doing any harm — an old guest the cloister has welcomed many times before."
+        ],
+        "outro": [
+          "When the pulses fade and the high cliffs return to ordinary stone, the disciples rise without speaking and go back to whatever they were doing. The dantian is brighter than it was an hour ago. The mountain has paid the cloister its small irregular tax in qi, and the cloister has, as ever, taken the payment with grace."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.weather.qi_storm",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "qi_delta", "amount": 8 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.weather.qi_storm", "stateDeltas": [{ "kind": "qi_delta", "amount": 4 }] },
+            "FAILURE": { "narrativeKey": "ap.action.weather.qi_storm", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_WEATHER_MONSOON",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 75,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "seasons": ["summer"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The midsummer monsoon arrives at the East Court the way it arrives every year — with a single low warning roll of thunder against the inner cliffs, and then, after a count of perhaps thirty breaths in which nothing at all happens, a wall of water that finds the lacquered eaves and turns them in an instant to a continuous silver sheet.",
+          "$[CHARACTER] has been crossing the East Court terrace with an armful of scripture-rolls for the elder's library. There is no time to reach the cloister."
+        ],
+        "body": [
+          "The carved cedar screens of the East Court are designed for exactly this: $[CHARACTER] ducks under the deep eave at the terrace's eastern edge, presses against the wall, and watches the rain come down like a hung curtain three handspans from the toes. The scripture-rolls are dry — barely — wrapped under the robe at the chest. Two other outer disciples, caught the same way, have found the same eave from the opposite end and are pressed against the wall there. They nod. There is nothing to say.",
+          "The terrace's flagstones, which were dry a minute ago, are an ankle-deep lake within a quarter-hour. The carp-pond in the inner garden will be overrun and the carp will make their small annual escape into the wider channels of the cloister's drainage system, from which the kitchen disciples will spend the next two days fishing them back. The lacquered eaves shed the water in continuous silver curtains down each of the four sides of the East Court. The air smells of wet stone, of wet sandalwood from the altar inside the hall, of the particular green smell that the high pines give off only in heavy rain.",
+          "The thunder rolls again, much closer this time, and a single fork of pale lightning takes the eastern cliff for an instant in stark white relief — every crevice, every small clinging pine, every notch in the stone — before the rain swallows the image whole. $[CHARACTER] stands very still under the eave with the scripture-rolls dry against the chest, and waits the storm's long impatient half-hour out."
+        ],
+        "outro": [
+          "When the rain thins to a steady silver drizzle and the terrace begins to drain through its carefully-cut channels, the two disciples at the far end nod once more and go their way. $[CHARACTER] crosses the still-streaming flagstones with the scripture-rolls held high, and the elder's library smells of cedar and dry paper, and the storm is somebody else's now."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.weather.monsoon",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.weather.monsoon", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.weather.monsoon", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_WEATHER_FIRST_FROST",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 70,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "seasons": ["autumn", "winter"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The first frost on the meditation terrace comes earlier on the Peaks than it does in the lower country. By the eighth month the high pines have begun to stiffen at first light, and one morning before the dawn-rite $[CHARACTER] steps out onto the jade flagstones and finds them silvered.",
+          "Each flagstone has its own delicate frost-pattern, the small green-grey of the jade barely showing through."
+        ],
+        "body": [
+          "The cushions, brought out from the cloister and laid in their fan around the central altar, are stiff with cold. The carved cedar screens at the terrace's edge are rimmed in white where the long grain catches the air. Even the small bronze incense-burner on the altar — which usually carries the warm last breath of yesterday's sandalwood — has gone cold to the touch, the ash inside crusted with a thin white skin.",
+          "$[CHARACTER] kneels on the cushion. The breath, going out, is a long pale rope. The dantian's warmth, which has carried the body up the path from the dormitory, is suddenly precious — the small inner fire against the very large outer cold. The texts have a phrase for this morning: the year's first instruction, given by the mountain to anyone who has not learned yet that the cold and the qi are two faces of one practice.",
+          "Senior Sister Rou is at the cushion to $[CHARACTER]'s left, already settled, her breath steady, her shoulders perfectly still under her silver-edged robe. She does not open her eyes. She says, very quietly, almost not for $[CHARACTER] but almost: 'Welcome the cold. Do not flinch. The mountain is teaching today.' Her voice carries no warmth. It carries something better than warmth. It carries the attention of someone who has done this for many more frost-mornings than $[CHARACTER] has."
+        ],
+        "outro": [
+          "When the bell rings to begin the rite the breath has settled into the rhythm. The cold is still cold. The body is still warm. The two are sitting with each other on the terrace, and the mountain, which gives instruction without speaking, has been heard."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.weather.first_frost",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.weather.first_frost", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.weather.first_frost", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
