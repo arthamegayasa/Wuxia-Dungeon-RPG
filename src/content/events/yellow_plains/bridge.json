@@ -6,6 +6,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 50,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 8,
@@ -14,31 +15,41 @@
       },
       "timeCost": "SHORT",
       "text": {
-        "intro": ["$[anchor.opener.martial_family.1]"],
-        "body": [],
-        "outro": []
+        "intro": [
+          "$[anchor.opener.martial_family.1]",
+          "Before the village's first cock has finished its second crowing, the drill-yard behind the family compound is already swept and waiting. The lanterns at its four corners burn the last of their oil down to a pale blue flame."
+        ],
+        "body": [
+          "Stance. The eldest brother corrects the angle of the boy's left foot with the side of his sandal, not unkindly. Stance. The grandfather watches from the lacquered chair beneath the fig tree, hands folded over the iron-headed walking-stick that was his father's father's. He does not speak. He never speaks during morning drill.",
+          "The form goes through its eight motions. Block, advance, twist, sweep — each one named for an animal nobody has ever seen, each one drilled into the bones until the bones forget how to move any other way. The boy's small body protests at the third repetition; by the seventh the protest has settled into something closer to obedience.",
+          "Sweat finds its first cool path down the spine. The grandfather's eyes track every motion. At the end of the set the eldest brother nods once — the village's coldest praise — and gestures for another set. There will be five sets this morning. There were four yesterday. There will be six tomorrow."
+        ],
+        "outro": [
+          "When the first true sun-light comes up over the compound wall the boy is on his eleventh repetition. The body is a wall of heat. The grandfather's hand on the lacquered armrest taps once — and that, in this house, is the morning's blessing."
+        ]
       },
       "choices": [
         {
-          "id": "ch_push",
-          "label": "Push harder than yesterday.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 30, "stats": { "Body": 1, "Spirit": 1 }, "difficulty": 40 },
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
               "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "flag_set", "flag": "martial_training_started" }
               ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "martial_training_started" }]
             },
             "FAILURE": {
               "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -3 }
-              ]
+              "stateDeltas": [{ "kind": "flag_set", "flag": "martial_training_started" }]
             }
-          },
-          "flagDeltas": { "set": ["martial_training_started"] }
+          }
         }
       ],
       "repeat": "once_per_life"
@@ -48,6 +59,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 40,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 8,
@@ -56,32 +68,42 @@
       },
       "timeCost": "SHORT",
       "text": {
-        "intro": ["$[anchor.opener.martial_family.2]"],
-        "body": [],
-        "outro": []
+        "intro": [
+          "$[anchor.opener.martial_family.2]",
+          "The eldest cousin — eighteen, already accepted into the Sword-Holding House at the next county — has been visiting for the family's autumn ancestor-rites. The drill-yard at midmorning. A wooden practice-blade is set down before $[CHARACTER]."
+        ],
+        "body": [
+          "\"Step on,\" the cousin says, with no preamble. The voice is not unkind. It is only the voice of someone who has stopped having to consider whether he is being kind. The boy steps onto the smooth red earth of the sparring circle. The cousin walks the perimeter once, then takes his stance — relaxed at the shoulders, weight a little forward, the wooden blade held loose enough to be deceptive.",
+          "What follows is not a fight. It is a small lesson disguised as a fight. The cousin lets the boy attack first, blocks without effort, ripostes with the blunt edge of the practice-blade tapping the boy's shoulder, his ribs, his wrist — each tap a small humiliation, each humiliation a small instruction. The boy attacks again. The cousin blocks again. Tap. Tap. Tap.",
+          "By the fifth exchange the boy has begun to understand. The cousin is not striking where he is striking; the cousin is striking where the boy will be when his weight finishes shifting from the last attack. The lesson is not in the blade. The lesson is in the half-second before the blade. By the eighth exchange the boy is, in a small way, beginning to see it. The cousin smiles for the first time."
+        ],
+        "outro": [
+          "When the cousin calls the bout ended the boy bows correctly. The bruises will surface tomorrow. The smaller, deeper lesson has already lodged."
+        ]
       },
       "choices": [
         {
-          "id": "ch_spar",
-          "label": "Step onto the sparring earth.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 45 },
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "action.fight.desperate",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Agility", "amount": 1 },
-                { "kind": "insight_delta", "amount": 1 }
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "first_spar" }
               ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "action.fight.desperate",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "first_spar" }]
             },
             "FAILURE": {
               "narrativeKey": "emotion.anger.cold",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -4 }
-              ]
+              "stateDeltas": [{ "kind": "flag_set", "flag": "first_spar" }]
             }
-          },
-          "flagDeltas": { "set": ["first_spar"] }
+          }
         }
       ],
       "repeat": "once_per_life"
@@ -91,6 +113,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 50,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 10,
@@ -99,32 +122,42 @@
       },
       "timeCost": "MEDIUM",
       "text": {
-        "intro": ["$[anchor.opener.scholars_son.1]"],
-        "body": [],
-        "outro": []
+        "intro": [
+          "$[anchor.opener.scholars_son.1]",
+          "The library at the back of the family compound is not large. A single low room, three walls of bookcases, the fourth wall a paper-screen window that looks out onto a small bamboo garden. But the smell — old paper and faint resin and the dry sweet dust of two centuries of brush-ink — is a smell $[CHARACTER] will know all his life."
+        ],
+        "body": [
+          "The father is at his writing-desk near the window, working through a county magistrate's correspondence with the patience of a man for whom each character is the right one or it is no character at all. He does not look up when the boy enters. The boy understands. The library has its rules. The first rule is: do not interrupt the father's working hour.",
+          "The boy moves to the high shelf where the older texts are kept — the inherited ones, the formation-treatises and the geomancies and the small green-bound book of poems by an exiled prince that the family has kept for nine generations because no one knows whether it was ever permissible to own. He stands on the lacquered footstool. The scroll he wants is a fragment of a treatise on early dynastic boundary-formations — the kind of text most boys his age would find dust-dry. He pulls it down with the careful both-handed grip he has been taught.",
+          "The first column. The second. The brushwork is severe; the language is the formal old style with its own grammar. But the diagrams — the diagrams are a different language entirely, and one the boy has been quietly learning to read since he was seven. A formation is a sentence the world reads back. The boy traces the curves with a finger that does not quite touch the paper. The father at his desk, perhaps without realizing it, has begun to smile."
+        ],
+        "outro": [
+          "When the boy looks up the afternoon has gone. The father has been watching for some time."
+        ]
       },
       "choices": [
         {
-          "id": "ch_read",
-          "label": "Pull a scroll on old formations down from the high shelf.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 30, "stats": { "Mind": 2 }, "difficulty": 40 },
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "npc.elder.wisdom",
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 3 },
-                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "flag_set", "flag": "first_formation_concept" }
               ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "npc.elder.wisdom",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "first_formation_concept" }]
             },
             "FAILURE": {
               "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
+              "stateDeltas": [{ "kind": "flag_set", "flag": "first_formation_concept" }]
             }
-          },
-          "flagDeltas": { "set": ["first_formation_concept"] }
+          }
         }
       ],
       "repeat": "once_per_life"
@@ -134,6 +167,7 @@
       "category": "life.social",
       "version": 1,
       "weight": 40,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 11,
@@ -142,16 +176,24 @@
       },
       "timeCost": "MEDIUM",
       "text": {
-        "intro": ["$[anchor.opener.scholars_son.2]"],
-        "body": [],
-        "outro": []
+        "intro": [
+          "$[anchor.opener.scholars_son.2]",
+          "The tutor — Master Cao, brought up from the county capital at the father's expense, with a thin disapproving mouth and a brushwork-callus on the right middle finger like a small dark pearl — has set the assessment for the seventh hour after dawn."
+        ],
+        "body": [
+          "The text to recite is the second book of the Mengzi, the famous passage on the four sprouts of virtue. The boy has had it by heart since he was nine. But knowing a passage by heart is not the same as reciting it under Master Cao's eye, and the eye is the test, not the passage.",
+          "The boy enters. Bows the correct depth. Kneels at the appropriate distance. Master Cao does not return the bow. Master Cao has not returned a bow in thirty years of teaching, on the principle that a tutor who returns the bow has begun to be the student's friend, and a tutor who is the student's friend has stopped being the student's tutor.",
+          "The recitation begins. The voice catches once at the third character — the boy hears it himself, a small high tremble — and then steadies. The passage unrolls. Each phrase, each particle, each slight pause between sentences. Master Cao's eyes do not blink. By the closing line the boy has, in a small private way, understood that the passage was never the test; the test was whether the body could keep itself together while the eye watched. It did. It did, just."
+        ],
+        "outro": [
+          "Master Cao's hand inclines a fraction. It is the closest thing to praise he gives. The father, watching from behind the screen, exhales once, very slowly."
+        ]
       },
       "choices": [
         {
-          "id": "ch_recite",
-          "label": "Recite the passage cleanly and meet the tutor's eye.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 30, "stats": { "Mind": 1, "Charm": 1 }, "difficulty": 45 },
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "emotion.hope.small",
@@ -159,6 +201,10 @@
                 { "kind": "insight_delta", "amount": 2 },
                 { "kind": "flag_set", "flag": "tutor_favor" }
               ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "tutor_favor" }]
             },
             "FAILURE": {
               "narrativeKey": "emotion.anger.flash",
@@ -177,6 +223,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 50,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 15,
@@ -185,32 +232,42 @@
       },
       "timeCost": "MEDIUM",
       "text": {
-        "intro": ["$[anchor.opener.outer_disciple.1]"],
-        "body": [],
-        "outro": []
+        "intro": [
+          "$[anchor.opener.outer_disciple.1]",
+          "An outer disciple's day begins not with cultivation but with the broom. The corridor between the outer-hall and the inner courtyard is fifty paces long and must be swept twice — once for the dust, the second time for the appearance of having been swept once."
+        ],
+        "body": [
+          "$[CHARACTER] sweeps. The broom is bamboo, the bristles half-worn, the handle worn smooth by hands no one keeps records of. The dust rises and settles in the slanted morning light. An inner disciple passes — silk robe of the second tier, silver-grey, the small embroidered emblem of the river-and-mountain at the chest — and does not look at the boy. The boy does not look up. This is the first lesson.",
+          "Halfway down the corridor the senior brother who oversees the outer-hall chores comes by. He inspects the swept stretch with a critical eye, finds a single small swirl of dust the boy has missed in the corner where the wall meets the floor, points at it with the wooden cane he carries, and walks on without speaking. The boy resweeps the corner. His face is hot with the particular shame of having been corrected silently by a man who could have spoken.",
+          "By the time the second sweep is finished the corridor is, by any reasonable measure, immaculate. The inner disciples have begun their morning lectures in the great hall whose door at the corridor's end the boy has never been permitted to open. He hears, very faintly, the rise and fall of the master's voice — the cadence of someone reciting a method-text he has known by heart for forty years."
+        ],
+        "outro": [
+          "Walking back to the outer-hall with the broom over the shoulder, the boy makes a small private accounting. The dust will rise again tomorrow. The hall door has not opened today. But there is time, the boy tells himself; there is time."
+        ]
       },
       "choices": [
         {
-          "id": "ch_sweep",
-          "label": "Sweep the corridor twice and keep your eyes low.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Body": 2 }, "difficulty": 35 },
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
-                { "kind": "insight_delta", "amount": 1 }
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "seen_sect_hierarchy" }
               ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "action.work.plowing",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "seen_sect_hierarchy" }]
             },
             "FAILURE": {
               "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -2 }
-              ]
+              "stateDeltas": [{ "kind": "flag_set", "flag": "seen_sect_hierarchy" }]
             }
-          },
-          "flagDeltas": { "set": ["seen_sect_hierarchy"] }
+          }
         }
       ],
       "repeat": "once_per_life"
@@ -220,6 +277,7 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 15,
@@ -228,16 +286,24 @@
       },
       "timeCost": "SHORT",
       "text": {
-        "intro": ["$[anchor.opener.outer_disciple.2]"],
-        "body": [],
-        "outro": []
+        "intro": [
+          "$[anchor.opener.outer_disciple.2]",
+          "The hall door at the corridor's end is, today, very slightly ajar. The senior who is supposed to mind it has been called away. The lecture inside is in progress."
+        ],
+        "body": [
+          "$[CHARACTER] should pass it. The rule is clear: outer disciples do not loiter at the inner-hall doors. The penalty for being caught is a month of pre-dawn well-water duty. But the voice inside is one of the elder masters — the one who is said to have ascended past the third realm — and the words drifting through the door-gap are the cadence of the breath-method itself, the actual teaching, not the metaphors the outer disciples are given.",
+          "The boy stops. Sets the broom against the wall. Crouches beside the door at the angle the senior would not see if he returned suddenly. Holds the breath.",
+          "The master's voice is unhurried. He is explaining — to the inner disciples gathered cross-legged on the lacquered floor — how the third meridian is to be opened. Not the diagram. Not the theory. The actual placing of the attention, the actual angle of the breath, the actual quality of the gathering at the dantian. It is the kind of teaching that ten years of outer-disciple chores would not have purchased. The boy memorizes. The boy memorizes. The boy memorizes. The voice rises and falls. The corridor light shifts. The senior is returning down the far end of the hall. The boy stands, takes up the broom, resumes sweeping with eyes lowered, and the senior passes by without seeing what was just stolen."
+        ],
+        "outro": [
+          "Back in the outer-hall that evening the boy sits in the half-lotus, places the attention exactly where the master said, and feels — for the first time — the small distinct presence of his third meridian listening back."
+        ]
       },
       "choices": [
         {
-          "id": "ch_listen",
-          "label": "Stop outside the hall door. Listen without breathing.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 20, "stats": { "Mind": 1, "Spirit": 1 }, "difficulty": 50 },
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "npc.elder.wisdom",
@@ -246,12 +312,8 @@
               ],
               "witnessMemory": "silent_waters_scripture"
             },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -1 }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "npc.elder.wisdom", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.resignation.tired", "stateDeltas": [] }
           }
         }
       ],
