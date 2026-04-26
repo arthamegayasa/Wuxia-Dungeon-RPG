@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_BEAT_ATMOSPHERE_OUTER_BANQUET",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 55,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "An outer-disciple banquet has been laid on the eastern terrace to mark the close of the spring intake — a small celebration the cloister permits the cohort once a quarter, with the elders' polite nod and the kitchen disciples' grudging help.",
+          "$[CHARACTER] has come not to sit at the long table but to take a bowl of wine to the cloister wall and listen."
+        ],
+        "body": [
+          "The terrace is strung with paper lanterns the lower-cohort children have spent the afternoon folding — pale yellow, pale red, the small careful crookedness of a first attempt. The long table is laid with the kitchen's best for an outer-disciple meal: steamed bun, fish from the high pond, a single shared platter of the spiced meat the cloister keeps for festival days. The wine is the cheap millet wine the kitchen disciple pretends not to know how the outer cohort obtained.",
+          "From the cloister wall $[CHARACTER] hears the conversation in patches. Senior Brother Pan at the table's head is telling the story of the rival emissary at the gate again — the third telling this week, each telling a little louder, the rival emissary growing slightly more incompetent with each pass. The Azure Cloud cluster at the table's far end are arguing a passage from the sixth commentary in voices that are deliberately low so that the Broken Mountain cluster at the near end will not hear. They are both talking about the same coming inner-disciple selection. They will not name it.",
+          "Junior Brother Wei — the youngest of this season's intake, half-drunk on a single cup, sitting at the table's foot — has begun to laugh at something his neighbour said and cannot stop. The neighbour is Senior Brother Tang, who is not laughing but is watching Wei laugh with the quiet attentive face of a senior brother taking the small good measure of his juniors. Across the terrace the high pines move once in a small breeze that the lanterns barely register. The cloister, which the disciples will inherit one by one, holds the banquet in its larger old patient quiet."
+        ],
+        "outro": [
+          "When the lanterns gutter and the elders' bell sounds the close of the night $[CHARACTER] sets the empty bowl on the wall and walks back toward the dormitory. The conversation overheard from the cloister wall settles in the chest — not as gossip, but as the small careful map of who, this season, sits where."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.atmosphere.banquet",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.atmosphere.banquet", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.atmosphere.banquet", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_ATMOSPHERE_MASTER_LECTURE",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 50,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The master's lecture in the great hall is given on the first and fifteenth of every month, and the entire outer cohort is required to be present. The hall is the cloister's largest interior space — a long lacquered chamber with the master's dais at the eastern end and rising tiered cushions for the disciples descending toward it.",
+          "$[CHARACTER] arrives at the hour before sunrise and finds a cushion in the middle row, third from the right."
+        ],
+        "body": [
+          "The master enters from the small carved door behind the dais without ceremony. He is older than $[CHARACTER] expected the first time he saw him at this distance — perhaps seventy, perhaps a hundred and seventy, the cultivator's face refusing to fix itself to a count. He wears the deep blue master's robe with the silver embroidery at the shoulder and the small jade pendant at the throat. He sits on the dais cushion in the small precise way of a body that has done this five thousand times.",
+          "Today's lecture is on the third foundation of stillness. The master speaks in a low voice that the hall carries to every cushion in it without effort — some array-work of the elders, perhaps, or simply the way the lacquered walls were built three hundred years ago. He does not refer to a text. He does not gesture. He gives the lecture the way an old farmer gives a field its annual planting, in the same slow careful order, with the same small variations year to year that only the long attentive listener notices.",
+          "$[CHARACTER] listens. The third foundation is the one the second commentary calls the difficult one: the stillness that does not exclude movement, that holds the mind quiet inside the body's necessary action. The master's example tonight is the cook in the kitchen disciple's story, who carries a brimming bowl across the courtyard without spilling because he is not trying not to spill. Around $[CHARACTER] the cohort is quiet in the particular way an audience is quiet when a thing they did not know they needed has been said. The high pines outside the eastern lattice move once in a breeze. The master's voice continues."
+        ],
+        "outro": [
+          "When the lecture ends the master rises and leaves through the small carved door without acknowledgement, and the cohort rises and bows to the empty dais. The morning light has come up through the eastern lattice and laid thin gold lines across the lacquered floor. The third foundation will need years to settle. The settling has begun this morning."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.atmosphere.lecture",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.atmosphere.lecture", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.atmosphere.lecture", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_ATMOSPHERE_RIVAL_EMISSARY",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 45,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "A rival sect's emissary has come up the eastern path at the third hour of the afternoon, and the cloister is suddenly busy in the small careful way it gets busy only when a stranger of rank is at the gate.",
+          "$[CHARACTER] is in the outer courtyard with two other disciples when the gatehouse bell rings the formal three-stroke arrival."
+        ],
+        "body": [
+          "The outer cohort knows what to do because it has been drilled in this — at the three-stroke bell the courtyard is to be cleared of practice swords, the laundry-line by the cloister wall is to be taken down, the wash-water in the eastern channel is to be dammed at the diversion-stone so that the cobbles remain dry for the visitor's robe. $[CHARACTER] takes the laundry-line and the others take the rest. The work is done in three minutes, which is faster than the drill's standard time, which the senior brother in the colonnade observes with the small approving nod of a man who notices these things.",
+          "The emissary arrives at the inner gate flanked by two of his own sect's juniors. He is a man of perhaps forty, in the deep green robe of the Falling Leaf sect — the rival cloister three valleys to the south — with the small silver cicada at the throat that marks an inner elder of standing. He moves with the small loose grace of a swordsman who has, more than once, killed a man in a courtyard not unlike this one. He does not look at the outer disciples. The outer disciples do not exist for the visit's purposes.",
+          "Master Khor — the swordmaster, the broad uncle of Senior Brother Khor across at the Broken Mountain table — is at the inner gate to receive him. The two men bow at exactly the right depth for two inner elders of equivalent standing. Their voices, when they begin to speak, are too low for the courtyard to follow. But the outer cohort understands the small specific tension in Master Khor's left hand at his side — the hand a swordsman keeps a half-thumb closer to the hilt than the situation strictly requires — and the cohort, without anyone needing to say it, finds reasons to remain in the colonnade and watch."
+        ],
+        "outro": [
+          "When the emissary withdraws an hour later, with the same bow at the same depth, the outer cohort goes back to the laundry-line and the wash-water and the practice swords. Master Khor stands a long moment at the inner gate looking south. Whatever was said will reach the outer cohort, in pieces, by the supper hour. Whatever was not said will reach them more slowly, over weeks."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.atmosphere.emissary",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "saw_falling_leaf_emissary" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.atmosphere.emissary", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.atmosphere.emissary", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_ATMOSPHERE_LANTERN_FESTIVAL",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 50,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "seasons": ["autumn"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The autumn lantern festival on the lower terraces of the cloister is the one night a year when the outer cohort is permitted, by tradition rather than rule, to walk the cloister grounds without robes properly tied, and when the inner cohort comes down from the upper cloisters to mix with them.",
+          "$[CHARACTER] arrives at the lower terrace at the first dark and finds it already alight."
+        ],
+        "body": [
+          "The terraces have been strung with the cloister's reserve lanterns — the good ones, the lacquered paper kind with the small carved frames, in the deep red and pale jade-green that the Azure Peaks sect has used at this festival for sixteen generations. They hang in long descending lines from the upper colonnade down to the carp-pond at the lower terrace's edge. The carp-pond reflects them. The reflection, broken by the slow movement of the koi beneath the surface, multiplies them.",
+          "Senior Sister Rou is at the bridge with two other inner-disciple sisters. She has, $[CHARACTER] notices with a small startled adjustment, taken her hair down — the long black hair she wears tied back through every drill, now loose down her back, catching the lantern-light. She is laughing at something one of the sisters has said. The laughter is not the laughter $[CHARACTER] has heard her use at drill. It is a softer thing. The cloister, under the lanterns, is a different cloister.",
+          "Junior Brother Wei has acquired a small jade-green lantern of his own from somewhere and is carrying it carefully along the lower path with the small grave concentration of someone who has been told it is precious. Senior Brother Tang is on the upper colonnade looking down at the festival the way a man looks down at a thing he has watched himself grow out of and cannot, quite, walk back into. The kitchen disciples have set out a long low table at the terrace's edge with the festival's small round honey-cakes and the small clay cups of warm spiced wine. The night smells of sandalwood from the altars above and of warm wine and of the high pines."
+        ],
+        "outro": [
+          "When the watch-bell sounds the second hour after midnight the lanterns are taken down with the same careful grace they were hung with, and the cohorts drift back to their dormitories along the colonnade paths in the small loose way of people who have shared a good night. The festival keeps the cloister gentle for a few more hours before the morning bell."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.atmosphere.lantern",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.atmosphere.lantern", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.atmosphere.lantern", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
