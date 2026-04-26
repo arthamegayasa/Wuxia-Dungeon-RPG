@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_BEAT_ROUTINE_INNER_COURT_MEDITATION",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 100,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The inner court is bare flagstones laid in a square around the central altar, ringed by the lacquered colonnade. At the second hour after dawn, when the sect's outer cohort is at chores and the inner cohort is at lecture, the court is quiet enough for one disciple at a time.",
+          "$[CHARACTER] takes the cushion from the small cedar rack at the court's edge and carries it to the southern flagstone — the one the texts recommend for a junior practitioner."
+        ],
+        "body": [
+          "The cushion settles. The robe — outer-disciple grey, with the small silver hem at the cuff — is straightened along the line of the crossed legs. The hands fold in the standard mudra, thumbs touching, palms upward at the navel. The eyes close.",
+          "The first three breaths are the ordering breaths: long inhale to the dantian, short hold, long exhale through the slightly-parted lips. The fourth breath is the listening breath: $[CHARACTER] hears, in order, the small wet drip from the eaves of the colonnade, the distant chant of the inner-cohort lecture two cloisters over, the wind threading through the high pines on the cliffs above the cloister, and beneath all of these the steady soft sound of the body's own pulse against the inside of the chest.",
+          "By the ninth breath the dantian's small banked warmth has come awake. By the eighteenth the qi has begun its slow circulation along the Conception meridian — up the front, over the crown, down the spine, and back to the dantian. The inner court's qi-density is a little more than the lower terraces; each pass of the circulation arrives at the dantian a fraction richer than the one before. The texts call this filling the well. The well, this morning, is filling."
+        ],
+        "outro": [
+          "When $[CHARACTER] opens the eyes the inner court is exactly as it was — the bare flagstones, the lacquered colonnade, the small altar — and the dantian is a half-shade brighter than it was a quarter-hour ago. The cushion goes back to the cedar rack. The morning is generous to the disciplined."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.routine.inner_court",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "qi_delta", "amount": 4 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.routine.inner_court", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.routine.inner_court", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_ROUTINE_DAWN_SWORD_FORMS",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 95,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "Dawn drill in the outer courtyard begins at the first stroke of the small bronze bell. By the second stroke the outer cohort is in formation — three rows of seven, the wooden practice swords already in hand, the breath already gathering in long pale ropes against the cold morning air.",
+          "$[CHARACTER] takes the assigned place in the second row, third from the right."
+        ],
+        "body": [
+          "Senior Sister Rou walks the front of the formation in her silver-edged inner-disciple robe, hands clasped behind her back, eyes scanning. She does not call commands; the cohort knows the sequence. At her single nod the first row begins the opening movement of the basic eight-form — feet shifting to the wide stance, sword rising along the centreline, blade angled at exactly the slope the third commentary specifies.",
+          "$[CHARACTER]'s row follows on the count. The wooden sword is heavier than it should be at this hour, but the body knows it now after three months — the centre of balance a thumb's breadth above the leather grip, the small loose play of the wrist that lets the cut find its line without the arm having to drive it. Movement two: the lateral cut. Movement three: the rising-edge into the pivot. Movement four: the recovery. The whole formation breathes together; the small wet sound of forty bare feet on jade flagstones; the small sharp sound of forty wooden blades cutting the cold air.",
+          "By the fifth pass through the eight-form the sweat has come, even in the cold. By the seventh the breath is steady and the legs have stopped complaining. By the ninth the small mistakes — a wrist-angle a degree off, a foot a thumb's breadth out of position — have been ironed out by the body's own honest tiredness. Senior Sister Rou stops once at the third row, corrects a junior brother's grip with two words, and moves on. She does not stop at $[CHARACTER]. The not-stopping is itself a small grade."
+        ],
+        "outro": [
+          "When the bell sounds the close of drill the cohort returns the practice swords to the rack against the cloister wall and goes to the dining hall in the small loose formation of the half-tired and half-pleased. The body, which has earned its breakfast, will eat it with appetite."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.routine.sword_forms",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "qi_delta", "amount": 5 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.routine.sword_forms", "stateDeltas": [{ "kind": "qi_delta", "amount": 2 }] },
+            "FAILURE": { "narrativeKey": "ap.action.routine.sword_forms", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_ROUTINE_SUTRA_COPYING",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 80,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The scripture hall in the second hour after the evening meal is half-lit by oil-lamps in iron sconces along the wall. The long lacquered desks are mostly empty at this hour; only three or four disciples remain, copying out the day's assigned passage by lamplight.",
+          "$[CHARACTER] takes the desk by the eastern lattice — the one the kitchen disciple keeps a small jar of fresh ink ready at — and lays out the brush, the inkstone, and the blank rice-paper sheet."
+        ],
+        "body": [
+          "The passage tonight is from the second commentary on the Foundations of Stillness — eighty-four characters, careful and precise, the kind that a calligrapher with twenty years' practice would still need to settle into. $[CHARACTER] grinds the ink-stick against the inkstone in slow patient circles until the pool is the right black: thick enough to hold the brush's edge, thin enough to flow.",
+          "The first character is the worst, as the first character always is. The brush is too wet; the line wobbles; the second stroke crosses the first at a shade too steep an angle. $[CHARACTER] sets the ruined sheet aside and starts again on the second. By the third sheet the brush has settled. By the seventh the breath has settled with it — each character one inhale, the next one exhale, the rhythm of the writing matching the rhythm of the body the way the texts always promised it would.",
+          "Senior Sister Lin from the Azure Cloud line is at a desk three down the row, her own brush moving with the small unhurried certainty of someone who has done this every evening for two years. She does not look up when $[CHARACTER] passes her on the way to refill the inkstone. Her column is six characters longer than $[CHARACTER]'s. There is a small instructive quiet in the gap between her column and his."
+        ],
+        "outro": [
+          "By the time the second watch sounds $[CHARACTER] has copied the passage twice — once badly, once acceptably — and the second sheet is laid aside to dry. The hand aches in the small good way of work that has asked a precise thing of it. The mind is quieter than it was at evening meal."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.routine.sutra_copy",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.routine.sutra_copy", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.routine.sutra_copy", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_ROUTINE_HERB_GARDEN",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 80,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The medicinal garden lies in the sheltered terrace below the elder's quarters, where the morning sun lasts longest and the late-afternoon wind off the cliffs is broken by the high pine wall.",
+          "$[CHARACTER] arrives with the assigned chore-tag and finds Junior Sister Mei already there, kneeling between the rows of red-stalked yan-grass with a small bamboo basket beside her."
+        ],
+        "body": [
+          "The garden is laid in twelve raised beds, each marked with a small carved stone naming the herb and the elder responsible: yan-grass for Elder Wei's pill formula, silver-leaf bramble for Elder Sun's tonic, the rare blue-throat lily that only one of the inner elders trusts himself to harvest. Most of the beds need only watering and the small careful loosening of the soil at the root.",
+          "Mei looks up and shifts a hand's breadth to make room. They work in the shared quiet of two outer disciples who have done this rotation together a dozen times. $[CHARACTER] takes the second bed — the silver-leaf, which needs the dead lower leaves pinched off so the plant's qi runs to the new growth — and begins. The leaves come away with a small clean snap. The smell on the fingers is sharp and faintly bitter, the smell that the kitchen disciple knows means the tonic is going to be strong.",
+          "By the third bed the body has settled into the small repetitive rhythm: pinch, drop, pinch, drop. The dantian, which the morning's sword-drill had left at a low warmth, brightens by a half-shade as the herbs' faint qi finds the hand and runs up the wrist. Mei, working her own bed, hums very quietly under her breath — a phrase from a peasant song her mother used to sing, she has told $[CHARACTER] once, before her family sent her up the mountain to the cloister. The garden does not mind the song. The garden absorbs all small things into its larger green attention."
+        ],
+        "outro": [
+          "When the bell sounds the close of the chore-rotation Mei nods once and rises with her basket. $[CHARACTER] follows. The hands smell of yan-grass and silver-leaf and the faint resin of the high pines. The dantian carries a small extra warmth into the rest of the afternoon."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.routine.herb_garden",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "qi_delta", "amount": 3 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.routine.herb_garden", "stateDeltas": [{ "kind": "qi_delta", "amount": 2 }] },
+            "FAILURE": { "narrativeKey": "ap.action.routine.herb_garden", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_ROUTINE_BELL_PATROL",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 75,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The bell-toll patrol of the eastern wall falls to $[CHARACTER] every nine days, in the slow rotation the outer-disciple handler has been keeping for as long as anyone remembers. The patrol begins at the second watch of the night and ends at the third.",
+          "The small bronze patrol-bell hangs from a leather cord at the hip, struck once at each of the four corner-stations and once at the eastern gatehouse."
+        ],
+        "body": [
+          "$[CHARACTER] takes the patrol-bell from the gatehouse hook, the iron lantern from its bracket, and starts north along the eastern wall. The wall is high — three times a man's height — laid in pale grey stone the cliff-quarry has been giving up to the cloister for three hundred years. The walkway along the inside of the wall is jade flagstones, narrow enough that two patrolling disciples must turn sideways to pass. Tonight there is only one patrol. The lantern's small yellow circle moves with the steps.",
+          "First corner-station: the bell rings once, clear and small, into the cold mountain dark. The sound carries up the cliff and is answered, faintly, by the same bell from the western patrol on the far side of the cloister. Good. The night is in order. $[CHARACTER] continues. The dantian, kept warm against the cold by the small steady walking, hums quietly. The breath is even. The eyes have begun to find the small detail of the wall in the lantern's light: the moss between the stones, the small black scar where last year's lightning-strike found the eastern parapet, the carved guard-talisman at the second corner that the outer disciples renew each spring with fresh red lacquer.",
+          "By the third corner-station the body has settled into the patrol's slow attentive rhythm. The cliffs above the cloister are a darker dark against the dark of the sky. Far below, in the gorges, an owl calls once. The patrol-bell rings the third bell. The night, which the cloister has paid $[CHARACTER] to walk through and listen to, gives back its small quiet permission to keep walking."
+        ],
+        "outro": [
+          "When the patrol returns to the gatehouse and the bell goes back on its hook, the third watch has just begun. The walking has warmed the body. The night has been kept by one set of feet on jade. The next patrol-disciple is already at the gate to relieve $[CHARACTER]. They nod and exchange the lantern without a word."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.routine.bell_patrol",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.routine.bell_patrol", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.routine.bell_patrol", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
