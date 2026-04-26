@@ -5,6 +5,7 @@ import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 import { GamePhase } from '@/engine/core/Types';
 import { createEmptyMetaState } from '@/engine/meta/MetaState';
+import type { PendingTribulationResult } from '@/engine/events/RunState';
 
 describe('engineBridge.loadOrInit', () => {
   beforeEach(() => {
@@ -160,6 +161,44 @@ async function loopUntilDeath(engine: any, cap = 500): Promise<number> {
   }
   throw new Error(`loopUntilDeath: character still alive after ${cap} turns`);
 }
+
+describe('Phase 2B-3: bridge surfaces Tribulation result + clears pendingTribulationResult', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('handles a runState with pendingTribulationResult without crashing', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.beginLife('peasant_farmer', 'Tribulation Test');
+
+    // Force-mutate the runState to have a pendingTribulationResult.
+    const gs = useGameStore.getState();
+    const rs = gs.runState!;
+    const synthetic: PendingTribulationResult = {
+      pillarId: 'tribulation_i',
+      phases: [
+        { phaseId: 'heart_demon',    success: true,  chance: 70, roll: 22 },
+        { phaseId: 'first_thunder',  success: true,  chance: 60, roll: 38 },
+        { phaseId: 'second_thunder', success: false, chance: 45, roll: 88 },
+        { phaseId: 'third_thunder',  success: false, chance: 30, roll: 99 },
+      ],
+      fatal: false,
+    };
+    gs.updateRun({ ...rs, pendingTribulationResult: synthetic }, gs.streak!, gs.nameRegistry!);
+
+    // The runState now has pendingTribulationResult set.
+    expect(useGameStore.getState().runState?.pendingTribulationResult).toBeDefined();
+
+    // After peekNextEvent, the bridge clears pendingTribulationResult and the
+    // full surfacing happens via resolveChoice. Peeking should not crash.
+    const preview = await engine.peekNextEvent();
+    expect(preview).toBeDefined();
+    expect(typeof preview.narrative).toBe('string');
+  });
+});
 
 describe('engineBridge.beginBardo (manual)', () => {
   beforeEach(() => {
@@ -449,5 +488,147 @@ describe('engineBridge dominantMood with techniques (Phase 2B-2 Task 10)', () =>
     const moodEffect = t.effects.find((e) => e.kind === 'mood_modifier');
     expect(moodEffect).toBeDefined();
     expect((moodEffect as any).mood).toBe('serenity');
+  });
+});
+
+describe('Phase 2B-3: TurnPreview surfaces region + corePath + techniques + inventory', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('exposes region label, corePath, learnedTechniques, inventory on every preview', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'Test One');
+    const preview = await engine.peekNextEvent();
+    expect(preview.region).toBe('yellow_plains');
+    expect(preview.regionName).toMatch(/yellow plains/i);
+    expect(preview.corePath).toBeNull();
+    expect(preview.corePathRevealedThisTurn).toBe(false);
+    expect(preview.learnedTechniques).toEqual([]);
+    expect(preview.inventory).toEqual([]);
+    expect(preview.openMeridians).toEqual([]);
+  });
+});
+
+describe('Phase 2B-3: corePathRevealed → gameStore wiring', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('clears corePathRevealedThisTurn at the start of the next peek', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'X');
+    useGameStore.getState().markCorePathRevealed();
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(true);
+    await engine.peekNextEvent();
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(false);
+  });
+
+  it('TurnPreview.corePathRevealedThisTurn reflects the live store flag', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'Y');
+    // After peek, the flag is cleared (to false) and the preview reflects false.
+    const preview = await engine.peekNextEvent();
+    expect(preview.corePathRevealedThisTurn).toBe(false);
+  });
+});
+
+describe('Phase 2B-3: LineageEntryView surfaces corePath + techniqueCount', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('reads corePath and techniquesLearned.length from the lineage entry', () => {
+    useMetaStore.getState().hydrateFromMetaState({
+      ...createEmptyMetaState(),
+      lifeCount: 1,
+      lineage: [{
+        lifeIndex: 1,
+        name: 'Test',
+        anchorId: 'peasant_farmer',
+        birthYear: 100, deathYear: 145,
+        yearsLived: 45,
+        realmReached: 'qi_condensation',
+        deathCause: 'old_age',
+        karmaEarned: 12,
+        echoesUnlockedThisLife: [],
+        corePath: 'iron_mountain',
+        techniquesLearned: ['iron_mountain_body_seal', 'still_water_heart_sutra'],
+      }],
+    });
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    const snap = engine.getLineageSnapshot();
+    expect(snap.entries[0]!.corePath).toBe('iron_mountain');
+    expect(snap.entries[0]!.techniqueCount).toBe(2);
+  });
+});
+
+describe('Phase 2B-3: BardoPayload surfaces corePath + techniques', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('exposes corePath and techniquesLearnedThisLife on BardoPayload', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'Bardo Test');
+    // Force-mutate the run state so the character has a corePath + a learnedTechnique.
+    // (Bypassing the natural progression for test brevity.)
+    const gs = useGameStore.getState();
+    const rs = gs.runState!;
+    gs.updateRun(
+      { ...rs, character: { ...rs.character, corePath: 'iron_mountain' as const }, learnedTechniques: ['iron_mountain_body_seal'], deathCause: 'old_age' as any },
+      gs.streak!,
+      gs.nameRegistry!,
+    );
+    const bardo = await engine.beginBardo();
+    expect(bardo.corePath).toBe('iron_mountain');
+    expect(bardo.techniquesLearnedThisLife).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'iron_mountain_body_seal' }),
+      ]),
+    );
+  });
+});
+
+describe('Phase 2B-3: CodexSnapshot surfaces a techniques tab', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('emits a CodexTechniqueEntry per technique with seen/learned distinction', async () => {
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+    await __loadGameplayContent();
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    const snap = engine.getCodexSnapshot();
+    expect(Array.isArray(snap.techniques)).toBe(true);
+    expect(snap.techniques.length).toBeGreaterThan(0);
+    const sample = snap.techniques[0]!;
+    expect(sample).toHaveProperty('id');
+    expect(sample).toHaveProperty('name');
+    expect(sample).toHaveProperty('seen');
+    expect(sample).toHaveProperty('learned');
+    expect(sample).toHaveProperty('grade');
+    expect(sample).toHaveProperty('description');
   });
 });

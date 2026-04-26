@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { CodexSnapshot, CodexEchoEntry, CodexMemoryEntry, CodexAnchorEntry } from '@/services/engineBridge';
+import type { CodexSnapshot, CodexEchoEntry, CodexMemoryEntry, CodexAnchorEntry, CodexTechniqueEntry } from '@/services/engineBridge';
 
 export interface CodexScreenProps {
   snapshot: CodexSnapshot;
   onBack: () => void;
 }
 
-type Tab = 'memories' | 'echoes' | 'anchors';
+type Tab = 'memories' | 'echoes' | 'anchors' | 'techniques';
 
 export function CodexScreen({ snapshot, onBack }: CodexScreenProps) {
   const [tab, setTab] = useState<Tab>('memories');
@@ -26,7 +26,7 @@ export function CodexScreen({ snapshot, onBack }: CodexScreenProps) {
         </div>
 
         <div role="tablist" className="flex gap-2 mb-6 border-b border-parchment-800">
-          {(['memories', 'echoes', 'anchors'] as Tab[]).map((t) => (
+          {(['memories', 'echoes', 'anchors', 'techniques'] as Tab[]).map((t) => (
             <button
               key={t}
               role="tab"
@@ -47,6 +47,7 @@ export function CodexScreen({ snapshot, onBack }: CodexScreenProps) {
         {tab === 'memories' && <MemoriesTab memories={snapshot.memories} />}
         {tab === 'echoes' && <EchoesTab echoes={snapshot.echoes} />}
         {tab === 'anchors' && <AnchorsTab anchors={snapshot.anchors} />}
+        {tab === 'techniques' && <TechniquesTab techniques={snapshot.techniques} />}
       </div>
     </div>
   );
@@ -149,6 +150,43 @@ function AnchorsTab({ anchors }: { anchors: ReadonlyArray<CodexAnchorEntry> }) {
             <>
               <div className="text-lg italic">— locked —</div>
               <div className="text-xs">{a.unlockHint}</div>
+            </>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function TechniquesTab({ techniques }: { techniques: ReadonlyArray<CodexTechniqueEntry> }) {
+  if (techniques.length === 0) {
+    return <p className="text-parchment-500 italic">No techniques catalogued.</p>;
+  }
+  return (
+    <ul className="flex flex-col gap-3">
+      {techniques.map((t) => (
+        <li
+          key={t.id}
+          className={`border rounded p-4 ${
+            t.seen ? 'border-parchment-700 bg-ink-900' : 'border-ash-800 bg-ink-900/40 text-ash-500'
+          }`}
+        >
+          {t.seen ? (
+            <>
+              <div className="flex items-baseline justify-between">
+                <span className="text-lg text-jade-300">{t.name}</span>
+                <span className="text-xs uppercase tracking-wide text-parchment-500">
+                  <span>{t.grade}</span>
+                  {' · '}
+                  <span>{t.learned ? 'learned' : 'seen'}</span>
+                </span>
+              </div>
+              <div className="text-sm text-parchment-300 mt-1">{t.description}</div>
+            </>
+          ) : (
+            <>
+              <div className="text-lg italic">— locked —</div>
+              <div className="text-xs">A technique not yet seen by the soul.</div>
             </>
           )}
         </li>

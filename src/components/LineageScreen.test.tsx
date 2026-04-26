@@ -20,6 +20,8 @@ const POPULATED: LineageSnapshot = {
       deathCause: 'tribulation',
       karmaEarned: 80,
       echoesUnlockedThisLife: [{ id: 'iron_body', name: 'Iron Body' }],
+      corePath: 'iron_mountain',
+      techniqueCount: 2,
     },
     {
       lifeIndex: 1,
@@ -33,6 +35,8 @@ const POPULATED: LineageSnapshot = {
       deathCause: 'sickness',
       karmaEarned: 25,
       echoesUnlockedThisLife: [],
+      corePath: null,
+      techniqueCount: 0,
     },
   ],
 };
@@ -66,5 +70,30 @@ describe('LineageScreen', () => {
     render(<LineageScreen snapshot={EMPTY} onBack={onBack} />);
     await userEvent.click(screen.getByRole('button', { name: /back/i }));
     expect(onBack).toHaveBeenCalledOnce();
+  });
+});
+
+describe('Phase 2B-3: LineageScreen shows corePath + techniqueCount', () => {
+  it('renders core path and technique count on each LifeCard', () => {
+    const snap = {
+      entries: [{
+        lifeIndex: 1,
+        name: 'Lin Wei',
+        anchorId: 'sect_initiate',
+        anchorName: 'Sect Initiate',
+        birthYear: 100,
+        deathYear: 145,
+        yearsLived: 45,
+        realmReached: 'qi_condensation',
+        deathCause: 'old age',
+        karmaEarned: 12,
+        echoesUnlockedThisLife: [],
+        corePath: 'iron_mountain',
+        techniqueCount: 3,
+      }],
+    };
+    render(<LineageScreen snapshot={snap} onBack={() => {}} />);
+    expect(screen.getByText(/iron mountain/i)).toBeInTheDocument();
+    expect(screen.getByText(/3 techniques/i)).toBeInTheDocument();
   });
 });

@@ -11,6 +11,8 @@ import { logWitness } from '@/engine/meta/MemoryWitnessLogger';
 import { IRng } from '@/engine/core/RNG';
 import { attemptQiSensingAwakening, attemptQiCondensationEntry } from '@/engine/cultivation/RealmCrossing';
 import { attemptSublayerBreakthrough } from '@/engine/cultivation/Breakthrough';
+import { runTribulationIPillar } from '@/engine/cultivation/TribulationI';
+import type { PendingTribulationResult } from './RunState';
 
 function removeFlag(c: Character, flag: string): Character {
   if (!c.flags.includes(flag)) return c;
@@ -141,9 +143,26 @@ function applyDeltaToState(rs: RunState, delta: StateDelta, options: ApplyOutcom
           return { ...rs, character: result.character };
         }
         case 'qc9_to_foundation': {
-          // Tribulation I stub — Tribulation engine wired in 2B-3 UI.
-          // For 2B: mark attempt flag on character so future events can detect it.
-          return { ...rs, character: { ...rs.character, flags: [...rs.character.flags, 'attempted_tribulation_i'] } };
+          if (!options.rng) {
+            throw new Error('attempt_realm_crossing qc9_to_foundation: rng required');
+          }
+          // FIXME(phase-3): see engineBridge.resolveChoice — when this flips to 'fatal',
+          // surface the tribulation payload in BardoPayload before bardo transition.
+          const result = runTribulationIPillar(rs.character, {
+            rng: options.rng,
+            tribulationMode: 'non_fatal',  // Phase 3 will flip via runtime flag
+          });
+          const pending: PendingTribulationResult = {
+            pillarId: 'tribulation_i',
+            phases: result.phaseResults,
+            fatal: result.deathCause !== undefined,
+          };
+          return {
+            ...rs,
+            character: result.character,
+            pendingTribulationResult: pending,
+            deathCause: result.deathCause ?? rs.deathCause,
+          };
         }
       }
     }

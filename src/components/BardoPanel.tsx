@@ -1,24 +1,8 @@
 import { Fragment } from 'react';
-import type { RevealedMemory, RevealedEcho } from '@/services/engineBridge';
+import type { BardoPayload } from '@/services/engineBridge';
 
 export interface BardoPanelProps {
-  payload: {
-    lifeIndex: number;
-    years: number;
-    realm: string;
-    deathCause: string;
-    karmaEarned: number;
-    karmaBreakdown: Record<string, number>;
-    karmaBalance: number;
-    ownedUpgrades: ReadonlyArray<string>;
-    availableUpgrades: ReadonlyArray<{
-      id: string; name: string; description: string; cost: number;
-      affordable: boolean; requirementsMet: boolean; owned: boolean;
-    }>;
-    manifestedThisLife: ReadonlyArray<RevealedMemory>;
-    witnessedThisLife: ReadonlyArray<RevealedMemory>;
-    echoesUnlockedThisLife: ReadonlyArray<RevealedEcho>;
-  };
+  payload: BardoPayload;
   onBuyUpgrade: (upgradeId: string) => void | Promise<void>;
   onReincarnate: () => void | Promise<void>;
   onOpenCodex?: () => void;
@@ -82,6 +66,31 @@ export function BardoPanel({ payload, onBuyUpgrade, onReincarnate, onOpenCodex, 
               </li>
             ))}
           </ul>
+        </section>
+      )}
+
+      {/* 2B-3: Techniques learned this life */}
+      {payload.techniquesLearnedThisLife.length > 0 && (
+        <section className="w-full max-w-2xl bg-ink-900 border border-jade-700 rounded p-6 mb-6">
+          <h3 className="text-xl mb-3 text-jade-300">Techniques learned</h3>
+          <ul className="flex flex-col gap-2">
+            {payload.techniquesLearnedThisLife.map((t) => (
+              <li key={t.id} className="text-parchment-200">
+                <div className="text-lg">{t.name}</div>
+                <div className="text-xs text-parchment-500 italic">{t.description}</div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* 2B-3: Core path locked this life */}
+      {payload.corePath && (
+        <section className="w-full max-w-2xl bg-ink-900 border border-jade-700 rounded p-6 mb-6">
+          <h3 className="text-xl mb-3 text-jade-300">Core Path</h3>
+          <p className="text-parchment-200">
+            {payload.corePath.replace(/_/g, ' ')}
+          </p>
         </section>
       )}
 

@@ -1,6 +1,6 @@
 // Real engineBridge — adapter from UI → engine. Source: docs/spec/design.md §2, §11.
 
-import { GamePhase } from '@/engine/core/Types';
+import { GamePhase, Realm } from '@/engine/core/Types';
 import { SaveManager, createSaveManager } from '@/engine/persistence/SaveManager';
 import { loadRun, saveRun, clearRun } from '@/engine/persistence/RunSave';
 import {
@@ -28,7 +28,7 @@ import { checkCategoryFromEvent } from '@/engine/narrative/CheckCategoryFromEven
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
-import type { TechniqueDef } from '@/engine/cultivation/Technique';
+import type { TechniqueDef, TechniqueGrade } from '@/engine/cultivation/Technique';
 import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
@@ -39,7 +39,7 @@ import { loadEvents } from '@/content/events/loader';
 import { loadSnippets, mergeSnippetPacks, mergeSnippetLibraries } from '@/content/snippets/loader';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
-import { ItemRegistry, ItemDef } from '@/engine/cultivation/ItemRegistry';
+import { ItemRegistry, ItemDef, ItemType } from '@/engine/cultivation/ItemRegistry';
 import { RegionRegistry } from '@/engine/world/RegionRegistry';
 import { SoulEcho } from '@/engine/meta/SoulEcho';
 import type { UnlockCondition, EchoEffect } from '@/engine/meta/SoulEcho';
@@ -148,6 +148,29 @@ export interface LoadOrInitResult {
   hasSave: boolean;
 }
 
+export interface TurnPreviewTechnique {
+  id: string;
+  name: string;
+}
+
+export interface TurnPreviewItem {
+  id: string;
+  name: string;
+  count: number;
+  itemType: ItemType;
+}
+
+export interface TribulationPayload {
+  pillarId: 'tribulation_i';
+  phases: ReadonlyArray<{
+    phaseId: string;
+    success: boolean;
+    chance: number;
+    roll: number;
+  }>;
+  fatal: boolean;
+}
+
 export interface TurnPreview {
   narrative: string;
   name: string;
@@ -159,6 +182,17 @@ export interface TurnPreview {
   realm: string;
   insight: number;
   choices: Array<{ id: string; label: string }>;
+  // Phase 2B-3 additions
+  region: string;
+  regionName: string;
+  corePath: string | null;
+  /** True only on the turn the 3rd meridian opened. UI uses for shimmer animation. */
+  corePathRevealedThisTurn: boolean;
+  learnedTechniques: ReadonlyArray<TurnPreviewTechnique>;
+  inventory: ReadonlyArray<TurnPreviewItem>;
+  openMeridians: ReadonlyArray<number>;
+  /** Set only by resolveChoice when the resolved outcome triggered a Tribulation pillar. */
+  tribulation?: TribulationPayload;
 }
 
 export interface RevealedMemory {
@@ -169,6 +203,12 @@ export interface RevealedMemory {
 }
 
 export interface RevealedEcho {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface RevealedTechnique {
   id: string;
   name: string;
   description: string;
@@ -193,6 +233,10 @@ export interface BardoPayload {
   witnessedThisLife: ReadonlyArray<RevealedMemory>;
   /** Phase 2A-3: echoes whose unlock condition fired this life (10c reveal). */
   echoesUnlockedThisLife: ReadonlyArray<RevealedEcho>;
+  /** Phase 2B-3: core path locked this life (null if 3rd meridian never opened). */
+  corePath: string | null;
+  /** Phase 2B-3: techniques the player learned during this life. */
+  techniquesLearnedThisLife: ReadonlyArray<RevealedTechnique>;
 }
 
 export interface CreationAnchorView {
@@ -249,10 +293,20 @@ export interface CodexAnchorEntry {
   karmaMultiplier: number;
 }
 
+export interface CodexTechniqueEntry {
+  id: string;
+  name: string;
+  description: string;
+  grade: TechniqueGrade;
+  seen: boolean;
+  learned: boolean;
+}
+
 export interface CodexSnapshot {
   echoes: ReadonlyArray<CodexEchoEntry>;
   memories: ReadonlyArray<CodexMemoryEntry>;
   anchors: ReadonlyArray<CodexAnchorEntry>;
+  techniques: ReadonlyArray<CodexTechniqueEntry>;
 }
 
 export interface LineageEntryView {
@@ -267,6 +321,8 @@ export interface LineageEntryView {
   deathCause: string;
   karmaEarned: number;
   echoesUnlockedThisLife: ReadonlyArray<{ id: string; name: string }>;
+  corePath: string | null;
+  techniqueCount: number;
 }
 
 export interface LineageSnapshot {
@@ -396,10 +452,21 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
   function buildTurnPreview(
     narrative: string,
     choices: Array<{ id: string; label: string }>,
+    tribulation?: TribulationPayload,
   ): TurnPreview {
     const gs = useGameStore.getState();
     if (!gs.runState) throw new Error('buildTurnPreview: no runState in store');
     const rs = gs.runState;
+    const regionDef = REGION_REGISTRY.current.byId(rs.region);
+    const learnedTechniques: TurnPreviewTechnique[] = rs.learnedTechniques.flatMap((id) => {
+      const t = TECHNIQUE_REGISTRY.byId(id);
+      return t ? [{ id, name: t.name }] : [];
+    });
+    const inventory: TurnPreviewItem[] = rs.inventory.flatMap((slot) => {
+      const def = ITEM_REGISTRY.byId(slot.id);
+      if (!def) return [];
+      return [{ id: slot.id, name: def.name, count: slot.count, itemType: def.type }];
+    });
     return {
       narrative,
       name: rs.character.name,
@@ -411,6 +478,14 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       realm: rs.character.realm,
       insight: rs.character.insight,
       choices,
+      region: rs.region,
+      regionName: regionDef?.name ?? rs.region.replace(/_/g, ' '),
+      corePath: rs.character.corePath,
+      corePathRevealedThisTurn: gs.corePathRevealedThisTurn,
+      learnedTechniques,
+      inventory,
+      openMeridians: rs.character.openMeridians,
+      tribulation,
     };
   }
 
@@ -444,6 +519,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
    * could hit a choiceId that no longer existed.
    */
   async function doPeek(): Promise<TurnPreview> {
+    useGameStore.getState().clearCorePathRevealed();
     const gs = useGameStore.getState();
     if (!gs.runState || !gs.streak || !gs.nameRegistry) {
       throw new Error('peekNextEvent: no active run in store');
@@ -593,6 +669,11 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       return { id, name: e?.name ?? id, description: e?.description ?? '' };
     });
 
+    const techniquesLearnedThisLife: RevealedTechnique[] = (rs.learnedTechniques ?? []).flatMap((id) => {
+      const t = TECHNIQUE_REGISTRY.byId(id);
+      return t ? [{ id, name: t.name, description: t.description }] : [];
+    });
+
     return {
       lifeIndex: meta.lifeCount,
       years: br.summary.yearsLived,
@@ -614,6 +695,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       manifestedThisLife,
       witnessedThisLife,
       echoesUnlockedThisLife,
+      corePath: rs.character.corePath,
+      techniquesLearnedThisLife,
     };
   }
 
@@ -823,6 +906,21 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       });
       nextRunState = hooks.runState;
       const nextEchoTracker = hooks.echoTracker;
+      if (hooks.corePathRevealed) {
+        useGameStore.getState().markCorePathRevealed();
+      }
+
+      // Phase 2B-3: lift Tribulation I result onto TurnPreview if applyOutcome stamped one.
+      let tribulationPayload: TribulationPayload | undefined;
+      if (nextRunState.pendingTribulationResult) {
+        tribulationPayload = {
+          pillarId: nextRunState.pendingTribulationResult.pillarId,
+          phases: nextRunState.pendingTribulationResult.phases,
+          fatal: nextRunState.pendingTribulationResult.fatal,
+        };
+        // Clear so a subsequent peek/resolve doesn't re-emit it.
+        nextRunState = { ...nextRunState, pendingTribulationResult: undefined };
+      }
 
       useGameStore.getState().updateRun(nextRunState, nextStreak, gs.nameRegistry);
       useGameStore.getState().setEchoTracker(nextEchoTracker);
@@ -840,6 +938,11 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       useGameStore.getState().appendSeenEvent(pending.id);
       saveRun(sm, nextRunState);
 
+      // FIXME(phase-3): when tribulationMode flips to 'fatal', a fatal Tribulation
+      // will set deathCause and skip surfacing tribulationPayload below. Surface it
+      // in BardoPayload (e.g., BardoPayload.tribulationOnDeath) so the player sees
+      // the four-phase result that killed them. Non-issue in 2B since mode is
+      // hardcoded 'non_fatal' (see OutcomeApplier qc9_to_foundation case).
       if (nextRunState.deathCause) {
         const anchorFlag = nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';
@@ -858,7 +961,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       }
 
       // Still alive — auto-peek the next event for the UI.
-      return doPeek();
+      const next = await doPeek();
+      return tribulationPayload ? { ...next, tribulation: tribulationPayload } : next;
     },
     async beginBardo() {
       const gs = useGameStore.getState();
@@ -961,6 +1065,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
           deathCause: entry.deathCause,
           karmaEarned: entry.karmaEarned,
           echoesUnlockedThisLife: echoes,
+          corePath: entry.corePath,
+          techniqueCount: entry.techniquesLearned.length,
         };
       });
       return { entries };
@@ -1010,7 +1116,22 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         karmaMultiplier: a.karmaMultiplier,
       }));
 
-      return { echoes, memories, anchors };
+      const seenTech = new Set(meta.seenTechniques);
+      // "learned" reflects current life if any; if no live run, fall back to lineage's most-recent entry's techniquesLearned.
+      const learnedSet = new Set<string>(
+        useGameStore.getState().runState?.learnedTechniques
+        ?? (meta.lineage.length > 0 ? meta.lineage[meta.lineage.length - 1]!.techniquesLearned : []),
+      );
+      const techniques = TECHNIQUE_REGISTRY.all().map<CodexTechniqueEntry>((t) => ({
+        id: t.id,
+        name: t.name,
+        description: t.description,
+        grade: t.grade,
+        seen: seenTech.has(t.id) || learnedSet.has(t.id),
+        learned: learnedSet.has(t.id),
+      }));
+
+      return { echoes, memories, anchors, techniques };
     },
   };
 }
@@ -1023,4 +1144,83 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
  */
 export async function __loadGameplayContent(): Promise<void> {
   return ensureAzurePeaksLoaded();
+}
+
+/**
+ * Test-only: inject a synthetic event into the global selection pool.
+ * Subsequent calls to `peekNextEvent` may select this event when its conditions
+ * match. Used by Phase 2B-3 integration tests that need a deterministic
+ * choice → outcome path (e.g. `qc9_to_foundation`) without authoring a full
+ * region content pack.
+ */
+export function __testInsertEvent(event: EventDef): void {
+  ALL_EVENTS = [...ALL_EVENTS, event];
+}
+
+/**
+ * Test-only: run the full `beginLife` flow then mutate the store so the
+ * character is at QC9 with cultivationProgress=100, and inject a synthetic
+ * high-weight event whose first choice triggers the qc9_to_foundation
+ * Tribulation I crossing. The event has no region/realm/condition gating
+ * so it is selectable from any context. Weight 9999 dominates the YP pool.
+ *
+ * After this returns, the next `peekNextEvent` will overwhelmingly select
+ * `test_qc9_foundation_event`, and `resolveChoice('attempt_foundation')`
+ * will stamp `runState.pendingTribulationResult`, which the bridge surfaces
+ * on the next TurnPreview as `tribulation`.
+ */
+export async function __seedRunAtQc9WithFoundationChoice(
+  engine: EngineBridge,
+): Promise<void> {
+  await engine.loadOrInit();
+  await engine.beginLife('peasant_farmer', 'Tribulation Test');
+
+  // Mutate runState directly to QC9. Use the same store-setState pattern as
+  // azure_peaks_playable_life.test.ts to bypass the bridge's update path
+  // (which would require streak/nameRegistry plumbing for an immutable update).
+  const gs = useGameStore.getState();
+  if (!gs.runState) throw new Error('__seedRunAtQc9WithFoundationChoice: no runState after beginLife');
+  useGameStore.setState({
+    runState: {
+      ...gs.runState,
+      // Clear pendingEventId so the next peek runs fresh selection and picks
+      // up our synthetic event.
+      pendingEventId: undefined,
+      character: {
+        ...gs.runState.character,
+        realm: Realm.QI_CONDENSATION,
+        qiCondensationLayer: 9,
+        cultivationProgress: 100,
+      },
+    },
+  });
+
+  // Inject the synthetic event with a single Foundation-attempt choice.
+  __testInsertEvent({
+    id: 'test_qc9_foundation_event',
+    category: 'training',
+    version: 1,
+    weight: 9999,
+    conditions: {},
+    timeCost: 'INSTANT',
+    text: { intro: ['You stand at the edge.'] },
+    choices: [
+      {
+        id: 'attempt_foundation',
+        label: 'Attempt Foundation',
+        timeCost: 'INSTANT',
+        outcomes: {
+          SUCCESS: {
+            narrativeKey: 'foundation_attempt',
+            stateDeltas: [{ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' }],
+          },
+          FAILURE: {
+            narrativeKey: 'foundation_attempt',
+            stateDeltas: [{ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' }],
+          },
+        },
+      },
+    ],
+    repeat: 'unlimited',
+  });
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { GamePhase } from '@/engine/core/Types';
 import {
   createEngineBridge, EngineBridge, TurnPreview, BardoPayload,
@@ -9,8 +9,9 @@ import { TitleScreen } from '@/components/TitleScreen';
 import { CreationScreen } from '@/components/CreationScreen';
 import { PlayScreen } from '@/components/PlayScreen';
 import { BardoPanel } from '@/components/BardoPanel';
-import { CodexScreen } from '@/components/CodexScreen';
-import { LineageScreen } from '@/components/LineageScreen';
+
+const CodexScreen = lazy(() => import('@/components/CodexScreen').then((m) => ({ default: m.CodexScreen })));
+const LineageScreen = lazy(() => import('@/components/LineageScreen').then((m) => ({ default: m.LineageScreen })));
 
 let engineSingleton: EngineBridge | null = null;
 let engineOverride: EngineBridge | null = null;
@@ -176,10 +177,18 @@ export function App() {
     );
   }
   if (phase === GamePhase.CODEX && codexSnap) {
-    return <CodexScreen snapshot={codexSnap} onBack={closeOverlay} />;
+    return (
+      <Suspense fallback={null}>
+        <CodexScreen snapshot={codexSnap} onBack={closeOverlay} />
+      </Suspense>
+    );
   }
   if (phase === GamePhase.LINEAGE && lineageSnap) {
-    return <LineageScreen snapshot={lineageSnap} onBack={closeOverlay} />;
+    return (
+      <Suspense fallback={null}>
+        <LineageScreen snapshot={lineageSnap} onBack={closeOverlay} />
+      </Suspense>
+    );
   }
 
   // Transitional fallback - occurs briefly between phase change and state sync.

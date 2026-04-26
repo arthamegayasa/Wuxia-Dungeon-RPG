@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PlayScreen } from './PlayScreen';
 
@@ -17,6 +17,13 @@ const PREVIEW = {
     { id: 'ch_walk', label: 'Walk on.' },
     { id: 'ch_chase', label: 'Chase it.' },
   ],
+  region: 'azure_peaks',
+  regionName: 'Azure Peaks',
+  corePath: null,
+  corePathRevealedThisTurn: false,
+  learnedTechniques: [],
+  inventory: [],
+  openMeridians: [],
 };
 
 describe('PlayScreen', () => {
@@ -61,5 +68,68 @@ describe('PlayScreen', () => {
       />,
     );
     expect(screen.getByText(/waiting/i)).toBeInTheDocument();
+  });
+});
+
+describe('Phase 2B-3: PlayScreen region indicator', () => {
+  it('renders the region name in the header', () => {
+    render(<PlayScreen preview={PREVIEW} onChoose={() => {}} />);
+    expect(screen.getByText(/azure peaks/i)).toBeInTheDocument();
+  });
+});
+
+describe('Phase 2B-3: PlayScreen renders TribulationPanel inline', () => {
+  const trib = {
+    pillarId: 'tribulation_i' as const,
+    phases: [
+      { phaseId: 'heart_demon', success: true, chance: 70, roll: 22 },
+      { phaseId: 'first_thunder', success: true, chance: 60, roll: 38 },
+      { phaseId: 'second_thunder', success: true, chance: 45, roll: 11 },
+      { phaseId: 'third_thunder', success: true, chance: 30, roll: 4 },
+    ],
+    fatal: false,
+  };
+
+  it('shows TribulationPanel when preview.tribulation is present', async () => {
+    render(
+      <PlayScreen
+        preview={{ ...PREVIEW, tribulation: trib }}
+        onChoose={() => {}}
+      />
+    );
+    await waitFor(() => expect(screen.getByText(/the heavens stir/i)).toBeInTheDocument());
+  });
+  it('hides TribulationPanel after the user clicks Continue', async () => {
+    render(
+      <PlayScreen
+        preview={{ ...PREVIEW, tribulation: trib }}
+        onChoose={() => {}}
+      />
+    );
+    await waitFor(() => screen.getByRole('button', { name: /continue/i }));
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
+    expect(screen.queryByText(/the heavens stir/i)).not.toBeInTheDocument();
+  });
+});
+
+describe('Phase 2B-3: PlayScreen overlay toggles', () => {
+  it('toggles inventory panel visibility via header button', async () => {
+    render(<PlayScreen
+      preview={{
+        ...PREVIEW,
+        inventory: [{ id: 'p', name: 'Pill', count: 2, itemType: 'pill' }],
+      }}
+      onChoose={() => {}}
+    />);
+    expect(screen.queryByRole('heading', { name: /^inventory$/i })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /inventory/i }));
+    await waitFor(() => expect(screen.getByRole('heading', { name: /^inventory$/i })).toBeInTheDocument());
+    await userEvent.click(screen.getByRole('button', { name: /close/i }));
+    expect(screen.queryByRole('heading', { name: /^inventory$/i })).not.toBeInTheDocument();
+  });
+  it('toggles character sheet visibility via header button', async () => {
+    render(<PlayScreen preview={PREVIEW} onChoose={() => {}} />);
+    await userEvent.click(screen.getByRole('button', { name: /character/i }));
+    await waitFor(() => expect(screen.getByRole('heading', { name: /^character$/i })).toBeInTheDocument());
   });
 });

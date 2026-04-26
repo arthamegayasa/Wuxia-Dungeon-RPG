@@ -55,6 +55,12 @@ function LifeCard({ entry }: { entry: LineageEntryView }) {
           Echo unlocked this life: {entry.echoesUnlockedThisLife.map((e) => e.name).join(', ')}
         </div>
       )}
+      {(entry.corePath || entry.techniqueCount > 0) && (
+        <div className="mt-2 text-xs text-parchment-400 flex gap-3">
+          {entry.corePath && <span>Path: {entry.corePath.replace(/_/g, ' ')}</span>}
+          {entry.techniqueCount > 0 && <span>{entry.techniqueCount} techniques</span>}
+        </div>
+      )}
     </li>
   );
 }
