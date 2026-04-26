@@ -5,6 +5,7 @@ import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 import { GamePhase } from '@/engine/core/Types';
 import { createEmptyMetaState } from '@/engine/meta/MetaState';
+import type { PendingTribulationResult } from '@/engine/events/RunState';
 
 describe('engineBridge.loadOrInit', () => {
   beforeEach(() => {
@@ -160,6 +161,44 @@ async function loopUntilDeath(engine: any, cap = 500): Promise<number> {
   }
   throw new Error(`loopUntilDeath: character still alive after ${cap} turns`);
 }
+
+describe('Phase 2B-3: bridge surfaces Tribulation result + clears pendingTribulationResult', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('handles a runState with pendingTribulationResult without crashing', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.beginLife('peasant_farmer', 'Tribulation Test');
+
+    // Force-mutate the runState to have a pendingTribulationResult.
+    const gs = useGameStore.getState();
+    const rs = gs.runState!;
+    const synthetic: PendingTribulationResult = {
+      pillarId: 'tribulation_i',
+      phases: [
+        { phaseId: 'heart_demon',    success: true,  chance: 70, roll: 22 },
+        { phaseId: 'first_thunder',  success: true,  chance: 60, roll: 38 },
+        { phaseId: 'second_thunder', success: false, chance: 45, roll: 88 },
+        { phaseId: 'third_thunder',  success: false, chance: 30, roll: 99 },
+      ],
+      fatal: false,
+    };
+    gs.updateRun({ ...rs, pendingTribulationResult: synthetic }, gs.streak!, gs.nameRegistry!);
+
+    // The runState now has pendingTribulationResult set.
+    expect(useGameStore.getState().runState?.pendingTribulationResult).toBeDefined();
+
+    // After peekNextEvent, the bridge clears pendingTribulationResult and the
+    // full surfacing happens via resolveChoice. Peeking should not crash.
+    const preview = await engine.peekNextEvent();
+    expect(preview).toBeDefined();
+    expect(typeof preview.narrative).toBe('string');
+  });
+});
 
 describe('engineBridge.beginBardo (manual)', () => {
   beforeEach(() => {

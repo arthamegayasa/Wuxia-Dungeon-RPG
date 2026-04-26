@@ -910,6 +910,18 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         useGameStore.getState().markCorePathRevealed();
       }
 
+      // Phase 2B-3: lift Tribulation I result onto TurnPreview if applyOutcome stamped one.
+      let tribulationPayload: TribulationPayload | undefined;
+      if (nextRunState.pendingTribulationResult) {
+        tribulationPayload = {
+          pillarId: nextRunState.pendingTribulationResult.pillarId,
+          phases: nextRunState.pendingTribulationResult.phases,
+          fatal: nextRunState.pendingTribulationResult.fatal,
+        };
+        // Clear so a subsequent peek/resolve doesn't re-emit it.
+        nextRunState = { ...nextRunState, pendingTribulationResult: undefined };
+      }
+
       useGameStore.getState().updateRun(nextRunState, nextStreak, gs.nameRegistry);
       useGameStore.getState().setEchoTracker(nextEchoTracker);
       useGameStore.getState().setTurnResult({
@@ -944,7 +956,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       }
 
       // Still alive — auto-peek the next event for the UI.
-      return doPeek();
+      const next = await doPeek();
+      return tribulationPayload ? { ...next, tribulation: tribulationPayload } : next;
     },
     async beginBardo() {
       const gs = useGameStore.getState();
