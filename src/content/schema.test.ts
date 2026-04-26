@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TechniqueSchema, TechniquePackSchema, ItemSchema, ItemPackSchema, PillarEventSchema, RegionSchema, RegionPackSchema } from './schema';
+import { TechniqueSchema, TechniquePackSchema, ItemSchema, ItemPackSchema, PillarEventSchema, RegionSchema, RegionPackSchema, EventSchema } from './schema';
 
 describe('TechniqueSchema (Phase 2B-1 Task 3)', () => {
   it('accepts a valid minimal mortal-grade technique', () => {
@@ -186,5 +186,56 @@ describe('RegionSchema (Phase 2B-2 Task 1)', () => {
   it('RegionPackSchema wraps a list of regions', () => {
     const pack = RegionPackSchema.parse({ version: 1, regions: [minimalRegion] });
     expect(pack.regions).toHaveLength(1);
+  });
+});
+
+describe('EventSchema (Phase 2C: kind field + beat refinement)', () => {
+  const baseDecisionEvent = {
+    id: 'EV_TEST',
+    category: 'daily',
+    version: 1,
+    weight: 100,
+    conditions: {},
+    timeCost: 'SHORT' as const,
+    text: { intro: ['hello'] },
+    choices: [
+      { id: 'a', label: 'Option A', timeCost: 'SHORT', outcomes: { SUCCESS: { narrativeKey: 'x' }, FAILURE: { narrativeKey: 'y' } } },
+      { id: 'b', label: 'Option B', timeCost: 'SHORT', outcomes: { SUCCESS: { narrativeKey: 'x' }, FAILURE: { narrativeKey: 'y' } } },
+    ],
+    repeat: 'unlimited' as const,
+  };
+
+  it("decision event without explicit kind parses (kind is optional, treated as 'decision' by consumers)", () => {
+    const parsed = EventSchema.parse(baseDecisionEvent);
+    // kind is optional in the schema for backward compat; consumers default it to 'decision'.
+    expect(parsed.kind).toBeUndefined();
+  });
+
+  it("decision event with explicit kind:'decision' parses successfully", () => {
+    const parsed = EventSchema.parse({ ...baseDecisionEvent, kind: 'decision' });
+    expect(parsed.kind).toBe('decision');
+  });
+
+  it("beat event with single Continue choice parses successfully", () => {
+    const parsed = EventSchema.parse({
+      ...baseDecisionEvent,
+      kind: 'beat',
+      choices: [{
+        id: 'continue',
+        label: 'Continue',
+        timeCost: 'SHORT',
+        outcomes: { SUCCESS: { narrativeKey: 'x' }, FAILURE: { narrativeKey: 'y' } },
+      }],
+    });
+    expect(parsed.kind).toBe('beat');
+    expect(parsed.choices).toHaveLength(1);
+  });
+
+  it("beat event with multiple choices fails refinement", () => {
+    expect(() => EventSchema.parse({
+      ...baseDecisionEvent,
+      kind: 'beat',
+      // baseDecisionEvent has 2 choices a/b — illegal for kind:'beat'.
+    })).toThrow(/beat events must have exactly one choice.*continue.*Continue/);
   });
 });
