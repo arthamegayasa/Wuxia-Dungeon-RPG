@@ -1,0 +1,297 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_DAILY_MORNING_QI_CIRCULATION",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 90,
+      "conditions": { "regions": ["azure_peaks"] },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[ap.dawn.peak] $[CHARACTER] sits cross-legged on the cold stone of the outer courtyard.",
+          "The sect bell has not yet rung; the disciples not yet gathered."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_circulate_focused",
+          "label": "Circulate qi with full focus.",
+          "timeCost": "SHORT",
+          "check": { "base": 30, "stats": { "Spirit": 1 }, "difficulty": 35, "techniqueBonusCategory": "meditate" },
+          "outcomes": {
+            "CRIT_SUCCESS": { "narrativeKey": "ap.action.circulate.deep", "stateDeltas": [{ "kind": "meditation_progress", "base": 20, "insightBonus": 2 }] },
+            "SUCCESS":      { "narrativeKey": "ap.action.circulate.steady", "stateDeltas": [{ "kind": "meditation_progress", "base": 12 }] },
+            "PARTIAL":      { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 6 }] },
+            "FAILURE":      { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [] },
+            "CRIT_FAILURE": { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [{ "kind": "qi_delta", "amount": -3 }] }
+          }
+        },
+        {
+          "id": "ch_circulate_idle",
+          "label": "Sit, but let the mind drift.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.circulate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 3 }] },
+            "FAILURE": { "narrativeKey": "ap.action.circulate.scattered" }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DAILY_ALCHEMY_PAVILION_ERRAND",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 70,
+      "conditions": { "regions": ["azure_peaks"] },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.alchemy.pavilion] An elder waves $[CHARACTER] over.",
+          "'Boy. Girl. Whichever. Take this jar to the Crystal Vale steward, and don't drop it.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_run_errand",
+          "label": "Carry the jar carefully.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 50, "stats": { "Agility": 1, "Luck": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "SUCCESS":      { "narrativeKey": "ap.action.errand.delivered", "stateDeltas": [{ "kind": "item_add", "id": "spiritual_stone", "count": 1 }, { "kind": "flag_set", "flag": "trusted_with_errands" }] },
+            "FAILURE":      { "narrativeKey": "ap.action.errand.dropped", "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }] },
+            "CRIT_FAILURE": { "narrativeKey": "ap.action.errand.dropped", "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }] }
+          }
+        },
+        {
+          "id": "ch_refuse_errand",
+          "label": "Pretend not to hear.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.errand.refused" },
+            "FAILURE": { "narrativeKey": "ap.action.errand.refused" }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DAILY_SCRIPTURE_COPYING",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 60,
+      "conditions": { "regions": ["azure_peaks"], "locales": ["scripture_hall"] },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.scripture.hall.candle] $[CHARACTER] takes brush in hand. The text is the Common Qi Circulation, copied for the thousandth time by the thousandth disciple."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_copy_carefully",
+          "label": "Copy with care, follow each stroke.",
+          "timeCost": "LONG",
+          "check": { "base": 35, "stats": { "Mind": 2 }, "difficulty": 45, "techniqueBonusCategory": "study" },
+          "outcomes": {
+            "CRIT_SUCCESS": { "narrativeKey": "ap.action.scripture.absorbed", "stateDeltas": [{ "kind": "insight_delta", "amount": 4 }, { "kind": "meditation_progress", "base": 8, "insightBonus": 1 }, { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" }] },
+            "SUCCESS":      { "narrativeKey": "ap.action.scripture.steady", "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }, { "kind": "meditation_progress", "base": 4 }, { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" }] },
+            "FAILURE":      { "narrativeKey": "ap.action.scripture.smudged", "stateDeltas": [] }
+          }
+        },
+        {
+          "id": "ch_copy_quickly",
+          "label": "Copy fast, finish the quota.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.scripture.smudged", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.scripture.smudged" }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DAILY_SECT_CHORE",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 80,
+      "conditions": { "regions": ["azure_peaks"] },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.outer.courtyard] $[CHARACTER] sweeps the courtyard. Every leaf has fallen since the bell rang at dawn."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_chore_diligent",
+          "label": "Sweep until the stone shines.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 60, "stats": { "Body": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.chore.done", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Body", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.chore.done" }
+          }
+        },
+        {
+          "id": "ch_chore_lazy",
+          "label": "Push leaves to the corner. Good enough.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.chore.skimped" },
+            "FAILURE": { "narrativeKey": "ap.action.chore.skimped" }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DAILY_OUTER_SPARRING",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 70,
+      "conditions": { "regions": ["azure_peaks"], "locales": ["outer_sect_courtyard"] },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.outer.courtyard] An older outer disciple gestures at $[CHARACTER]. 'Spar with me. Wood swords. Don't make me hit you twice.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_spar_aggressive",
+          "label": "Press the attack.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 30, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 50, "techniqueBonusCategory": "strike" },
+          "outcomes": {
+            "CRIT_SUCCESS": { "narrativeKey": "ap.action.spar.victory", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Body", "amount": 2 }, { "kind": "flag_set", "flag": "spar_winner" }] },
+            "SUCCESS":      { "narrativeKey": "ap.action.spar.draw", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Body", "amount": 1 }] },
+            "FAILURE":      { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }] },
+            "CRIT_FAILURE": { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -15 }] }
+          }
+        },
+        {
+          "id": "ch_spar_evade",
+          "label": "Stay defensive, dodge until time.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 50, "stats": { "Agility": 2 }, "difficulty": 40, "techniqueBonusCategory": "evade" },
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.spar.draw", "stateDeltas": [{ "kind": "attribute_delta", "stat": "Agility", "amount": 1 }] },
+            "FAILURE": { "narrativeKey": "ap.action.spar.bruised", "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DAILY_MEDITATION_SESSION",
+      "category": "life.meditation",
+      "version": 1,
+      "weight": 75,
+      "conditions": { "regions": ["azure_peaks"], "locales": ["meditation_cave"] },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.meditation.cave] The cave is dim. $[CHARACTER] sits on the cushion the previous disciple wore thin."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_meditate_deep",
+          "label": "Sink. Let the mind go quiet.",
+          "timeCost": "LONG",
+          "check": { "base": 40, "stats": { "Spirit": 2 }, "difficulty": 50, "techniqueBonusCategory": "meditate" },
+          "outcomes": {
+            "CRIT_SUCCESS": { "narrativeKey": "ap.action.meditate.deep", "stateDeltas": [{ "kind": "meditation_progress", "base": 25, "insightBonus": 3 }] },
+            "SUCCESS":      { "narrativeKey": "ap.action.meditate.steady", "stateDeltas": [{ "kind": "meditation_progress", "base": 15 }] },
+            "FAILURE":      { "narrativeKey": "ap.action.meditate.scattered", "stateDeltas": [{ "kind": "meditation_progress", "base": 4 }] }
+          }
+        },
+        {
+          "id": "ch_meditate_shallow",
+          "label": "Stay surface, listen for footsteps.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.meditate.shallow", "stateDeltas": [{ "kind": "meditation_progress", "base": 6 }] },
+            "FAILURE": { "narrativeKey": "ap.action.meditate.shallow" }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DAILY_HERB_GATHERING",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 60,
+      "conditions": { "regions": ["azure_peaks"], "seasons": ["spring", "summer", "autumn"] },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.beast.pass.lower] $[CHARACTER] climbs the lower slopes with a rattan basket. The sect needs herbs; the elders, when they cannot get them, become irritable."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_herb_thorough",
+          "label": "Search every ravine.",
+          "timeCost": "LONG",
+          "check": { "base": 35, "stats": { "Mind": 1, "Luck": 2 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": { "narrativeKey": "ap.action.herb.bounty", "stateDeltas": [{ "kind": "item_add", "id": "low_grade_qi_pill", "count": 1 }, { "kind": "item_add", "id": "spiritual_stone", "count": 2 }] },
+            "SUCCESS":      { "narrativeKey": "ap.action.herb.found", "stateDeltas": [{ "kind": "item_add", "id": "spiritual_stone", "count": 1 }] },
+            "FAILURE":      { "narrativeKey": "ap.action.herb.empty" }
+          }
+        },
+        {
+          "id": "ch_herb_safe",
+          "label": "Stay near the path.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.herb.empty" },
+            "FAILURE": { "narrativeKey": "ap.action.herb.empty" }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DAILY_SECT_MEAL",
+      "category": "life.daily",
+      "version": 1,
+      "weight": 90,
+      "conditions": { "regions": ["azure_peaks"] },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[ap.outer.dining.hall] Supper. Plain rice, sect-grown vegetables, and the rumor of a roast on the seventh day."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_eat_rest",
+          "label": "Eat, then rest.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.meal.rest", "stateDeltas": [{ "kind": "hp_delta", "amount": 5 }] },
+            "FAILURE": { "narrativeKey": "ap.action.meal.rest" }
+          }
+        },
+        {
+          "id": "ch_eat_ask_around",
+          "label": "Eat. Ask the table for sect news.",
+          "timeCost": "SHORT",
+          "check": { "base": 50, "stats": { "Charm": 1 }, "difficulty": 35, "techniqueBonusCategory": "social" },
+          "outcomes": {
+            "SUCCESS": { "narrativeKey": "ap.action.meal.rumor", "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }, { "kind": "flag_set", "flag": "knows_recent_sect_rumor" }] },
+            "FAILURE": { "narrativeKey": "ap.action.meal.silent" }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

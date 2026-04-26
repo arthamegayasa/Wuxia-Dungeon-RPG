@@ -56,8 +56,17 @@ const PRIORITY: ReadonlyArray<Mood> = [
   'melancholy', 'paranoia', 'rage', 'sorrow', 'serenity', 'resolve',
 ];
 
-export function computeDominantMood(inputs: MoodInputs): Mood {
+export function computeDominantMood(
+  inputs: MoodInputs,
+  deltas?: Partial<MoodScores>,
+): Mood {
   const s = moodScores(inputs);
+  // Apply deltas BEFORE all-zero check — a positive delta makes a mood non-zero.
+  if (deltas) {
+    for (const [mood, delta] of Object.entries(deltas) as [Mood, number][]) {
+      s[mood] = (s[mood] ?? 0) + (delta ?? 0);
+    }
+  }
   // If every mood scores zero return the quiet baseline.
   const allZero = (Object.values(s) as number[]).every(v => v === 0);
   if (allZero) return 'serenity';

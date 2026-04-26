@@ -4,7 +4,7 @@
 // Pure function: takes a TurnContext + choiceId + rng, returns the updated state slices.
 
 import { IRng } from './RNG';
-import { Mood, OutcomeTier, CheckCategory } from './Types';
+import { Mood, OutcomeTier } from './Types';
 import { EventDef } from '@/content/schema';
 import { RunState } from '@/engine/events/RunState';
 import { applyOutcome } from '@/engine/events/OutcomeApplier';
@@ -19,8 +19,11 @@ import { renderEvent, CompositionContext } from '@/engine/narrative/Composer';
 import { SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { NameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { checkCategoryFromEvent } from '@/engine/narrative/CheckCategoryFromEvent';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
+import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
+import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { EchoTracker } from '@/engine/meta/EchoTracker';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { MetaState } from '@/engine/meta/MetaState';
@@ -93,6 +96,7 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
       season: ctx.runState.season,
       heavenlyNotice: ctx.runState.heavenlyNotice,
       ageYears: Math.floor(ctx.runState.character.ageDays / 365),
+      learnedTechniques: ctx.runState.learnedTechniques,
     },
     ctx.lifetimeSeenEvents,
     ctx.runState.thisLifeSeenEvents,
@@ -102,10 +106,15 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
     throw new Error('runTurn: no event selectable from the current context');
   }
 
-  // 2. Find choice
-  const choice = event.choices.find((c) => c.id === choiceId);
+  // 2. Find choice — filter by unlock_choice gates from learned techniques.
+  const visibleChoices = visibleChoicesForCharacter(
+    event.choices,
+    ctx.runState.learnedTechniques,
+    ctx.techniqueRegistry,
+  );
+  const choice = visibleChoices.find((c) => c.id === choiceId);
   if (!choice) {
-    throw new Error(`runTurn: choice ${choiceId} not found in event ${event.id}`);
+    throw new Error(`runTurn: choice ${choiceId} not found in event ${event.id} (or locked)`);
   }
 
   // 3. Render narrative
@@ -129,8 +138,8 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
         category: choice.check.techniqueBonusCategory,
       })
     : 0;
-  const moodBonus = choice.check?.techniqueBonusCategory
-    ? computeMoodBonus(ctx.dominantMood, choice.check.techniqueBonusCategory as CheckCategory)
+  const moodBonus = choice.check
+    ? computeMoodBonus(ctx.dominantMood, checkCategoryFromEvent(event.category))
     : 0;
 
   const result = resolveCheck({
@@ -153,7 +162,12 @@ export function runTurn(ctx: TurnContext, choiceId: string, rng: IRng): TurnResu
   // 6. Apply outcome deltas, then record the event in thisLifeSeenEvents.
   //    Order matters: applyOutcome does a shallow merge on RunState; adding the
   //    seen-event AFTER ensures it is not overwritten.
-  let nextRunState = applyOutcome(ctx.runState, outcome);
+  //    Phase 2B-2 Task 12: precompute techniqueMultiplier for meditation_progress delta.
+  const learnedDefs = ctx.runState.learnedTechniques
+    .map((id) => ctx.techniqueRegistry.byId(id))
+    .filter((t): t is NonNullable<typeof t> => t !== null);
+  const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
+  let nextRunState = applyOutcome(ctx.runState, outcome, { techniqueMultiplier, rng });
   nextRunState = {
     ...nextRunState,
     thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, event.id],

@@ -8,13 +8,27 @@ import { RunState } from './RunState';
 import { StateDelta } from './StateDelta';
 import { addAttribute } from '@/engine/character/Attribute';
 import { logWitness } from '@/engine/meta/MemoryWitnessLogger';
+import { IRng } from '@/engine/core/RNG';
+import { attemptQiSensingAwakening, attemptQiCondensationEntry } from '@/engine/cultivation/RealmCrossing';
+import { attemptSublayerBreakthrough } from '@/engine/cultivation/Breakthrough';
 
 function removeFlag(c: Character, flag: string): Character {
   if (!c.flags.includes(flag)) return c;
   return { ...c, flags: c.flags.filter((f) => f !== flag) };
 }
 
-function applyDeltaToState(rs: RunState, delta: StateDelta): RunState {
+export interface ApplyOutcomeOptions {
+  /** Technique cultivation multiplier (from computeCultivationMultiplier). Default 1.0. */
+  techniqueMultiplier?: number;
+  /** Phase 2B-2 Task 20: required when an outcome contains attempt_realm_crossing. */
+  rng?: IRng;
+  /** Pill bonus forwarded to RealmCrossing / Breakthrough helpers. */
+  pillBonus?: number;
+  /** Safe environment bonus forwarded to RealmCrossing / Breakthrough helpers. */
+  safeEnvironmentBonus?: number;
+}
+
+function applyDeltaToState(rs: RunState, delta: StateDelta, options: ApplyOutcomeOptions = {}): RunState {
   switch (delta.kind) {
     case 'hp_delta':
       return { ...rs, character: applyHp(rs.character, delta.amount) };
@@ -48,6 +62,18 @@ function applyDeltaToState(rs: RunState, delta: StateDelta): RunState {
         return { ...rs, character: { ...rs.character, cultivationProgress: cp } };
       }
       return { ...rs, character: advanceCultivation(rs.character, delta.amount) };
+    case 'meditation_progress': {
+      const multiplier = options.techniqueMultiplier ?? 1.0;
+      const progress = delta.base * multiplier;
+      let next: RunState = { ...rs, character: advanceCultivation(rs.character, progress) };
+      if (delta.insightBonus !== undefined) {
+        next = {
+          ...next,
+          character: applyInsight(next.character, delta.insightBonus),
+        };
+      }
+      return next;
+    }
     case 'item_add': {
       const idx = rs.inventory.findIndex((i) => i.id === delta.id);
       if (idx === -1) {
@@ -82,13 +108,55 @@ function applyDeltaToState(rs: RunState, delta: StateDelta): RunState {
     }
     case 'age_delta_days':
       return { ...rs, character: ageDays(rs.character, delta.amount) };
+    case 'attempt_realm_crossing': {
+      // Phase 2B-2 Task 20: dispatch into 2B-1 RealmCrossing / Breakthrough helpers.
+      if (!options.rng) {
+        throw new Error('attempt_realm_crossing: rng required in ApplyOutcomeOptions');
+      }
+      switch (delta.transition) {
+        case 'bt9_to_qs': {
+          const result = attemptQiSensingAwakening(rs.character, {
+            rng: options.rng,
+            pillBonus: options.pillBonus,
+            safeEnvironmentBonus: options.safeEnvironmentBonus,
+          });
+          return { ...rs, character: result.character };
+        }
+        case 'qs_to_qc1': {
+          const result = attemptQiCondensationEntry(rs.character, {
+            rng: options.rng,
+            techniqueCount: rs.learnedTechniques.length,
+            pillBonus: options.pillBonus,
+            safeEnvironmentBonus: options.safeEnvironmentBonus,
+          });
+          return { ...rs, character: result.character };
+        }
+        case 'qc_sublayer': {
+          // Routes through existing Breakthrough.attemptSublayerBreakthrough.
+          const result = attemptSublayerBreakthrough(rs.character, {
+            rng: options.rng,
+            pillBonus: options.pillBonus,
+            safeEnvironmentBonus: options.safeEnvironmentBonus,
+          });
+          return { ...rs, character: result.character };
+        }
+        case 'qc9_to_foundation': {
+          // Tribulation I stub — Tribulation engine wired in 2B-3 UI.
+          // For 2B: mark attempt flag on character so future events can detect it.
+          return { ...rs, character: { ...rs.character, flags: [...rs.character.flags, 'attempted_tribulation_i'] } };
+        }
+      }
+    }
+    case 'region_change':
+      // Phase 2B-2 Task 21: update the active region on the run state.
+      return { ...rs, region: delta.regionId };
   }
 }
 
-export function applyOutcome(rs: RunState, outcome: Outcome): RunState {
+export function applyOutcome(rs: RunState, outcome: Outcome, options: ApplyOutcomeOptions = {}): RunState {
   let next = rs;
   for (const delta of outcome.stateDeltas ?? []) {
-    next = applyDeltaToState(next, delta as StateDelta);
+    next = applyDeltaToState(next, delta as StateDelta, options);
   }
   if (outcome.noticeDelta !== undefined) {
     const n = Math.max(0, Math.min(100, next.heavenlyNotice + outcome.noticeDelta));

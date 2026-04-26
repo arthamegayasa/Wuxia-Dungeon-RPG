@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createSaveManager } from '@/engine/persistence/SaveManager';
-import { createEngineBridge } from './engineBridge';
+import { createEngineBridge, TECHNIQUE_REGISTRY, __loadGameplayContent } from './engineBridge';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 import { GamePhase } from '@/engine/core/Types';
@@ -272,14 +272,14 @@ describe('getCodexSnapshot', () => {
     useMetaStore.getState().reset();
   });
 
-  it('returns all 10 echoes, all 5 memories, all 5 anchors with locked/unlocked flags', () => {
+  it('returns all 10 echoes, all 5 memories, all 6 anchors with locked/unlocked flags', () => {
     const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
     const engine = createEngineBridge({ saveManager: sm });
     const snap = engine.getCodexSnapshot();
 
     expect(snap.echoes).toHaveLength(10);
     expect(snap.memories).toHaveLength(5);
-    expect(snap.anchors).toHaveLength(5);
+    expect(snap.anchors).toHaveLength(6);
 
     // Default state: no echoes/memories unlocked, only `true_random` + `peasant_farmer` anchors.
     expect(snap.echoes.every((e) => !e.unlocked)).toBe(true);
@@ -392,11 +392,11 @@ describe('listAnchors / reincarnate include locked anchors with unlockHint', () 
     useMetaStore.getState().reset();
   });
 
-  it('returns all 5 anchors with locked flag', () => {
+  it('returns all 6 anchors with locked flag', () => {
     const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
     const engine = createEngineBridge({ saveManager: sm });
     const payload = engine.listAnchors();
-    expect(payload.availableAnchors).toHaveLength(5);
+    expect(payload.availableAnchors).toHaveLength(6);
     const farmer = payload.availableAnchors.find((a) => a.id === 'peasant_farmer')!;
     expect(farmer.locked).toBe(false);
     const martial = payload.availableAnchors.find((a) => a.id === 'martial_family')!;
@@ -437,4 +437,17 @@ describe('BardoPayload reveal fields', () => {
     }
     throw new Error('did not reach bardo within 600 turns');
   }, 30000);
+});
+
+describe('engineBridge dominantMood with techniques (Phase 2B-2 Task 10)', () => {
+  // Phase 2B-2 Task 24: TECHNIQUE_REGISTRY is now lazy-loaded via azurePeaksLoader.
+  // Must call __loadGameplayContent() to populate live-binding registries before use.
+  it('TECHNIQUE_REGISTRY hydrated still_water_heart_sutra has mood_modifier serenity', async () => {
+    await __loadGameplayContent();
+    const t = TECHNIQUE_REGISTRY.byId('still_water_heart_sutra')!;
+    expect(t).toBeDefined();
+    const moodEffect = t.effects.find((e) => e.kind === 'mood_modifier');
+    expect(moodEffect).toBeDefined();
+    expect((moodEffect as any).mood).toBe('serenity');
+  });
 });

@@ -6,6 +6,8 @@ export interface LifeSummary {
   yearsLived: number;
   realmReached: Realm;
   maxBodyTemperingLayer: number;
+  /** Highest realm reached this life (e.g., 'qi_sensing' if the character awakened, 'body_tempering' otherwise). */
+  maxRealm: Realm;
   deathCause: DeathCause;
   vowsUnfulfilled: number;
   diedProtectingOther: boolean;

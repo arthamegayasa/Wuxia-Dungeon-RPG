@@ -1,0 +1,493 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_DANGER_RIVAL_SECT_INCURSION",
+      "category": "life.danger.combat",
+      "version": 1,
+      "weight": 20,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[ap.mountain.path] A column of unfamiliar disciples sweeps over the ridge — dark-crested robes, hands already forming seals.",
+          "Their leader points at $[CHARACTER]. 'Azure Peaks scum. This pass belongs to us now. Surrender your sect token.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_rival_sect_fight",
+          "label": "Draw qi. Hold the pass. Make them regret the crossing.",
+          "timeCost": "INSTANT",
+          "check": { "base": 25, "stats": { "Body": 2, "Spirit": 1 }, "difficulty": 70, "techniqueBonusCategory": "melee_skill" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.rival_incursion.routed",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "repelled_rival_sect" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.rival_incursion.held",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -15 },
+                { "kind": "flag_set", "flag": "repelled_rival_sect" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.rival_incursion.forced_back",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -25 },
+                { "kind": "qi_delta", "amount": -10 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.rival_incursion.overwhelmed",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -35 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.rival_incursion.overwhelmed",
+              "deathCause": "combat_melee"
+            }
+          }
+        },
+        {
+          "id": "ch_rival_sect_call_for_help",
+          "label": "Fall back toward the sect gate. Shout for the patrol.",
+          "timeCost": "INSTANT",
+          "check": { "base": 35, "stats": { "Agility": 1, "Mind": 1 }, "difficulty": 50, "techniqueBonusCategory": "dodge_flee" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.rival_incursion.reinforced",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "flag_set", "flag": "called_sect_patrol" },
+                { "kind": "flag_set", "flag": "rival_sect_repelled" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.rival_incursion.forced_back",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -18 },
+                { "kind": "qi_delta", "amount": -8 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_rival_sect_storm_step_flee",
+          "label": "Invoke the howling storm step — dissolve into the wind before they can lock you.",
+          "timeCost": "INSTANT",
+          "unlockedBy": "flee_mounted_pursuer",
+          "check": { "base": 55, "stats": { "Agility": 2 }, "difficulty": 40, "techniqueBonusCategory": "dodge_flee" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.rival_incursion.vanished",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "escaped_rival_sect_unseen" },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.rival_incursion.vanished",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "escaped_rival_sect_unseen" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.rival_incursion.forced_back",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -10 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DANGER_DEMONIC_CULTIVATOR",
+      "category": "life.danger.combat",
+      "version": 1,
+      "weight": 12,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["meditation_cave", "beast_pass"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[ap.mountain.path] The qi in the cave shifts — sourced wrong, curdled. A figure steps from the shadow, pupils fully black.",
+          "'An Azure Peaks outer disciple. How convenient. I need a living meridian anchor.' His hands are already moving."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_demonic_cultivator_resist",
+          "label": "Channel every scrap of qi into a counterattack before the seal locks.",
+          "timeCost": "INSTANT",
+          "check": { "base": 15, "stats": { "Spirit": 2, "Body": 1 }, "difficulty": 80, "techniqueBonusCategory": "qi_combat" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.demonic_cultivator.shattered",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -20 },
+                { "kind": "qi_delta", "amount": -15 },
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "flag_set", "flag": "defeated_demonic_cultivator" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.demonic_cultivator.drove_off",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -30 },
+                { "kind": "qi_delta", "amount": -20 },
+                { "kind": "flag_set", "flag": "fought_demonic_cultivator" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.demonic_cultivator.barely_survived",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -40 },
+                { "kind": "qi_delta", "amount": -25 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.demonic_cultivator.overwhelmed",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -50 },
+                { "kind": "qi_delta", "amount": -30 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.demonic_cultivator.meridians_seized",
+              "deathCause": "combat_qi"
+            }
+          }
+        },
+        {
+          "id": "ch_demonic_cultivator_flee_desperate",
+          "label": "Abandon everything. Run. Do not look back.",
+          "timeCost": "INSTANT",
+          "check": { "base": 30, "stats": { "Agility": 2 }, "difficulty": 65, "techniqueBonusCategory": "dodge_flee" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.demonic_cultivator.escaped",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -15 },
+                { "kind": "qi_delta", "amount": -10 },
+                { "kind": "flag_set", "flag": "fled_demonic_cultivator" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.demonic_cultivator.meridians_seized",
+              "deathCause": "combat_qi"
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DANGER_BEAST_PASS_AMBUSH",
+      "category": "life.danger.combat",
+      "version": 1,
+      "weight": 18,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["beast_pass"]
+      },
+      "timeCost": "INSTANT",
+      "text": {
+        "intro": [
+          "$[ap.beast.pass.lower] A horn-screech from the upper trail — then silence. Then the ground trembles.",
+          "A pack of iron-ridge wolves, three times the size of mountain wolves, pour around the boulder field. They are not hunting prey. They are clearing a path."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_beast_pass_stand_ground",
+          "label": "Brace against the rock wall. Meet the lead wolf head-on.",
+          "timeCost": "INSTANT",
+          "check": { "base": 20, "stats": { "Body": 2, "Spirit": 1 }, "difficulty": 65, "techniqueBonusCategory": "brute_force" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.beast_ambush.alpha_felled",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -10 },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "slew_iron_ridge_wolf_alpha" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.beast_ambush.pack_scattered",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -22 },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "flag_set", "flag": "survived_beast_pass_ambush" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.beast_ambush.pushed_back",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -35 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.beast_ambush.torn",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -45 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.beast_ambush.torn",
+              "deathCause": "beast"
+            }
+          }
+        },
+        {
+          "id": "ch_beast_pass_dodge_cliff",
+          "label": "Climb. The wolves cannot follow onto the cliff-face.",
+          "timeCost": "INSTANT",
+          "check": { "base": 35, "stats": { "Agility": 2, "Body": 1 }, "difficulty": 55, "techniqueBonusCategory": "dodge_flee" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.beast_ambush.escaped_high",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "flag_set", "flag": "survived_beast_pass_ambush" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.beast_ambush.torn",
+              "deathCause": "beast"
+            }
+          }
+        },
+        {
+          "id": "ch_beast_pass_qi_burst",
+          "label": "Release a raw qi burst. Scatter them with force, not finesse.",
+          "timeCost": "INSTANT",
+          "check": { "base": 25, "stats": { "Spirit": 2 }, "difficulty": 60, "techniqueBonusCategory": "qi_combat" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.beast_ambush.pack_scattered",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -12 },
+                { "kind": "qi_delta", "amount": -20 },
+                { "kind": "flag_set", "flag": "survived_beast_pass_ambush" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.beast_ambush.pushed_back",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -30 },
+                { "kind": "qi_delta", "amount": -10 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DANGER_ROGUE_TALISMAN_MASTER",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 15,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["scripture_hall", "alchemy_pavilion"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[ap.scripture.hall.candle] The lights in the pavilion corridor flicker without wind. A hooded figure stands at the end, hands folded, paper talismans drifting upward around the wrists.",
+          "'Azure Peaks loses another disciple every season,' he says pleasantly. 'The elders never notice if the body doesn't surface. Let's see how many talismans you can break before you fall.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_talisman_master_counter_seal",
+          "label": "Form a counter-seal. Break the talisman matrix before it triggers.",
+          "timeCost": "SHORT",
+          "check": { "base": 30, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 60, "techniqueBonusCategory": "qi_combat" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.talisman_master.matrix_unraveled",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "warding_talisman", "count": 1 },
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "flag_set", "flag": "defeated_talisman_master" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.talisman_master.countered",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "warding_talisman", "count": 1 },
+                { "kind": "hp_delta", "amount": -10 },
+                { "kind": "flag_set", "flag": "defeated_talisman_master" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.talisman_master.partial_break",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -20 },
+                { "kind": "qi_delta", "amount": -8 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.talisman_master.burned",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -30 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.talisman_master.burned",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -45 },
+                { "kind": "qi_delta", "amount": -20 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_talisman_master_bait_and_dodge",
+          "label": "Draw his first strike. Dodge under it. Close the distance.",
+          "timeCost": "SHORT",
+          "check": { "base": 35, "stats": { "Agility": 2, "Body": 1 }, "difficulty": 55, "techniqueBonusCategory": "dodge_flee" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.talisman_master.disarmed",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "warding_talisman", "count": 1 },
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "flag_set", "flag": "defeated_talisman_master" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.talisman_master.burned",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -35 },
+                { "kind": "qi_delta", "amount": -12 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_DANGER_OUTER_TRIAL_HAZARD",
+      "category": "life.danger",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.mountain.path] The outer trial field: a half-mile corridor of rotating formation discs, pressure-qi spikes, and a timed passage gate at the far end.",
+          "The instructor stands at the entrance with a water-clock. 'Complete it or turn back. There is no rescue once the gate closes.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_outer_trial_push_through",
+          "label": "Enter. Move fast. Trust your body and qi to carry you.",
+          "timeCost": "LONG",
+          "check": { "base": 25, "stats": { "Body": 2, "Spirit": 1 }, "difficulty": 65, "techniqueBonusCategory": "brute_force" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.outer_trial.first_pass",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "meditation_progress", "base": 20, "insightBonus": 3 },
+                { "kind": "flag_set", "flag": "passed_outer_trial" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.outer_trial.completed",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "hp_delta", "amount": -15 },
+                { "kind": "flag_set", "flag": "passed_outer_trial" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.outer_trial.partial_passage",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -30 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.outer_trial.dragged_out",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -45 },
+                { "kind": "qi_delta", "amount": -20 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.outer_trial.formation_collapse",
+              "deathCause": "combat_melee"
+            }
+          }
+        },
+        {
+          "id": "ch_outer_trial_calculated_route",
+          "label": "Study the disc patterns first. Map the gaps. Move only when certain.",
+          "timeCost": "LONG",
+          "check": { "base": 35, "stats": { "Mind": 2, "Agility": 1 }, "difficulty": 55, "techniqueBonusCategory": "lore_scholarship" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.outer_trial.first_pass",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "flag_set", "flag": "passed_outer_trial" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.outer_trial.completed",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "flag_set", "flag": "passed_outer_trial" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.outer_trial.partial_passage",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -20 },
+                { "kind": "qi_delta", "amount": -10 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.outer_trial.dragged_out",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -35 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    }
+  ]
+}

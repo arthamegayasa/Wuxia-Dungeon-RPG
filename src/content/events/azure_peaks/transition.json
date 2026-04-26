@@ -1,0 +1,463 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_TRANSITION_DESCEND_TO_PLAINS",
+      "category": "life.transition",
+      "version": 1,
+      "weight": 80,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "The mountain trails grow steep as $[CHARACTER] descends toward the Yellow Plains. The dense qi of Azure Peaks thins with every step downward.",
+          "Below, the patchwork of villages and fields spreads out like a faded tapestry — the mortal world, waiting."
+        ],
+        "body": [
+          "There are reasons to return below: supplies, family, unfinished matters. A cultivator who cannot walk among mortals is only half a person."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_descend_return",
+          "label": "Descend to the Yellow Plains.",
+          "timeCost": "LONG",
+          "check": { "base": 60, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.transition.descend.crit_success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "karma_delta", "amount": 1 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.descend.success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.descend.failure",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.transition.descend.crit_failure",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -20 },
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_descend_stay",
+          "label": "Reconsider — the mountain path is not yet finished with you.",
+          "timeCost": "SHORT",
+          "check": { "base": 70, "stats": { "Mind": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.descend.stay",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.descend.stay_fail",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_TRANSITION_RETURN_TO_PEAKS",
+      "category": "life.transition",
+      "version": 1,
+      "weight": 70,
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "characterFlags": {
+          "require": ["sect_disciple"]
+        }
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "Word arrives from the sect: the time has come to return to Azure Peaks. The invitation is not made lightly.",
+          "The mountain road is long, and the qi grows denser with every league — the air itself pushing back against those not ready."
+        ],
+        "body": [
+          "For a sect disciple, the journey back to the heights is both privilege and trial. The path recognises only those who have earned their place."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_return_climb",
+          "label": "Make the ascent back to Azure Peaks.",
+          "timeCost": "LONG",
+          "check": { "base": 55, "stats": { "Body": 2, "Spirit": 2 }, "difficulty": 50 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.transition.return.crit_success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "cultivation_progress_delta", "amount": 10 },
+                { "kind": "karma_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.return.success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.transition.return.partial",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "hp_delta", "amount": -10 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.return.failure",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -15 },
+                { "kind": "qi_delta", "amount": -20 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_return_delay",
+          "label": "Send word that you need more time — a risky delay.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 45, "stats": { "Charm": 2, "Mind": 1 }, "difficulty": 55 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.return.delay_success",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.return.delay_fail",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "sect_disfavour" },
+                { "kind": "karma_delta", "amount": -1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_TRANSITION_CROSS_REGION_ENCOUNTER",
+      "category": "life.transition",
+      "version": 1,
+      "weight": 120,
+      "conditions": {
+        "regions": ["yellow_plains", "azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "On the road between the mountain and the plains, $[CHARACTER] encounters another traveller — a fellow wanderer moving in the opposite direction.",
+          "Neither the peaks nor the fields own this stretch of road. It belongs to those in passage."
+        ],
+        "body": [
+          "Cross-region travellers sometimes share valuable information. Other times they are bandits testing their luck."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_encounter_talk",
+          "label": "Stop and speak with the traveller.",
+          "timeCost": "SHORT",
+          "check": { "base": 55, "stats": { "Charm": 2, "Mind": 1 }, "difficulty": 45 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.transition.encounter.crit_success",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "karma_delta", "amount": 2 },
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.encounter.success",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.encounter.failure",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -12 },
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_encounter_avoid",
+          "label": "Step off the road and let them pass unseen.",
+          "timeCost": "SHORT",
+          "check": { "base": 60, "stats": { "Agility": 2 }, "difficulty": 40 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.encounter.avoid_success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.encounter.avoid_fail",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_encounter_continue",
+          "label": "Press on without stopping.",
+          "timeCost": "INSTANT",
+          "check": { "base": 80, "stats": {}, "difficulty": 20 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.encounter.continue",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.encounter.continue_bad",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_TRANSITION_WANDERING_MASTER_VISIT",
+      "category": "life.transition",
+      "version": 1,
+      "weight": 25,
+      "conditions": {
+        "regions": ["yellow_plains", "azure_peaks"],
+        "minStat": { "Mind": 10, "Spirit": 8 }
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "An old figure sits at the roadside, robes dusty from travel. They seem unremarkable — yet the air around them does not move correctly.",
+          "$[CHARACTER] slows. Wandering masters are not always what they appear, but ignoring one entirely is also a kind of foolishness."
+        ],
+        "body": [
+          "The old one's eyes carry the weight of many cultivated years. When they finally speak, every word lands with deliberate precision.",
+          "\"You seek the high road or the low road, young one? It does not matter as much as you think.\""
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_wmaster_sit",
+          "label": "Sit and listen for as long as the master will speak.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 50, "stats": { "Mind": 3, "Spirit": 2 }, "difficulty": 60, "techniqueBonusCategory": "meditation" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.transition.wmaster.crit_success",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 10 },
+                { "kind": "flag_set", "flag": "seen_technique_wandering_path" },
+                { "kind": "karma_delta", "amount": 3 },
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.wmaster.success",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "flag_set", "flag": "seen_technique_wandering_path" },
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.transition.wmaster.partial",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.wmaster.failure",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_wmaster_ask",
+          "label": "Ask a direct question about the path ahead.",
+          "timeCost": "SHORT",
+          "check": { "base": 60, "stats": { "Mind": 2, "Charm": 1 }, "difficulty": 50 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.wmaster.ask_success",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "region_change", "regionId": "azure_peaks" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.wmaster.ask_fail",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_TRANSITION_SECT_PILGRIMAGE",
+      "category": "life.transition",
+      "version": 1,
+      "weight": 55,
+      "conditions": {
+        "regions": ["yellow_plains", "azure_peaks"],
+        "characterFlags": {
+          "require": ["sect_disciple"]
+        }
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "The sect's pilgrimage cycle has arrived — a ritualistic journey that all disciples must undertake, moving between the lowland gathering halls and the high-peak sanctuaries.",
+          "The pilgrimage is as much ceremony as cultivation. It reinforces bonds between those who share the same lineage, whether they walk the mountains or the fields."
+        ],
+        "body": [
+          "Travelling with fellow disciples offers both protection and expectation. One's conduct on the road becomes part of the sect's unwritten record."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_pilgrimage_lead",
+          "label": "Volunteer to lead the group's pace and navigation.",
+          "timeCost": "LONG",
+          "check": { "base": 55, "stats": { "Body": 1, "Charm": 2, "Mind": 1 }, "difficulty": 55 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.transition.pilgrimage.lead_crit",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "karma_delta", "amount": 3 },
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "flag_set", "flag": "sect_respected" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.pilgrimage.lead_success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "karma_delta", "amount": 2 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.transition.pilgrimage.lead_partial",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "karma_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.pilgrimage.lead_fail",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" },
+                { "kind": "flag_set", "flag": "sect_disfavour" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_pilgrimage_follow",
+          "label": "Walk with the group, observing and keeping pace.",
+          "timeCost": "LONG",
+          "check": { "base": 70, "stats": { "Body": 1, "Spirit": 1 }, "difficulty": 40 },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.pilgrimage.follow_success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "cultivation_progress_delta", "amount": 8 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.pilgrimage.follow_fail",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" },
+                { "kind": "hp_delta", "amount": -10 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_pilgrimage_detour",
+          "label": "Take a personal detour to investigate a rumoured ruin.",
+          "timeCost": "LONG",
+          "check": { "base": 40, "stats": { "Luck": 2, "Agility": 1 }, "difficulty": 65 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.transition.pilgrimage.detour_crit",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "insight_delta", "amount": 8 },
+                { "kind": "flag_set", "flag": "found_ancient_ruin" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.transition.pilgrimage.detour_success",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "azure_peaks" },
+                { "kind": "insight_delta", "amount": 4 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.transition.pilgrimage.detour_fail",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" },
+                { "kind": "hp_delta", "amount": -18 },
+                { "kind": "flag_set", "flag": "sect_disfavour" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.transition.pilgrimage.detour_crit_fail",
+              "stateDeltas": [
+                { "kind": "region_change", "regionId": "yellow_plains" },
+                { "kind": "hp_delta", "amount": -30 },
+                { "kind": "flag_set", "flag": "sect_disfavour" },
+                { "kind": "karma_delta", "amount": -2 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

@@ -9,6 +9,7 @@
 import { Realm, Season } from '@/engine/core/Types';
 import { Character } from '@/engine/character/Character';
 import { ConditionSet } from '@/content/schema';
+import { CUSTOM_PREDICATES } from './CustomPredicates';
 
 export interface EvalContext {
   character: Character;
@@ -19,6 +20,9 @@ export interface EvalContext {
   season: Season;
   heavenlyNotice: number;
   ageYears: number;
+  /** Phase 2B-2 Task 20: technique ids learned this life. Required by
+   *  custom predicates (e.g. qs_no_techniques). Defaults to [] if absent. */
+  learnedTechniques?: ReadonlyArray<string>;
 }
 
 function hasAll(list: ReadonlyArray<string> | undefined, have: ReadonlyArray<string>): boolean {
@@ -32,8 +36,13 @@ function hasAny(list: ReadonlyArray<string> | undefined, have: ReadonlyArray<str
 }
 
 export function evaluateConditions(cs: ConditionSet, ctx: EvalContext): boolean {
-  // Phase 1B rejects any customPredicate outright (registry not implemented).
-  if (cs.customPredicate !== undefined) return false;
+  // Phase 2B-2 Task 20: consult custom predicate registry.
+  // Unknown predicate → fail closed (same behaviour as Phase 1B blanket-reject).
+  if (cs.customPredicate !== undefined) {
+    const fn = CUSTOM_PREDICATES[cs.customPredicate];
+    if (!fn) return false;   // unknown predicate → fail closed
+    if (!fn(ctx)) return false;
+  }
 
   if (cs.minAge !== undefined && ctx.ageYears < cs.minAge) return false;
   if (cs.maxAge !== undefined && ctx.ageYears > cs.maxAge) return false;

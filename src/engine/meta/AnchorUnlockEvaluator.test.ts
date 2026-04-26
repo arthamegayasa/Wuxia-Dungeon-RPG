@@ -8,6 +8,7 @@ const summary = (overrides: Partial<LifeSummary> = {}): LifeSummary => ({
   yearsLived: 30,
   realmReached: Realm.MORTAL,
   maxBodyTemperingLayer: 0,
+  maxRealm: Realm.MORTAL,
   deathCause: 'old_age' as DeathCause,
   vowsUnfulfilled: 0,
   diedProtectingOther: false,
@@ -72,5 +73,34 @@ describe('evaluateAnchorUnlocks', () => {
       diedThisLifeFlags: [],
     });
     expect(out).toEqual([]);
+  });
+});
+
+describe('sect_initiate unlock rule (Phase 2B-2 Task 8)', () => {
+  it('returns ["sect_initiate"] when summary.maxRealm >= qi_sensing', () => {
+    const result = evaluateAnchorUnlocks({
+      meta: { ...createEmptyMetaState(), unlockedAnchors: [] },
+      summary: summary({ maxRealm: Realm.QI_SENSING }),
+      diedThisLifeFlags: [],
+    });
+    expect(result).toContain('sect_initiate');
+  });
+
+  it('does NOT unlock when character died in body_tempering', () => {
+    const result = evaluateAnchorUnlocks({
+      meta: { ...createEmptyMetaState(), unlockedAnchors: [] },
+      summary: summary({ maxRealm: Realm.BODY_TEMPERING }),
+      diedThisLifeFlags: [],
+    });
+    expect(result).not.toContain('sect_initiate');
+  });
+
+  it('does NOT re-unlock when sect_initiate already owned', () => {
+    const result = evaluateAnchorUnlocks({
+      meta: { ...createEmptyMetaState(), unlockedAnchors: ['sect_initiate'] },
+      summary: summary({ maxRealm: Realm.QI_CONDENSATION }),
+      diedThisLifeFlags: [],
+    });
+    expect(result).not.toContain('sect_initiate');
   });
 });

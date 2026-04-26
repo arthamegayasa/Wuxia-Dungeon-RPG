@@ -7,6 +7,7 @@ function baseSummary(overrides: Partial<LifeSummary> = {}): LifeSummary {
     yearsLived: 40,
     realmReached: Realm.MORTAL,
     maxBodyTemperingLayer: 0,
+    maxRealm: Realm.MORTAL,
     deathCause: 'old_age',
     vowsUnfulfilled: 0,
     diedProtectingOther: false,
@@ -103,5 +104,17 @@ describe('computeKarma', () => {
       firstTimeFlags: ['first_body_tempering_5', 'first_bandit_defeated'],
     }));
     expect(r.breakdown.achievements).toBe(10);
+  });
+});
+
+describe('LifeSummary.maxRealm field (Phase 2B-2 Task 8)', () => {
+  it('LifeSummary type accepts maxRealm field', () => {
+    const s: LifeSummary = baseSummary({ maxRealm: Realm.QI_SENSING });
+    expect(s.maxRealm).toBe(Realm.QI_SENSING);
+  });
+
+  it('maxRealm defaults to mortal in baseSummary helper', () => {
+    const s = baseSummary();
+    expect(s.maxRealm).toBe(Realm.MORTAL);
   });
 });

@@ -87,6 +87,42 @@ describe('characterFromAnchor', () => {
   });
 });
 
+describe('characterFromAnchor — startingMeridians (Phase 2B-2 Task 7)', () => {
+  const emptyRegistry = EchoRegistry.fromList([]);
+  const emptyMeta = createEmptyMetaState();
+
+  it('opens meridian 7 for sect_initiate spawn', () => {
+    const sectInitiate = DEFAULT_ANCHORS.find((a) => a.id === 'sect_initiate')!;
+    const rng = createRng(42);
+    const resolved = resolveAnchor(sectInitiate, rng, ['azure_peaks', 'yellow_plains']);
+    const result = characterFromAnchor({
+      resolved,
+      name: 'Test',
+      runSeed: 1,
+      rng: createRng(42),
+      meta: emptyMeta,
+      echoRegistry: emptyRegistry,
+    });
+    expect(result.character.openMeridians).toContain(7);
+    expect(result.character.openMeridians).toHaveLength(1);
+  });
+
+  it('does NOT open meridians for anchors without startingMeridians', () => {
+    const peasant = DEFAULT_ANCHORS.find((a) => a.id === 'peasant_farmer')!;
+    const rng = createRng(42);
+    const resolved = resolveAnchor(peasant, rng, ['yellow_plains']);
+    const result = characterFromAnchor({
+      resolved,
+      name: 'Test',
+      runSeed: 1,
+      rng: createRng(42),
+      meta: emptyMeta,
+      echoRegistry: emptyRegistry,
+    });
+    expect(result.character.openMeridians).toHaveLength(0);
+  });
+});
+
 describe('characterFromAnchor — echo integration', () => {
   it('rolls and applies an unlocked echo to the returned character', () => {
     const ironBody: SoulEcho = {

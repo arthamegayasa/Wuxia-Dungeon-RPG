@@ -30,3 +30,22 @@ export function mergeSnippetPacks(packs: ReadonlyArray<unknown>): SnippetLibrary
   }
   return createSnippetLibrary(combined);
 }
+
+/**
+ * Merge two already-loaded SnippetLibrary instances.
+ * Used by the lazy-load path in azurePeaksLoader to combine YP + AP libraries
+ * without re-parsing raw JSON. Phase 2B-2 Task 24.
+ */
+export function mergeSnippetLibraries(a: SnippetLibrary, b: SnippetLibrary): SnippetLibrary {
+  return {
+    has(key: string): boolean {
+      return a.has(key) || b.has(key);
+    },
+    get(key: string): ReturnType<SnippetLibrary['get']> {
+      const fromA = a.get(key);
+      const fromB = b.get(key);
+      if (fromA && fromB) return [...fromA, ...fromB];
+      return fromA ?? fromB;
+    },
+  };
+}

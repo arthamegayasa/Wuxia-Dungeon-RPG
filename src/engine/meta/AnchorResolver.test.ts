@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createRng } from '@/engine/core/RNG';
-import { AnchorDef, getAnchorById } from './Anchor';
+import { AnchorDef, DEFAULT_ANCHORS, getAnchorById } from './Anchor';
 import { resolveAnchor, ResolvedAnchor } from './AnchorResolver';
 
 describe('resolveAnchor — peasant_farmer', () => {
@@ -88,5 +88,23 @@ describe('resolveAnchor — region fallback', () => {
     const anchor = getAnchorById('peasant_farmer')!;
     const resolved = resolveAnchor(anchor, createRng(1), ['yellow_plains']);
     expect(resolved.region).toBe('yellow_plains');
+  });
+});
+
+describe('resolveAnchor — startingMeridians passthrough (Phase 2B-2 Task 7)', () => {
+  it('threads startingMeridians from anchor to resolved', () => {
+    const sectInitiate = DEFAULT_ANCHORS.find((a) => a.id === 'sect_initiate')!;
+    const rng = createRng(42);
+    const resolved = resolveAnchor(sectInitiate, rng, ['azure_peaks', 'yellow_plains']);
+    expect(resolved.startingMeridians).toEqual([7]);
+    expect(resolved.spiritRootTierBias).toBe(1);
+  });
+
+  it('returns undefined for anchors without startingMeridians', () => {
+    const peasant = DEFAULT_ANCHORS.find((a) => a.id === 'peasant_farmer')!;
+    const rng = createRng(42);
+    const resolved = resolveAnchor(peasant, rng, ['yellow_plains']);
+    expect(resolved.startingMeridians).toBeUndefined();
+    expect(resolved.spiritRootTierBias).toBeUndefined();
   });
 });

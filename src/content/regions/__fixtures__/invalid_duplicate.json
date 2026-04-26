@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "regions": [
+    {
+      "id": "dup",
+      "name": "Duplicate Region A",
+      "qiDensity": 1.0,
+      "climate": {
+        "seasonWeights": { "spring": 1, "summer": 1, "autumn": 1, "winter": 1 },
+        "rainWeight": 0.3
+      },
+      "locales": [
+        { "id": "locale_a", "tagBias": ["pastoral"] }
+      ],
+      "factionSlots": [],
+      "eventPool": ["daily_001"],
+      "pillarPool": [],
+      "npcArchetypes": [],
+      "namePool": {
+        "placePrefix": ["Dup"],
+        "placeFeature": ["Land"]
+      }
+    },
+    {
+      "id": "dup",
+      "name": "Duplicate Region B",
+      "qiDensity": 1.0,
+      "climate": {
+        "seasonWeights": { "spring": 1, "summer": 1, "autumn": 1, "winter": 1 },
+        "rainWeight": 0.3
+      },
+      "locales": [
+        { "id": "locale_b", "tagBias": ["mundane"] }
+      ],
+      "factionSlots": [],
+      "eventPool": ["daily_002"],
+      "pillarPool": [],
+      "npcArchetypes": [],
+      "namePool": {
+        "placePrefix": ["Dup"],
+        "placeFeature": ["Land"]
+      }
+    }
+  ]
+}

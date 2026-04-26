@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "techniques": [
+    {
+      "id": "dup",
+      "name": "A",
+      "grade": "mortal",
+      "element": "none",
+      "coreAffinity": ["any"],
+      "requires": {},
+      "qiCost": 1,
+      "effects": [{ "kind": "qi_regen", "amount": 1 }],
+      "description": "Duplicate A."
+    },
+    {
+      "id": "dup",
+      "name": "B",
+      "grade": "mortal",
+      "element": "none",
+      "coreAffinity": ["any"],
+      "requires": {},
+      "qiCost": 1,
+      "effects": [{ "kind": "qi_regen", "amount": 1 }],
+      "description": "Duplicate B."
+    }
+  ]
+}

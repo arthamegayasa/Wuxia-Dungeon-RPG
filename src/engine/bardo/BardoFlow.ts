@@ -29,6 +29,7 @@ export function buildLifeSummary(rs: RunState, anchorMultiplier: number): LifeSu
     yearsLived: Math.floor(rs.character.ageDays / 365),
     realmReached: rs.character.realm,
     maxBodyTemperingLayer: rs.character.bodyTemperingLayer,
+    maxRealm: rs.character.realm,
     deathCause: rs.deathCause as DeathCause,
     vowsUnfulfilled: 0,              // Phase 2+ vow system
     diedProtectingOther: rs.character.flags.includes('died_protecting'),

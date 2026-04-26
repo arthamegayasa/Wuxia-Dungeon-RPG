@@ -42,28 +42,6 @@ export interface TechniqueDef {
 }
 
 /**
- * DEPRECATED (kept for call-site compatibility until Task 7 migrates both). Use
- * `resolveTechniqueBonusWithAffinity` for affinity-aware resolution.
- *
- * Sum all `choice_bonus` contributions across the character's learned techniques
- * for a specific category, ignoring core-path affinity.
- */
-export function resolveTechniqueBonus(
-  techniques: ReadonlyArray<TechniqueDef>,
-  category: string,
-): number {
-  let total = 0;
-  for (const t of techniques) {
-    for (const eff of t.effects) {
-      if (eff.kind === 'choice_bonus' && eff.category === category) {
-        total += eff.bonus;
-      }
-    }
-  }
-  return total;
-}
-
-/**
  * Affinity multiplier for a technique given the character's core path.
  *   1.0 if coreAffinity includes 'any'
  *   1.0 if corePath is null (character hasn't revealed a path yet)

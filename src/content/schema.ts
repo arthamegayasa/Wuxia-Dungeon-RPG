@@ -73,6 +73,13 @@ const StateDeltaSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('world_flag_set'), flag: z.string() }),
   z.object({ kind: z.literal('world_flag_clear'), flag: z.string() }),
   z.object({ kind: z.literal('cultivation_progress_delta'), amount: z.number() }),
+  z.object({
+    kind: z.literal('meditation_progress'),
+    /** Base progress amount before technique multiplier is applied. */
+    base: z.number().nonnegative(),
+    /** Optional flat insight bonus added on top of cultivation progress. */
+    insightBonus: z.number().nonnegative().optional(),
+  }),
   z.object({ kind: z.literal('item_add'), id: z.string(), count: z.number().int().positive() }),
   z.object({ kind: z.literal('item_remove'), id: z.string(), count: z.number().int().positive() }),
   z.object({ kind: z.literal('technique_learn'), id: z.string() }),
@@ -80,6 +87,17 @@ const StateDeltaSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('karma_delta'), amount: z.number() }),
   z.object({ kind: z.literal('notice_delta'), amount: z.number() }),
   z.object({ kind: z.literal('age_delta_days'), amount: z.number().int().nonnegative() }),
+  // Phase 2B-2 Task 20: realm-gate events dispatch into RealmCrossing helpers.
+  z.object({
+    kind: z.literal('attempt_realm_crossing'),
+    /** Which transition to attempt. */
+    transition: z.enum(['bt9_to_qs', 'qs_to_qc1', 'qc_sublayer', 'qc9_to_foundation']),
+  }),
+  // Phase 2B-2 Task 21: region-transition events update runState.region.
+  z.object({
+    kind: z.literal('region_change'),
+    regionId: z.string().min(1),
+  }),
 ]);
 
 export const OutcomeSchema = z.object({
@@ -134,6 +152,9 @@ export const ChoiceSchema = z.object({
     set: z.array(z.string()).optional(),
     clear: z.array(z.string()).optional(),
   }).optional(),
+  /** If set, this choice is hidden unless the character has learned a technique
+   *  whose `unlock_choice` effect declares the matching choiceId. */
+  unlockedBy: z.string().optional(),
 });
 
 export const EventSchema = z.object({
@@ -361,6 +382,55 @@ export const PillarEventSchema = z.object({
 
 export type PillarPhase = z.infer<typeof PillarPhaseSchema>;
 export type PillarEvent = z.infer<typeof PillarEventSchema>;
+
+// ---- Phase 2B-2 Region schema ----
+// Source: docs/spec/design.md §7.2, §8.1.
+
+const ClimateSchema = z.object({
+  seasonWeights: z.object({
+    spring: z.number().nonnegative(),
+    summer: z.number().nonnegative(),
+    autumn: z.number().nonnegative(),
+    winter: z.number().nonnegative(),
+  }),
+  rainWeight: z.number().min(0).max(1),
+});
+
+const LocaleSchema = z.object({
+  id: z.string().min(1),
+  tagBias: z.array(z.string()).min(1),
+});
+
+const FactionSlotSchema = z.object({
+  id: z.string().min(1),
+  era: z.tuple([z.number().int(), z.number().int()]),
+});
+
+const NamePoolSchema = z.object({
+  placePrefix: z.array(z.string().min(1)).min(1),
+  placeFeature: z.array(z.string().min(1)).min(1),
+});
+
+export const RegionSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  qiDensity: z.number().positive(),
+  climate: ClimateSchema,
+  locales: z.array(LocaleSchema).min(1),
+  factionSlots: z.array(FactionSlotSchema),
+  eventPool: z.array(z.string()).min(1),
+  pillarPool: z.array(z.string()),
+  npcArchetypes: z.array(z.string()),
+  namePool: NamePoolSchema,
+});
+
+export const RegionPackSchema = z.object({
+  version: z.number().int().positive(),
+  regions: z.array(RegionSchema).min(1),
+});
+
+export type RegionDef = z.infer<typeof RegionSchema>;
+export type RegionPack = z.infer<typeof RegionPackSchema>;
 
 // ---- Content pack (Phase 0 loader — now wraps the richer Event schema) ----
 

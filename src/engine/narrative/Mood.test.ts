@@ -4,6 +4,7 @@ import {
   moodScores,
   zeroMoodInputs,
   MoodInputs,
+  MoodScores,
 } from './Mood';
 
 describe('zeroMoodInputs', () => {
@@ -71,5 +72,30 @@ describe('computeDominantMood', () => {
     const m = computeDominantMood({ ...zeroMoodInputs(), recentRegrets: 1, recentBreakthroughs: 1 });
     // sorrow = 2, resolve = 2 → resolve wins on priority
     expect(m).toBe('resolve');
+  });
+});
+
+describe('computeDominantMood with deltas (Phase 2B-2 Task 10)', () => {
+  it('returns serenity when no deltas (existing behavior preserved)', () => {
+    expect(computeDominantMood(zeroMoodInputs())).toBe('serenity');
+    expect(computeDominantMood(zeroMoodInputs(), {})).toBe('serenity');
+  });
+
+  it('positive serenity delta with zero inputs → serenity (already baseline)', () => {
+    expect(computeDominantMood(zeroMoodInputs(), { serenity: 5 })).toBe('serenity');
+  });
+
+  it('positive rage delta beats baseline serenity', () => {
+    expect(computeDominantMood(zeroMoodInputs(), { rage: 3 })).toBe('rage');
+  });
+
+  it('rage delta is summed with existing rage score', () => {
+    const inputs = { ...zeroMoodInputs(), recentBetrayals: 1 }; // rage = 3
+    // Baseline: rage 3 dominates over baseline serenity. Add +2 → rage 5 still wins.
+    expect(computeDominantMood(inputs, { rage: 2 })).toBe('rage');
+  });
+
+  it('multiple deltas combined; resolve wins ties via PRIORITY', () => {
+    expect(computeDominantMood(zeroMoodInputs(), { sorrow: 3, resolve: 3 })).toBe('resolve');
   });
 });

@@ -1,0 +1,446 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_SOCIAL_SENIOR_BROTHER_MENTOR",
+      "category": "life.social.bond",
+      "version": 1,
+      "weight": 35,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["outer_sect_courtyard", "meditation_cave"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.outer.courtyard] A senior brother lingers after evening drill, watching $[CHARACTER] with quiet assessment.",
+          "'Your footwork is wrong. And your breathing pattern will crack a meridian by winter.' He does not say this unkindly."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_senior_brother_accept",
+          "label": "Ask him to demonstrate the correct form. Listen closely.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 40, "stats": { "Mind": 1, "Spirit": 1 }, "difficulty": 45, "techniqueBonusCategory": "lore_scholarship" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.senior_mentor.deep_bond",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "befriend_sect_disciple" },
+                { "kind": "flag_set", "flag": "senior_brother_mentor" },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "meditation_progress", "base": 10, "insightBonus": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.senior_mentor.corrected",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "befriend_sect_disciple" },
+                { "kind": "flag_set", "flag": "senior_brother_mentor" },
+                { "kind": "meditation_progress", "base": 6 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.senior_mentor.partial",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.senior_mentor.missed",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.senior_mentor.embarrassed",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Charm", "amount": -1 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_senior_brother_deflect",
+          "label": "Thank him politely. Continue practicing alone.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.senior_mentor.declined",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.senior_mentor.declined",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_SOCIAL_JUNIOR_SISTER_REQUEST",
+      "category": "life.social.bond",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.outer.dining.hall] A junior sister catches $[CHARACTER] before supper, voice low.",
+          "'I can't figure out the third circulation sequence. The elder won't explain again. Could you… show me, just once?'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_junior_sister_help",
+          "label": "Spend the evening walking her through the sequence.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 35, "stats": { "Mind": 1, "Charm": 1 }, "difficulty": 40, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.junior_request.mastered",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "befriend_sect_disciple" },
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.junior_request.helped",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "befriend_sect_disciple" },
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.junior_request.partial",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.junior_request.confused",
+              "stateDeltas": []
+            }
+          }
+        },
+        {
+          "id": "ch_junior_sister_refuse",
+          "label": "Say you barely understand it yourself. Apologise.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.junior_request.refused",
+              "stateDeltas": []
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.junior_request.refused",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_SOCIAL_RIVAL_DISCIPLE_CHALLENGE",
+      "category": "life.social.rivalry",
+      "version": 1,
+      "weight": 40,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["outer_sect_courtyard"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.outer.courtyard] A rival outer disciple steps into $[CHARACTER]'s path, arms folded.",
+          "'You've been here three months. I've been here two years. Let's see what three months buys you.' He draws a wooden practice sword."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_rival_challenge_fight",
+          "label": "Accept. Step into the circle.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 30, "stats": { "Body": 2, "Agility": 1 }, "difficulty": 55, "techniqueBonusCategory": "melee_skill" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.rival_spar.dominated",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "spar_winner" },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.rival_spar.won",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "spar_winner" },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.rival_spar.draw",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.rival_spar.lost",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -12 },
+                { "kind": "attribute_delta", "stat": "Charm", "amount": -1 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.rival_spar.humiliated",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -20 },
+                { "kind": "attribute_delta", "stat": "Charm", "amount": -2 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_rival_challenge_words",
+          "label": "Meet his bluster with calm. Words, not swords.",
+          "timeCost": "SHORT",
+          "check": { "base": 40, "stats": { "Charm": 2, "Mind": 1 }, "difficulty": 45, "techniqueBonusCategory": "social_intimidate" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.rival_spar.defused",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 },
+                { "kind": "flag_set", "flag": "rival_humbled_by_words" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.rival_spar.backs_down",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -8 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_SOCIAL_ELDERS_FAVOR",
+      "category": "life.social.elder",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.elder.quarters] The sect elder calls $[CHARACTER] inside. The quarters smell of sandalwood and old paper.",
+          "'I have watched your conduct. Diligent. Quiet. Not ambitious in the wrong direction.' He sets a folded robe on the table. 'Inner disciple vestment. You have not earned the rank. Consider it an investment.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_elders_favor_accept",
+          "label": "Bow and accept with gratitude.",
+          "timeCost": "LONG",
+          "check": { "base": 50, "stats": { "Charm": 1, "Mind": 1 }, "difficulty": 35, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.elder_favor.honored",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "inner_disciple_robe", "count": 1 },
+                { "kind": "flag_set", "flag": "elders_chosen" },
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 },
+                { "kind": "insight_delta", "amount": 3 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.elder_favor.accepted",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "inner_disciple_robe", "count": 1 },
+                { "kind": "flag_set", "flag": "elders_chosen" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.elder_favor.awkward",
+              "stateDeltas": [
+                { "kind": "item_add", "id": "inner_disciple_robe", "count": 1 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_elders_favor_refuse",
+          "label": "Decline respectfully. Say the rank must be earned.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.elder_favor.refused",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "refused_elders_gift" },
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.elder_favor.refused",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "refused_elders_gift" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_SOCIAL_SECT_MISSION_BRIEF",
+      "category": "life.social.elder",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[ap.outer.courtyard] The mission board is fresh — outer disciples cluster around a new notice.",
+          "An elder cuts through the crowd and singles out $[CHARACTER]. 'You. The mountain-path patrol. Three days, minor beast hazard. Standard stone compensation.' His tone makes it clear this is not optional."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_mission_accept_eager",
+          "label": "Accept immediately and ask about the route.",
+          "timeCost": "SHORT",
+          "check": { "base": 55, "stats": { "Charm": 1 }, "difficulty": 35, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.mission_brief.eager",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "sect_mission_active" },
+                { "kind": "item_add", "id": "spiritual_stone", "count": 2 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.mission_brief.assigned",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "sect_mission_active" },
+                { "kind": "item_add", "id": "spiritual_stone", "count": 1 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_mission_accept_quiet",
+          "label": "Accept without comment. Memorise the briefing.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.mission_brief.assigned",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "sect_mission_active" },
+                { "kind": "item_add", "id": "spiritual_stone", "count": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.mission_brief.assigned",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "sect_mission_active" }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_SOCIAL_FACTION_LEAN",
+      "category": "life.social",
+      "version": 1,
+      "weight": 25,
+      "conditions": {
+        "regions": ["azure_peaks"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.outer.dining.hall] Two tables. One side sits the Azure Cloud disciples — neat robes, quiet voices, ink-stained fingers. The other side: Broken Mountain, loud laughter and competitive sparring stories.",
+          "Both tables have an empty seat. Both are watching $[CHARACTER]."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_faction_azure_cloud",
+          "label": "Sit with Azure Cloud. The scholarship track.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 45, "stats": { "Mind": 1, "Charm": 1 }, "difficulty": 40, "techniqueBonusCategory": "social_persuade" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.faction_lean.azure_accepted",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "azure_cloud_aligned" },
+                { "kind": "flag_clear", "flag": "broken_mountain_aligned" },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.faction_lean.azure_awkward",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "azure_cloud_aligned" },
+                { "kind": "flag_clear", "flag": "broken_mountain_aligned" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_faction_broken_mountain",
+          "label": "Sit with Broken Mountain. The combat track.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 40, "stats": { "Body": 1, "Charm": 1 }, "difficulty": 40, "techniqueBonusCategory": "social_intimidate" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.faction_lean.mountain_accepted",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "broken_mountain_aligned" },
+                { "kind": "flag_clear", "flag": "azure_cloud_aligned" },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.faction_lean.mountain_awkward",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "broken_mountain_aligned" },
+                { "kind": "flag_clear", "flag": "azure_cloud_aligned" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_faction_neutral",
+          "label": "Find a third table. Eat alone.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.faction_lean.neutral",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.faction_lean.neutral",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

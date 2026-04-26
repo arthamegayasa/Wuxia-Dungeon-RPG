@@ -1,0 +1,500 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_TRAINING_ELDER_CULTIVATION_GUIDANCE",
+      "category": "life.training",
+      "version": 1,
+      "weight": 25,
+      "conditions": { "regions": ["azure_peaks"] },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.elder.quarters] The elder's eyes are closed. $[CHARACTER] waits at the threshold until a single finger lifts.",
+          "'Sit. Show me your qi. Don't hide it — I can smell a blocked meridian from across the room.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_guidance_focused",
+          "label": "Sit in stillness and follow the elder's directions.",
+          "timeCost": "LONG",
+          "check": { "base": 35, "stats": { "Spirit": 2, "Mind": 1 }, "difficulty": 55, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.guidance.breakthrough",
+              "stateDeltas": [
+                { "kind": "meridian_open", "id": 5 },
+                { "kind": "meditation_progress", "base": 20, "insightBonus": 3 },
+                { "kind": "insight_delta", "amount": 4 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.guidance.steady",
+              "stateDeltas": [
+                { "kind": "meridian_open", "id": 5 },
+                { "kind": "meditation_progress", "base": 10 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.guidance.partial",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 5 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.guidance.missed",
+              "stateDeltas": []
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.guidance.backlash",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "qi_delta", "amount": -5 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_guidance_passive",
+          "label": "Listen but do not push. Watch the elder's technique.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.guidance.observe",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "observed_elder_technique" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.guidance.observe",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_TRAINING_PILL_ASSISTED_BREAKTHROUGH",
+      "category": "life.training",
+      "version": 1,
+      "weight": 10,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["alchemy_pavilion"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.alchemy.pavilion] The pavilion smells of burnt pine and concentrated qi. An outer disciple presses a bound manual into $[CHARACTER]'s hands.",
+          "'Iron Mountain Body Seal. Study the diagrams. The pill makes the qi pliable — but if you don't follow the sequence, it'll crack a bone.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_pill_breakthrough_attempt",
+          "label": "Consume the pill, open the manual, and attempt the seal.",
+          "timeCost": "LONG",
+          "preconditions": {
+            "requiresItem": ["manual_iron_mountain_body_seal"]
+          },
+          "check": { "base": 30, "stats": { "Body": 2, "Spirit": 1 }, "difficulty": 60, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.pill_breakthrough.mastered",
+              "stateDeltas": [
+                { "kind": "item_remove", "id": "manual_iron_mountain_body_seal", "count": 1 },
+                { "kind": "technique_learn", "id": "iron_mountain_body_seal" },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
+                { "kind": "flag_set", "flag": "learned_iron_mountain_body_seal" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.pill_breakthrough.learned",
+              "stateDeltas": [
+                { "kind": "item_remove", "id": "manual_iron_mountain_body_seal", "count": 1 },
+                { "kind": "technique_learn", "id": "iron_mountain_body_seal" },
+                { "kind": "flag_set", "flag": "learned_iron_mountain_body_seal" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.pill_breakthrough.partial",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 15 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.pill_breakthrough.backlash",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -12 },
+                { "kind": "qi_delta", "amount": -8 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.pill_breakthrough.deviate",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -25 },
+                { "kind": "qi_delta", "amount": -15 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_pill_study_only",
+          "label": "Read the manual first. Don't attempt the pill yet.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.pill_breakthrough.studying",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "studied_iron_mountain_manual" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.pill_breakthrough.studying",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "once_per_life"
+    },
+    {
+      "id": "AP_TRAINING_TECHNIQUE_DRILL",
+      "category": "life.training",
+      "version": 1,
+      "weight": 40,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["outer_sect_courtyard"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.outer.courtyard] A senior disciple marks a circle in the dust with a stick.",
+          "'Common Qi Circulation. Again. Until the qi moves by instinct, not intention.' $[CHARACTER] sets stance."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_drill_disciplined",
+          "label": "Drill the circulation until it flows without effort.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 40, "stats": { "Spirit": 1, "Mind": 1 }, "difficulty": 45, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.drill.mastered",
+              "stateDeltas": [
+                { "kind": "technique_learn", "id": "common_qi_circulation" },
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
+                { "kind": "meditation_progress", "base": 12, "insightBonus": 2 },
+                { "kind": "qi_delta", "amount": 5 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.drill.learned",
+              "stateDeltas": [
+                { "kind": "technique_learn", "id": "common_qi_circulation" },
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
+                { "kind": "meditation_progress", "base": 8 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.drill.partial",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
+                { "kind": "meditation_progress", "base": 4 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.drill.scattered",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.drill.scattered",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -3 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_drill_casual",
+          "label": "Go through the motions without real effort.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.drill.scattered",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
+                { "kind": "meditation_progress", "base": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.drill.scattered",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_TRAINING_MERIDIAN_ASSISTANCE",
+      "category": "life.training",
+      "version": 1,
+      "weight": 20,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["meditation_cave"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.meditation.cave] A fellow disciple kneels behind $[CHARACTER], palms flat against the spine.",
+          "'Third meridian. It's the stubborn one. I'll guide the qi; you hold the path open. Don't tense up.'"
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_meridian_trust",
+          "label": "Relax and let the fellow disciple guide your qi.",
+          "timeCost": "LONG",
+          "check": { "base": 30, "stats": { "Spirit": 2 }, "difficulty": 50, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.meridian.opened",
+              "stateDeltas": [
+                { "kind": "meridian_open", "id": 3 },
+                { "kind": "qi_delta", "amount": 8 },
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "flag_set", "flag": "third_meridian_opened" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.meridian.opened",
+              "stateDeltas": [
+                { "kind": "meridian_open", "id": 3 },
+                { "kind": "qi_delta", "amount": 4 },
+                { "kind": "flag_set", "flag": "third_meridian_opened" }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.meridian.partial",
+              "stateDeltas": [
+                { "kind": "qi_delta", "amount": 2 },
+                { "kind": "hp_delta", "amount": -4 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.meridian.blocked",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -10 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.meridian.backlash",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -20 },
+                { "kind": "qi_delta", "amount": -10 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_meridian_solo",
+          "label": "Decline the help. Attempt to open the meridian alone.",
+          "timeCost": "LONG",
+          "check": { "base": 15, "stats": { "Spirit": 2, "Body": 1 }, "difficulty": 65, "techniqueBonusCategory": "cultivation_attempt" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.meridian.solo_success",
+              "stateDeltas": [
+                { "kind": "meridian_open", "id": 3 },
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "flag_set", "flag": "third_meridian_opened" }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.meridian.blocked",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -6 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_TRAINING_BEAST_SPARRING",
+      "category": "life.training.body",
+      "version": 1,
+      "weight": 30,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["beast_pass"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "$[ap.beast.pass.lower] A training pen: wooden walls, padded poles, and a young mountain boar fitted with a leather harness.",
+          "The sect handler nods. '$[CHARACTER]. Don't draw blood — yours or its.' The boar snorts."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_beast_spar_frontal",
+          "label": "Meet the boar head-on. Break its charge.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 25, "stats": { "Body": 2, "Agility": 1 }, "difficulty": 55, "techniqueBonusCategory": "melee_skill" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.beast_spar.dominated",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
+                { "kind": "meditation_progress", "base": 10, "insightBonus": 2 },
+                { "kind": "flag_set", "flag": "beast_spar_winner" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.beast_spar.held",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.beast_spar.bruised",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -5 },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.beast_spar.thrown",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -12 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.beast_spar.trampled",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -25 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_beast_spar_dodge",
+          "label": "Step aside. Use the boar's momentum against it.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 35, "stats": { "Agility": 2 }, "difficulty": 45, "techniqueBonusCategory": "dodge_flee" },
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.beast_spar.sidestepped",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.beast_spar.bruised",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -8 }
+              ]
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_TRAINING_SCRIPTURE_STUDY",
+      "category": "life.training",
+      "version": 1,
+      "weight": 35,
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "locales": ["scripture_hall"]
+      },
+      "timeCost": "LONG",
+      "text": {
+        "intro": [
+          "$[ap.scripture.hall.candle] A different scroll today — one the librarian keeps behind the locked cabinet.",
+          "$[CHARACTER] unrolls it carefully. The qi principles inside are dense, layered. Some passages loop back on themselves."
+        ]
+      },
+      "choices": [
+        {
+          "id": "ch_scripture_deep_study",
+          "label": "Read slowly. Let each concept settle before the next.",
+          "timeCost": "LONG",
+          "check": { "base": 30, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 50, "techniqueBonusCategory": "lore_scholarship" },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "ap.action.scripture.epiphany",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 6 },
+                { "kind": "meditation_progress", "base": 18, "insightBonus": 3 },
+                { "kind": "flag_set", "flag": "scripture_deep_insight" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "ap.action.scripture.absorbed",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "meditation_progress", "base": 10 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "ap.action.scripture.steady",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "meditation_progress", "base": 5 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.scripture.smudged",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "ap.action.scripture.smudged",
+              "stateDeltas": []
+            }
+          }
+        },
+        {
+          "id": "ch_scripture_skim",
+          "label": "Skim for the key principles. Don't waste a full day.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.scripture.steady",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "meditation_progress", "base": 4 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "ap.action.scripture.smudged",
+              "stateDeltas": []
+            }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

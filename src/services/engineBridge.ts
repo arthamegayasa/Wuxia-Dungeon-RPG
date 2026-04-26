@@ -1,6 +1,6 @@
 // Real engineBridge — adapter from UI → engine. Source: docs/spec/design.md §2, §11.
 
-import { GamePhase, CheckCategory } from '@/engine/core/Types';
+import { GamePhase } from '@/engine/core/Types';
 import { SaveManager, createSaveManager } from '@/engine/persistence/SaveManager';
 import { loadRun, saveRun, clearRun } from '@/engine/persistence/RunSave';
 import {
@@ -16,6 +16,7 @@ import {
 import { SnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { createNameRegistry } from '@/engine/narrative/NameRegistry';
 import { computeDominantMood, zeroMoodInputs } from '@/engine/narrative/Mood';
+import { moodDeltasFromTechniques } from '@/engine/narrative/MoodFromTechniques';
 import { renderEvent, CompositionContext } from '@/engine/narrative/Composer';
 import { selectEvent } from '@/engine/events/EventSelector';
 import { resolveCheck } from '@/engine/choices/ChoiceResolver';
@@ -23,25 +24,30 @@ import { resolveOutcome } from '@/engine/choices/OutcomeResolver';
 import { applyOutcome } from '@/engine/events/OutcomeApplier';
 import { advanceTurn } from '@/engine/events/AgeTick';
 import { computeMoodBonus } from '@/engine/narrative/MoodBonus';
+import { checkCategoryFromEvent } from '@/engine/narrative/CheckCategoryFromEvent';
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
+import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
+import type { TechniqueDef } from '@/engine/cultivation/Technique';
+import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
 import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
 import { applyPostOutcomeHooks } from '@/engine/core/PostOutcomeHooks';
 import { loadEvents } from '@/content/events/loader';
-import { loadSnippets } from '@/content/snippets/loader';
-import { loadEchoes } from '@/content/echoes/loader';
-import { loadMemories } from '@/content/memories/loader';
+import { loadSnippets, mergeSnippetPacks, mergeSnippetLibraries } from '@/content/snippets/loader';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
+import { ItemRegistry, ItemDef } from '@/engine/cultivation/ItemRegistry';
+import { RegionRegistry } from '@/engine/world/RegionRegistry';
 import { SoulEcho } from '@/engine/meta/SoulEcho';
 import type { UnlockCondition, EchoEffect } from '@/engine/meta/SoulEcho';
 import { ForbiddenMemory, memoryLevelOf } from '@/engine/meta/ForbiddenMemory';
 import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
+import { loadAzurePeaksContent } from './azurePeaksLoader';
 
 import dailyJson from '@/content/events/yellow_plains/daily.json';
 import trainingJson from '@/content/events/yellow_plains/training.json';
@@ -52,13 +58,14 @@ import transitionJson from '@/content/events/yellow_plains/transition.json';
 import bridgeJson from '@/content/events/yellow_plains/bridge.json';
 import meditationJson from '@/content/events/yellow_plains/meditation.json';
 import ypSnippets from '@/content/snippets/yellow_plains.json';
-import echoPack from '@/content/echoes/echoes.json';
-import memoriesPack from '@/content/memories/memories.json';
+// NOTE: azure_peaks content, techniques, items, echoes, and memories are NOT imported
+// eagerly here. Phase 2B-2 Task 24 lazy-loads them via azurePeaksLoader.ts on first
+// beginLife call, keeping the cold-start bundle under the 450 KB hard limit.
 
 // Phase 1D-3 Task 10: Yellow Plains content pool. Flattens all authored regional
-// packs (~50 events) into one selectable array. Snippet library is the single
-// Yellow Plains pack (~80 leaves) that backs narrative composition.
-const ALL_EVENTS: ReadonlyArray<EventDef> = [
+// packs (~50 events) into one selectable array.
+// Phase 2B-2 Task 24: mutable so AP events can be spliced in on lazy-load.
+let ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(dailyJson),
   ...loadEvents(trainingJson),
   ...loadEvents(socialJson),
@@ -68,25 +75,73 @@ const ALL_EVENTS: ReadonlyArray<EventDef> = [
   ...loadEvents(bridgeJson),
   ...loadEvents(meditationJson),
 ];
-const DEFAULT_LIBRARY: SnippetLibrary = loadSnippets(ypSnippets);
+// Phase 2B-2 Task 24: starts as YP-only; AP snippets appended on first AP need.
+// (Replaces the earlier eager merge from Task 22 which pulled AP into the cold bundle.)
+let DEFAULT_LIBRARY: SnippetLibrary = mergeSnippetPacks([ypSnippets]);
 
-// Phase 2A-2 Task 8: the canonical echo registry. Built once at module load from
-// the authored `echoes.json`. `characterFromAnchor` consumes this at spawn to
-// roll any unlocked echoes against the player's `meta.echoesUnlocked` pool.
-// EchoDef (zod-inferred) is structurally compatible with SoulEcho.
-const ECHO_REGISTRY = EchoRegistry.fromList(loadEchoes(echoPack) as ReadonlyArray<SoulEcho>);
+// Phase 2B-2 Task 24: guard flag so AP content is only spliced once per session.
+let azurePeaksLoaded = false;
 
-// Phase 2A-2 Task 11: the canonical forbidden-memory registry. Built once at
-// module load from the authored `memories.json`. `applyPostOutcomeHooks` reads
-// it on meditation-category events to roll `MemoryManifestResolver`. MemoryDef
-// (zod-inferred) is structurally compatible with ForbiddenMemory — the same
-// pattern as EchoDef → SoulEcho above.
-const MEMORY_REGISTRY = MemoryRegistry.fromList(
-  loadMemories(memoriesPack) as ReadonlyArray<ForbiddenMemory>,
-);
+/**
+ * Ensure Azure Peaks content AND all gameplay registries are loaded.
+ * Idempotent — subsequent calls are no-ops.
+ * Must be awaited at `beginLife` (all anchors) and before any AP event selection.
+ */
+async function ensureAzurePeaksLoaded(): Promise<void> {
+  if (azurePeaksLoaded) return;
+  const ap = await loadAzurePeaksContent();
 
-// Phase 2B-1 Task 7: empty by default. 2B-2 ships the canonical corpus + loader.
-const TECHNIQUE_REGISTRY = TechniqueRegistry.empty();
+  // Merge AP events into the event pool.
+  ALL_EVENTS = [...ALL_EVENTS, ...ap.events];
+
+  // Merge AP region into the region registry.
+  REGION_REGISTRY.current = RegionRegistry.fromList([
+    ...REGION_REGISTRY.current.all(),
+    ap.region,
+  ]);
+
+  // Merge AP snippets into the library.
+  DEFAULT_LIBRARY = mergeSnippetLibraries(DEFAULT_LIBRARY, ap.snippets);
+
+  // Hydrate gameplay registries (techniques, items, echoes, memories).
+  TECHNIQUE_REGISTRY = TechniqueRegistry.fromList(
+    ap.techniques as ReadonlyArray<TechniqueDef>,
+  );
+  ITEM_REGISTRY = ItemRegistry.fromList(
+    ap.items as ReadonlyArray<ItemDef>,
+  );
+  ECHO_REGISTRY = EchoRegistry.fromList(ap.echoes);
+  MEMORY_REGISTRY = MemoryRegistry.fromList(ap.memories);
+
+  azurePeaksLoaded = true;
+}
+
+// Phase 2B-2 Task 24: registries are mutable live-binding exports initialised to
+// empty stubs at module load and populated on first beginLife call.
+// External importers (tests, GameLoop) see the live value via ESM live bindings.
+// loadOrInit does not use any registry — only beginLife and subsequent gameplay calls do.
+
+// Echo registry — populated by ensureAzurePeaksLoaded from echoes.json.
+// eslint-disable-next-line prefer-const
+export let ECHO_REGISTRY: EchoRegistry = EchoRegistry.fromList([]);
+
+// Memory registry — populated by ensureAzurePeaksLoaded from memories.json.
+// eslint-disable-next-line prefer-const
+export let MEMORY_REGISTRY: MemoryRegistry = MemoryRegistry.fromList([]);
+
+// Technique registry — populated by ensureAzurePeaksLoaded from techniques.json.
+// eslint-disable-next-line prefer-const
+export let TECHNIQUE_REGISTRY: TechniqueRegistry = TechniqueRegistry.fromList([]);
+
+// Item registry — populated by ensureAzurePeaksLoaded from items.json.
+// eslint-disable-next-line prefer-const
+export let ITEM_REGISTRY: ItemRegistry = ItemRegistry.fromList([]);
+
+// Region registry starts empty; Task 24 lazy-loads azure_peaks.json on first need.
+// Container is a stable reference object so Task 24 can hot-swap `current`.
+export const REGION_REGISTRY: { current: RegionRegistry } = {
+  current: RegionRegistry.empty(),
+};
 
 export interface LoadOrInitResult {
   phase: GamePhase;
@@ -304,12 +359,15 @@ function compositionContextFromStore(
   gs: ReturnType<typeof useGameStore.getState>,
 ): CompositionContext {
   if (!gs.runState) throw new Error('compositionContextFromStore: no runState');
+  const learnedDefs = gs.runState.learnedTechniques
+    .map((id) => TECHNIQUE_REGISTRY.byId(id))
+    .filter((t): t is NonNullable<typeof t> => t !== null);
   return {
     characterName: gs.runState.character.name,
     region: gs.runState.region,
     season: gs.runState.season,
     realm: gs.runState.character.realm,
-    dominantMood: computeDominantMood(zeroMoodInputs()),
+    dominantMood: computeDominantMood(zeroMoodInputs(), moodDeltasFromTechniques(learnedDefs)),
     turnIndex: gs.runState.turn,
     runSeed: gs.runState.runSeed,
     extraVariables: {},
@@ -320,10 +378,12 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
   const sm = opts.saveManager ?? createSaveManager({
     storage: () => localStorage, gameVersion: '0.1.0',
   });
-  // Snippet library used by the Composer. Phase 1D-3 Task 10 wires the authored
+  // Snippet library getter used by the Composer. Phase 1D-3 Task 10 wires the authored
   // Yellow Plains corpus (~80 leaves) as the default. Tests/adapters can still
   // override via opts.library for determinism.
-  const library = opts.library ?? DEFAULT_LIBRARY;
+  // Phase 2B-2 Task 24: use a getter so DEFAULT_LIBRARY reflects the post-lazy-load
+  // merged state (YP + AP). opts.library override is respected for tests.
+  const getLibrary = (): SnippetLibrary => opts.library ?? DEFAULT_LIBRARY;
   const now = opts.now ?? (() => Date.now());
 
   function currentMetaState(): MetaState {
@@ -383,10 +443,17 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
    * every click re-selected a (potentially different) event and the UI's click
    * could hit a choiceId that no longer existed.
    */
-  function doPeek(): TurnPreview {
+  async function doPeek(): Promise<TurnPreview> {
     const gs = useGameStore.getState();
     if (!gs.runState || !gs.streak || !gs.nameRegistry) {
       throw new Error('peekNextEvent: no active run in store');
+    }
+
+    // Phase 2B-2 Task 24: ensure gameplay content chunk is loaded (resume path).
+    // Normal flow: beginLife already awaited this. This guard covers the case where
+    // a page reload restores a saved run and the user resumes directly into doPeek.
+    if (!azurePeaksLoaded) {
+      await ensureAzurePeaksLoaded();
     }
 
     // Cached peek: re-render the already-selected event.
@@ -398,13 +465,18 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         const narrative = renderEvent(
           cached,
           compositionContextFromStore(gs),
-          library,
+          getLibrary(),
           gs.nameRegistry,
           peekRng,
         );
+        const cachedVisibleChoices = visibleChoicesForCharacter(
+          cached.choices,
+          gs.runState.learnedTechniques,
+          TECHNIQUE_REGISTRY,
+        );
         return buildTurnPreview(
           narrative,
-          cached.choices.map((c) => ({ id: c.id, label: c.label })),
+          cachedVisibleChoices.map((c) => ({ id: c.id, label: c.label })),
         );
       }
       // Stale cache — fall through to a fresh selection.
@@ -425,6 +497,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         season: gs.runState.season,
         heavenlyNotice: gs.runState.heavenlyNotice,
         ageYears: Math.floor(gs.runState.character.ageDays / 365),
+        learnedTechniques: gs.runState.learnedTechniques,
       },
       gs.lifetimeSeenEvents,
       gs.runState.thisLifeSeenEvents,
@@ -437,7 +510,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     const narrative = renderEvent(
       selected,
       compositionContextFromStore(gs),
-      library,
+      getLibrary(),
       gs.nameRegistry,
       narrativeRng,
     );
@@ -450,9 +523,15 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
     useGameStore.getState().updateRun(nextRun, gs.streak, gs.nameRegistry);
     saveRun(sm, nextRun);
 
+    const selectedVisibleChoices = visibleChoicesForCharacter(
+      selected.choices,
+      gs.runState.learnedTechniques,
+      TECHNIQUE_REGISTRY,
+    );
+
     return buildTurnPreview(
       narrative,
-      selected.choices.map((c) => ({ id: c.id, label: c.label })),
+      selectedVisibleChoices.map((c) => ({ id: c.id, label: c.label })),
     );
   }
 
@@ -569,8 +648,16 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const anchor = getAnchorById(anchorId);
       if (!anchor) throw new Error(`beginLife: unknown anchor ${anchorId}`);
 
+      // Phase 2B-2 Task 24: always load the gameplay content chunk before spawning.
+      // This ensures TECHNIQUE_REGISTRY, ITEM_REGISTRY, ECHO_REGISTRY, and
+      // MEMORY_REGISTRY are populated for the life about to start, regardless of
+      // anchor. Also loads AP content so targetRegion is honoured for AP anchors.
+      await ensureAzurePeaksLoaded();
+
+      const loadedRegions = ['yellow_plains', 'azure_peaks'];
+
       const spawnRng = createRng(now() & 0xffffffff);
-      const resolved = resolveAnchor(anchor, spawnRng);
+      const resolved = resolveAnchor(anchor, spawnRng, loadedRegions);
       const runSeed = spawnRng.intRange(0, 0x7fffffff);
       const { character, runState } = characterFromAnchor({
         resolved, name: chosenName, runSeed, rng: spawnRng,
@@ -612,6 +699,12 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       if (!gs.runState || !gs.streak || !gs.nameRegistry) {
         throw new Error('resolveChoice: no active run in store');
       }
+
+      // Phase 2B-2 Task 24: ensure gameplay content chunk is loaded (resume path).
+      if (!azurePeaksLoaded) {
+        await ensureAzurePeaksLoaded();
+      }
+
       if (!gs.runState.pendingEventId) {
         throw new Error('resolveChoice: no pending event — call peekNextEvent first');
       }
@@ -619,9 +712,18 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       if (!pending) {
         throw new Error(`resolveChoice: pending event ${gs.runState.pendingEventId} not found in pool`);
       }
-      const choice = pending.choices.find((c) => c.id === choiceId);
+      const visibleChoices = visibleChoicesForCharacter(
+        pending.choices,
+        gs.runState.learnedTechniques,
+        TECHNIQUE_REGISTRY,
+      );
+      // learnedDefs needed for mood (Task 10 mood integration)
+      const learnedDefs = gs.runState.learnedTechniques
+        .map((id) => TECHNIQUE_REGISTRY.byId(id))
+        .filter((t): t is NonNullable<typeof t> => t !== null);
+      const choice = visibleChoices.find((c) => c.id === choiceId);
       if (!choice) {
-        throw new Error(`resolveChoice: choice ${choiceId} not found in event ${pending.id}`);
+        throw new Error(`resolveChoice: choice ${choiceId} not found in event ${pending.id} (or locked)`);
       }
 
       // Seed the turn RNG off the run's current cursor so replays are deterministic.
@@ -633,7 +735,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Phase 2B-1 Task 7: registry-backed technique bonus. Empty registry → 0
       // (no regression vs old resolveTechniqueBonus([]) stub). 2B-2 swaps in
       // the canonical corpus; affinity halving already active here.
-      const dominantMood = computeDominantMood(zeroMoodInputs());
+      // Phase 2B-2 Task 10: fold mood_modifier effects from learned techniques
+      // into dominantMood via moodDeltasFromTechniques (forward note #1).
+      // learnedDefs already declared above for visibility filtering — reuse it.
+      const dominantMood = computeDominantMood(zeroMoodInputs(), moodDeltasFromTechniques(learnedDefs));
       const techBonus = choice.check?.techniqueBonusCategory
         ? resolveLearnedTechniqueBonus({
             registry: TECHNIQUE_REGISTRY,
@@ -642,8 +747,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
             category: choice.check.techniqueBonusCategory,
           })
         : 0;
-      const moodBonus = choice.check?.techniqueBonusCategory
-        ? computeMoodBonus(dominantMood, choice.check.techniqueBonusCategory as CheckCategory)
+      const moodBonus = choice.check
+        ? computeMoodBonus(dominantMood, checkCategoryFromEvent(pending.category))
         : 0;
 
       const checkResult = resolveCheck({
@@ -668,7 +773,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const narrative = renderEvent(
         pending,
         compositionContextFromStore(gs),
-        library,
+        getLibrary(),
         gs.nameRegistry,
         narrativeRng,
       );
@@ -676,7 +781,10 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // Apply outcome, then append to thisLifeSeenEvents AND clear pendingEventId.
       // Ordering: applyOutcome does a shallow merge on RunState; the spread after
       // ensures our fields win.
-      let nextRunState = applyOutcome(gs.runState, outcome);
+      // Phase 2B-2 Task 12: pass techniqueMultiplier for meditation_progress delta.
+      // learnedDefs already declared above for visibility filtering — reuse it.
+      const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
+      let nextRunState = applyOutcome(gs.runState, outcome, { techniqueMultiplier, rng });
       nextRunState = {
         ...nextRunState,
         thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, pending.id],
@@ -905,4 +1013,14 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       return { echoes, memories, anchors };
     },
   };
+}
+
+/**
+ * Test-only: eagerly load all gameplay content (techniques, items, echoes, memories,
+ * Azure Peaks region+events+snippets) and populate the live-binding registries.
+ * Equivalent to what `beginLife` does at the start of each life.
+ * Call this in test `beforeEach` or test body before asserting on registry contents.
+ */
+export async function __loadGameplayContent(): Promise<void> {
+  return ensureAzurePeaksLoaded();
 }
