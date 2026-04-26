@@ -6,33 +6,31 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 5,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.shrine] A monk in grey robes rests beneath the shrine eaves, bowl at his knee.",
-          "$[npc.monk.blessing] $[CHARACTER] slows the step."
+          "At the small roadside shrine where the path bends west around the high field, a monk in faded grey robes has set himself down for a rest. The bowl is at his knee. The robe is dusty. The eyes are closed in the still way of someone who is not asleep.",
+          "$[CHARACTER] slows the step."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The monk does not open his eyes when the boy approaches. He does not need to. He says, in a voice quiet as the dust on the shrine's stone dog: \"There is rice in the bowl already, fellow. But there is room for more.\" The voice is not the voice of a beggar. It is the voice of a man who has, by long habit, made of begging an entirely different transaction.",
+          "$[CHARACTER] kneels in the dust at the appropriate distance. The handful of millet from the bundle goes into the bowl. The monk's eyes open then — small, dark, with that particular quality of attention which sees not what a man wears but what a man carries beneath what he wears.",
+          "He does not give a teaching. Monks like this one rarely do. But he speaks for a quarter-hour about the road he has just walked, about a temple two valleys west where the bell has cracked and not been replaced, about a girl in the last village who could not be persuaded that her dead mother was not standing nightly at the foot of the bed. He speaks the way a friend speaks. The boy does not interrupt. When the monk has finished he reaches into the folds of his robe and presses something small and cool into the boy's palm — a stone, not unusual to the eye, but the palm warms around it and does not stop warming."
+        ],
+        "outro": [
+          "When $[CHARACTER] looks up to ask, the monk is already on the path westward. He does not turn around. The stone in the palm is faintly singing."
+        ]
       },
       "choices": [
         {
-          "id": "ch_greet_monk",
-          "label": "Kneel. Offer rice. Ask nothing directly.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "npc.monk.blessing",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "met_monk" },
-                { "kind": "item_add", "id": "spiritual_stone", "count": 1 },
-                { "kind": "insight_delta", "amount": 5 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "npc.monk.blessing",
               "stateDeltas": [
@@ -42,18 +40,8 @@
               ],
               "witnessMemory": "hollow_mountain_breath"
             },
-            "PARTIAL": {
-              "narrativeKey": "npc.monk.warning",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "npc.monk.warning",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "npc.monk.blessing", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "npc.monk.blessing", "stateDeltas": [] }
           }
         }
       ],
@@ -64,32 +52,31 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 8,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.inn_yard] A traveling pill-seller unfolds a cloth on a crate — small paper twists, each one a promise.",
-          "$[npc.merchant.haggle] $[CHARACTER] weighs the copper in the purse, and the years in the body."
+          "At the inn-yard on market day a travelling pill-seller has set up his small show — a folding table, a cloth in the colour of dried plum, and laid out in three neat rows a dozen paper twists each tied with thread.",
+          "He calls his patter in a tradesman's singsong. $[CHARACTER] weighs the few copper coins in the purse and the years already worn into the body, and approaches."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The pill-seller has a face like an old turnip and a manner like a mother-in-law, both of which are partly performance and partly the truth of him. He demands to know whether the boy is buying for himself, for an elder, for a sick child; he refuses, very theatrically, to sell anything until he has had this information; and he then proceeds to discount the prices in a way that makes the buyer feel he has cheated the seller, which is the seller's intention exactly.",
+          "Most of the pills, $[CHARACTER] knows, are mostly herb-paste with a faint trace of the named ingredient at the centre. But not all. The pill-seller, like most of his trade, mixes one or two genuine pills among the paste imitations to keep his reputation honest enough that he can return to the village in a year. The trick is in knowing how to sniff for it — the small clean note of true mountain-grown panax under the brown paste-smell.",
+          "The boy chooses one. Pays. The pill-seller weighs the copper, bites it, nods. As $[CHARACTER] turns away the pill-seller adds, very softly: \"That one is good. The one in your friend's hand is not.\""
+        ],
+        "outro": [
+          "Walking home with the pill safe in the inner pocket of the shirt, the boy considers that the world is full of small honest cheats and small dishonest charities, and that telling them apart is half a lifetime's lesson."
+        ]
       },
       "choices": [
         {
-          "id": "ch_bargain",
-          "label": "Bargain for a genuine pill.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Mind": 1 }, "difficulty": 45 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "npc.merchant.haggle",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "minor_healing_pill", "count": 2 },
-                { "kind": "insight_delta", "amount": 2 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "npc.merchant.haggle",
               "stateDeltas": [
@@ -97,18 +84,8 @@
                 { "kind": "insight_delta", "amount": 1 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "npc.merchant.haggle",
-              "stateDeltas": []
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.anger.flash",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.anger.flash",
-              "stateDeltas": [{ "kind": "flag_set", "flag": "cheated_by_pill_seller" }]
-            }
+            "PARTIAL": { "narrativeKey": "npc.merchant.haggle", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "npc.merchant.haggle", "stateDeltas": [] }
           }
         }
       ],
@@ -119,22 +96,24 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 3,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.temple_ruined] A scroll case, warped but unbroken, wedged behind a fallen beam.",
-          "$[CHARACTER] brushes the dust. The ink is faded — but not gone."
+          "In the ruined temple at the eastern edge of the upper field — abandoned since some bandit-burning long before $[CHARACTER]'s grandmother's time, half-swallowed now by wild rose and creeping ivy — a fallen roof-beam has shifted in the spring's first heavy rain. Beneath it: a scroll case, lacquer warped, brass clasp green with age, but the wood unbroken."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The boy works the case free. The clasp gives. Inside, wrapped in oiled silk now half-rotted, is a scroll — and not the cheap paper of a village clerk's records but the heavy mulberry of a real text. The first column of characters, brushed in ink the colour of rust, is unmistakable: a meridian-circulation method, written in the severe hand of a school. A real one. The kind a peasant child should not have.",
+          "The village elder warned, once, about precisely this. A discovered manual is a piece of luck that bites. Authorities of the great sects watch for unauthorized cultivation; rivals come from far for a found method. To take it home is to begin a path. To leave it is to remain what the boy has been told he is. The third path is to return it openly to the wandering monk who passes through — and to claim only the small merit of having given it up."
+        ]
       },
       "choices": [
         {
-          "id": "ch_read_tome",
-          "label": "Sit in the ruin and puzzle out the characters.",
+          "id": "ch_take_home",
+          "label": "Wrap the scroll in your shirt. Take it home. Begin.",
           "timeCost": "MEDIUM",
           "check": { "base": 20, "stats": { "Mind": 1 }, "difficulty": 50 },
           "outcomes": {
@@ -142,14 +121,16 @@
               "narrativeKey": "emotion.wonder.quiet",
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 8 },
-                { "kind": "flag_set", "flag": "read_tome" }
+                { "kind": "flag_set", "flag": "read_tome" },
+                { "kind": "item_add", "id": "manual_common_qi_circulation", "count": 1 }
               ]
             },
             "SUCCESS": {
               "narrativeKey": "emotion.wonder.quiet",
               "stateDeltas": [
                 { "kind": "insight_delta", "amount": 5 },
-                { "kind": "flag_set", "flag": "read_tome" }
+                { "kind": "flag_set", "flag": "read_tome" },
+                { "kind": "item_add", "id": "manual_common_qi_circulation", "count": 1 }
               ],
               "witnessMemory": "silent_waters_scripture"
             },
@@ -163,10 +144,48 @@
             "FAILURE": {
               "narrativeKey": "emotion.resignation.tired",
               "stateDeltas": [{ "kind": "flag_set", "flag": "read_tome" }]
+            }
+          }
+        },
+        {
+          "id": "ch_leave_it",
+          "label": "Set the scroll back. Cover it with the beam. Walk out.",
+          "timeCost": "INSTANT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "left_tome" },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
             },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "flag_set", "flag": "read_tome" }]
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "left_tome" }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_give_to_monk",
+          "label": "Carry it to the wandering monk. Give it to one who can use it well.",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "gave_tome_to_monk" },
+                { "kind": "karma_delta", "amount": 3 },
+                { "kind": "insight_delta", "amount": 2 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "gave_tome_to_monk" },
+                { "kind": "karma_delta", "amount": 3 }
+              ]
             }
           }
         }
@@ -178,33 +197,31 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 4,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hills] A shrine forgotten by the road — stone dog worn smooth, incense ash old as the moss.",
-          "$[CHARACTER] kneels. The air here is different, though nothing could say how."
+          "Half a li off the cart-track, in the small grove of pines below the western hills, is a shrine the road has forgotten. The stone dog at the gate is worn smooth past the recognition of its features. The incense ash on the small altar is older than the moss, and the moss is older than the ash.",
+          "$[CHARACTER] kneels at the appropriate distance. The air here is different, though nothing the eye sees would say so."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The qi here is denser than at the village. It is not loud. It does not announce itself. It lies in the air the way humidity lies in the air before a rain — felt at the skin, felt at the breath, but not seeable. The boy sits in a half-lotus on the moss-grown step and lets the breath find itself.",
+          "Time changes its measure here. What feels like a quarter-hour is, when the eyes finally open, an hour and more. The shadows of the pines have moved across the small clearing. A small grey bird has come and gone and come again. The dantian has gathered itself around the borrowed denser qi without the boy having had to push for it; the sensation is of having drunk cold spring water on a hot day after walking far.",
+          "Whatever spirit was once worshipped here is long gone. But the place itself remembers having been worshipped, and the memory of it is its own small magic — a small pool the qi gathers in still, even after the priests are dead and the bell is rusted and the road has forgotten the way."
+        ],
+        "outro": [
+          "Walking back to the cart-track in the late afternoon, $[CHARACTER] resolves to come here again. He resolves it the way one resolves a thing the body has already decided to do."
+        ]
       },
       "choices": [
         {
-          "id": "ch_meditate_shrine",
-          "label": "Sit quietly. Let the place speak, if it wants to.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 20, "stats": { "Luck": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.wonder.sudden",
-              "stateDeltas": [
-                { "kind": "cultivation_progress_delta", "amount": 5 },
-                { "kind": "qi_delta", "amount": 4 },
-                { "kind": "flag_set", "flag": "blessed_at_shrine" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.wonder.quiet",
               "stateDeltas": [
@@ -212,18 +229,8 @@
                 { "kind": "qi_delta", "amount": 2 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.wonder.quiet",
-              "stateDeltas": [{ "kind": "qi_delta", "amount": 1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "emotion.wonder.quiet", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.wonder.quiet", "stateDeltas": [] }
           }
         }
       ],
@@ -234,33 +241,31 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.village] A smith — or a weaver, or a carver — squints at the work of $[CHARACTER] and nods slowly.",
-          "An offer follows: stay. Learn. Sleep in the shed. Eat what there is."
+          "Old Han the carver, who works wood in a small open shed at the lane's mouth, has been watching the boy whittle a child's whistle from a piece of poplar.",
+          "He says nothing for a long time. Then he sets down the small carving knife in his own hand and gestures the boy over."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The carver's hands are like roots — knotted, twisted, the brown of the lacquered figures of saints. He takes the boy's whittled whistle, turns it once in the lamplight, and points at the place where the curve of the mouthpiece is wrong. Not by much. By the width of a fingernail. But the wrongness, once seen, is everywhere.",
+          "He does not offer the apprenticeship in any formal way. He merely begins, the next dawn, to leave a piece of soft pine on the boy's bench at the field's edge with the rough lines marked. By the third week the boy is sitting in the carving shed two evenings a week. By the third month he is being given small commissions of his own — a child's spinning top, a pair of chopsticks for a wedding-gift, a horse the size of a thumb.",
+          "It is not the work of a master, even after a year. The wood, $[CHARACTER] understands, is patient. The mind takes longer to learn the wood than the hands take to learn the knife. But there is a quiet pleasure in the carving that the field's labour does not give — the small possession, at the end of an hour, of an object that did not exist when the hour began."
+        ],
+        "outro": [
+          "Old Han, in his way, becomes a kind of second father. They do not speak of this. They do not need to. The wood knows."
+        ]
       },
       "choices": [
         {
-          "id": "ch_apprentice",
-          "label": "Accept the apprenticeship.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 45 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.hope.dawn",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "apprentice" },
-                { "kind": "attribute_delta", "stat": "Mind", "amount": 3 },
-                { "kind": "insight_delta", "amount": 3 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.hope.small",
               "stateDeltas": [
@@ -269,21 +274,8 @@
                 { "kind": "insight_delta", "amount": 2 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "apprentice" },
-                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.anger.flash",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
-            }
+            "PARTIAL": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] }
           }
         }
       ],
@@ -294,33 +286,31 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 6,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.road] A small boy sits weeping under a cedar — silk at the collar, dust on the silk.",
-          "$[npc.child.cry] $[CHARACTER] kneels. A wealthy household will be looking for this one."
+          "Beneath the great cedar at the road's bend, a small boy sits weeping. Five years old, perhaps. Six. The collar of the tunic is silk — real silk, the cheap-looking kind that wears better than its appearance — and the dust on the silk says he has been here some hours.",
+          "$[CHARACTER] kneels at the appropriate distance, the way one kneels to a frightened animal."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The story comes out in pieces between hiccupping breaths. The merchant family. The cart. The pee-stop in the wood. The nap that turned out to be longer than expected. The cart, gone. The road, empty. The boy sat down because he did not know what else to do, and the sitting became weeping, and the weeping became the long silence of children who have run out of strategies.",
+          "$[CHARACTER] hoists the small boy onto his back. The walk to the next town gate is two li and the small body is heavier than its appearance. The boy on the back falls asleep within half a li, the breath warm against the carrier's neck. There is, inevitably, drool on the back of the shirt by the time the gate is reached.",
+          "At the gate the merchant family is exactly as imagined — frantic, grateful, well-fed, dressed in the heavy good cloth of people who have not had to think about the next meal in a generation. The merchant presses a small silver pouch into the boy's hand and would press more if $[CHARACTER] did not, with the quiet dignity of his class, refuse the second. The merchant's wife weeps. The small boy, awake now, is carried into the cart and cries because he has been parted from the carrier."
+        ],
+        "outro": [
+          "Walking back along the road in the long afternoon, the silver heavy in the inner pocket and the back of the shirt cool where the drool is drying, $[CHARACTER] thinks about how easily a thing might have gone otherwise."
+        ]
       },
       "choices": [
         {
-          "id": "ch_return_child",
-          "label": "Carry the child back toward the town gate.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Luck": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.hope.dawn",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "silver_pouch", "count": 2 },
-                { "kind": "flag_set", "flag": "good_deed" },
-                { "kind": "karma_delta", "amount": 3 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.hope.small",
               "stateDeltas": [
@@ -329,21 +319,8 @@
                 { "kind": "karma_delta", "amount": 2 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.hope.small",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "good_deed" },
-                { "kind": "karma_delta", "amount": 1 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.anger.flash",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
-            }
+            "PARTIAL": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] }
           }
         }
       ],
@@ -354,32 +331,31 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 12,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hills] A fruit the wrong colour hangs from a thorn-branch — pale, glossy, faintly warm to the palm.",
-          "$[CHARACTER] sniffs. It is not sweet, nor bitter — it is something the mouth has no word for."
+          "On the high slope above the millet field, in a thicket of thorn-branch the goats will not enter, hangs a single fruit the wrong colour. Pale-gold, glossy, faintly warm to the palm even in the morning's cool.",
+          "$[CHARACTER] holds it up to the light. The skin is translucent. Inside, the seed shifts slowly, as if floating in something thicker than water."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The grandmother had stories about such fruits. Most of them are warnings. Spirit-touched plants grow where the qi of an old battlefield lingers, where a cultivator died unburied, where the small gods of the wild ground have lain a long time without offering. To eat is sometimes to be blessed. More often it is to fall, slowly, into the fever of qi-deviation that no village apothecary can name.",
+          "But the boy is hungry, and the fruit smells of something the mouth has no word for — neither sweet nor bitter, only present, the way water is present. He bites. The taste is cool, almost numb at first, then a long slow warm spreading from the tongue down the throat to the chest.",
+          "He sits down on the slope. The world becomes briefly very clear — the line of every blade of grass distinct, the cicadas not a song now but a thousand separate notes the ear can pick out one at a time. Somewhere very faint behind the ribs a small new heat gathers, finds the dantian, settles there."
+        ],
+        "outro": [
+          "By the time the slope has darkened to evening, the unusual clarity has gone. But the small heat at the dantian remains, and the boy walks home with the careful step of someone carrying a candle through a strong wind."
+        ]
       },
       "choices": [
         {
-          "id": "ch_eat_fruit",
-          "label": "Eat it. Trust the land.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Luck": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.wonder.sudden",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Spirit", "amount": 2 },
-                { "kind": "qi_delta", "amount": 3 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.wonder.quiet",
               "stateDeltas": [
@@ -388,14 +364,10 @@
               ]
             },
             "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            },
-            "FAILURE": {
               "narrativeKey": "emotion.fear.sudden",
               "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
             },
-            "CRIT_FAILURE": {
+            "FAILURE": {
               "narrativeKey": "emotion.fear.sudden",
               "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
             }
@@ -409,54 +381,78 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 2,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.crossroads] An old man in a worn robe stands at the roadside, watching the morning practice of $[CHARACTER].",
-          "He says nothing. His eyes, though — his eyes see the flaw in every breath."
+          "An old man in a worn green robe, of a shade no village dyes, has been standing at the edge of the lane for the whole of $[CHARACTER]'s morning practice. He says nothing. He does not move. His eyes, though — his eyes see the flaw in every breath."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "He is from one of the high-mountain sects. The boy knows this without knowing how he knows. There is a way such men carry themselves — not arrogant, not exactly, but as if the rules of the lower world only barely apply to them, and only because they have agreed to indulge.",
+          "When the boy finishes the last drill the old man speaks at last. He says: the form is wrong, the breath is wrong, the stance is wrong; and yet there is something in the bones of the work the form does not have. He has watched a hundred such peasant practices and seen this in two. He could take the boy with him today. The road would be hard. The sect would be harder. There would be no return for many years, and perhaps no return ever. But there would be a master, and a method, and a path."
+        ]
       },
       "choices": [
         {
-          "id": "ch_continue_practice",
-          "label": "Ignore the watcher. Cultivate honestly.",
+          "id": "ch_accept",
+          "label": "Bow. Take the offered hand. Leave the village this afternoon.",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "accepted_sect_invite" },
+                { "kind": "insight_delta", "amount": 8 },
+                { "kind": "cultivation_progress_delta", "amount": 5 },
+                { "kind": "item_add", "id": "sect_token", "count": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "accepted_sect_invite" },
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "item_add", "id": "sect_token", "count": 1 }
+              ]
+            }
+          }
+        },
+        {
+          "id": "ch_decline",
+          "label": "Bow. Refuse, gently. The grandmother is old and the field is the field.",
           "timeCost": "SHORT",
           "check": { "base": 20, "stats": { "Spirit": 1 }, "difficulty": 55 },
           "outcomes": {
             "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.wonder.sudden",
+              "narrativeKey": "emotion.wonder.quiet",
               "stateDeltas": [
-                { "kind": "flag_set", "flag": "master_watched" },
-                { "kind": "insight_delta", "amount": 12 },
-                { "kind": "cultivation_progress_delta", "amount": 8 }
+                { "kind": "flag_set", "flag": "refused_sect_invite" },
+                { "kind": "insight_delta", "amount": 10 },
+                { "kind": "cultivation_progress_delta", "amount": 6 }
               ]
             },
             "SUCCESS": {
               "narrativeKey": "emotion.wonder.quiet",
               "stateDeltas": [
-                { "kind": "flag_set", "flag": "master_watched" },
-                { "kind": "insight_delta", "amount": 8 },
-                { "kind": "cultivation_progress_delta", "amount": 5 }
+                { "kind": "flag_set", "flag": "refused_sect_invite" },
+                { "kind": "insight_delta", "amount": 6 }
               ]
             },
             "PARTIAL": {
-              "narrativeKey": "emotion.wonder.quiet",
+              "narrativeKey": "reflection.mood.melancholy.1",
               "stateDeltas": [
-                { "kind": "insight_delta", "amount": 3 }
+                { "kind": "flag_set", "flag": "refused_sect_invite" },
+                { "kind": "insight_delta", "amount": 2 }
               ]
             },
             "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
+              "narrativeKey": "reflection.mood.melancholy.1",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "refused_sect_invite" }
+              ]
             }
           }
         }
