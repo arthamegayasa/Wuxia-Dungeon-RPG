@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { InventoryPanel } from './InventoryPanel';
 import { CharSheetPanel } from './CharSheetPanel';
+import { TribulationPanel } from './TribulationPanel';
 import type { TurnPreview } from '@/services/engineBridge';
 
 export interface PlayScreenProps {
@@ -12,6 +13,11 @@ export interface PlayScreenProps {
 export function PlayScreen({ preview, onChoose, isLoading }: PlayScreenProps) {
   const [inventoryOpen, setInventoryOpen] = useState(false);
   const [charSheetOpen, setCharSheetOpen] = useState(false);
+  const [tribulationDismissed, setTribulationDismissed] = useState(false);
+  const showTribulation = !!preview.tribulation && !tribulationDismissed;
+  useEffect(() => {
+    setTribulationDismissed(false);
+  }, [preview.tribulation]);
 
   return (
     <div className="min-h-screen bg-ink-950 text-parchment-100 flex flex-col font-serif">
@@ -82,6 +88,12 @@ export function PlayScreen({ preview, onChoose, isLoading }: PlayScreenProps) {
           techniques={preview.learnedTechniques}
           openMeridians={preview.openMeridians}
           onClose={() => setCharSheetOpen(false)}
+        />
+      )}
+      {showTribulation && preview.tribulation && (
+        <TribulationPanel
+          payload={preview.tribulation}
+          onContinue={() => setTribulationDismissed(true)}
         />
       )}
     </div>

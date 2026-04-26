@@ -78,6 +78,39 @@ describe('Phase 2B-3: PlayScreen region indicator', () => {
   });
 });
 
+describe('Phase 2B-3: PlayScreen renders TribulationPanel inline', () => {
+  const trib = {
+    pillarId: 'tribulation_i' as const,
+    phases: [
+      { phaseId: 'heart_demon', success: true, chance: 70, roll: 22 },
+      { phaseId: 'first_thunder', success: true, chance: 60, roll: 38 },
+      { phaseId: 'second_thunder', success: true, chance: 45, roll: 11 },
+      { phaseId: 'third_thunder', success: true, chance: 30, roll: 4 },
+    ],
+    fatal: false,
+  };
+
+  it('shows TribulationPanel when preview.tribulation is present', () => {
+    render(
+      <PlayScreen
+        preview={{ ...PREVIEW, tribulation: trib }}
+        onChoose={() => {}}
+      />
+    );
+    expect(screen.getByText(/the heavens stir/i)).toBeInTheDocument();
+  });
+  it('hides TribulationPanel after the user clicks Continue', async () => {
+    render(
+      <PlayScreen
+        preview={{ ...PREVIEW, tribulation: trib }}
+        onChoose={() => {}}
+      />
+    );
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }));
+    expect(screen.queryByText(/the heavens stir/i)).not.toBeInTheDocument();
+  });
+});
+
 describe('Phase 2B-3: PlayScreen overlay toggles', () => {
   it('toggles inventory panel visibility via header button', async () => {
     render(<PlayScreen
