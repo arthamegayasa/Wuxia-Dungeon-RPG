@@ -1,6 +1,6 @@
 // Real engineBridge — adapter from UI → engine. Source: docs/spec/design.md §2, §11.
 
-import { GamePhase } from '@/engine/core/Types';
+import { GamePhase, Realm } from '@/engine/core/Types';
 import { SaveManager, createSaveManager } from '@/engine/persistence/SaveManager';
 import { loadRun, saveRun, clearRun } from '@/engine/persistence/RunSave';
 import {
@@ -1139,4 +1139,83 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
  */
 export async function __loadGameplayContent(): Promise<void> {
   return ensureAzurePeaksLoaded();
+}
+
+/**
+ * Test-only: inject a synthetic event into the global selection pool.
+ * Subsequent calls to `peekNextEvent` may select this event when its conditions
+ * match. Used by Phase 2B-3 integration tests that need a deterministic
+ * choice → outcome path (e.g. `qc9_to_foundation`) without authoring a full
+ * region content pack.
+ */
+export function __testInsertEvent(event: EventDef): void {
+  ALL_EVENTS = [...ALL_EVENTS, event];
+}
+
+/**
+ * Test-only: run the full `beginLife` flow then mutate the store so the
+ * character is at QC9 with cultivationProgress=100, and inject a synthetic
+ * high-weight event whose first choice triggers the qc9_to_foundation
+ * Tribulation I crossing. The event has no region/realm/condition gating
+ * so it is selectable from any context. Weight 9999 dominates the YP pool.
+ *
+ * After this returns, the next `peekNextEvent` will overwhelmingly select
+ * `test_qc9_foundation_event`, and `resolveChoice('attempt_foundation')`
+ * will stamp `runState.pendingTribulationResult`, which the bridge surfaces
+ * on the next TurnPreview as `tribulation`.
+ */
+export async function __seedRunAtQc9WithFoundationChoice(
+  engine: EngineBridge,
+): Promise<void> {
+  await engine.loadOrInit();
+  await engine.beginLife('peasant_farmer', 'Tribulation Test');
+
+  // Mutate runState directly to QC9. Use the same store-setState pattern as
+  // azure_peaks_playable_life.test.ts to bypass the bridge's update path
+  // (which would require streak/nameRegistry plumbing for an immutable update).
+  const gs = useGameStore.getState();
+  if (!gs.runState) throw new Error('__seedRunAtQc9WithFoundationChoice: no runState after beginLife');
+  useGameStore.setState({
+    runState: {
+      ...gs.runState,
+      // Clear pendingEventId so the next peek runs fresh selection and picks
+      // up our synthetic event.
+      pendingEventId: undefined,
+      character: {
+        ...gs.runState.character,
+        realm: Realm.QI_CONDENSATION,
+        qiCondensationLayer: 9,
+        cultivationProgress: 100,
+      },
+    },
+  });
+
+  // Inject the synthetic event with a single Foundation-attempt choice.
+  __testInsertEvent({
+    id: 'test_qc9_foundation_event',
+    category: 'training',
+    version: 1,
+    weight: 9999,
+    conditions: {},
+    timeCost: 'INSTANT',
+    text: { intro: ['You stand at the edge.'] },
+    choices: [
+      {
+        id: 'attempt_foundation',
+        label: 'Attempt Foundation',
+        timeCost: 'INSTANT',
+        outcomes: {
+          SUCCESS: {
+            narrativeKey: 'foundation_attempt',
+            stateDeltas: [{ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' }],
+          },
+          FAILURE: {
+            narrativeKey: 'foundation_attempt',
+            stateDeltas: [{ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' }],
+          },
+        },
+      },
+    ],
+    repeat: 'unlimited',
+  });
 }
