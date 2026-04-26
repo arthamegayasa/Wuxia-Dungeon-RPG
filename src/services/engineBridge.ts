@@ -870,6 +870,15 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // learnedDefs already declared above for visibility filtering — reuse it.
       const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
       let nextRunState = applyOutcome(gs.runState, outcome, { techniqueMultiplier, rng });
+
+      // Phase 2C: track novel-mode pacing. Decisions reset tslc; beats increment.
+      // Events without an explicit `kind` are treated as decisions (matches
+      // schema/EventSelector backward-compat semantics).
+      const pendingKind: 'beat' | 'decision' = pending.kind ?? 'decision';
+      const wasDecision = pendingKind === 'decision';
+      const newTslc = wasDecision ? 0 : (gs.runState.turnsSinceLastDecision ?? 0) + 1;
+      nextRunState = { ...nextRunState, turnsSinceLastDecision: newTslc };
+
       nextRunState = {
         ...nextRunState,
         thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, pending.id],
