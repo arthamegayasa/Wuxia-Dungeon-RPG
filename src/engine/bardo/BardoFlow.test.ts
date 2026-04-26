@@ -124,6 +124,28 @@ describe('runBardoFlow', () => {
   });
 });
 
+describe('Phase 2B-3: lineage entry captures corePath + techniquesLearned', () => {
+  it('writes character.corePath and runState.learnedTechniques into the new lineage entry', () => {
+    const c = createCharacter({
+      name: 'Iron Seeker',
+      attributes: { Body: 20, Mind: 10, Spirit: 10, Agility: 10, Charm: 10, Luck: 20 },
+      rng: createRng(1),
+      startingAgeDays: 30 * 365,
+    });
+    const charWithCorePath = { ...c, corePath: 'iron_mountain' as const };
+    const rs = {
+      ...createRunState({ character: charWithCorePath, runSeed: 1, region: 'yellow_plains', year: 1000, birthYear: 1000, season: 'summer' }),
+      deathCause: 'old_age' as const,
+      learnedTechniques: ['iron_mountain_body_seal'],
+    };
+    const meta = createEmptyMetaState();
+    const result = runBardoFlow(rs, meta, 1.0, EMPTY_REG);
+    const entry = result.meta.lineage[result.meta.lineage.length - 1]!;
+    expect(entry.corePath).toBe('iron_mountain');
+    expect(entry.techniquesLearned).toEqual(['iron_mountain_body_seal']);
+  });
+});
+
 function makeRunStateDyingAt(opts: {
   bodyTemperingLayer?: number;
   deathCause: DeathCause;
