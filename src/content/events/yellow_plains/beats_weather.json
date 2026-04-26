@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_BEAT_WEATHER_FIRST_FROST",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 70,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The first frost arrives the way old things arrive on the Yellow Plains — without warning, in a single grey hour before dawn, sealing every blade of stubble in a thin shell of silver.",
+          "$[CHARACTER] steps out of the hut and stops at the threshold, breath uncoiling in a slow white rope into the cold."
+        ],
+        "body": [
+          "The yard is changed. The chicken-trough has skinned over. The sweep-broom left leaning against the wall has a fur of crystals along its handle. Each footprint $[CHARACTER] makes leaves a dark half-moon in the white that the morning will, by mid-day, take back.",
+          "The old neighbour-woman from across the lane is already out, breaking a thin lid of ice on her water-jar with the heel of a wooden ladle. She nods without looking. She has done this seventy autumns. Her hands know the small precise weight of the swing — too soft and the ice survives; too hard and the jar cracks. She makes the breaking look like a small bow.",
+          "$[CHARACTER] crouches by the millet stubble at the field's near edge. The ice on a single stalk is so thin it holds the shape of the stalk and the thinnest possible shadow of the world behind it. Touched, it falls to a dust of cold water on the fingertip. The field beyond stretches grey and white and grey, all the way to the line of the eastern hills, which carry their own cap of new white this morning."
+        ],
+        "outro": [
+          "When the sun lifts over the ridge the frost begins, leaf by leaf, to surrender. By noon the ground will be only mud again, only the Yellow Plains again. But the first cold has spoken its small early word."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.weather.frost",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.weather.frost", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.weather.frost", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_WEATHER_MONSOON_ARRIVES",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 80,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["summer"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "For three days the air has been thickening. The cicadas have gone silent. The old men sit on the threshing-floor and sniff at the wind from the south, as men have sniffed at it for ten generations, and they say the same word: soon.",
+          "$[CHARACTER] is in the lower field when the sky breaks."
+        ],
+        "body": [
+          "The first sign is a sudden cool: the air, which has been a hot hand against the back of the neck for a month, lifts. The second sign is the colour of the southern horizon, which has gone from haze to a low blue-black wall walking slowly across the plain. The third sign is the smell — wet earth somewhere far off, brought on the wind before the rain itself.",
+          "Then it comes. The first drops are thumb-sized, slow, exact, each one striking the dust with a small dark explosion of its own. Within ten breaths it is a wall of water, white where it strikes the field, drumming on the broad leaves of the gourd-vines, finding every hollow of the back, soaking through the rough cloth in moments. $[CHARACTER] stands in it. There is nowhere to run that the rain has not already arrived.",
+          "Down the irrigation ditches the brown water rises with surprising speed. The headman somewhere is shouting orders that the rain swallows whole. Two children run past with a hide stretched over their heads, laughing the high desperate laugh of small things in a sudden weather. The world has, in the space of a single half-hour, become a different world."
+        ],
+        "outro": [
+          "The first monsoon storm always lasts longer than seems reasonable. By the time the rain thins, the field is half a shallow lake, and the millet roots are drinking the year's life back into themselves."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.weather.rain",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.weather.rain", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.weather.rain", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_WEATHER_SPRING_QI_RISES",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 75,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["spring"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "Some morning in the second month after the new year, the cold lets go. It does not melt; it simply, in some hour before $[CHARACTER] notices, decides it has done enough.",
+          "The first thing is the smell — wet wood, broken earth, the small green blade of the first wild onion pushed up through the leaf-litter at the field's verge."
+        ],
+        "body": [
+          "The body knows before the mind knows. Walking the cleared row at sunrise, $[CHARACTER] feels the breath go suddenly easy, the way a held weight is set down. Each inhale carries a small clean thread of something that the winter air did not have. The old men would call it spring qi rising in the bones. The peasant farmers would call it wanting to plant.",
+          "The willows down by the river have, overnight, gone from grey to the faintest possible yellow-green at the tips. A pair of swallows that were not here yesterday cuts low over the irrigation ditch. A neighbour-girl singing on her way to the well does not even know that she is singing; the song is just the spring's small voice borrowing her throat for a verse.",
+          "Even the dantian, which has been a banked coal all winter, seems to brighten a half-shade. $[CHARACTER] sits a moment on the low wall by the threshing-floor and breathes, and the breath does not stop at the throat the way winter breathing stops; it goes all the way down to the belly, the way the texts promise it will when the season is right."
+        ],
+        "outro": [
+          "By noon the warmth is gone again — the year is still young — but the body has remembered what warmth was for. The plough will be dragged out tomorrow. The world has turned its small wheel."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.weather.spring",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.weather.spring", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.weather.spring", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_WEATHER_SUMMER_DROUGHT",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 65,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["summer"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "It has not rained in twenty-six days. The old men keep the count without writing it down; the count is in the dryness of their lips when they speak, in the small stiff way they walk to the threshing-floor at evening.",
+          "$[CHARACTER] crosses the upper field at the high glare of noon and the millet is the wrong colour."
+        ],
+        "body": [
+          "Where it should be a deep dusty green it has gone the colour of pale straw, the leaves curling at their edges like paper held a moment too close to a candle. The sky is a hard blue without a cloud to its name. The sun is not generous; it is an interrogator. Every shadow on the ground is small and black and shrinks toward the foot of the thing that throws it.",
+          "By the irrigation ditch — which is no ditch any more, only a line of cracked clay running through the field like a bad scar — $[CHARACTER] crouches and scrapes the surface. Two finger-joints down the soil is still as dry as the surface. Three finger-joints down the same. The water that should be there has gone where the rain has gone, which is to say nowhere a peasant can find it.",
+          "Old Wen the headman walks the rows with his face shut. He does not speak. There is nothing for the headman to say that the field has not already said in the colour of its leaves. Behind him a young woman carries a single jar of well-water — her family's drinking ration for the day — past a row of dying gourds. She does not look at the gourds. To look would be to choose, and there is no choice."
+        ],
+        "outro": [
+          "The sky stays blue. The wind stays hot. Tomorrow, the headman will lead the offering at the small shrine by the river-bend. The day after, perhaps. Or perhaps not."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.weather.drought",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.weather.drought", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.weather.drought", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_WEATHER_WINTER_WOLVES",
+      "category": "life.weather",
+      "version": 1,
+      "weight": 60,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The wolves come in the deep weeks, when the snow has lain three days on the ground and the rabbits have gone from the fields and there is nothing left in the upper hills for a hungry pack to chase.",
+          "$[CHARACTER] hears them first at the second watch of the night — a single high call, very far, very thin, and then an answer closer in."
+        ],
+        "body": [
+          "The hut is dark. The fire is a low glow. The grandmother on her sleeping-mat does not stir; she has heard wolves for sixty winters and does not need to wake for them. But $[CHARACTER] is at the window, breath stilled, listening.",
+          "The third call is much closer — close enough that the sound carries the small wet edge of an animal's breath behind it. Down at the village's edge a dog begins to bark, then another, then the whole strung chain of village dogs taking up the alarm in a frantic uneven chorus. A man's voice — the night-watch — shouts something that the cold flattens to a single hoarse syllable.",
+          "$[CHARACTER] watches the snow-light at the edge of the field. For one long moment a shape moves there: low, grey, unhurried, the long economical lope of a thing that has nothing to prove and nowhere it must be by any particular hour. It does not look at the village. It crosses the field's far corner and is gone into the line of the willow-thicket beyond. The dogs keep barking long after there is anything to bark at."
+        ],
+        "outro": [
+          "By dawn the snow at the field's edge holds a single neat line of pad-prints, deep and fresh, leading nowhere in particular. The headman will read them at first light and say what he always says: a hard winter."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.weather.wolves",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.weather.wolves", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.weather.wolves", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
