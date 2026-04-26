@@ -54,4 +54,13 @@ describe('createRunState', () => {
     });
     expect(rs.pendingTribulationResult).toBeUndefined();
   });
+
+  it('createRunState defaults turnsSinceLastDecision to 0 (Phase 2C)', () => {
+    const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
+    const rs = createRunState({
+      character: c, runSeed: 42, region: 'yellow_plains',
+      year: 1000, birthYear: 1000, season: 'summer',
+    });
+    expect(rs.turnsSinceLastDecision).toBe(0);
+  });
 });
