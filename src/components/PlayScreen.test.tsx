@@ -77,3 +77,25 @@ describe('Phase 2B-3: PlayScreen region indicator', () => {
     expect(screen.getByText(/azure peaks/i)).toBeInTheDocument();
   });
 });
+
+describe('Phase 2B-3: PlayScreen overlay toggles', () => {
+  it('toggles inventory panel visibility via header button', async () => {
+    render(<PlayScreen
+      preview={{
+        ...PREVIEW,
+        inventory: [{ id: 'p', name: 'Pill', count: 2, itemType: 'pill' }],
+      }}
+      onChoose={() => {}}
+    />);
+    expect(screen.queryByRole('heading', { name: /^inventory$/i })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /inventory/i }));
+    expect(screen.getByRole('heading', { name: /^inventory$/i })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /close/i }));
+    expect(screen.queryByRole('heading', { name: /^inventory$/i })).not.toBeInTheDocument();
+  });
+  it('toggles character sheet visibility via header button', async () => {
+    render(<PlayScreen preview={PREVIEW} onChoose={() => {}} />);
+    await userEvent.click(screen.getByRole('button', { name: /character/i }));
+    expect(screen.getByRole('heading', { name: /^character$/i })).toBeInTheDocument();
+  });
+});

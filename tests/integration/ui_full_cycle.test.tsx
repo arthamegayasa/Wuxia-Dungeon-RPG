@@ -41,14 +41,14 @@ describe('UI integration: full cycle', () => {
     await waitFor(() => expect(screen.getAllByText(/lin wei/i).length).toBeGreaterThan(0));
 
     // Spam choices until the character dies.
-    // Nav-button filter: PlayScreen has no nav buttons at all — only choice
-    // buttons — so we can safely click the first button in the tree. (Earlier
-    // filters used word-boundary-free regexes and incorrectly excluded fixture
-    // choices like "Fight back.".)
+    // Nav-button filter: PlayScreen now has overlay-toggle buttons (Character,
+    // Inventory) in addition to choice buttons. Exclude those so we don't
+    // waste iterations toggling overlays instead of advancing gameplay.
     for (let i = 0; i < 600; i++) {
       if (useGameStore.getState().phase === GamePhase.BARDO) break;
       const buttons = screen.queryAllByRole('button')
-        .filter((b) => !(b as HTMLButtonElement).disabled);
+        .filter((b) => !(b as HTMLButtonElement).disabled)
+        .filter((b) => !/^(character|inventory)$/i.test((b.textContent ?? '').trim()));
       if (buttons.length === 0) continue;
       await userEvent.click(buttons[0]!);
     }

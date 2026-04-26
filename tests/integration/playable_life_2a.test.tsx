@@ -54,7 +54,8 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
     for (let i = 0; i < 600; i++) {
       if (useGameStore.getState().phase === GamePhase.BARDO) break;
       const buttons = screen.queryAllByRole('button')
-        .filter((b) => !(b as HTMLButtonElement).disabled);
+        .filter((b) => !(b as HTMLButtonElement).disabled)
+        .filter((b) => !/^(character|inventory)$/i.test((b.textContent ?? '').trim()));
       if (buttons.length === 0) continue;
       await userEvent.click(buttons[0]!);
     }
@@ -100,7 +101,8 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
       for (let i = 0; i < 800; i++) {
         if (useGameStore.getState().phase === GamePhase.BARDO) break;
         const buttons = screen.queryAllByRole('button')
-          .filter((b) => !(b as HTMLButtonElement).disabled);
+          .filter((b) => !(b as HTMLButtonElement).disabled)
+          .filter((b) => !/^(character|inventory)$/i.test((b.textContent ?? '').trim()));
         if (buttons.length === 0) continue;
         await userEvent.click(buttons[0]!);
       }
