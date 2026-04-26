@@ -938,6 +938,11 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       useGameStore.getState().appendSeenEvent(pending.id);
       saveRun(sm, nextRunState);
 
+      // FIXME(phase-3): when tribulationMode flips to 'fatal', a fatal Tribulation
+      // will set deathCause and skip surfacing tribulationPayload below. Surface it
+      // in BardoPayload (e.g., BardoPayload.tribulationOnDeath) so the player sees
+      // the four-phase result that killed them. Non-issue in 2B since mode is
+      // hardcoded 'non_fatal' (see OutcomeApplier qc9_to_foundation case).
       if (nextRunState.deathCause) {
         const anchorFlag = nextRunState.character.flags.find((f) => f.startsWith('anchor:'));
         const anchorId = anchorFlag ? anchorFlag.slice(7) : 'unknown';

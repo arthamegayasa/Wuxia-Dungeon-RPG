@@ -146,6 +146,8 @@ function applyDeltaToState(rs: RunState, delta: StateDelta, options: ApplyOutcom
           if (!options.rng) {
             throw new Error('attempt_realm_crossing qc9_to_foundation: rng required');
           }
+          // FIXME(phase-3): see engineBridge.resolveChoice — when this flips to 'fatal',
+          // surface the tribulation payload in BardoPayload before bardo transition.
           const result = runTribulationIPillar(rs.character, {
             rng: options.rng,
             tribulationMode: 'non_fatal',  // Phase 3 will flip via runtime flag
