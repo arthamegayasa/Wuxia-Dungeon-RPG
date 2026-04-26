@@ -567,3 +567,29 @@ describe('Phase 2B-3: BardoPayload surfaces corePath + techniques', () => {
     );
   });
 });
+
+describe('Phase 2B-3: CodexSnapshot surfaces a techniques tab', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('emits a CodexTechniqueEntry per technique with seen/learned distinction', async () => {
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+    await __loadGameplayContent();
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: 'test' });
+    const engine = createEngineBridge({ saveManager: sm });
+    const snap = engine.getCodexSnapshot();
+    expect(Array.isArray(snap.techniques)).toBe(true);
+    expect(snap.techniques.length).toBeGreaterThan(0);
+    const sample = snap.techniques[0]!;
+    expect(sample).toHaveProperty('id');
+    expect(sample).toHaveProperty('name');
+    expect(sample).toHaveProperty('seen');
+    expect(sample).toHaveProperty('learned');
+    expect(sample).toHaveProperty('grade');
+    expect(sample).toHaveProperty('description');
+  });
+});

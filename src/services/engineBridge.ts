@@ -28,7 +28,7 @@ import { checkCategoryFromEvent } from '@/engine/narrative/CheckCategoryFromEven
 import { TechniqueRegistry } from '@/engine/cultivation/TechniqueRegistry';
 import { resolveLearnedTechniqueBonus } from '@/engine/core/TechniqueHelpers';
 import { computeCultivationMultiplier } from '@/engine/cultivation/Technique';
-import type { TechniqueDef } from '@/engine/cultivation/Technique';
+import type { TechniqueDef, TechniqueGrade } from '@/engine/cultivation/Technique';
 import { visibleChoicesForCharacter } from '@/engine/choices/ChoiceVisibility';
 import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 // NB: runTurn is no longer used — replaced by peekNextEvent + resolveChoice split.
@@ -293,10 +293,20 @@ export interface CodexAnchorEntry {
   karmaMultiplier: number;
 }
 
+export interface CodexTechniqueEntry {
+  id: string;
+  name: string;
+  description: string;
+  grade: TechniqueGrade;
+  seen: boolean;
+  learned: boolean;
+}
+
 export interface CodexSnapshot {
   echoes: ReadonlyArray<CodexEchoEntry>;
   memories: ReadonlyArray<CodexMemoryEntry>;
   anchors: ReadonlyArray<CodexAnchorEntry>;
+  techniques: ReadonlyArray<CodexTechniqueEntry>;
 }
 
 export interface LineageEntryView {
@@ -1088,7 +1098,22 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         karmaMultiplier: a.karmaMultiplier,
       }));
 
-      return { echoes, memories, anchors };
+      const seenTech = new Set(meta.seenTechniques);
+      // "learned" reflects current life if any; if no live run, fall back to lineage's most-recent entry's techniquesLearned.
+      const learnedSet = new Set<string>(
+        useGameStore.getState().runState?.learnedTechniques
+        ?? (meta.lineage.length > 0 ? meta.lineage[meta.lineage.length - 1]!.techniquesLearned : []),
+      );
+      const techniques = TECHNIQUE_REGISTRY.all().map<CodexTechniqueEntry>((t) => ({
+        id: t.id,
+        name: t.name,
+        description: t.description,
+        grade: t.grade,
+        seen: seenTech.has(t.id) || learnedSet.has(t.id),
+        learned: learnedSet.has(t.id),
+      }));
+
+      return { echoes, memories, anchors, techniques };
     },
   };
 }

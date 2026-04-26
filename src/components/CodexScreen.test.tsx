@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { CodexScreen } from './CodexScreen';
 import type { CodexSnapshot } from '@/services/engineBridge';
 
-const EMPTY: CodexSnapshot = { echoes: [], memories: [], anchors: [] };
+const EMPTY: CodexSnapshot = { echoes: [], memories: [], anchors: [], techniques: [] };
 
 const POPULATED: CodexSnapshot = {
   echoes: [
@@ -19,6 +19,7 @@ const POPULATED: CodexSnapshot = {
     { id: 'peasant_farmer', name: 'Peasant Farmer', description: 'Born to the soil.', unlocked: true, unlockHint: 'Available from the start', karmaMultiplier: 1.0 },
     { id: 'martial_family', name: 'Martial Family', description: 'Hard fists.', unlocked: false, unlockHint: 'Reach Body Tempering 5 in any past life', karmaMultiplier: 0.9 },
   ],
+  techniques: [],
 };
 
 describe('CodexScreen', () => {
