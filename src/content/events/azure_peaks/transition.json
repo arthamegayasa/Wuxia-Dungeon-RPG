@@ -6,23 +6,24 @@
       "category": "life.transition",
       "version": 1,
       "weight": 80,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "The mountain trails grow steep as $[CHARACTER] descends toward the Yellow Plains. The dense qi of Azure Peaks thins with every step downward.",
-          "Below, the patchwork of villages and fields spreads out like a faded tapestry — the mortal world, waiting."
+          "There is a small uncomfortable pressure that has built behind the breastbone over the past several seasons — the unfinished business below, the family or the old bond or the unanswered letter, the part of $[CHARACTER] that is not yet a sect disciple and may not be one fully until the lower world has been visited and resolved."
         ],
         "body": [
-          "There are reasons to return below: supplies, family, unfinished matters. A cultivator who cannot walk among mortals is only half a person."
+          "$[CHARACTER] stands at the East Court terrace railing at dawn, looking down. The mountain trails grow steep where they begin their long descent toward the Yellow Plains. The dense qi of Azure Peaks thins with every step downward — not in some abrupt boundary but in a slow gradient, the way the temperature thins as one walks from a kitchen into a winter courtyard. Below, the patchwork of villages and fields spreads out like a faded tapestry. The mortal world. Waiting.",
+          "There are reasons to return below. There are reasons to stay above. A cultivator who cannot walk among mortals is only half a person, the elders say. A cultivator who is too easily called away by mortal business is no cultivator at all, the elders also say. The two truths sit side by side in $[CHARACTER]'s chest the way two competing weather-fronts sit on the eastern ridge before they collide and decide which way the storm will move."
         ]
       },
       "choices": [
         {
           "id": "ch_descend_return",
-          "label": "Descend to the Yellow Plains.",
+          "label": "Descend to the Yellow Plains. Settle the unfinished business below before the mountain becomes the only world that matters.",
           "timeCost": "LONG",
           "check": { "base": 60, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 40 },
           "outcomes": {
@@ -58,7 +59,7 @@
         },
         {
           "id": "ch_descend_stay",
-          "label": "Reconsider — the mountain path is not yet finished with you.",
+          "label": "Reconsider. The mountain path is not yet finished with you. The lower business will keep.",
           "timeCost": "SHORT",
           "check": { "base": 70, "stats": { "Mind": 1 }, "difficulty": 30 },
           "outcomes": {
@@ -82,6 +83,7 @@
       "category": "life.transition",
       "version": 1,
       "weight": 70,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"],
         "characterFlags": {
@@ -91,17 +93,17 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "Word arrives from the sect: the time has come to return to Azure Peaks. The invitation is not made lightly.",
-          "The mountain road is long, and the qi grows denser with every league — the air itself pushing back against those not ready."
+          "Word arrives from the sect by the messenger-bird the East Court keeps for exactly this purpose: a folded paper, sealed with the elder's chop, six lines of characters in the elder's own quick brush. The time has come to return to Azure Peaks. The invitation is not made lightly."
         ],
         "body": [
-          "For a sect disciple, the journey back to the heights is both privilege and trial. The path recognises only those who have earned their place."
+          "$[CHARACTER] reads the letter twice, sitting on the kang of the village inn where the past several seasons have been spent. The mountain road is long, and the qi grows denser with every league — the air itself pushing back against those not ready, those who have spent too many seasons in mortal company, those whose cultivation has banked too low.",
+          "For a sect disciple, the journey back to the heights is both privilege and trial. The path recognises only those who have earned their place. There is also the smaller, uglier choice — to send word back that the ascent must wait. The elder's letter does not actually demand obedience. It permits its absence. The absence will be remembered."
         ]
       },
       "choices": [
         {
           "id": "ch_return_climb",
-          "label": "Make the ascent back to Azure Peaks.",
+          "label": "Pack the satchel. Make the long ascent back to Azure Peaks. Let the road test what the lower seasons have done to the cultivation.",
           "timeCost": "LONG",
           "check": { "base": 55, "stats": { "Body": 2, "Spirit": 2 }, "difficulty": 50 },
           "outcomes": {
@@ -137,7 +139,7 @@
         },
         {
           "id": "ch_return_delay",
-          "label": "Send word that you need more time — a risky delay.",
+          "label": "Send word back: more time is needed. The lower business is not yet finished. Risk the elder's silent disfavour.",
           "timeCost": "MEDIUM",
           "check": { "base": 45, "stats": { "Charm": 2, "Mind": 1 }, "difficulty": 55 },
           "outcomes": {
@@ -162,23 +164,24 @@
       "category": "life.transition",
       "version": 1,
       "weight": 120,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains", "azure_peaks"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "On the road between the mountain and the plains, $[CHARACTER] encounters another traveller — a fellow wanderer moving in the opposite direction.",
-          "Neither the peaks nor the fields own this stretch of road. It belongs to those in passage."
+          "The road between the mountain and the plains is its own small country — neither the peaks' formal cultivated qi nor the lowland's busy market-noise, only a long thin strip of dust-coloured trail under a wide indifferent sky. It belongs to those in passage."
         ],
         "body": [
-          "Cross-region travellers sometimes share valuable information. Other times they are bandits testing their luck."
+          "On a ridge halfway between the second waystation and the third, $[CHARACTER] encounters another traveller — a fellow wanderer moving in the opposite direction. The figure wears the loose grey of the unaffiliated cultivator, the kind who has either left a sect or never joined one. Two satchels at the hip. A walking-staff with the worn smooth grip of long use.",
+          "Cross-region travellers sometimes share valuable information — rumours of formations in the lower hills, or which sect the bandit cohorts in the valley are paying off this season. Other times they are bandits themselves, testing their luck against a younger or solitary cultivator before deciding whether to deepen the encounter. The figure has not slowed. The figure has not sped up. The road narrows ahead."
         ]
       },
       "choices": [
         {
           "id": "ch_encounter_talk",
-          "label": "Stop and speak with the traveller.",
+          "label": "Stop and speak with the traveller. Test the conversation; the road is long enough to share a li.",
           "timeCost": "SHORT",
           "check": { "base": 55, "stats": { "Charm": 2, "Mind": 1 }, "difficulty": 45 },
           "outcomes": {
@@ -208,7 +211,7 @@
         },
         {
           "id": "ch_encounter_avoid",
-          "label": "Step off the road and let them pass unseen.",
+          "label": "Step off the road and let them pass unseen. Trust the qi to mask, the dust to settle quickly behind.",
           "timeCost": "SHORT",
           "check": { "base": 60, "stats": { "Agility": 2 }, "difficulty": 40 },
           "outcomes": {
@@ -229,7 +232,7 @@
         },
         {
           "id": "ch_encounter_continue",
-          "label": "Press on without stopping.",
+          "label": "Press on without stopping. Nod at the proper distance. Eyes forward. The road is what matters.",
           "timeCost": "INSTANT",
           "check": { "base": 80, "stats": {}, "difficulty": 20 },
           "outcomes": {
@@ -255,6 +258,7 @@
       "category": "life.transition",
       "version": 1,
       "weight": 25,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains", "azure_peaks"],
         "minStat": { "Mind": 10, "Spirit": 8 }
@@ -262,18 +266,17 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "An old figure sits at the roadside, robes dusty from travel. They seem unremarkable — yet the air around them does not move correctly.",
-          "$[CHARACTER] slows. Wandering masters are not always what they appear, but ignoring one entirely is also a kind of foolishness."
+          "An old figure sits at the roadside under the shade of a single twisted pine, robes dusty from travel, no satchel in sight, no walking-staff, only an ordinary bowl of pale white rice in the lap and a pair of chopsticks held without ceremony. They seem unremarkable in every visible particular. Yet the air around them does not move correctly."
         ],
         "body": [
-          "The old one's eyes carry the weight of many cultivated years. When they finally speak, every word lands with deliberate precision.",
-          "\"You seek the high road or the low road, young one? It does not matter as much as you think.\""
+          "$[CHARACTER] slows. The qi in the small clearing has the particular still-but-charged quality that the old elders teach is the signature of a cultivator who has reached a realm so far above the observer that the observer cannot perceive its scale — the way a deep mountain pool looks calm only because the depth is below the eye's reading. Wandering masters are not always what they appear to be. Ignoring one entirely is also a kind of foolishness.",
+          "The old one finishes a single mouthful of rice with the patient deliberation of someone who has eaten exactly the same kind of rice in exactly the same way for a great many decades. Their eyes carry the weight of a great many cultivated years. When they finally speak, every word lands with deliberate precision. 'You seek the high road or the low road, young one? It does not matter as much as you think.' The chopsticks are set across the bowl. The old one waits."
         ]
       },
       "choices": [
         {
           "id": "ch_wmaster_sit",
-          "label": "Sit and listen for as long as the master will speak.",
+          "label": "Sit on the dust beside the pine and listen for as long as the master will speak. Even an hour with this one is worth a season with any other.",
           "timeCost": "MEDIUM",
           "check": { "base": 50, "stats": { "Mind": 3, "Spirit": 2 }, "difficulty": 60, "techniqueBonusCategory": "meditation" },
           "outcomes": {
@@ -311,7 +314,7 @@
         },
         {
           "id": "ch_wmaster_ask",
-          "label": "Ask a direct question about the path ahead.",
+          "label": "Ask a single direct question about the path ahead. Risk the master's smile that means the question was the wrong one.",
           "timeCost": "SHORT",
           "check": { "base": 60, "stats": { "Mind": 2, "Charm": 1 }, "difficulty": 50 },
           "outcomes": {
@@ -338,6 +341,7 @@
       "category": "life.transition",
       "version": 1,
       "weight": 55,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains", "azure_peaks"],
         "characterFlags": {
@@ -347,17 +351,17 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "The sect's pilgrimage cycle has arrived — a ritualistic journey that all disciples must undertake, moving between the lowland gathering halls and the high-peak sanctuaries.",
-          "The pilgrimage is as much ceremony as cultivation. It reinforces bonds between those who share the same lineage, whether they walk the mountains or the fields."
+          "The sect's pilgrimage cycle has arrived — a ritualistic journey that all disciples must undertake every several seasons, moving as a small caravan between the lowland gathering halls and the high-peak sanctuaries. The pilgrimage is as much ceremony as cultivation. It reinforces the bonds between those who share the same lineage, whether they walk the mountains or the fields."
         ],
         "body": [
-          "Travelling with fellow disciples offers both protection and expectation. One's conduct on the road becomes part of the sect's unwritten record."
+          "Twenty disciples in two loose ranks are forming up in the inn-yard at dawn — outer disciples and a handful of inner observers, the senior brothers and sisters scattered through the column at the proper intervals, the elder's appointed pilgrimage-leader at the head with the formal jade tablet that authorises the column's passage on the high trails.",
+          "Travelling with fellow disciples offers both protection and expectation. One's conduct on the road becomes part of the sect's unwritten record. The leader has not yet announced who will walk where. There are choices to be made about the day's geography of the column — and about whether to walk the column at all."
         ]
       },
       "choices": [
         {
           "id": "ch_pilgrimage_lead",
-          "label": "Volunteer to lead the group's pace and navigation.",
+          "label": "Volunteer to take the head of the column, set the pace, navigate the lesser-used switchbacks. Show the leader and the elders that the responsibility is welcome.",
           "timeCost": "LONG",
           "check": { "base": 55, "stats": { "Body": 1, "Charm": 2, "Mind": 1 }, "difficulty": 55 },
           "outcomes": {
@@ -396,7 +400,7 @@
         },
         {
           "id": "ch_pilgrimage_follow",
-          "label": "Walk with the group, observing and keeping pace.",
+          "label": "Walk with the column at the proper distance. Observe. Keep pace. Let the road do the teaching.",
           "timeCost": "LONG",
           "check": { "base": 70, "stats": { "Body": 1, "Spirit": 1 }, "difficulty": 40 },
           "outcomes": {
@@ -418,7 +422,7 @@
         },
         {
           "id": "ch_pilgrimage_detour",
-          "label": "Take a personal detour to investigate a rumoured ruin.",
+          "label": "Slip from the column at the third pass to investigate the rumoured ruin in the eastern ravine. The pilgrimage will reach the peak without you. Whatever the ruin holds will not.",
           "timeCost": "LONG",
           "check": { "base": 40, "stats": { "Luck": 2, "Agility": 1 }, "difficulty": 65 },
           "outcomes": {

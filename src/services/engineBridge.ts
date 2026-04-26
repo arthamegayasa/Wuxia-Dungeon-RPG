@@ -35,8 +35,8 @@ import { runBardoFlow } from '@/engine/bardo/BardoFlow';
 import { DEFAULT_UPGRADES, getUpgradeById } from '@/engine/meta/KarmicUpgrade';
 import { EchoTracker, commitTrackerToMeta } from '@/engine/meta/EchoTracker';
 import { applyPostOutcomeHooks } from '@/engine/core/PostOutcomeHooks';
-import { loadEvents } from '@/content/events/loader';
-import { loadSnippets, mergeSnippetPacks, mergeSnippetLibraries } from '@/content/snippets/loader';
+import { mergeSnippetLibraries } from '@/content/snippets/loader';
+import { createSnippetLibrary } from '@/engine/narrative/SnippetLibrary';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
 import { ItemRegistry, ItemDef, ItemType } from '@/engine/cultivation/ItemRegistry';
@@ -48,39 +48,46 @@ import { EventDef } from '@/content/schema';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 import { loadAzurePeaksContent } from './azurePeaksLoader';
+import { loadYellowPlainsContent } from './yellowPlainsLoader';
 
-import dailyJson from '@/content/events/yellow_plains/daily.json';
-import trainingJson from '@/content/events/yellow_plains/training.json';
-import socialJson from '@/content/events/yellow_plains/social.json';
-import dangerJson from '@/content/events/yellow_plains/danger.json';
-import opportunityJson from '@/content/events/yellow_plains/opportunity.json';
-import transitionJson from '@/content/events/yellow_plains/transition.json';
-import bridgeJson from '@/content/events/yellow_plains/bridge.json';
-import meditationJson from '@/content/events/yellow_plains/meditation.json';
-import ypSnippets from '@/content/snippets/yellow_plains.json';
-// NOTE: azure_peaks content, techniques, items, echoes, and memories are NOT imported
-// eagerly here. Phase 2B-2 Task 24 lazy-loads them via azurePeaksLoader.ts on first
-// beginLife call, keeping the cold-start bundle under the 450 KB hard limit.
+// Phase 2C-4: Yellow Plains content is now lazy-loaded via yellowPlainsLoader.ts
+// (mirrors the Azure Peaks pattern from Phase 2B-2 Task 24). After Phase 2C's
+// prose rewrites + 20 new beat files, eagerly bundling YP pushed the cold-start
+// chunk to ~566 KB; lazy-loading both regions keeps `index-*.js` under the
+// 450 KB Phase 3 target.
+//
+// Bootstrap order at first `beginLife`:
+//   1. ensureYellowPlainsLoaded() — populates ALL_EVENTS + DEFAULT_LIBRARY with YP.
+//   2. ensureAzurePeaksLoaded()   — splices in AP events/snippets/region/registries.
+//
+// Both `peekNextEvent` and `resolveChoice` re-assert these guards so a cold
+// page-reload that resumes a saved run cannot dereference an empty pool.
 
-// Phase 1D-3 Task 10: Yellow Plains content pool. Flattens all authored regional
-// packs (~50 events) into one selectable array.
-// Phase 2B-2 Task 24: mutable so AP events can be spliced in on lazy-load.
-let ALL_EVENTS: ReadonlyArray<EventDef> = [
-  ...loadEvents(dailyJson),
-  ...loadEvents(trainingJson),
-  ...loadEvents(socialJson),
-  ...loadEvents(dangerJson),
-  ...loadEvents(opportunityJson),
-  ...loadEvents(transitionJson),
-  ...loadEvents(bridgeJson),
-  ...loadEvents(meditationJson),
-];
-// Phase 2B-2 Task 24: starts as YP-only; AP snippets appended on first AP need.
-// (Replaces the earlier eager merge from Task 22 which pulled AP into the cold bundle.)
-let DEFAULT_LIBRARY: SnippetLibrary = mergeSnippetPacks([ypSnippets]);
+// Phase 2C-4: starts empty; YP events spliced in by ensureYellowPlainsLoaded(),
+// AP events spliced in by ensureAzurePeaksLoaded().
+let ALL_EVENTS: ReadonlyArray<EventDef> = [];
+// Phase 2C-4: starts empty; YP snippets merged in by ensureYellowPlainsLoaded(),
+// AP snippets merged in by ensureAzurePeaksLoaded().
+let DEFAULT_LIBRARY: SnippetLibrary = createSnippetLibrary({});
 
+// Phase 2C-4: guard flag so YP content is only spliced once per session.
+let yellowPlainsLoaded = false;
 // Phase 2B-2 Task 24: guard flag so AP content is only spliced once per session.
 let azurePeaksLoaded = false;
+
+/**
+ * Ensure Yellow Plains content is loaded.
+ * Idempotent — subsequent calls are no-ops.
+ * Must be awaited at `beginLife` (all anchors) and before any event selection,
+ * since YP is the default starting region for every anchor.
+ */
+async function ensureYellowPlainsLoaded(): Promise<void> {
+  if (yellowPlainsLoaded) return;
+  const yp = await loadYellowPlainsContent();
+  ALL_EVENTS = [...ALL_EVENTS, ...yp.events];
+  DEFAULT_LIBRARY = mergeSnippetLibraries(DEFAULT_LIBRARY, yp.snippets);
+  yellowPlainsLoaded = true;
+}
 
 /**
  * Ensure Azure Peaks content AND all gameplay registries are loaded.
@@ -525,9 +532,13 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       throw new Error('peekNextEvent: no active run in store');
     }
 
-    // Phase 2B-2 Task 24: ensure gameplay content chunk is loaded (resume path).
-    // Normal flow: beginLife already awaited this. This guard covers the case where
-    // a page reload restores a saved run and the user resumes directly into doPeek.
+    // Phase 2C-4: ensure Yellow Plains content is loaded (resume path). Normal
+    // flow: beginLife already awaited this. This guard covers a cold page reload
+    // that restored a saved run and resumes directly into doPeek.
+    if (!yellowPlainsLoaded) {
+      await ensureYellowPlainsLoaded();
+    }
+    // Phase 2B-2 Task 24: same guard for Azure Peaks gameplay content + registries.
     if (!azurePeaksLoaded) {
       await ensureAzurePeaksLoaded();
     }
@@ -574,6 +585,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         heavenlyNotice: gs.runState.heavenlyNotice,
         ageYears: Math.floor(gs.runState.character.ageDays / 365),
         learnedTechniques: gs.runState.learnedTechniques,
+        // Phase 2C: feed novel-mode pacing into the selector.
+        turnsSinceLastDecision: gs.runState.turnsSinceLastDecision ?? 0,
       },
       gs.lifetimeSeenEvents,
       gs.runState.thisLifeSeenEvents,
@@ -731,6 +744,12 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       const anchor = getAnchorById(anchorId);
       if (!anchor) throw new Error(`beginLife: unknown anchor ${anchorId}`);
 
+      // Phase 2C-4: load Yellow Plains content first. Every anchor starts in YP
+      // (or transits through it), so the event pool and snippet library must
+      // include YP before the first selection runs. Doing this BEFORE
+      // ensureAzurePeaksLoaded means flows that never reach AP still pay only
+      // the YP cost on cold start.
+      await ensureYellowPlainsLoaded();
       // Phase 2B-2 Task 24: always load the gameplay content chunk before spawning.
       // This ensures TECHNIQUE_REGISTRY, ITEM_REGISTRY, ECHO_REGISTRY, and
       // MEMORY_REGISTRY are populated for the life about to start, regardless of
@@ -783,7 +802,11 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         throw new Error('resolveChoice: no active run in store');
       }
 
-      // Phase 2B-2 Task 24: ensure gameplay content chunk is loaded (resume path).
+      // Phase 2C-4: ensure Yellow Plains content is loaded (resume path).
+      if (!yellowPlainsLoaded) {
+        await ensureYellowPlainsLoaded();
+      }
+      // Phase 2B-2 Task 24: ensure AP gameplay content chunk is loaded (resume path).
       if (!azurePeaksLoaded) {
         await ensureAzurePeaksLoaded();
       }
@@ -868,6 +891,15 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       // learnedDefs already declared above for visibility filtering — reuse it.
       const techniqueMultiplier = computeCultivationMultiplier(learnedDefs);
       let nextRunState = applyOutcome(gs.runState, outcome, { techniqueMultiplier, rng });
+
+      // Phase 2C: track novel-mode pacing. Decisions reset tslc; beats increment.
+      // Events without an explicit `kind` are treated as decisions (matches
+      // schema/EventSelector backward-compat semantics).
+      const pendingKind: 'beat' | 'decision' = pending.kind ?? 'decision';
+      const wasDecision = pendingKind === 'decision';
+      const newTslc = wasDecision ? 0 : (gs.runState.turnsSinceLastDecision ?? 0) + 1;
+      nextRunState = { ...nextRunState, turnsSinceLastDecision: newTslc };
+
       nextRunState = {
         ...nextRunState,
         thisLifeSeenEvents: [...nextRunState.thisLifeSeenEvents, pending.id],
@@ -1137,13 +1169,16 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
 }
 
 /**
- * Test-only: eagerly load all gameplay content (techniques, items, echoes, memories,
- * Azure Peaks region+events+snippets) and populate the live-binding registries.
- * Equivalent to what `beginLife` does at the start of each life.
- * Call this in test `beforeEach` or test body before asserting on registry contents.
+ * Test-only: eagerly load BOTH lazy chunks (Yellow Plains events+snippets, then
+ * Azure Peaks region+events+snippets+techniques+items+echoes+memories) and
+ * populate the live-binding registries. Equivalent to what `beginLife` does at
+ * the start of each life.
+ * Call this in test `beforeEach` or test body before asserting on registry
+ * contents or invoking selector code paths that need YP/AP events present.
  */
 export async function __loadGameplayContent(): Promise<void> {
-  return ensureAzurePeaksLoaded();
+  await ensureYellowPlainsLoaded();
+  await ensureAzurePeaksLoaded();
 }
 
 /**

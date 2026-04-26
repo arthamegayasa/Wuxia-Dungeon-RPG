@@ -6,31 +6,40 @@
       "category": "meditation",
       "version": 1,
       "weight": 15,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minStat": { "Mind": 8 }
       },
       "timeCost": "MEDIUM",
       "text": {
-        "intro": ["$[CHARACTER] sits, before the sun is high. The breath arrives slowly."],
-        "body": [],
-        "outro": []
+        "intro": [
+          "Some hour before the first true dawn, when the eastern hills are still only a darker line in the dark, $[CHARACTER] rises and walks barefoot to the small clearing at the field's edge.",
+          "The clay is cold. The grass is wet. He sits."
+        ],
+        "body": [
+          "The first half-hour is the body's protest — the spine remembers it has been bent into work for thirty years; the knees remember they have not folded into full lotus since boyhood; the back of the neck holds a small dull ache that the breath, very slowly, begins to dissolve.",
+          "The second half-hour is the mind's protest. A list of small worries arrives like crows to a thrown handful of grain. The next month's grain. The grandmother's cough. A look from a neighbour-girl misread or read correctly. The mind picks each one up, examines it, sets it down. The breath continues without permission. The crows, given nothing to peck at, drift off one by one.",
+          "By the third half-hour, the world has changed shape. The cold of the clay has become only the cold of the clay, no longer the body's resistance to the cold of the clay. The light, when it begins to rise, finds him already part of the morning's quiet. The qi at the dantian has gathered itself into a small steady warmth, no longer dependent on the mind for its keeping."
+        ],
+        "outro": [
+          "When the village's first cock-call comes, $[CHARACTER] does not move. The morning has, in some small way, found a witness."
+        ]
       },
       "choices": [
         {
-          "id": "ch_sit",
-          "label": "Let the mind settle.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 30, "stats": { "Mind": 2 }, "difficulty": 35 },
           "outcomes": {
             "SUCCESS": {
-              "narrativeKey": "action.work.plowing",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 4, "insightBonus": 2 }
+              ]
             },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] }
           }
         }
       ],
@@ -41,6 +50,7 @@
       "category": "meditation",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["spring", "summer", "autumn"],
@@ -48,25 +58,33 @@
       },
       "timeCost": "MEDIUM",
       "text": {
-        "intro": ["$[CHARACTER] sits by the river. The water does not explain itself."],
-        "body": [],
-        "outro": []
+        "intro": [
+          "The river bends below the upper field in a long slow curve. Where the willow leans far over and the bank crumbles into a small dry beach of pale river-stone, $[CHARACTER] takes off the sandals and sits with the feet just into the cool water.",
+          "The river does not explain itself."
+        ],
+        "body": [
+          "The first lesson of riverside meditation, every old text agrees, is to stop trying to understand the water. The water is not a metaphor. The water is water. To watch it as a metaphor is to watch oneself instead, which is a different practice for a different day.",
+          "So the boy watches the water. There is a place where the current cuts close to the bank and a small spinning eddy holds three yellow leaves in slow rotation. There is a place further out where the surface ruffles over a hidden stone. There is a kingfisher that comes and goes. There is the long brown muscle of the river itself, unhurried, going where rivers go.",
+          "After a long time the body has settled. The breath has lengthened to match the river's slow exhalation past the willow's roots. The mind has stopped narrating. The boy is no longer watching the river; the boy is, in the small way that beginners experience it, the watching itself, the river's witness, the kingfisher's small audience."
+        ],
+        "outro": [
+          "When the sun crosses the willow's shadow he stands. The body is rested in a way sleep does not rest it."
+        ]
       },
       "choices": [
         {
-          "id": "ch_watch_water",
-          "label": "Watch the water.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Mind": 1, "Spirit": 1 }, "difficulty": 30 },
           "outcomes": {
             "SUCCESS": {
-              "narrativeKey": "action.work.plowing",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 3 }]
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 5, "insightBonus": 3 }
+              ]
             },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] }
           }
         }
       ],
@@ -77,34 +95,42 @@
       "category": "meditation",
       "version": 1,
       "weight": 8,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "minStat": { "Mind": 10, "Spirit": 8 }
       },
       "timeCost": "LONG",
       "text": {
-        "intro": ["$[CHARACTER] keeps vigil. The hours arrive and the hours pass."],
-        "body": [],
-        "outro": []
+        "intro": [
+          "A whole night, awake. No food after the small bowl at dusk, no water past the second hour. $[CHARACTER] sits in the half-lotus on the hut's threshold, the door open, the cool dark of the lane in front.",
+          "The hours arrive and the hours pass."
+        ],
+        "body": [
+          "The first watch is easy. The body is alert, the mind is interested, the unfamiliarity of the practice is itself a small entertainment. The crickets sing in the long grass beyond the lane. A neighbour's dog barks once at something the dog does not understand and stops.",
+          "The second watch is harder. The body wants to lie down. The mind has begun to argue: no harm, surely, in lying down; the meditation can be continued reclining; the back is, after all, the back. The mind is patient. The mind tries the same argument every quarter-hour for an hour and is, each time, very gently refused.",
+          "The third watch is the watch that does the work. The body has surrendered the argument. The mind has surrendered the argument. There is only the breath now, and the cold, and the small distant sounds of the sleeping village, and the slow turn of the constellations that the boy has been taught to recognize but no longer needs to name. Some hour past midnight a small clear thing happens at the dantian — a settling, a brightening — and the boy understands, without being told, that something has been opened that will not close."
+        ],
+        "outro": [
+          "When the first grey edge of dawn shows above the eastern ridge $[CHARACTER] rises, slowly, and finds the body holds itself. The night has been the lesson. The body has been the student. The world, indifferent and clean, has done the teaching."
+        ]
       },
       "choices": [
         {
-          "id": "ch_vigil",
-          "label": "Hold the watch.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 30, "stats": { "Mind": 1, "Spirit": 2 }, "difficulty": 45 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.work.plowing",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 8 }]
-            },
             "SUCCESS": {
-              "narrativeKey": "action.work.plowing",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 4 }]
+              "narrativeKey": "action.rest.meditation",
+              "stateDeltas": [
+                { "kind": "meditation_progress", "base": 8, "insightBonus": 4 }
+              ]
             },
+            "PARTIAL": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] },
             "FAILURE": {
               "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
             }
           }
         }

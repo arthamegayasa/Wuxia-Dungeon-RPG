@@ -20,6 +20,18 @@ export function PlayScreen({ preview, onChoose, isLoading }: PlayScreenProps) {
     setTribulationDismissed(false);
   }, [preview.tribulation]);
 
+  // Phase 2C: scroll the document to top whenever a new beat/decision narrative
+  // arrives so each new paragraph starts at the top of the viewport.
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [preview.narrative]);
+
+  // Phase 2C: detect a beat (single Continue choice) and render a centered
+  // Continue button instead of the full choice list.
+  const isBeat = preview.choices.length === 1 && preview.choices[0]?.id === 'continue';
+
   return (
     <div className="min-h-screen bg-ink-950 text-parchment-100 flex flex-col font-serif">
       <header className="border-b border-parchment-800 bg-ink-900 px-6 py-3 flex justify-between items-center text-sm">
@@ -53,13 +65,24 @@ export function PlayScreen({ preview, onChoose, isLoading }: PlayScreenProps) {
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center p-8 max-w-3xl mx-auto w-full">
-        <p className="text-lg leading-relaxed mb-8 whitespace-pre-line">
+        <p className="text-base leading-loose mb-8 whitespace-pre-line max-w-2xl">
           {preview.narrative}
         </p>
 
         <div className="w-full flex flex-col gap-2">
           {preview.choices.length === 0 ? (
             <p className="text-parchment-500 italic text-center">Waiting for the world to move…</p>
+          ) : isBeat ? (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => onChoose(preview.choices[0]!.id)}
+                className="px-8 py-3 bg-jade-700 text-parchment-100 rounded hover:bg-jade-600 disabled:opacity-40 disabled:cursor-not-allowed text-base"
+              >
+                Continue
+              </button>
+            </div>
           ) : (
             preview.choices.map((c) => (
               <button

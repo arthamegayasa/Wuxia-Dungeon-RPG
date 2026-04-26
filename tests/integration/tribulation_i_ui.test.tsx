@@ -170,8 +170,23 @@ describe('Phase 2B-3: Tribulation I UI fires + dismisses', () => {
       expect(screen.getByText(/second thunder/i)).toBeInTheDocument();
       expect(screen.getByText(/third thunder/i)).toBeInTheDocument();
 
-      // Dismiss via the panel's Continue button.
-      await userEvent.click(screen.getByRole('button', { name: /^continue$/i }));
+      // Dismiss via the panel's Continue button. Phase 2C novel-mode beats
+      // also surface a Continue button on the PlayScreen, so scope the query
+      // to the tribulation panel by selecting the Continue button whose
+      // sibling text describes the tribulation outcome.
+      const continueButtons = screen
+        .getAllByRole('button', { name: /^continue$/i })
+        // The panel's Continue lives inside the same container as the
+        // "Tribulation Endured." (or "body shatters") banner.
+        .filter((btn) => {
+          const panel = btn.closest('div')?.parentElement;
+          return (
+            panel?.textContent?.match(/tribulation endured|body shatters/i) !=
+            null
+          );
+        });
+      expect(continueButtons.length).toBeGreaterThanOrEqual(1);
+      await userEvent.click(continueButtons[0]!);
       expect(screen.queryByText(/the heavens stir/i)).not.toBeInTheDocument();
 
       // Game continues — character is alive (non-fatal in 2B).

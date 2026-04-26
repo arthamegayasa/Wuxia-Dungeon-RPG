@@ -6,6 +6,7 @@
       "category": "life.realm_gate",
       "version": 1,
       "weight": 200,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"],
         "customPredicate": "bt9_cultivation_full"
@@ -13,17 +14,18 @@
       "timeCost": "EPOCH",
       "text": {
         "intro": [
-          "$[ap.gate.qs.sky] The summit catches the last light. $[CHARACTER] has been still since dawn, qi cycling through all nine tempered layers in a single breath.",
-          "The barrier between mortal refinement and true qi sensing shimmers — thin as morning ice, vast as the valley below."
+          "It comes in the third watch of the night, in the small meditation cell at the back of the East Court terrace, the way Senior Sister Rou said it would come — not as the sky-shattering revelation the old scrolls promise, but as a single aching question rising from the dantian: Is this all?"
         ],
         "body": [
-          "The body has been hardened to its limit. Now comes the true test: whether the spirit can break through to feel the world's own qi."
+          "$[CHARACTER]'s body has reached the ninth layer of Body Tempering. The bones are tempered to a density no mortal frame can match. The meridians have been opened down to the smallest. The dantian is a clean still vessel, full to its mortal limit. Now there is the threshold — the leap from the work of the body to the work of the spirit. The old elders call it the Awakening: the first true sensing of qi as a substance external to the self.",
+          "Beside the cushion lies a small clay jar — the Dawn Cloud Pill, given by the elder this morning, stamped with the seal of the inner sanctum. Three days' worth of safe environment. The pill is precious; the seal commits the sect's name to the attempt; the other outer disciples have been quietly forbidden to disturb the corridor for the next three days.",
+          "The summit catches the last light of the moon. The barrier between mortal refinement and true qi-sensing shimmers in the meridians of the spine — thin as morning ice, vast as the valley below. The choice is here. The choice will not be here at this strength again."
         ]
       },
       "choices": [
         {
           "id": "ch_qs_awakening_attempt",
-          "label": "Attempt the Qi Sensing awakening.",
+          "label": "Take the Dawn Cloud Pill. Begin the Awakening tonight, with the elder's seal protecting the corridor.",
           "timeCost": "EPOCH",
           "check": { "base": 50, "stats": { "Mind": 2, "Spirit": 3 }, "difficulty": 60, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
@@ -67,7 +69,7 @@
         },
         {
           "id": "ch_qs_awakening_defer",
-          "label": "Withdraw — the moment is not yet right.",
+          "label": "Withdraw. The body is ready but the moment is not. The pill will keep.",
           "timeCost": "SHORT",
           "check": { "base": 100, "difficulty": 0 },
           "outcomes": {
@@ -91,6 +93,7 @@
       "category": "life.realm_gate",
       "version": 1,
       "weight": 200,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "customPredicate": "qs_no_techniques"
@@ -98,35 +101,32 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.gate.tech.scroll] An outer elder presses a rough-bound scroll into $[CHARACTER]'s hands.",
-          "'Every practitioner begins with this. Common Qi Circulation. Boring, yes. But boring keeps you alive.'"
+          "The qi has been sensed. The threshold has been crossed. Three days into the Qi Sensing realm and $[CHARACTER]'s meridians register the world's qi the way a tongue registers salt — present, unmistakable, impossible to un-notice. But there is no technique yet. The qi flows where it wishes, the way a river without banks flows wherever the land slopes.",
+          "An outer elder presses a rough-bound scroll into $[CHARACTER]'s hands without ceremony. 'Every practitioner begins with this. Common Qi Circulation. Boring, yes. But boring keeps you alive. Boring becomes habit. Habit becomes survival. Read it tonight. Practise it for the next nine evenings. Come back when the qi obeys.'"
         ],
         "body": [
-          "The technique is simple: guide qi through the primary meridian loop, steady the breath, repeat. But doing it correctly for the first time opens a door that cannot be closed."
+          "$[CHARACTER] takes the scroll back to the cell and unrolls it on the bed. The diagrams are simple, almost insultingly so — twelve breathing positions, twelve corresponding meridian-paths, a single closing posture. The kind of foundational text that an Awakened cultivator might have expected to skip. The kind of foundational text that, when skipped, accounts for half the deviation-deaths in the lower realms.",
+          "$[CHARACTER] reads the whole scroll through once, then again. By the second pass the small clicked recognition arrives. The technique is not what it appears to be. Beneath the simple diagrams is a deeper structure — a slow patient teaching about the difference between the qi's path and the breath's path, about the way the two must move together without either leading the other. The text knows what it is doing. The text was written by someone who had taught this many, many times, and knew exactly which student would dismiss it and which student would not.",
+          "$[CHARACTER] sits on the cushion at the foot of the bed and tries the first sequence. The qi enters the dantian on the inhalation. The qi rises along the spinal meridian on the held breath. The qi descends along the front centreline on the exhalation. Twelve breaths to a complete cycle. The first cycle is awkward. The second is less so. By the seventh cycle the path has begun to feel less like a route to be remembered and more like a route the body has always known.",
+          "The technique is not yet mastered. Mastery is nine evenings away, perhaps more. But the door has opened. The qi has agreed. From this evening forward $[CHARACTER] will not be a Qi Sensing cultivator who happens to know no techniques. $[CHARACTER] will be a Qi Sensing cultivator who has begun the long lifelong relationship between the body and the qi that flows through it."
+        ],
+        "outro": [
+          "When the candle finally burns down $[CHARACTER] rolls the scroll carefully and sets it on the small shelf above the bed. The cell is quiet. The qi at the dantian is moving in a slow patient cycle that, three days ago, would have required a conscious decision to maintain. Now it maintains itself. This is the small visible proof of the technique having been taken in."
         ]
       },
       "choices": [
         {
-          "id": "ch_technique_learn_attempt",
-          "label": "Study the scroll and attempt to grasp the technique.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 40, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 45 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.gate.tech.learn.crit",
-              "stateDeltas": [
-                { "kind": "technique_learn", "id": "common_qi_circulation" },
-                { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
-                { "kind": "insight_delta", "amount": 5 },
-                { "kind": "meditation_progress", "base": 10 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.gate.tech.learn.success",
               "stateDeltas": [
                 { "kind": "technique_learn", "id": "common_qi_circulation" },
                 { "kind": "flag_set", "flag": "seen_technique_common_qi_circulation" },
-                { "kind": "meditation_progress", "base": 5 }
+                { "kind": "meditation_progress", "base": 5 },
+                { "kind": "insight_delta", "amount": 2 }
               ]
             },
             "PARTIAL": {
@@ -140,24 +140,6 @@
               "stateDeltas": []
             }
           }
-        },
-        {
-          "id": "ch_technique_observe_only",
-          "label": "Read through it once without attempting to circulate qi.",
-          "timeCost": "SHORT",
-          "check": { "base": 100, "difficulty": 0 },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.gate.tech.observe",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.gate.tech.observe",
-              "stateDeltas": []
-            }
-          }
         }
       ],
       "repeat": "once_per_life"
@@ -167,6 +149,7 @@
       "category": "life.realm_gate",
       "version": 1,
       "weight": 200,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"],
         "customPredicate": "qs_with_techniques_full"
@@ -174,17 +157,17 @@
       "timeCost": "EPOCH",
       "text": {
         "intro": [
-          "$[ap.gate.qc.sky] The Azure Peaks shudder as $[CHARACTER]'s qi reaches a natural ceiling.",
-          "The Qi Sensing realm has been pushed to its limit. Now it must be condensed — gathered inward, compressed, crystallized into something denser and more enduring."
+          "The Azure Peaks themselves seem to shudder around $[CHARACTER]'s cultivation chamber as the qi reaches its natural Qi Sensing ceiling — not a real shudder, of course, only the body's perception of the qi-density in the room having reached the limit at which the meridians can hold it. Past this point the qi must be condensed. Past this point the meridians' capacity must be doubled, then redoubled, then doubled again, until they can hold what the world's qi-density wants to give."
         ],
         "body": [
-          "This is the transition that separates a qi-sensitive cultivator from one who can truly shape the world's energy. One technique already understood. The foundation is there."
+          "This is the transition that separates a qi-sensitive cultivator from one who can truly shape the world's energy. The Qi Condensation realm. The compression. The slow patient gathering inward of everything the Qi Sensing realm spread outward.",
+          "The technique already understood — Common Qi Circulation, drilled until the qi moves without thought — provides the necessary foundation. The cushion is set. The meditation chamber's door is closed. The senior brothers and sisters of the inner cloister have been notified that an outer disciple is making the attempt, and they have, without comment, arranged that the corridor outside the chamber will be empty for the duration."
         ]
       },
       "choices": [
         {
           "id": "ch_qc1_attempt",
-          "label": "Begin the condensation ritual. Compress everything into the first layer.",
+          "label": "Begin the condensation ritual. Compress everything the Qi Sensing realm has gathered into the first crystallized layer.",
           "timeCost": "EPOCH",
           "check": { "base": 50, "stats": { "Mind": 2, "Spirit": 2 }, "difficulty": 65, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
@@ -228,7 +211,7 @@
         },
         {
           "id": "ch_qc1_defer",
-          "label": "Consolidate at the peak of Qi Sensing a while longer.",
+          "label": "Consolidate at the peak of Qi Sensing a while longer. The threshold is here; the readiness is not.",
           "timeCost": "SHORT",
           "check": { "base": 100, "difficulty": 0 },
           "outcomes": {
@@ -252,6 +235,7 @@
       "category": "life.realm_gate",
       "version": 1,
       "weight": 200,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"],
         "customPredicate": "qc5_full"
@@ -259,17 +243,18 @@
       "timeCost": "EPOCH",
       "text": {
         "intro": [
-          "$[ap.gate.qc5.storm] The sky above the Azure Peaks darkens at the fifth compression layer.",
-          "The elder who placed $[CHARACTER] here said only: 'The fifth wall is not a wall. It is a mirror. What you see in it is your problem.'"
+          "The sky above the Azure Peaks darkens at the fifth compression layer — a faint dimming that no mortal eye would notice but that every Qi Condensation cultivator on the mountain feels in the meridians: a small intentional pressure from above, the heavens beginning to attend."
         ],
         "body": [
-          "Five layers of condensed qi press outward and inward simultaneously. A breakthrough here means the path to Foundation Formation is no longer theoretical."
+          "The elder who placed $[CHARACTER] in the meditation chamber said only: 'The fifth wall is not a wall. It is a mirror. What you see in it is your problem.' And then he closed the door and went away to the East Court terrace where he has been waiting, since dawn, for the chamber to either open from the inside or fall silent forever.",
+          "Five layers of condensed qi press outward and inward simultaneously in the dantian. Each layer is a denser, more crystalline version of what was Qi Sensing. The fifth is the layer at which the cultivator can no longer hide from himself. Whatever is inside the cultivator's character — the small unaddressed angers, the unfinished griefs, the kept secrets, the half-confessed ambitions — rises to the surface of the qi at this layer, and either becomes the material for the sixth or becomes the cause of the cultivator's collapse.",
+          "The meditation cushion is cold. The room is silent. A breakthrough here means the path to Foundation Formation is no longer theoretical. A failure here means a long careful retrenchment, perhaps an entire next decade spent stabilising at the fifth layer."
         ]
       },
       "choices": [
         {
           "id": "ch_qc5_sublayer_attempt",
-          "label": "Force the breakthrough — compress the fifth layer into the sixth.",
+          "label": "Force the breakthrough. Compress the fifth layer into the sixth. Walk into the mirror and trust what is on the other side.",
           "timeCost": "EPOCH",
           "check": { "base": 45, "stats": { "Mind": 2, "Spirit": 2, "Body": 1 }, "difficulty": 70, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
@@ -311,7 +296,7 @@
         },
         {
           "id": "ch_qc5_meditate_further",
-          "label": "Meditate deeper to prepare the mirror layer.",
+          "label": "Meditate deeper. Approach the mirror at half-pace. Let the fifth layer reveal what it must reveal before forcing it.",
           "timeCost": "LONG",
           "check": { "base": 60, "stats": { "Mind": 1, "Spirit": 2 }, "difficulty": 50, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
@@ -337,6 +322,7 @@
       "category": "life.realm_gate",
       "version": 1,
       "weight": 200,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"],
         "customPredicate": "qc9_full"
@@ -344,17 +330,18 @@
       "timeCost": "EPOCH",
       "text": {
         "intro": [
-          "$[ap.gate.qc9.heavens] Nine layers of condensed qi, packed into $[CHARACTER]'s core like folded iron.",
-          "The Heavens have begun to notice. A pressure descends from above — not an attack, not yet. A question."
+          "Nine layers of condensed qi, packed into $[CHARACTER]'s dantian like folded iron — the entire arc of mortal cultivation, brought to its denseness limit and held there.",
+          "The Heavens have begun to notice. A pressure descends from above the eastern peak — not yet an attack, not yet the Tribulation proper; only its precursor, a question. The kind of question that, once asked, must be answered, because the answer is the price of being noticed."
         ],
         "body": [
-          "Foundation Formation requires passing the first Tribulation: a trial by heaven's own judgment. The technique-masters call it inevitable. They also call it survivable — barely."
+          "The elders of all three Azure Peaks lineages have gathered on the East Court terrace at $[CHARACTER]'s request. They are arranged in the formal half-circle that the sect uses only for tribulation-witnessing. Each of them holds a small jade tablet engraved with the protective formations that the sect can offer; each of them has, by tradition, reserved one prayer for the disciple's success and one for the disciple's clean death, in case the answer to the Heavens' question is the wrong one.",
+          "Foundation Formation — the realm beyond Qi Condensation, the threshold above which a cultivator is no longer an apprentice but a true practitioner — requires passing the First Tribulation. The technique-masters call it inevitable. They also call it survivable. They will not call it both in the same sentence."
         ]
       },
       "choices": [
         {
           "id": "ch_qc9_tribulation_begin",
-          "label": "Stand and answer the Heaven's question. Begin Tribulation I.",
+          "label": "Stand on the East Court terrace and answer the Heavens' question. Begin Tribulation I in front of the witnesses.",
           "timeCost": "EPOCH",
           "check": { "base": 40, "stats": { "Mind": 2, "Spirit": 3, "Body": 1 }, "difficulty": 75, "techniqueBonusCategory": "cultivation_attempt" },
           "outcomes": {
@@ -398,7 +385,7 @@
         },
         {
           "id": "ch_qc9_tribulation_defer",
-          "label": "Do not yet answer. Wait for a more fortuitous moment.",
+          "label": "Bow to the assembled elders. Do not yet answer. Wait for a more fortuitous moment, even if it costs years.",
           "timeCost": "MEDIUM",
           "check": { "base": 100, "difficulty": 0 },
           "outcomes": {

@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createSaveManager } from '@/engine/persistence/SaveManager';
-import { createEngineBridge, TECHNIQUE_REGISTRY, __loadGameplayContent } from './engineBridge';
+import { createEngineBridge, TECHNIQUE_REGISTRY, __loadGameplayContent, __testInsertEvent } from './engineBridge';
 import { useGameStore } from '@/state/gameStore';
 import { useMetaStore } from '@/state/metaStore';
 import { GamePhase } from '@/engine/core/Types';
 import { createEmptyMetaState } from '@/engine/meta/MetaState';
 import type { PendingTribulationResult } from '@/engine/events/RunState';
+import type { EventDef } from '@/content/schema';
 
 describe('engineBridge.loadOrInit', () => {
   beforeEach(() => {
@@ -161,6 +162,110 @@ async function loopUntilDeath(engine: any, cap = 500): Promise<number> {
   }
   throw new Error(`loopUntilDeath: character still alive after ${cap} turns`);
 }
+
+describe('Phase 2C: bridge tracks turnsSinceLastDecision', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  // Helpers — synthetic events with weight 9999 so they overwhelmingly win selection.
+  function makeBeatEvent(id: string): EventDef {
+    return {
+      id,
+      category: 'daily',
+      version: 1,
+      // Use a region gate that no real content matches so this event is selectable
+      // ONLY when our test sets the runState region accordingly. Keeps it from
+      // bleeding into other tests that share the global ALL_EVENTS array.
+      weight: 9999,
+      conditions: { regions: ['__test_2c_region__'] },
+      timeCost: 'INSTANT',
+      text: { intro: ['A quiet moment.'] },
+      kind: 'beat',
+      choices: [{
+        id: 'continue',
+        label: 'Continue',
+        timeCost: 'INSTANT',
+        outcomes: {
+          SUCCESS: { narrativeKey: 'k' },
+          FAILURE: { narrativeKey: 'k' },
+        },
+      }],
+      repeat: 'unlimited',
+    };
+  }
+
+  function makeDecisionEvent(id: string): EventDef {
+    return {
+      id,
+      category: 'daily',
+      version: 1,
+      // Use a region gate that no real content matches so this event is selectable
+      // ONLY when our test sets the runState region accordingly. Keeps it from
+      // bleeding into other tests that share the global ALL_EVENTS array.
+      weight: 9999,
+      conditions: { regions: ['__test_2c_region__'] },
+      timeCost: 'INSTANT',
+      text: { intro: ['A choice opens.'] },
+      kind: 'decision',
+      choices: [{
+        id: 'opt_a',
+        label: 'Option A',
+        timeCost: 'INSTANT',
+        outcomes: {
+          SUCCESS: { narrativeKey: 'k' },
+          FAILURE: { narrativeKey: 'k' },
+        },
+      }],
+      repeat: 'unlimited',
+    };
+  }
+
+  it('after a beat resolves, turnsSinceLastDecision increments by 1', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 11 });
+    await __loadGameplayContent();
+    __testInsertEvent(makeBeatEvent('test_2c_beat_one'));
+    await engine.beginLife('peasant_farmer', 'Beat Test');
+
+    // Force the synthetic beat to be next: switch region into our gated test region.
+    const before = useGameStore.getState();
+    useGameStore.setState({
+      runState: { ...before.runState!, region: '__test_2c_region__', pendingEventId: undefined, turnsSinceLastDecision: 0 },
+    });
+
+    await engine.peekNextEvent();
+    const peeked = useGameStore.getState().runState!.pendingEventId;
+    expect(peeked).toBe('test_2c_beat_one');
+
+    await engine.resolveChoice('continue');
+    expect(useGameStore.getState().runState!.turnsSinceLastDecision).toBe(1);
+  });
+
+  it('after a decision resolves, turnsSinceLastDecision resets to 0', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 13 });
+    await __loadGameplayContent();
+    __testInsertEvent(makeDecisionEvent('test_2c_decision_one'));
+    await engine.beginLife('peasant_farmer', 'Decision Test');
+
+    // Pre-set tslc to a non-zero value so the reset is observable; switch region
+    // into our gated test region so the synthetic decision wins selection.
+    const before = useGameStore.getState();
+    useGameStore.setState({
+      runState: { ...before.runState!, region: '__test_2c_region__', pendingEventId: undefined, turnsSinceLastDecision: 7 },
+    });
+
+    await engine.peekNextEvent();
+    const peeked = useGameStore.getState().runState!.pendingEventId;
+    expect(peeked).toBe('test_2c_decision_one');
+
+    await engine.resolveChoice('opt_a');
+    expect(useGameStore.getState().runState!.turnsSinceLastDecision).toBe(0);
+  });
+});
 
 describe('Phase 2B-3: bridge surfaces Tribulation result + clears pendingTribulationResult', () => {
   beforeEach(() => {

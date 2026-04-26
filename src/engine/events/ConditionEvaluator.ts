@@ -23,6 +23,10 @@ export interface EvalContext {
   /** Phase 2B-2 Task 20: technique ids learned this life. Required by
    *  custom predicates (e.g. qs_no_techniques). Defaults to [] if absent. */
   learnedTechniques?: ReadonlyArray<string>;
+  /** Phase 2C: novel-mode pacing — turns since the last decision event.
+   *  EventSelector uses this to bias the pool toward beats vs decisions.
+   *  Optional for backward compat; treated as `0` when absent. */
+  turnsSinceLastDecision?: number;
 }
 
 function hasAll(list: ReadonlyArray<string> | undefined, have: ReadonlyArray<string>): boolean {

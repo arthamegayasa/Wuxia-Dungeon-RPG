@@ -176,7 +176,19 @@ export const EventSchema = z.object({
   }).optional(),
   witnessMemory: z.string().optional(),
   repeat: z.enum(['once_per_life', 'once_ever', 'unlimited']),
-});
+  /** Phase 2C: 'beat' = single-Continue narrative paragraph; 'decision' = forking choice.
+   *  Optional for backward compatibility with all pre-2C events; consumers treat
+   *  `undefined` as `'decision'`. */
+  kind: z.enum(['beat', 'decision']).optional(),
+}).refine(
+  (e) => {
+    if (e.kind !== 'beat') return true;
+    return e.choices.length === 1
+      && e.choices[0]!.id === 'continue'
+      && e.choices[0]!.label === 'Continue';
+  },
+  { message: "beat events must have exactly one choice {id:'continue', label:'Continue'}" },
+);
 
 // ---- Phase 2A-2 Echo schema ----
 // Source: docs/spec/design.md §7.2, §9.8.

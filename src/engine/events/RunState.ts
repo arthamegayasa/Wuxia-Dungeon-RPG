@@ -49,6 +49,12 @@ export interface RunState {
   readonly manifestAttemptsThisLife: number;
   /** Phase 2B-3: Tribulation I result captured at qc9_to_foundation, consumed by UI. */
   readonly pendingTribulationResult?: PendingTribulationResult;
+  /** Phase 2C: turns since the last `kind: 'decision'` event resolved. Drives
+   *  the EventSelector pacing multiplier so beats and decisions interleave
+   *  in roughly the 4-8-beat / decision rhythm of a chapter. Optional for
+   *  backward compat with pre-2C RunState saves and test fixtures (consumers
+   *  treat `undefined` as `0`). New runs initialize to `0`. */
+  readonly turnsSinceLastDecision?: number;
 }
 
 export interface CreateRunStateArgs {
@@ -82,5 +88,6 @@ export function createRunState(args: CreateRunStateArgs): RunState {
     memoriesWitnessedThisLife: [],
     memoriesManifestedThisLife: [],
     manifestAttemptsThisLife: 0,
+    turnsSinceLastDecision: 0,
   };
 }

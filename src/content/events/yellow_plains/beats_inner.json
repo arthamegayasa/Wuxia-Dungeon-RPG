@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_BEAT_INNER_FACE_IN_WATER",
+      "category": "life.inner",
+      "version": 1,
+      "weight": 40,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 14
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[CHARACTER] has gone down to the river-bend to wash. The water at this hour is very still — the wind has dropped, the sun is past its high heat, the surface where the willow's shadow falls is the colour of old bronze.",
+          "Kneeling at the bank, $[CHARACTER] cups water to splash the face, and stops, hands still in the water, looking down."
+        ],
+        "body": [
+          "The reflection that looks back is not quite the reflection $[CHARACTER] expected. The face is the right face — the small scar at the temple is there, the dark eyes the grandmother's daughters all share are there, the mouth set in the small private way that $[CHARACTER] has begun to recognise as his own. Everything is in its place. And yet for a long moment the face is the face of a stranger.",
+          "It is the way the eyes look back, perhaps. There is something behind them that $[CHARACTER] does not remember putting there. A weight. A patience. A knowing-look, the small tilt of the head that the village's old men have when they are not speaking, the look of someone who has, in some place the present body does not have access to, lived a long time before this.",
+          "$[CHARACTER] does not move. The hands go cold in the water. The reflection does not move either, except that the slow movement of the river beneath the surface puts a small shimmer through it, here and there, so that for an instant the cheek is one cheek and then another, and the eye is one eye and then another. The thought comes very quietly: I have been someone before this. The thought goes again before the mind can catch and examine it."
+        ],
+        "outro": [
+          "When $[CHARACTER] rocks back on the heels and stands, the water resumes its surface, the willow's shadow resumes its place. But the thought, having been there once, will be back."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.inner.reflection",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.inner.reflection", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.inner.reflection", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_INNER_PAST_LIFE_DREAM",
+      "category": "life.inner",
+      "version": 1,
+      "weight": 35,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 14
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "Some hour before the village wakes, $[CHARACTER] surfaces from a dream that does not, quite, surface with him.",
+          "The thatch overhead is dark. The grandmother's breathing is steady. There has been a dream; the dream is gone."
+        ],
+        "body": [
+          "What is left of it is texture, no shape. The smell of an incense that the village has never burned — sandalwood, perhaps, but a deeper sandalwood than the grandmother's small offering-stick. The cold weight of stone steps under bare feet, going up. A voice, not quite a man's voice, not quite a woman's, speaking a phrase in a register the village does not use — a courtly register, the kind a magistrate's clerk might use, the kind $[CHARACTER] has heard once in his life when the prefect's man came through.",
+          "$[CHARACTER] lies very still and tries, in the way one tries to recall a face from yesterday's market, to put a single piece of it back together. The stone steps. There were stone steps. He was — someone was — going up them, in the night, with something in the hands. A box, perhaps. A scroll. A something. The phrase the courtly voice spoke is right at the edge of the tongue, the way a name is right at the edge of the tongue, and like the name it will not come.",
+          "The grandmother coughs once and rolls over. The first faint grey of morning has begun to find the gap in the thatch. The dream is going, and the more $[CHARACTER] reaches after it the further it slips. There is left only the strong, strange, certain feeling that what has been forgotten was, once, very important. To someone. Possibly even to him."
+        ],
+        "outro": [
+          "By the time the rooster begins, the dream is entirely gone. Only the small unsettled quiet of having been somewhere else remains, and that quiet sits for a while in the chest before the day's work calls it away."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.inner.dream",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.inner.dream", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.inner.dream", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_INNER_SOUTHERN_AMBITION",
+      "category": "life.inner",
+      "version": 1,
+      "weight": 45,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "minAge": 14
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "Late afternoon. $[CHARACTER] has climbed the small rise behind the threshing-floor — the one the village calls only the Knoll — and is sitting in the dry grass at the top, looking south.",
+          "From the Knoll, on a clear day, the southern mountains are visible. Today is a clear day."
+        ],
+        "body": [
+          "They lie a long way off, three days' walk at the least, and they are not blue the way close mountains are blue; they are the lighter, fainter, more difficult blue of a thing seen at the edge of what the eye can hold. Their tops are still capped with last winter's snow even now, in the warming year. A single cloud trails the highest of them like a scarf forgotten on a shoulder.",
+          "$[CHARACTER] looks at them. It is not, exactly, the first time. Every young person in the village has, sooner or later, climbed the Knoll alone and looked at those mountains. The grandmother climbed them at fifteen. The headman's nephew climbs them most evenings now. To look at them is a small private thing the village does not name aloud, because to name it would be to give the looking too much weight.",
+          "The thought comes for the first time in $[CHARACTER]'s body in something like its full shape. It is not a plan. It is something thinner and stronger than a plan. It is the small certain thing that says: those mountains are reachable. They are not reachable today, perhaps, and not reachable next year, and there is the matter of the harvest and the matter of the grandmother and the matter of the body's being only a body. But they are reachable. The mountains have not refused him. The mountains have only been waiting to be looked at by him."
+        ],
+        "outro": [
+          "When the sun begins to lean toward the west $[CHARACTER] stands and walks back down the Knoll to the village. The day is the same day. But something inside has, very quietly, made a place for the mountains to live in."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.inner.ambition",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.inner.ambition", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.inner.ambition", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

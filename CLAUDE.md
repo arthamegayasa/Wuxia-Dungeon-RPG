@@ -36,13 +36,13 @@ For **large phases** (e.g., Phase 2+), brainstorm first via `superpowers:brainst
 
 ## Full roadmap (from spec §13)
 
-The spec defines 6 major phases (0–5). Each ships a standalone playable build with an explicit exit criterion. Phases 0, 1, 2A, and Phase 2B sub-phases 2B-1+2B-2 are **complete** (15 PRs merged). Phase 2B-3 + 3-5 remain.
+The spec defines 6 major phases (0–5). Each ships a standalone playable build with an explicit exit criterion. Phases 0, 1, and 2 are **complete** (Phase 2 across 2A + 2B-1/2B-2/2B-3 + 2C). Phases 3-5 remain.
 
 | Phase | Title | Deliverable | Status |
 |-------|-------|-------------|--------|
 | **0** | Foundation | Engine skeleton, RNG, SaveManager, TitleScreen, CI | ✅ merged (see Phase 1 table below for full breakdown) |
 | **1** | The Mortal's Burden | Vertical slice: Peasant Farmer anchor, Yellow Plains, Body Tempering, 50 events, karma cycle | ✅ **complete** — delivered across 1A/1B/1C/1D-1/1D-2/1D-3 |
-| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI | 🟡 2A ✅ complete (inheritance + reveal UI, 4 PRs); 2B-1 ✅ + 2B-2 ✅ (engine + content, 4 PRs); **2B-3 pending** (Inventory/Technique/CorePath UI + Tribulation I UI + integration) |
+| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI + Novel Mode pacing | ✅ **complete** — delivered across 2A (4 PRs), 2B-1+2B-2+2B-3 (8 PRs), 2C (1 PR) |
 | **3** | The Heavens Notice | Heavenly Notice system + Karmic Imprints + Karmic Hunters + Tribulations I-II + Foundation/Core realms + Bone Marshes + cross-life Threads + world map | ⏳ pending |
 | **4** | Mind Benders | Pillar puzzles + NPC persistence + faction state + Imperial Capital + Northern Wastes + Nascent Soul realms + Tribulations III-IV | ⏳ pending |
 | **5** | Ascension | Sunken Isles + Void Refinement + Immortal realms + Tribulations V-IX + 5 true endings + PWA | ⏳ pending |
@@ -97,9 +97,9 @@ Phase 2A was rescoped during brainstorming (PR #8): the original 2A (inheritance
 
 **Branch tag (suggested)**: `phase-2a-complete` at merge commit `59155d9`.
 
-## Phase 2B partial completion — 2B-1 + 2B-2 detailed
+## Phase 2B completion — 2B-1 + 2B-2 + 2B-3 detailed
 
-Phase 2B was split during spec-writing into 2B-1 (engine) / 2B-2 (content + wiring) / 2B-3 (UI + Tribulation I + integration). 2B-1 and 2B-2 shipped between 2026-04-25 and 2026-04-26; **2B-3 is the only remaining sub-phase**.
+Phase 2B was split during spec-writing into 2B-1 (engine) / 2B-2 (content + wiring) / 2B-3 (UI + Tribulation I + integration). All three shipped between 2026-04-25 and 2026-04-26 (2B-3 merged via PR #18).
 
 | Sub-phase | Scope | Tests | PR / Commit |
 |-----------|-------|-------|-------------|
@@ -124,48 +124,58 @@ Phase 2B was split during spec-writing into 2B-1 (engine) / 2B-2 (content + wiri
 
 **Test count on main**: 968 (across 133 files). Build: 449.24 KB raw / 125.43 KB gzip main + 110.44 KB raw / 23.95 KB gzip lazy `azure-peaks.js` chunk + 5× ~0.35 KB loader chunks. Phase 3 budget 450 KB raw — **main bundle holds 0.76 KB headroom**; Azure Peaks content already isolated to lazy chunk.
 
-**Branch tag (suggested)**: none yet — wait for 2B complete after 2B-3 merges.
+**Branch tag (suggested)**: `phase-2b-complete` after the Phase 2C PR merges (2B-3 merged via PR #18 on the way to 2C).
+
+## Phase 2C completion — Novel Mode detailed
+
+Phase 2C reframed the in-life loop from "every turn is a fork" into **Novel Mode**: long prose interludes (kind:'beat', 3-5 paragraphs, single Continue) interleaved between sparse 1-4-option decisions (kind:'decision'). Engine + UI shipped first, then YP and AP content rewrites, then 20 new YP + 20 new AP narrative beats, then bundle + test polish. Executed 2026-04-26.
+
+| Sub-phase | Scope | Tests | Commit(s) |
+|-----------|-------|-------|-----------|
+| 2C spec + plan | Design doc (`docs/superpowers/specs/2026-04-26-phase-2c-novel-mode-design.md`) + implementation plan splitting work into 4 batches. | +0 | `39afb57` (spec) + `0d8df1d` (plan) |
+| 2C-1 engine + UI | `EventSchema.kind` field (optional, defaults to `'decision'` at consumer sites for backward-compat); `RunState.turnsSinceLastDecision` tracker; `EventSelector` pacing multiplier (beat-favouring weight curve); Composer paragraph join via double-newline; `engineBridge` writes `turnsSinceLastDecision` through `resolveChoice`; PlayScreen renders single-button Continue affordance for beats + long-prose styling + scroll-to-top on event change. | +25 | `c4b19fa` `804b9e3` `d680d2e` `d9048c5` `9edb60f` `0ee1457` |
+| 2C-2a YP rewrite | All 8 existing YP packs (daily / training / social / danger / opportunity / bridge / meditation / transition) refactored into novel-mode form: prose intros expanded, decisions tightened to 2-4 meaningful forks, beat opportunities introduced. | (no net) | `0d54f58` `e0bb66a` `dd7c0c4` `3efe24e` `ad2050e` `de15d64` `0fd4db8` `ccb11f3` |
+| 2C-2b YP new beats | 20 new YP beat events across 5 themed files (weather / routine / atmosphere / inner / dream — 5+5+4+3+3); registered into engineBridge eager pool (later moved to lazy chunk in 2C-4). | (already covered) | `c336ee5` `4cdd33a` `9cb2826` `ff0ee04` `702fcb2` `657ab2e` |
+| 2C-3a AP rewrite | All 7 existing AP packs (daily / training / social / danger / opportunity / realm_gate / transition) refactored into novel-mode form. | (no net) | `123afe3` `3592d4a` `dfe8b56` `ada9ab2` `51c8260` `4f3cfad` `0222aae` |
+| 2C-3b AP new beats | 20 new AP beat events across 5 themed files; registered into the AP lazy chunk via azurePeaksLoader. | +1 (smoke) | `3aa35da` `9c77d5f` `4bf3502` `b0b770c` `d8655d7` `02d2390` |
+| 2C-4 polish | **Yellow Plains lazy-load** (mirrors AP pattern, splits ~200 KB out of cold-start bundle); novel-mode pacing integration test (asserts 2:1–15:1 beat:decision ratio); UI integration test patience bumps (caps 600→6000, timeouts 30s→120s, 5-life budget 90s→600s) for novel-mode pacing; CLAUDE.md log of Phase 2 completion. | +1 (pacing) | `bf4ff53` `f124b3d` `7ec8d8f` (this update) |
+
+**Phase 2C aggregate:** 1 PR (planned), 968 → 1040 tests on main (+72, across 133 → 143 test files), ~1 day elapsed.
+
+**Phase 2C exit criterion:** ✅ *"Playthrough reads like a novel — long prose interludes between sparse 1-4-option decisions"* — verified by `tests/integration/novel_pacing.test.ts` (beat:decision ratio in band, beats strictly outnumber decisions across a 50-turn slice).
+
+**Test count on branch**: 1040 (across 143 files). Build: **362.85 KB raw / 108.34 KB gzip main** + 215.48 KB AP lazy chunk + 178 KB across YP lazy chunks (daily/social/training/danger/opportunity/transition/bridge/meditation/beats_* + yellow_plains snippets, the largest single YP chunk is the snippets at 27.89 KB raw). Phase 3 budget 450 KB raw — **87 KB of fresh main-bundle headroom** thanks to the YP lazy split.
+
+**Branch tag (suggested)**: `phase-2c-complete` / `phase-2-complete` at the merge commit.
 
 ## Resuming work — next action
 
-**Phase 2B-1 + 2B-2 are complete.** The game now ships the Azure Peaks region (lazy-loaded), 10 techniques, 20 items including 6 partial manuals, the Sect Initiate anchor (unlocks via `life_reached_qi_sensing`), Qi Sensing → Qi Condensation realms with awakening/entry helpers, the on-path/off-path technique-bonus split, and the Tribulation I scripted 4-phase pillar engine (non-fatal). Peek/resolve RNG streams are now split (closes Phase 1 lingering item).
+**Phase 2 is fully complete.** All 5 anchors (Peasant Farmer / Martial Family / Scholar's Son / Outer Disciple / Sect Initiate) are playable end-to-end with novel-mode pacing across both Yellow Plains and Azure Peaks. Echoes inherit Life N → N+1, Forbidden Memories witnessed in Life N can manifest in Life N+5, MoodFilter tints adjectives, Codex/Lineage surface every artefact, Tribulation I fires at QC9→Foundation, and the in-life loop reads as prose with sparse forks.
 
-The next step is to **write the Phase 2B-3 plan** via `superpowers:writing-plans` at `docs/superpowers/plans/2026-04-26-phase-2b3-ui-tribulation-integration.md`. Spec source: [`docs/superpowers/specs/2026-04-25-phase-2b-techniques-paths-azure-peaks-design.md`](docs/superpowers/specs/2026-04-25-phase-2b-techniques-paths-azure-peaks-design.md) §7 (search "Phase 2B-3"). 2B-3 closes the only-UI-and-final-integration gap; engine work is fully shipped.
+The next step is to **brainstorm Phase 3 scope** via the `superpowers:brainstorming` skill. Phase 3 ("The Heavens Notice") is large; recommend decomposing into 3 sub-phases (e.g., 3-1 Heavenly Notice + Karmic Imprints engine, 3-2 Karmic Hunters + Bone Marshes content, 3-3 Tribulation II + cross-life Threads + world map). Spec source: `docs/spec/design.md` §7 (Notice + Imprints) + §8 (Bone Marshes) + §11 (world map).
 
-**Phase 2B-3 scope** (from spec §7 sub-phase decomposition):
+**Phase 3 candidate scope** (to refine in brainstorming):
 
-- `InventoryPanel` component + integration into PlayScreen overlay
-- `TechniqueList` char-sheet section
-- `CorePathBadge` with reveal-on-3rd-meridian shimmer (`corePathRevealed` post-outcome hook already firing from 2B-1)
-- Region indicator on PlayScreen header
-- `BardoPanel` extensions (techniques learned + core path reveal sections)
-- `LineageScreen` LifeCards show corePath + technique count
-- `CodexScreen` new "Techniques" tab (seen-in-world vs learned distinction)
-- `CreationScreen` Sect Initiate locked silhouette until unlock (consistent with 2A-3 anchor lock UI)
-- Tribulation I UI — scripted 4-phase pillar with per-phase check feedback (engine already ships; UI is the gap)
-- Full multi-life UI integration test: `tests/integration/playable_life_2b.test.tsx` (3-life loop where Sect Initiate unlocks and is then used)
-
-**Phase 2B-3 exit criteria** (closes spec §2 #5, #6, #8 full, plus bundle re-audit):
-
-1. UI integration tests assert DOM for InventoryPanel + TechniqueList + CorePathBadge + region indicator
-2. `BardoPanel` reveals this-life techniques + core path; `LineageScreen` LifeCards show both; Codex "Techniques" tab lists seen + learned
-3. Tribulation I UI fires at QC9 → Foundation breakthrough attempt, runs 4-phase pillar, returns non-fatal fail (Phase 3 will flip to fatal + Heavenly Notice scaling via the existing `tribulation_mode` runtime flag)
-4. Full 3-life UI loop works (`playable_life_2b.test.tsx`)
-5. Bundle re-audit: main bundle stays ≤ 450 KB raw (currently 449.24 KB — UI additions must offset elsewhere or move into the lazy chunk)
-
-**Target test count**: ~50 added → ~1018 total.
+- **Heavenly Notice system** — runtime Notice value that escalates on cultivation milestones; gates encounter rate of Karmic Hunters; flips `tribulation_mode` from non-fatal to fatal at thresholds (engine flag already plumbed from Phase 2B-1).
+- **Karmic Imprints** — cross-life debt ledger; certain death types stamp imprints; future lives encounter manifestations.
+- **Karmic Hunters** — encounter pool gated by Notice; flavor and stat scaling per Notice tier.
+- **Tribulations I-II** — Tribulation I already ships engine+UI from 2B-3; Phase 3 flips it to fatal-by-default at QC9→Foundation and adds Tribulation II at Core→Nascent.
+- **Foundation + Core realms** — extend realm progression beyond QC9.
+- **Bone Marshes region** — third region; novel-mode native (no rewrite needed — author it natively in Phase 2C style).
+- **Cross-life Threads** — narrative continuity hooks across reincarnation (a vow made in Life 3 shapes a beat in Life 7).
+- **World map UI** — replaces single-region indicator with traversable regional graph.
 
 **Exact first steps for a new session:**
 
 ```bash
 cd "D:/Claude Code/Wuxia RPG"
 git status                           # confirm clean, on main
-git pull --ff-only                   # pick up any merged work
+git pull --ff-only                   # pick up any merged work (Phase 2C PR)
 ```
 
-Then invoke `superpowers:writing-plans` to draft 2B-3 plan, branch from main as `phase-2b3-ui-tribulation`, commit plan as first commit, then drive implementation via `superpowers:subagent-driven-development`.
+Then invoke `superpowers:brainstorming` to explore Phase 3 scope. Expected output: 1 spec doc at `docs/superpowers/specs/YYYY-MM-DD-phase-3-heavens-notice-design.md` + 2-3 sub-phase plan files, each driving its own implementation via `superpowers:subagent-driven-development` + `superpowers:writing-plans`.
 
-## Known lingering items (Phase 1 + 2A + 2B-1/2B-2)
+## Known lingering items (Phase 1 + 2A + 2B + 2C)
 
 These are accepted trade-offs from prior phases that later phases should address, documented so they aren't re-fixed mid-flight:
 
@@ -176,7 +186,7 @@ These are accepted trade-offs from prior phases that later phases should address
 - ~~**Technique registry absent**~~ (Phase 1, **closed** in 2B-1/2B-2): `TechniqueSchema` + `TechniqueRegistry` + on-path/off-path bonus split shipped in 2B-1; 10-technique corpus shipped in 2B-2 + wired at both turn call sites.
 - ~~**Anchor-unlock evaluator not wired**~~ (Phase 2A-2, **closed** in 2A-3): 2A-2 shipped the evaluator class but did not wire it into `runBardoFlow`. 2A-3 wired it (`feat(meta): anchor unlock evaluator wired at bardo` → `b03365c`) so `meta.unlockedAnchors` now grows through play.
 - **`meridian_open` outcome-applier polymorphism** (Phase 1A bug, **closed** in 2B-1): `OutcomeApplier` now routes `meridian_open` deltas through `Character.withOpenedMeridian` so `detectCorePath` fires correctly when the third meridian opens via event outcome (was previously direct push into `openMeridians`, bypassing the detector).
-- **Bundle growth budget**: 449.24 KB raw / 125.43 KB gzip after 2B-2 (main chunk only). Phase 3 budget is 450 KB raw — **0.76 KB headroom remaining on the main bundle**. Azure Peaks content + gameplay registries are isolated to a `azure-peaks.js` lazy chunk (110.44 KB raw / 23.95 KB gzip) loaded on first AP-life only. Phase 2B-3 UI additions must either offset elsewhere on main or move into the lazy chunk.
+- **Bundle growth budget**: 362.85 KB raw / 108.34 KB gzip after Phase 2C-4 (main chunk only). Phase 3 budget is 450 KB raw — **~87 KB headroom on main**. BOTH regions are now lazy-loaded: `azure-peaks.js` lazy chunk (215 KB raw / 60.82 KB gzip, includes AP gameplay registries) loaded on first life via `ensureAzurePeaksLoaded()`; YP content split across many chunks (~178 KB raw total) loaded via `ensureYellowPlainsLoaded()`. Phase 3 UI / region / engine additions can use this headroom but should still prefer lazy splitting for any new region's content.
 - **Tribulation I `tribulation_mode` runtime flag** (Phase 2B-1): engine ships with `tribulation_mode: 'non_fatal' | 'fatal'` defaulting to `'non_fatal'`. Phase 3 flips the default to `'fatal'` and layers Heavenly Notice scaling on top of the same 4-phase pillar engine — do **not** rewrite the engine in Phase 3, only flip the flag and add the Notice multiplier.
 
 ## Tone & communication preferences
@@ -221,14 +231,19 @@ When working on a subsystem, re-read the relevant spec section first:
 - **`affinityMultiplier` is 1.0 on-path / 0.5 off-path** (Phase 2B-1, spec §3.6). Don't introduce a third "neutral" tier — the binary split is intentional per spec. Detection is exclusive (a character has exactly one Core Path or none-yet).
 - **`tribulation_mode` runtime flag defaults to `'non_fatal'`** (Phase 2B-1). Phase 3 flips the default; do not hardcode either branch — keep the flag plumbed through.
 - **Azure Peaks lazy-load chunk has 2 dynamic-import warnings** (`loader.ts` for events + snippets). Both `loader.ts` files are also statically imported by `engineBridge`, so Vite cannot relocate them into the lazy chunk. Accepted trade-off — chunking still saves ~110 KB on cold start. Don't try to "fix" this by removing the static imports; it would break the synchronous Yellow Plains spawn path.
+- **`EventSchema.kind` is optional** (Phase 2C-1, no schema default). Consumers MUST treat undefined as `'decision'` via `event.kind ?? 'decision'`. Existing call sites in `engineBridge.ts` (`turnsSinceLastDecision` tracking) and `EventSelector.ts` (pacing weight curve) follow this pattern; new consumers must too. The schema deliberately does not default the field so that JSON content can omit it without forcing every test fixture to be re-typed.
+- **`RunState.turnsSinceLastDecision` is optional in deserialised RunSaves** (Phase 2C-1). Migration logic uses `?? 0` fallback at every read site; Phase 1/2A/2B saves loaded into a Phase 2C+ engine will start the counter at 0 and converge naturally on the first beat resolution. Don't add a forced migrator bump for this — the optional fallback is intentional and lighter.
+- **YP and AP content are BOTH lazy-loaded chunks** (Phase 2B-2 for AP, Phase 2C-4 for YP). `engineBridge.ts` initialises `ALL_EVENTS = []` and `DEFAULT_LIBRARY = createSnippetLibrary({})`, then `ensureYellowPlainsLoaded()` + `ensureAzurePeaksLoaded()` splice both regions in at first `beginLife` (and as defensive guards in `doPeek` / `resolveChoice` for cold-reload resume paths). Tests use `__loadGameplayContent()` which awaits both loaders. Don't add a third static import of YP or AP content from anywhere — it would collapse the lazy chunks and blow the bundle budget.
 
 ## Don't do
 
 - Don't rewrite history. Commits on main are final.
 - Don't modify files in other phase-locked subsystems unless your current task requires it (and the plan permits it).
 - Don't add runtime dependencies beyond the locked set in `package.json` without explicit user approval.
-- Don't regress Phase 1, Phase 2A, or Phase 2B-1/2B-2 exit criteria — `tests/integration/playable_life.test.ts`, `ui_full_cycle.test.tsx`, `echo_inheritance.test.ts`, `memory_manifestation.test.ts`, `mood_filter_variance.test.ts`, `life_cycle_with_bardo.test.ts`, `playable_life_2a.test.tsx`, `azure_peaks_playable_life.test.ts`, and `technique_bonus_resolution.test.ts` must all stay green.
+- Don't regress Phase 1, Phase 2A, Phase 2B, or Phase 2C exit criteria — `tests/integration/playable_life.test.ts`, `ui_full_cycle.test.tsx`, `echo_inheritance.test.ts`, `memory_manifestation.test.ts`, `mood_filter_variance.test.ts`, `life_cycle_with_bardo.test.ts`, `playable_life_2a.test.tsx`, `playable_life_2b.test.tsx`, `azure_peaks_playable_life.test.ts`, `technique_bonus_resolution.test.ts`, and `novel_pacing.test.ts` must all stay green.
 - Don't replace `peasant_farmer` / `true_random` / `martial_family` / `scholars_son` / `outer_disciple` / `sect_initiate` anchor defaults — Phase 2B-3 + Phase 3 may add more, doesn't replace.
 - Don't delete the Yellow Plains or Azure Peaks content — Phase 3 authors new regions alongside, doesn't replace either.
 - Don't downgrade `MetaState` schema version (currently `4`). Migrators are cumulative (`v1 → v2 → v3 → v4`); any future bump is additive and must preserve all prior fields.
-- Don't break the `azure-peaks.js` lazy-chunk boundary. Static imports of Azure Peaks content from non-bridge code will collapse the chunk back into main and blow the bundle budget. If unsure, run `npm run build` and confirm the `azure-peaks-*.js` chunk is still ~110 KB.
+- Don't break the `azure-peaks.js` lazy-chunk boundary. Static imports of Azure Peaks content from non-bridge code will collapse the chunk back into main and blow the bundle budget. If unsure, run `npm run build` and confirm the `azure-peaks-*.js` chunk is still ~215 KB.
+- **Don't break the Yellow Plains lazy-chunk boundary either** (Phase 2C-4). Same rule as AP — YP content (events + snippets) is loaded via `yellowPlainsLoader.ts` on first `beginLife`. Static imports of YP JSON from anywhere outside the loader will pull the corpus back into main and push the bundle past 450 KB.
+- **Don't return to short-narrative-with-frequent-choices style.** Future content (Phase 3+) MUST follow Novel Mode pattern: `kind: 'beat'` events with 3-5 paragraphs by default (single Continue), `kind: 'decision'` only for life-fork moments (2-4 meaningful options). The pacing test (`tests/integration/novel_pacing.test.ts`) enforces a 2:1+ beat:decision ratio across a 50-turn slice — content authoring that drops the ratio below that band will fail CI.

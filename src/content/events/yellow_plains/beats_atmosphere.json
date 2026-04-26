@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_BEAT_ATMOSPHERE_WEDDING_FEAST",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 50,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "It is the headman's nephew's wedding, and the whole village is at the threshing-floor under a strung canopy of old red cloth that has done service at every wedding for thirty years.",
+          "$[CHARACTER] is not invited to sit at the long table, but no one has been turned away from the edges either."
+        ],
+        "body": [
+          "The musicians are three: an old man with a two-stringed huqin, a younger one with a small bronze gong, a boy with a bamboo flute who keeps half a beat behind the others and is forgiven for it. The bride sits at the head of the table in her one red dress, her face very still, her hands folded in her lap, as a bride is supposed to. The groom is two seats over and looks as though he is trying very hard not to grin and not entirely succeeding.",
+          "There is more food than $[CHARACTER]'s family sees in a month — a whole roast pig the headman has slaughtered for the occasion, three different fish from the river-bend, mountains of steamed bun, a great clay jug of millet wine being passed hand to hand at the men's end of the table. The smell alone is something the body wants to hold for later, the way the body holds a memory of warmth on the way out into a cold night.",
+          "$[CHARACTER] stands at the canopy's edge with the other uninvited children and the few unmarried young people who have come to look. A girl from two villages over — visiting cousin of the bride — laughs at something her companion has said, and the laugh is the small clean kind that the village has been needing all autumn. The old men at the men's end have begun the long slow argument that always comes after the third cup of wine: about the harvest, about the headman's father, about whether the river is moving its course again. The musicians keep playing. The world for one evening is wider than the field."
+        ],
+        "outro": [
+          "When $[CHARACTER] walks home in the dark the body still smells of the canopy's red cloth and the smoke of the roast. The night is cold; the small warm thing carried inside is, for once, more than the cold."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.atmosphere.wedding",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.atmosphere.wedding", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.atmosphere.wedding", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_ATMOSPHERE_HEADMAN_FUNERAL",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 40,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "Old Wen the headman is being carried up the eastern path to the burial-ground beyond the willow-thicket, in a plain pine box on the shoulders of six village men.",
+          "$[CHARACTER] stands at the lane's edge with the rest of the village, head lowered, and watches the procession pass."
+        ],
+        "body": [
+          "Old Wen was headman for forty-one years. He counted the harvest with his lips moving and never wrote a number down, and he was honest in his counting in a way the next generation will not entirely believe when the next generation is told about it. He buried two wives, two sons, and a daughter. He never raised his voice at a peasant, and he raised it twice in living memory at a tax-officer from the prefectural seat, both times to good effect.",
+          "Now the box goes up the path and the pall-bearers are old men themselves — the headman's own age, the four still living of his boyhood friends and two cousins, and they walk at the slow grave pace that the box and their old knees both require. Behind the box come the sons and grandsons in white mourning-cloth. Behind them the village. There is no music. There is only the small sound of feet on the dust and the small wet sound, here and there, of someone unable not to weep.",
+          "When the procession passes $[CHARACTER]'s house the grandmother bows from the threshold with her hands folded one over the other in the old formal way, and her lips move a phrase that $[CHARACTER] has not heard her use except at a death. The box passes. The line of mourners passes. The dust the procession has lifted hangs a long moment in the slanted afternoon light before it begins to settle back to the lane it was lifted from."
+        ],
+        "outro": [
+          "By evening the new headman — old Wen's eldest, who has waited twenty years for this — will be at the threshing-floor receiving the village's small careful respects. The world has turned a small dark wheel. It always does."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.atmosphere.funeral",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.atmosphere.funeral", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.atmosphere.funeral", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_ATMOSPHERE_SOUTHERN_TRADER",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 55,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "The trader from the south arrives on his small grey mule once in every fifteen days, and the village turns out for him the way the village turns out for very little else.",
+          "$[CHARACTER] joins the small ring of curious onlookers gathered at the threshing-floor."
+        ],
+        "body": [
+          "His name is Old Pang and he has been making this circuit for twenty years. The mule is older than that. The mule's name, he likes to say, is none of anyone's business. From the wicker panniers Old Pang lays out the small marvels: a fold of indigo cloth dyed in a town five days' walk south, a packet of black salt, three tin needles wrapped in paper, a small bronze mirror no larger than a child's palm, two clay jars of pickled cabbage, a folded bundle of dried mushrooms from the foothills.",
+          "But the village does not come for the goods. The village comes for the news. Old Pang sits cross-legged on the trampled clay, takes a long polite sip of the millet wine the new headman has set in front of him, and begins. The river is up at the southern bend. A pair of bandits were seen on the road three days off, but the magistrate's men ran them down by the boundary-stone. There is talk — only talk — of a young cultivator with a sword and very fine boots passing through Pine-Slope Village, asking questions about old shrines.",
+          "The last news catches in the room. The old men nod slowly; the young ones lean a little forward. $[CHARACTER] feels the small lift in the chest that the rumour of cultivators always brings — the world's larger story coming, for one cup of wine's worth of an afternoon, near enough to touch."
+        ],
+        "outro": [
+          "When Old Pang has emptied his cup and sold what he can, he gathers the panniers, scratches the mule's grey neck, and takes the south road again. The village stands a moment watching after him, then drifts back to the day's small work."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.atmosphere.trader",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.atmosphere.trader", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.atmosphere.trader", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_ATMOSPHERE_FESTIVAL_LANTERNS",
+      "category": "life.atmosphere",
+      "version": 1,
+      "weight": 45,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["summer"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "Midsummer night. The village has hung paper lanterns along the lane between the threshing-floor and the small shrine by the river, and the lanterns are red and yellow and one daring blue, and the candles inside them have been lit just at dusk.",
+          "$[CHARACTER] walks the lane with a half-eaten sweet rice-cake in one hand and the strange light on the face."
+        ],
+        "body": [
+          "The lanterns are not many — twenty, perhaps, the village's whole stock, painted by the children that morning under the patient grandmother-supervision that such painting requires. Each one bears a small crooked character: long life, good harvest, no fire. The blue one bears the character for joy, painted in slightly the wrong stroke order by a six-year-old, and is consequently the most loved of the twenty.",
+          "Down at the shrine the elder women have laid out the offerings — a small bowl of millet, a single peach, three sticks of incense burning slowly into the warm dark. A boy with a wooden flute has begun a slow tune that the older girls know the steps to, and four of them are dancing the small careful figures of the midsummer dance in the open space at the lane's end, their shadows enormous and trembling along the lantern-lit wall behind them.",
+          "$[CHARACTER] stops at the shrine and bows the small bow that the grandmother taught. The peach on the offering-stone is the year's first; it is the colour of a sunset that has been concentrated into a fruit. The river beyond, very dark, very slow, carries the lantern-light in small broken yellow shapes that drift south and never come back. There is a feeling in the chest that is not quite happiness, not quite longing — the older feeling, the one the festivals are for."
+        ],
+        "outro": [
+          "When the lanterns burn down and the village begins to drift home, $[CHARACTER] walks back through a darker dark than the dark before the festival began. The body remembers warmth. The chest remembers the lantern-light on the river."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.atmosphere.festival",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.atmosphere.festival", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.atmosphere.festival", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

@@ -6,14 +6,19 @@
       "category": "life.danger.combat",
       "version": 1,
       "weight": 20,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[ap.mountain.path] A column of unfamiliar disciples sweeps over the ridge — dark-crested robes, hands already forming seals.",
-          "Their leader points at $[CHARACTER]. 'Azure Peaks scum. This pass belongs to us now. Surrender your sect token.'"
+          "The mountain pass at the third turn rises into a narrow saddle between two pillars of grey rock — a place where the trail walks single-file for a hundred paces and where, in any season, the wind funnels through with a thin sustained whistle.",
+          "$[CHARACTER] has just cleared the saddle when a column of unfamiliar disciples sweeps over the ridge from the eastern direction — dark-crested robes, hands already forming sect-seals, the bared edge of formation-talismans in the lead disciple's grip."
+        ],
+        "body": [
+          "Their leader is a young man with a long pale scar across one cheek, the kind of scar that means a strike that would have killed a mortal and only marked a cultivator. He points at $[CHARACTER]. 'Azure Peaks scum. This pass belongs to us now. Surrender your sect token.' The two disciples flanking him are already moving sideways to cut off the trail behind.",
+          "There is no time to negotiate. The qi in the saddle has already begun to gather around the lead disciple's seals — a dirty crackling pressure that is what hostile cultivators feel like when they intend to mean it. The trail behind goes back to the cloister gate at a long uphill run; the trail forward goes down a steep slope into the lower meadow; the cliff to the west goes nowhere at all. The choice will be made in the next breath, and the next breath after that will not allow it to be unmade."
         ]
       },
       "choices": [
@@ -61,7 +66,7 @@
         },
         {
           "id": "ch_rival_sect_call_for_help",
-          "label": "Fall back toward the sect gate. Shout for the patrol.",
+          "label": "Fall back toward the sect gate. Shout for the patrol. Trust the pillars to hold the pursuit narrow.",
           "timeCost": "INSTANT",
           "check": { "base": 35, "stats": { "Agility": 1, "Mind": 1 }, "difficulty": 50, "techniqueBonusCategory": "dodge_flee" },
           "outcomes": {
@@ -118,6 +123,7 @@
       "category": "life.danger.combat",
       "version": 1,
       "weight": 12,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["meditation_cave", "beast_pass"]
@@ -125,14 +131,18 @@
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[ap.mountain.path] The qi in the cave shifts — sourced wrong, curdled. A figure steps from the shadow, pupils fully black.",
-          "'An Azure Peaks outer disciple. How convenient. I need a living meridian anchor.' His hands are already moving."
+          "The qi in the cave shifts — not the slow steady pressure of mountain qi but something else, sourced wrong, curdled, with the faint sweet rot of refined corpse-essence under it. $[CHARACTER]'s meridians register it the way a tongue registers spoiled meat."
+        ],
+        "body": [
+          "A figure steps from the back of the cave, where there should not have been room for a figure to be hidden. The pupils are not the pupils of a living cultivator. They are fully black, edge to edge, the iris consumed. The robes are the dark mottled grey of the demonic sects of the Bone Marshes, three regions east, that no Azure Peaks elder has spoken of in living memory.",
+          "He smiles. The smile does not touch the eyes. 'An Azure Peaks outer disciple. How convenient. I need a living meridian anchor for tonight's working, and the sect gate is still half a li off, and you came alone into this cave because the elders told you the cave was safe. The elders, of course, are usually right.'",
+          "His hands are already moving. Three black-ink talismans drift up around his wrists, their seals already activating. The exit of the cave is behind $[CHARACTER]. The qi inside the cave, which a breath ago was a clean cool meditation-presence, is now a tightening shroud that takes effort to breathe through. Whatever is decided, it must be decided now."
         ]
       },
       "choices": [
         {
           "id": "ch_demonic_cultivator_resist",
-          "label": "Channel every scrap of qi into a counterattack before the seal locks.",
+          "label": "Channel every scrap of qi into a counterattack. Break the seal-matrix before it locks.",
           "timeCost": "INSTANT",
           "check": { "base": 15, "stats": { "Spirit": 2, "Body": 1 }, "difficulty": 80, "techniqueBonusCategory": "qi_combat" },
           "outcomes": {
@@ -175,7 +185,7 @@
         },
         {
           "id": "ch_demonic_cultivator_flee_desperate",
-          "label": "Abandon everything. Run. Do not look back.",
+          "label": "Abandon everything. Run. The cave-mouth is behind you, and behind the cave-mouth is the trail to the gate. Do not look back.",
           "timeCost": "INSTANT",
           "check": { "base": 30, "stats": { "Agility": 2 }, "difficulty": 65, "techniqueBonusCategory": "dodge_flee" },
           "outcomes": {
@@ -201,6 +211,7 @@
       "category": "life.danger.combat",
       "version": 1,
       "weight": 18,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["beast_pass"]
@@ -208,26 +219,25 @@
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[ap.beast.pass.lower] A horn-screech from the upper trail — then silence. Then the ground trembles.",
-          "A pack of iron-ridge wolves, three times the size of mountain wolves, pour around the boulder field. They are not hunting prey. They are clearing a path."
+          "The lower trail through the Beast Pass runs along the base of a long granite scree-field, with the cliff rising sheer to the right and a sloping forest dropping away to the left. The early afternoon is hot. The cicadas in the lower pines are loud enough to drown out smaller sounds.",
+          "A horn-screech from the upper trail — then silence. Then the ground trembles."
+        ],
+        "body": [
+          "$[CHARACTER] is half a breath from realising what is coming when the iron-ridge wolves pour around the boulder field — three times the size of mountain wolves, with the heavy black ridge along the spine that gives them their name and the long yellow eyes that mark them as carriers of corrupted qi. They are not hunting prey. They are clearing a path. Something is moving them down the upper trail and they are moving everything in their way ahead of them.",
+          "The cliff to the right is too sheer to climb. The forest to the left is too steep and too sparse to lose them in. The trail behind goes back uphill into the source of whatever is moving the wolves. $[CHARACTER] does the only thing the body has been training for — sets the back foot, pulls qi into the front meridians of the legs, draws the small bone-handled knife the herb-elder loaned out for the patrol, and meets the lead wolf head-on against the cliff wall.",
+          "The first impact is enormous. The wolf's shoulder hammers into $[CHARACTER]'s braced forearm and the qi in the meridian holds — barely. The knife finds the soft place under the jaw and goes in to the hilt. The wolf dies on top of $[CHARACTER]'s feet. The pack splits around the body, snarling, confused; two of them go past at full speed without even attempting to engage; the third pauses, considers, and then decides the kill is not worth the cost. It barks once at the others, wheels, and follows them down-trail.",
+          "$[CHARACTER] slumps against the cliff with the dead wolf at the boots and the knife still in its throat. The blood is hot. The whole right shoulder is going numb in the slow ominous way that means a torn meridian, not a torn muscle. The trail above is silent again."
+        ],
+        "outro": [
+          "The walk back to the cloister gate is long and slow. By the time $[CHARACTER] reaches the eastern cloister gate-watch, the right arm is hanging useless and the patrol's bone-handled knife has been left behind in the wolf's throat for someone less unlucky to find."
         ]
       },
       "choices": [
         {
-          "id": "ch_beast_pass_stand_ground",
-          "label": "Brace against the rock wall. Meet the lead wolf head-on.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "INSTANT",
-          "check": { "base": 20, "stats": { "Body": 2, "Spirit": 1 }, "difficulty": 65, "techniqueBonusCategory": "brute_force" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.beast_ambush.alpha_felled",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -10 },
-                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
-                { "kind": "insight_delta", "amount": 3 },
-                { "kind": "flag_set", "flag": "slew_iron_ridge_wolf_alpha" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.beast_ambush.pack_scattered",
               "stateDeltas": [
@@ -253,48 +263,6 @@
               "deathCause": "beast"
             }
           }
-        },
-        {
-          "id": "ch_beast_pass_dodge_cliff",
-          "label": "Climb. The wolves cannot follow onto the cliff-face.",
-          "timeCost": "INSTANT",
-          "check": { "base": 35, "stats": { "Agility": 2, "Body": 1 }, "difficulty": 55, "techniqueBonusCategory": "dodge_flee" },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.beast_ambush.escaped_high",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -8 },
-                { "kind": "flag_set", "flag": "survived_beast_pass_ambush" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.beast_ambush.torn",
-              "deathCause": "beast"
-            }
-          }
-        },
-        {
-          "id": "ch_beast_pass_qi_burst",
-          "label": "Release a raw qi burst. Scatter them with force, not finesse.",
-          "timeCost": "INSTANT",
-          "check": { "base": 25, "stats": { "Spirit": 2 }, "difficulty": 60, "techniqueBonusCategory": "qi_combat" },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.beast_ambush.pack_scattered",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -12 },
-                { "kind": "qi_delta", "amount": -20 },
-                { "kind": "flag_set", "flag": "survived_beast_pass_ambush" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.beast_ambush.pushed_back",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -30 },
-                { "kind": "qi_delta", "amount": -10 }
-              ]
-            }
-          }
         }
       ],
       "repeat": "unlimited"
@@ -304,6 +272,7 @@
       "category": "life.danger",
       "version": 1,
       "weight": 15,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["scripture_hall", "alchemy_pavilion"]
@@ -311,26 +280,25 @@
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[ap.scripture.hall.candle] The lights in the pavilion corridor flicker without wind. A hooded figure stands at the end, hands folded, paper talismans drifting upward around the wrists.",
-          "'Azure Peaks loses another disciple every season,' he says pleasantly. 'The elders never notice if the body doesn't surface. Let's see how many talismans you can break before you fall.'"
+          "The corridor between the Scripture Hall and the Alchemy Pavilion is a covered walkway of carved cedar, lit at intervals by paper lanterns that the night-disciple should have refilled at the second watch. Tonight one of them has not been refilled. The lights flicker without wind.",
+          "$[CHARACTER] is halfway down the corridor before noticing the figure at the far end."
+        ],
+        "body": [
+          "He stands very still — robe the muted grey of a wandering cultivator, the hood pulled forward, the hands folded into the sleeves in a posture of patient waiting. Three paper talismans drift upward around his wrists in a slow lazy rotation, the ink on them visibly active, the seals catching the lantern-light in pulses that do not match the lantern's flicker.",
+          "'Azure Peaks loses another disciple every season,' he says pleasantly. The voice is younger than his stillness suggested. 'The elders never notice if the body doesn't surface. There are caves below the alchemy floor where a body simply… settles. Let's see how many talismans you can break before you fall.' His hands come out of the sleeves. The first talisman peels off his wrist and floats into the air between them.",
+          "$[CHARACTER]'s qi is already moving — the meridians of the forearms going bright with it, the dantian gathering for a counter-seal — but the talisman is faster than $[CHARACTER]'s formation training has prepared for. It crosses the air between them in three breaths and bursts a hand's-breadth from the chest in a sheet of cold white fire that the qi-shield catches at the last possible moment. Half the cedar wall behind $[CHARACTER] burns away. The second talisman is already coming.",
+          "The fight that follows lasts the length of seven breaths. $[CHARACTER] does not remember any of them clearly afterward. The body remembers — the spin, the duck, the counter-seal that breaks the third talisman in midair, the sword-hand strike that catches the rogue's wrist before the fourth talisman can deploy. The rogue staggers, hisses, and is gone — vanished down the burnt corridor in a shimmer of qi that the eye loses before the mind has finished registering it."
+        ],
+        "outro": [
+          "$[CHARACTER] is left standing in the half-burned corridor with the small singed paper-edge of one broken talisman in hand — a warding-sigil, valuable, the elders will want to see it. The wall will need a carpenter. The lantern-disciple will need a stern conversation. The body will need a long sleep."
         ]
       },
       "choices": [
         {
-          "id": "ch_talisman_master_counter_seal",
-          "label": "Form a counter-seal. Break the talisman matrix before it triggers.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 30, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 60, "techniqueBonusCategory": "qi_combat" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.talisman_master.matrix_unraveled",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "warding_talisman", "count": 1 },
-                { "kind": "insight_delta", "amount": 4 },
-                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
-                { "kind": "flag_set", "flag": "defeated_talisman_master" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.talisman_master.countered",
               "stateDeltas": [
@@ -352,36 +320,6 @@
                 { "kind": "hp_delta", "amount": -30 },
                 { "kind": "qi_delta", "amount": -15 }
               ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.talisman_master.burned",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -45 },
-                { "kind": "qi_delta", "amount": -20 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_talisman_master_bait_and_dodge",
-          "label": "Draw his first strike. Dodge under it. Close the distance.",
-          "timeCost": "SHORT",
-          "check": { "base": 35, "stats": { "Agility": 2, "Body": 1 }, "difficulty": 55, "techniqueBonusCategory": "dodge_flee" },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.talisman_master.disarmed",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "warding_talisman", "count": 1 },
-                { "kind": "hp_delta", "amount": -8 },
-                { "kind": "flag_set", "flag": "defeated_talisman_master" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.talisman_master.burned",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -35 },
-                { "kind": "qi_delta", "amount": -12 }
-              ]
             }
           }
         }
@@ -393,32 +331,32 @@
       "category": "life.danger",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.mountain.path] The outer trial field: a half-mile corridor of rotating formation discs, pressure-qi spikes, and a timed passage gate at the far end.",
-          "The instructor stands at the entrance with a water-clock. 'Complete it or turn back. There is no rescue once the gate closes.'"
+          "The outer trial field is at the back of the East Court terrace, walled off by a tall lacquered fence so that the failed disciples may fail in private. Inside the fence: a half-mile corridor of rotating formation discs, pressure-qi spikes that rise and fall in a rhythm only the formation-elders fully understand, and a timed passage gate at the far end that closes a finger's-breadth at a time as the quarter-hour runs.",
+          "The instructor stands at the entrance with a water-clock in one hand and a list of names in the other. 'Complete it or turn back. There is no rescue once the gate closes.' $[CHARACTER]'s name is called."
+        ],
+        "body": [
+          "$[CHARACTER] crosses the threshold and the water-clock begins. The first disc comes around at hip height, slowly enough to step over; the second comes at shoulder height, and faster; the third is a horizontal rotation that requires a ducking sidestep at the precise count of two. $[CHARACTER] takes the first three obstacles cleanly and feels, briefly, the false confidence of someone who has not yet hit the difficult section.",
+          "The pressure-qi spikes begin at the corridor's middle. They rise from the floor in slow brick-coloured pulses that, when struck full-on, will throw a body backward five paces and burn the meridians of the legs for a week. The trick is to time them — to read the rhythm in the way the qi-density of the corridor air thickens just before each spike — and to step through the half-second gaps between them. $[CHARACTER] reads the rhythm wrong on the second pulse and takes a glancing hit that throws him sideways into the corridor wall hard enough to crack a rib.",
+          "The third quarter of the corridor is the worst — discs and spikes together, with the timed gate at the far end already a quarter-shut, the water-clock down to its last finger. $[CHARACTER] runs. The body has stopped consulting the mind; the qi has gone somewhere very old and very fast in the meridians of the legs; the corridor blurs. A spike misses by the breadth of a sleeve. A disc misses by the breadth of a hair. The gate is closing.",
+          "$[CHARACTER] crosses the threshold of the gate as it closes — not through it, but with it, the last finger's-width of stone whispering past the back of the heel. The instructor on the far side glances up from the water-clock with the small unimpressed nod that is his entire language of approval. 'Passed. Drink. Sit. Don't bleed on the threshold.'"
+        ],
+        "outro": [
+          "The bench at the trial's exit gate is for the disciples who have passed. There are not many on it. $[CHARACTER] sits, holding the cracked rib carefully, and watches the next name on the list step through the entrance threshold. The water-clock begins again."
         ]
       },
       "choices": [
         {
-          "id": "ch_outer_trial_push_through",
-          "label": "Enter. Move fast. Trust your body and qi to carry you.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 25, "stats": { "Body": 2, "Spirit": 1 }, "difficulty": 65, "techniqueBonusCategory": "brute_force" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.outer_trial.first_pass",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
-                { "kind": "insight_delta", "amount": 4 },
-                { "kind": "meditation_progress", "base": 20, "insightBonus": 3 },
-                { "kind": "flag_set", "flag": "passed_outer_trial" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.outer_trial.completed",
               "stateDeltas": [
@@ -444,45 +382,6 @@
             "CRIT_FAILURE": {
               "narrativeKey": "ap.action.outer_trial.formation_collapse",
               "deathCause": "combat_melee"
-            }
-          }
-        },
-        {
-          "id": "ch_outer_trial_calculated_route",
-          "label": "Study the disc patterns first. Map the gaps. Move only when certain.",
-          "timeCost": "LONG",
-          "check": { "base": 35, "stats": { "Mind": 2, "Agility": 1 }, "difficulty": 55, "techniqueBonusCategory": "lore_scholarship" },
-          "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.outer_trial.first_pass",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
-                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
-                { "kind": "insight_delta", "amount": 5 },
-                { "kind": "flag_set", "flag": "passed_outer_trial" }
-              ]
-            },
-            "SUCCESS": {
-              "narrativeKey": "ap.action.outer_trial.completed",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
-                { "kind": "hp_delta", "amount": -8 },
-                { "kind": "flag_set", "flag": "passed_outer_trial" }
-              ]
-            },
-            "PARTIAL": {
-              "narrativeKey": "ap.action.outer_trial.partial_passage",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -20 },
-                { "kind": "qi_delta", "amount": -10 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.outer_trial.dragged_out",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -35 },
-                { "kind": "qi_delta", "amount": -15 }
-              ]
             }
           }
         }

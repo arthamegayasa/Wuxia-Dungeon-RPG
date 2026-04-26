@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PlayScreen } from './PlayScreen';
@@ -109,6 +109,63 @@ describe('Phase 2B-3: PlayScreen renders TribulationPanel inline', () => {
     await waitFor(() => screen.getByRole('button', { name: /continue/i }));
     await userEvent.click(screen.getByRole('button', { name: /continue/i }));
     expect(screen.queryByText(/the heavens stir/i)).not.toBeInTheDocument();
+  });
+});
+
+describe('Phase 2C: novel-mode rendering', () => {
+  // Polyfill window.scrollTo (jsdom does not provide it by default).
+  beforeEach(() => {
+    Object.defineProperty(window, 'scrollTo', { value: vi.fn(), writable: true, configurable: true });
+  });
+
+  it("renders a single centered Continue button when preview has only an id:'continue' choice", () => {
+    const beatPreview = {
+      ...PREVIEW,
+      choices: [{ id: 'continue', label: 'Continue' }],
+    };
+    render(<PlayScreen preview={beatPreview} onChoose={() => {}} />);
+    expect(screen.getByRole('button', { name: /^continue$/i })).toBeInTheDocument();
+  });
+
+  it("calls onChoose('continue') when the Continue button is clicked", async () => {
+    const beatPreview = {
+      ...PREVIEW,
+      choices: [{ id: 'continue', label: 'Continue' }],
+    };
+    const onChoose = vi.fn();
+    render(<PlayScreen preview={beatPreview} onChoose={onChoose} />);
+    await userEvent.click(screen.getByRole('button', { name: /^continue$/i }));
+    expect(onChoose).toHaveBeenCalledWith('continue');
+  });
+
+  it('renders the choice list (no Continue) when preview has 2+ choices', () => {
+    // PREVIEW has 2 choices walk + chase, neither is 'continue'.
+    render(<PlayScreen preview={PREVIEW} onChoose={() => {}} />);
+    expect(screen.queryByRole('button', { name: /^continue$/i })).toBeNull();
+    expect(screen.getByRole('button', { name: /walk on/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /chase it/i })).toBeInTheDocument();
+  });
+
+  it('renders the choice list when single choice has id != "continue"', () => {
+    const singleNonContinue = {
+      ...PREVIEW,
+      choices: [{ id: 'pray', label: 'Pray for guidance.' }],
+    };
+    render(<PlayScreen preview={singleNonContinue} onChoose={() => {}} />);
+    expect(screen.queryByRole('button', { name: /^continue$/i })).toBeNull();
+    expect(screen.getByRole('button', { name: /pray for guidance/i })).toBeInTheDocument();
+  });
+
+  it('scrolls to top when narrative changes', () => {
+    const scrollSpy = vi.fn();
+    Object.defineProperty(window, 'scrollTo', { value: scrollSpy, writable: true, configurable: true });
+
+    const { rerender } = render(<PlayScreen preview={PREVIEW} onChoose={() => {}} />);
+    expect(scrollSpy).toHaveBeenCalled();
+    scrollSpy.mockClear();
+
+    rerender(<PlayScreen preview={{ ...PREVIEW, narrative: 'A different paragraph.' }} onChoose={() => {}} />);
+    expect(scrollSpy).toHaveBeenCalled();
   });
 });
 

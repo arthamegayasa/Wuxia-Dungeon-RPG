@@ -6,50 +6,40 @@
       "category": "life.training",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] A heavy stone leans against the wall, worn smooth by generations of hands.",
-          "$[CHARACTER] sets his feet. The old men say: lift the stone each dawn, and the body remembers."
+          "Behind the hut, half-buried in the weeds, leans a stone the size and shape of a sleeping child. The old men of the village call it the Lifting Stone.",
+          "$[CHARACTER] sets his feet in the cool dust before dawn. The old men say: lift the stone each morning, and the body remembers."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The first try is always a failure of position before it is a failure of strength. The hands grip wrong; the back arches; the breath escapes. The stone refuses with the indifferent patience of stone.",
+          "Reset. Hands lower, palms beneath the curve of its underside. The dantian gathers — not consciously, not yet, just the body's slow learning. Knees bend; spine straightens; the breath gathers in the chest like a cup of cold water held without spilling.",
+          "Lift. The stone comes up to the chest, hangs there for a count of three slow breaths, comes down soft. The arms tremble. The thighs are warm with effort. Then again. Then again. The sun edges over the eastern ridge and catches the dust around $[CHARACTER]'s feet, turns it gold."
+        ],
+        "outro": [
+          "By the tenth lift the stone is no lighter, but the body has learned the shape of the work. That is the lesson the old men meant."
+        ]
       },
       "choices": [
         {
-          "id": "ch_lift",
-          "label": "Lift the stone.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Body": 1 }, "difficulty": 45 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.work.plowing",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 2 }
-              ],
-              "witnessMemory": "iron_bamboo_stance"
-            },
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
-              ]
+              ],
+              "witnessMemory": "iron_bamboo_stance"
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.work.plowing", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.work.plowing", "stateDeltas": [] }
           }
         }
       ],
@@ -60,6 +50,7 @@
       "category": "life.training",
       "version": 1,
       "weight": 20,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["spring", "summer"]
@@ -67,47 +58,34 @@
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.river_low] The river is cold even at noon. The current pulls harder than it looks.",
-          "$[CHARACTER] strips to the waist and wades in."
+          "The river that crosses the eastern fields is shallow most of the year — knee-deep in the slow stretches, waist-deep where the bottom dips at the willow's roots. But the current is honest. It pulls harder than it looks.",
+          "$[CHARACTER] strips to the waist on the muddy bank and wades in. The water is cold even at noon."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The cold seizes the skin first, then the breath. For a full count the body refuses to do anything but shudder. Then the shudder becomes a kind of warmth — the qi gathering at the dantian and pushing outward, the smallest of cultivator's lessons learned by an entirely unconscious peasant.",
+          "Stroke. The arms remember from boyhood, when an uncle threw the boy in and stood on the bank shouting instructions. Stroke. The current pushes upstream-side; the legs kick crosswise to compensate. The mouth tastes of river silt and faint, far iron.",
+          "Halfway across is the test. The water deepens; the bottom drops; for a heartbeat there is only the green-brown column of the river beneath the sandals' last touch and the surface above. $[CHARACTER] does not panic. The body holds itself. The strokes find their rhythm. A heron lifts off the far bank, slow grey wings beating the air, and the boy is across, gasping, alive, more alive than at any other hour of any other day."
+        ],
+        "outro": [
+          "Lying on the warm clay of the far bank, the sky enormous, the lungs working — this is the closest a peasant child comes to flight."
+        ]
       },
       "choices": [
         {
-          "id": "ch_swim",
-          "label": "Swim against the current.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 20, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 50 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.work.plowing",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
-                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 },
-                { "kind": "insight_delta", "amount": 1 }
-              ],
-              "witnessMemory": "hollow_mountain_breath"
-            },
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
                 { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
-              ]
+              ],
+              "witnessMemory": "hollow_mountain_breath"
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.fear.sudden",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.fear.sudden",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.fear.sudden",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -12 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.work.plowing", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.work.plowing", "stateDeltas": [] }
           }
         }
       ],
@@ -118,50 +96,40 @@
       "category": "life.training",
       "version": 1,
       "weight": 25,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hills] The hill is not a mountain, but the climb is long enough to burn the lungs.",
-          "$[CHARACTER] starts up the rutted path. One foot. Then the next."
+          "The hill is not a mountain. It is barely a hill. But its rutted path is long enough to burn the lungs, and from its top one can see the smoke of three villages and a road that bends away into haze.",
+          "$[CHARACTER] starts up at a slow trot. One foot. Then the next. The dust rises with each strike."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The first quarter of the climb is easy. The lungs draw deep; the legs spring; the body has not yet realized it has been asked to do work. The path winds between scrub-pine and dry grass; a magpie scolds from a low branch and is gone.",
+          "By the halfway point the lungs have become a different organ — fire-bellows now, working in time with the heart, the heart working louder than the wind. The legs grow heavy. The mind narrows to the next step, then the next. There is no thought of the top, only of not stopping, because to stop is to admit that the body is a thing that can be defeated.",
+          "The last stretch is hands-and-feet, the slope steeper, the path more rumour than path. $[CHARACTER] reaches the top and does not so much arrive as collapse onto the warm grass at the summit. The whole flat country opens below — millet fields green-yellow, the river a thread of bright steel, the smoke of distant chimneys, the sky enormous and blue."
+        ],
+        "outro": [
+          "Lying on the grass with the heart slowing, breath after breath, the sun on the closed eyelids — this is the body's secret reward for cruelty."
+        ]
       },
       "choices": [
         {
-          "id": "ch_run",
-          "label": "Run all the way to the top.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.travel.urgent",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Agility", "amount": 2 }
-              ],
-              "witnessMemory": "iron_bamboo_stance"
-            },
             "SUCCESS": {
               "narrativeKey": "action.travel.urgent",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
-              ]
+              ],
+              "witnessMemory": "iron_bamboo_stance"
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -4 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.travel.urgent", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.travel.urgent", "stateDeltas": [] }
           }
         }
       ],
@@ -172,32 +140,31 @@
       "category": "life.training",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[time.dawn.mist] The first light spills over the flat country. The village still sleeps.",
-          "$[CHARACTER] sits cross-legged on the clay threshold. $[reflection.mood.resolve.1]"
+          "The first light spills over the flat country in a grey-pink wash. Mist still clings to the irrigation ditches. The village still sleeps — only the rooster's first cracked call has gone up.",
+          "$[CHARACTER] sits cross-legged on the cool clay of the threshold."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "Spine straight. Hands folded loose in the lap, palms up, the right resting on the left. The eyes half-closed but not shut — the lashes filter the dawn into something soft. The breath finds itself, slowing without being told.",
+          "In, out. In, out. The chest rises a fingerwidth and falls. The qi in the air is thin out here on the plain — the elders of the higher mountains would say the country is starved of it — but there is enough. Enough to feel, faintly, the warmth gathering at the lower belly. Enough to feel, faintly, the cold of the morning brushing the back of the neck and being held at the skin's edge by some small inner fire.",
+          "The mind wanders. To the field. To the rice-jar. To a girl glimpsed once at the well. The breath goes on without it. When the mind comes back, the breath welcomes it without comment, and the count begins again — one, two, three — without judgment, without effort, the way a river does not judge the leaves that fall on it."
+        ],
+        "outro": [
+          "When the sun clears the eastern ridge and warms the closed eyelids, $[CHARACTER] opens the eyes. The world is exactly as it was, only seen now with a stillness that was not there before."
+        ]
       },
       "choices": [
         {
-          "id": "ch_meditate_dawn",
-          "label": "Breathe with the dawn.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Spirit": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 3 },
-                { "kind": "cultivation_progress_delta", "amount": 5 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.rest.meditation",
               "stateDeltas": [
@@ -205,20 +172,8 @@
                 { "kind": "cultivation_progress_delta", "amount": 3 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "reflection.mood.melancholy.1",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "reflection.mood.melancholy.1",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] }
           }
         }
       ],
@@ -229,32 +184,31 @@
       "category": "life.training",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[time.dusk.field] The sun falls into the dust. Smoke from cooking fires hangs low.",
-          "$[CHARACTER] sits on the cooling earth. $[reflection.mood.serenity.1]"
+          "The sun lowers itself into the dust at the western horizon. Smoke from the cooking fires of the village hangs low over the lanes, blue and slow.",
+          "$[CHARACTER] sits on the cooling earth at the field's edge, feet bare, the day's sweat already dried on the skin."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "Dusk meditation is different from dawn meditation. At dawn the qi is a thing arriving; at dusk it is a thing departing, and the body's task is not to gather but to release. The breath lengthens. The shoulders, knotted from the day's labour, find permission to drop.",
+          "A cricket somewhere begins. Then another. Then a chorus, the whole field of them, and beneath that the very faint song of the river half a li off. The mind, listening, becomes the listening — no longer a separate thing.",
+          "The first star is found above the eastern ridge by an eye half-closed. The second is found by the breath's pause between out and in. The third is no longer counted. There is just the cooling earth beneath, the cooling sky above, and the body becoming, for one hour, neither tired nor unweary, neither full nor empty — simply present, simply alive, the small lantern of a self burning even and clean."
+        ],
+        "outro": [
+          "When $[CHARACTER] rises, the whole village has fallen quiet. Only the dogs, somewhere far, are still talking to each other across the dark."
+        ]
       },
       "choices": [
         {
-          "id": "ch_meditate_dusk",
-          "label": "Settle the mind before sleep.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Mind": 1 }, "difficulty": 30 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "qi_delta", "amount": 3 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.rest.meditation",
               "stateDeltas": [
@@ -262,18 +216,8 @@
                 { "kind": "qi_delta", "amount": 2 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [{ "kind": "qi_delta", "amount": 1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "reflection.mood.melancholy.1",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "reflection.mood.melancholy.1",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] }
           }
         }
       ],
@@ -284,32 +228,31 @@
       "category": "life.training",
       "version": 1,
       "weight": 12,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] A neighbor, an old clerk gone half-blind, lends out a battered scroll.",
-          "$[CHARACTER] unrolls it by the thin lamp. The characters swim. Some of them are meaningful."
+          "Old Han the half-blind clerk, who lives at the lane's end and who once served in some lord's writing-room before the bandits came and took his eyes' good half, lends out a battered scroll for the price of a bowl of rice.",
+          "$[CHARACTER] unrolls it by the thin light of a lamp filled with the cheapest mustard oil."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The brushwork is old, the characters severe and precise — the hand of someone who learned in a real school. Some of the strokes have faded to ghosts. Others are clear. The text is a fragment of the Yellow Emperor's classic on the body's inner channels, copied and re-copied so many times that whole phrases have drifted from their original meaning into something stranger and more poetic.",
+          "$[CHARACTER] reads slowly. The lips move; the finger traces. Each character is a small puzzle — the radical first, then the rest, then the meaning if the meaning will come. Some hours the meaning comes. Others, the eye simply tires and the lamp gutters and the night closes in around the small cone of light.",
+          "There are diagrams. A human body opened from neck to navel, the channels drawn through it like rivers on a map of a country no one has ever walked. The names of the meridians in old, unfamiliar script. The thin black mark of a brush noting where a cultivator should rest his attention to gather qi from the air. None of it makes sense. All of it stays in the mind."
+        ],
+        "outro": [
+          "When the lamp finally fails $[CHARACTER] rolls the scroll up carefully, ties it with its silk thread, and lies down in the dark with the diagrams glowing very faintly behind the eyes."
+        ]
       },
       "choices": [
         {
-          "id": "ch_study",
-          "label": "Read through the night.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 20, "stats": { "Mind": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.wonder.quiet",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 6 },
-                { "kind": "flag_set", "flag": "read_first_scroll" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.wonder.quiet",
               "stateDeltas": [
@@ -318,19 +261,12 @@
               ]
             },
             "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "read_first_scroll" }
-              ]
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "read_first_scroll" }]
             },
             "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "read_first_scroll" }]
             }
           }
         }
@@ -342,52 +278,39 @@
       "category": "life.training",
       "version": 1,
       "weight": 40,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.inn_yard] A dusty yard, a scarred wooden post. Stance. Strike. Stance. Strike.",
-          "$[CHARACTER] goes through a simple peasant form an uncle once taught."
+          "An old uncle, dead these eight winters, once taught $[CHARACTER] a peasant's form — six stances, three strikes, an old farmer's idea of fighting. It is not a technique. It is barely a memory. But it is what the boy has.",
+          "Behind the hut: a dusty yard, a scarred wooden post worn pale where many fists have struck."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "Stance. The feet shoulder-wide, knees soft, weight a little forward. The hands close into fists — not tight, the uncle had said, tight is brittle, hold them like you hold an egg you do not wish to crack. Strike. The post takes the blow with a low dry note. The wrist learns again the small punishment of imperfect alignment.",
+          "Reset. Stance. Strike. The dust rises around the bare feet in small clouds and settles on the trouser-legs. Sweat begins under the arms, between the shoulder-blades. The breath finds a working rhythm — out on the strike, in on the recovery. After a hundred strikes the wrist has stopped hurting and the alignment has begun to be true.",
+          "There is a cousin once who said: a peasant's form is a peasant's form, and no one will ever lose to it who has trained in a real school. That may be true. But the cousin is gone and the form remains, and so do the post and the dust and the slow, repeated, honest work of $[CHARACTER]'s arms."
+        ],
+        "outro": [
+          "By the end the post bears a fresh pale dent where the knuckles have struck cleanest. A small claim against time, scratched into wood."
+        ]
       },
       "choices": [
         {
-          "id": "ch_practice",
-          "label": "Drill the form until the arms burn.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.fight.desperate",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
-                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.fight.desperate",
               "stateDeltas": [
                 { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "action.fight.desperate",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Agility", "amount": 1 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.fight.desperate", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.fight.desperate", "stateDeltas": [] }
           }
         }
       ],
@@ -398,32 +321,31 @@
       "category": "life.training",
       "version": 1,
       "weight": 35,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[time.night.quiet] The hut is dark. The family breathes in the other room.",
-          "$[CHARACTER] counts breath in, breath out. One to ten. Then again."
+          "Late night. The hut is dark; the family breathes in the other room, the soft uneven sounds of three sleepers. Somewhere outside a single dog answers another, far off.",
+          "$[CHARACTER] sits up in the straw, draws the legs into a half-lotus, and begins to count the breath. One to ten. Then again."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "It seems the simplest discipline. It is not. By the third count the mind has already drifted — a worry about the field, a face from market day, an itch on the calf. The count returns. Begin again. One. Two. The mind drifts again before three.",
+          "The trick — half-remembered from something the old monk said at the shrine — is not to fight the wandering. It is to notice it the way one notices a moth at the lantern, and then to come back to the count without scolding the moth or the self. One. Two. Three. The breath lengthens slightly without being asked.",
+          "Some hours into the night the count has done what counts do. It has worn itself transparent. The breath continues; the count is no longer a thing the mind does, it is a thing the breath does. The body sits in the dark and breathes itself, and somewhere very small at the centre of the chest a faint warmth gathers and holds."
+        ],
+        "outro": [
+          "When the dawn is still hours away $[CHARACTER] lies down and sleeps the deep brief sleep of the disciplined. It will be enough."
+        ]
       },
       "choices": [
         {
-          "id": "ch_breath",
-          "label": "Count the breath until it counts itself.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 30, "stats": { "Spirit": 1 }, "difficulty": 30 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [
-                { "kind": "qi_delta", "amount": 5 },
-                { "kind": "insight_delta", "amount": 2 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.rest.meditation",
               "stateDeltas": [
@@ -431,18 +353,8 @@
                 { "kind": "insight_delta", "amount": 1 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [{ "kind": "qi_delta", "amount": 1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "reflection.mood.melancholy.1",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "reflection.mood.melancholy.1",
-              "stateDeltas": []
-            }
+            "PARTIAL": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.rest.meditation", "stateDeltas": [] }
           }
         }
       ],
@@ -453,33 +365,31 @@
       "category": "life.training",
       "version": 1,
       "weight": 15,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.shrine] A wandering monk once said: hunger sharpens the spirit, if the spirit does not break first.",
-          "$[CHARACTER] turns away from the rice pot. $[reflection.mood.resolve.2]"
+          "A wandering monk who passed through the village last winter said one strange sentence and would not say more: hunger sharpens the spirit, if the spirit does not break first.",
+          "$[CHARACTER] turns away from the rice pot. A full day, a full night, no food."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The first hours are not difficult. The morning's bowl of porridge sits in the belly still; the body does not yet know what is being asked of it. $[CHARACTER] works the field as usual, fetches the water, hauls the wood. The body assumes the next meal is coming, because the next meal has always come.",
+          "By dusk the body knows. The hunger arrives not as pain but as a thinness — the mind grows quick and edgy, the hands shake very faintly when a task requires precision. The smell of a neighbour's rice cooking is unbearable and beautiful in equal measure. There is a moment, looking at the family's pot through the door, when the resolve nearly breaks.",
+          "It does not break. The night passes. The body, refused, turns inward — burns its own fuel, the fat of months, the small reserves the peasant had not known were there. The qi at the dantian, instead of dimming as expected, gathers and brightens, drawn from somewhere finer than food. The dawn finds $[CHARACTER] hollow and clear-eyed, the mind sharp as a paring knife held in the cold."
+        ],
+        "outro": [
+          "When the fast is broken with a single bowl of plain porridge, every grain of millet is a separate revelation."
+        ]
       },
       "choices": [
         {
-          "id": "ch_fast",
-          "label": "Fast for a full day and night.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 20, "stats": { "Spirit": 1 }, "difficulty": 50 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [
-                { "kind": "qi_delta", "amount": 6 },
-                { "kind": "insight_delta", "amount": 3 },
-                { "kind": "cultivation_progress_delta", "amount": 4 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.rest.meditation",
               "stateDeltas": [
@@ -490,20 +400,11 @@
             },
             "PARTIAL": {
               "narrativeKey": "emotion.hunger.mild",
-              "stateDeltas": [
-                { "kind": "qi_delta", "amount": 1 },
-                { "kind": "insight_delta", "amount": 1 },
-                { "kind": "hp_delta", "amount": -2 }
-              ]
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
             },
             "FAILURE": {
               "narrativeKey": "emotion.hunger.severe",
               "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.hunger.severe",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -20 }],
-              "deathCause": "starvation"
             }
           }
         }
@@ -515,34 +416,31 @@
       "category": "life.training",
       "version": 1,
       "weight": 5,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.shrine] The old stories speak of the twelve meridians, and how the first one is the hardest.",
-          "$[CHARACTER] sits in full lotus. $[reflection.mood.resolve.2]",
-          "The qi in the air is thin, but it is there. The body is a locked door."
+          "The old stories the village's grandmothers tell speak of the twelve meridians — the rivers within the body — and of how the first opening is always the hardest, because it is the proof that the rivers exist at all.",
+          "At the small roadside shrine to a forgotten local god, where no one will see, $[CHARACTER] sits in a full lotus that the knees protest. The qi in the cool air is thin, but it is there. The body is a locked door."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "Hours of breath-work first. The dantian gathers what it can, a slow warm pool no larger than a held copper coin. Then the will turns — for the first time — inward. The mind, instead of watching the breath, watches the body's inside, looking for what the scrolls call the heart meridian: a channel running from the thumb-side of the wrist up through the chest to a node above the heart.",
+          "There is nothing. Nothing. Then — perhaps a trick of the long sitting — a faint warmth where the wrist's pulse sits. $[CHARACTER] pushes the gathered qi toward it, the way a child pushes a paper boat into a still pond. For a long moment nothing happens. Then the warmth answers, very faintly, very faintly — like a thread tugged at by a finger half a li away.",
+          "The push deepens. The breath narrows to a thread. The mind narrows to a single point, the wrist, the warmth, the thread between them. There is a moment of pure resistance — the door will not open — and then a sudden small giving, like cloth tearing in the dark, and the warmth flares. A whole channel, briefly, lights up beneath the inner eye. The boy gasps, comes back to the body, finds the shrine and the old wood and the thin sunlight again. But something has been opened that will not close."
+        ],
+        "outro": [
+          "$[CHARACTER] walks home that evening with the wrist warm, the chest warm, and the certain knowledge that the stories were not stories at all."
+        ]
       },
       "choices": [
         {
-          "id": "ch_open",
-          "label": "Push the qi against the heart meridian.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 15, "stats": { "Spirit": 1, "Mind": 1 }, "difficulty": 70 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.wonder.sudden",
-              "stateDeltas": [
-                { "kind": "meridian_open", "id": 1 },
-                { "kind": "insight_delta", "amount": 8 },
-                { "kind": "qi_delta", "amount": 5 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.wonder.sudden",
               "stateDeltas": [
@@ -560,10 +458,6 @@
             "FAILURE": {
               "narrativeKey": "emotion.fear.sudden",
               "stateDeltas": [{ "kind": "hp_delta", "amount": -10 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.fear.sudden",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -20 }]
             }
           }
         }

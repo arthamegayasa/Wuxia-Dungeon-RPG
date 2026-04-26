@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_BEAT_DREAM_BURNING_CITY",
+      "category": "life.dream",
+      "version": 1,
+      "weight": 30,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The dream is the dream of a city that $[CHARACTER] has never seen.",
+          "It is burning."
+        ],
+        "body": [
+          "There are towers — three towers, very tall, with the curved tile roofs of a southern style the village has only heard about — and they are the second thing on fire. The first thing was the markets, the long roofed lanes between the towers, and the markets are now ash and beams and the smell of hot iron. The wind comes off the burning markets and into the towers, and the towers, very slowly, begin to flower with red.",
+          "$[CHARACTER] is standing on a wide stone bridge over a river that runs through the city. The bridge is also stone, and old, and very wide — wide enough for two ox-carts abreast. The water under the bridge reflects the burning. The sky is the colour of an iron pan that has been left too long over a fire. There are people on the bridge with $[CHARACTER]; they are running in both directions; they are weeping; they do not see him at all.",
+          "And there is the small hard certainty, in the chest, that $[CHARACTER] knows this city. He has lived here. He has walked this bridge in the morning carrying something — a parcel, an order, a child's hand. He cannot name a single street and he knows each one. The towers are burning and he knows whose towers they were. The dream does not tell him this; the dream is only the sight of the burning. The knowing is something else, something the body brought with it into the dream."
+        ],
+        "outro": [
+          "$[CHARACTER] wakes in the dark hut with the breath very fast and the heart very loud. The thatch overhead is not burning. The grandmother sleeps. But for an hour after, the smell of hot iron will not entirely leave the throat."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.dream.burning",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "dreamed_of_burning_city" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.dream.burning", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.dream.burning", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_DREAM_BRONZE_SWORD",
+      "category": "life.dream",
+      "version": 1,
+      "weight": 25,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The bronze sword is on a low altar in a room $[CHARACTER] has never been in.",
+          "The room has no door. There is only the altar, and the sword, and a single candle that does not flicker."
+        ],
+        "body": [
+          "The sword is older than swords are made. The blade is a dull green-brown bronze, pitted along its length with the kind of corrosion that only centuries make, and yet the edge — when $[CHARACTER] in the dream leans close, against the dream's own slow refusal to let him — is still sharp. The hilt is wrapped in a leather that has gone almost black with age. There is a single character cast into the cross-piece, and the character is not one $[CHARACTER] knows. But it is a name. The dream is sure of this. The sword has a name, and the name is on the cross-piece, and to read it would be to know something the waking world has been trying for many lifetimes to keep from him.",
+          "$[CHARACTER] reaches for the hilt. The hand will not quite close on it. The leather is cool. The bronze beneath is cooler still. There is a feeling — the feeling, exactly, of meeting an old friend at a road's bend after twenty years — that the sword has been waiting for $[CHARACTER] to come back to this room. The sword does not say this. The sword has no voice. But it has waited.",
+          "The candle does not flicker. The room has no door. $[CHARACTER] stands with the hand half-closed on a hilt his hand will not entirely permit itself to grip, and looks at the character on the cross-piece, and almost — almost — reads it."
+        ],
+        "outro": [
+          "Then the dream lets go and $[CHARACTER] is in the hut again. The hand is on the rough wool of the sleeping-blanket. The character is gone. The shape of the cross-piece is gone. Only the certainty remains, that the sword waits, and that it has $[CHARACTER]'s name carried somewhere in its old metal."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.dream.sword",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "dreamed_of_bronze_sword" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.dream.sword", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.dream.sword", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_DREAM_OLD_WOMAN",
+      "category": "life.dream",
+      "version": 1,
+      "weight": 25,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The old woman in the dream is sitting on a stone bench in a courtyard $[CHARACTER] does not know.",
+          "She looks up when he comes in, and she calls him by his name."
+        ],
+        "body": [
+          "She is very old. Her hair is the white of unspun cotton. Her hands, folded in her lap, are the hands of someone who has worked with thread her whole long life — the small flat callouses at the fingertips, the knuckles knotted and patient. Her eyes are the cloudy half-blue of old ice, but they look at $[CHARACTER] as though she sees him perfectly well, and as though she has been waiting for this visit for a very long time.",
+          "She does not say his common name. She says another name — older, longer, with a syllable in it that the village's tongue does not quite know how to make — and yet $[CHARACTER] knows, in the dream's certain way, that the name is his. He has had this name. He has been called by it. And she is the one who used to call him by it, this old woman in the courtyard, in some life so distant that the body has forgotten everything except the small shape of her hands.",
+          "She gestures to the bench beside her. There is room for him to sit. He does not sit. The dream will not let him cross the small flagstones between the gate and the bench. He stands at the gate and she sits at the bench and she says again the name that is his, the syllable he cannot quite hear cleanly, and her old face is patient — the patience of someone who has waited and will wait. Behind her there is a wisteria in flower, hanging in long pale blue-violet trails, though the dream will not say what season it is or what year."
+        ],
+        "outro": [
+          "When $[CHARACTER] wakes the courtyard is gone, the wisteria is gone, the bench is gone. Only the small shape of the old woman's hands remains, and the certainty that he was, and is, and will be again, called something other than the name the village uses."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.dream.old_woman",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "dreamed_of_old_woman" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.dream.old_woman", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.dream.old_woman", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}

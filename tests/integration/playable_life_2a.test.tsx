@@ -15,7 +15,7 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
     __resetEngineSingleton();
   });
 
-  it('opens Codex (empty), opens Lineage (empty), runs a life, sees Bardo reveal, returns to Creation', { timeout: 30000 }, async () => {
+  it('opens Codex (empty), opens Lineage (empty), runs a life, sees Bardo reveal, returns to Creation', { timeout: 120000 }, async () => {
     const engine = createEngineBridge({ now: () => 2 });
     __setEngineOverride(engine);
 
@@ -50,8 +50,9 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
 
     await waitFor(() => expect(screen.getAllByText(/lin wei/i).length).toBeGreaterThan(0));
 
-    // Run choices to death.
-    for (let i = 0; i < 600; i++) {
+    // Run choices to death. Phase 2C: novel-mode pacing means many more
+    // beat turns per life, so iteration cap was bumped from 600 -> 6000.
+    for (let i = 0; i < 6000; i++) {
       if (useGameStore.getState().phase === GamePhase.BARDO) break;
       const buttons = screen.queryAllByRole('button')
         .filter((b) => !(b as HTMLButtonElement).disabled)
@@ -61,7 +62,7 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
     }
     expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
 
-    await waitFor(() => expect(screen.getByText(/the bardo/i)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/the bardo/i)).toBeInTheDocument(), { timeout: 60000 });
 
     // Bardo: open Lineage, expect 1 entry now.
     await userEvent.click(screen.getByRole('button', { name: /lineage/i }));
@@ -79,7 +80,7 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
     await waitFor(() => expect(screen.getByText(/choose your birth/i)).toBeInTheDocument());
   });
 
-  it('runs 5 successive lives through the UI and grows meta state monotonically', { timeout: 90000 }, async () => {
+  it('runs 5 successive lives through the UI and grows meta state monotonically', { timeout: 600000 }, async () => {
     const engine = createEngineBridge({ now: () => 2 });
     __setEngineOverride(engine);
     render(<App />);
@@ -97,8 +98,9 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
       }
       await userEvent.click(screen.getByRole('button', { name: /begin life/i }));
 
-      // Run choices to death.
-      for (let i = 0; i < 800; i++) {
+      // Run choices to death. Phase 2C: novel-mode pacing means many more
+      // beat turns per life, so iteration cap was bumped from 800 -> 8000.
+      for (let i = 0; i < 8000; i++) {
         if (useGameStore.getState().phase === GamePhase.BARDO) break;
         const buttons = screen.queryAllByRole('button')
           .filter((b) => !(b as HTMLButtonElement).disabled)
@@ -107,7 +109,7 @@ describe('Phase 2A-3 full UI cycle: Title → Codex → Lineage → Life → Bar
         await userEvent.click(buttons[0]!);
       }
       expect(useGameStore.getState().phase).toBe(GamePhase.BARDO);
-      await waitFor(() => expect(screen.getByText(/the bardo/i)).toBeInTheDocument());
+      await waitFor(() => expect(screen.getByText(/the bardo/i)).toBeInTheDocument(), { timeout: 60000 });
 
       // Confirm lifeCount monotonically grows.
       expect(useMetaStore.getState().lifeCount).toBe(life);

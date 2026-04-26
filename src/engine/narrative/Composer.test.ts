@@ -129,6 +129,51 @@ describe('renderEvent — Phase 2A-1 post-passes', () => {
     expect(rendered).toContain('lonely');
   });
 
+  it('Phase 2C: joins all paragraphs across intro/body/outro with \\n\\n', () => {
+    // Use literal text (no $[KEY] expansions) to keep the assertion crisp.
+    const event = {
+      id: 'test_event', category: 'daily', version: 1, weight: 1, timeCost: 'SHORT',
+      conditions: {}, repeat: 'once_per_life',
+      text: { intro: ['p1', 'p2'], body: ['p3'], outro: ['p4'] },
+      choices: [{
+        id: 'c', label: 'do it', timeCost: 'SHORT',
+        outcomes: { SUCCESS: { narrativeKey: 'x' }, FAILURE: { narrativeKey: 'x' } },
+      }],
+    };
+    const library = createSnippetLibrary({});
+    const registry: NameRegistry = createNameRegistry();
+    const rng = createRng(1);
+    const ctx: CompositionContext = {
+      characterName: 'Lin Wei', region: 'yellow_plains',
+      season: 'autumn', realm: 'mortal', dominantMood: 'serenity',
+      turnIndex: 1, runSeed: 1, extraVariables: {},
+    };
+    const rendered = renderEvent(event as any, ctx, library, registry, rng);
+    expect(rendered).toBe('p1\n\np2\n\np3\n\np4');
+  });
+
+  it("Phase 2C: empty body and outro arrays don't produce trailing \\n\\n", () => {
+    const event = {
+      id: 'test_event', category: 'daily', version: 1, weight: 1, timeCost: 'SHORT',
+      conditions: {}, repeat: 'once_per_life',
+      text: { intro: ['p1'], body: [], outro: [] },
+      choices: [{
+        id: 'c', label: 'do it', timeCost: 'SHORT',
+        outcomes: { SUCCESS: { narrativeKey: 'x' }, FAILURE: { narrativeKey: 'x' } },
+      }],
+    };
+    const library = createSnippetLibrary({});
+    const registry: NameRegistry = createNameRegistry();
+    const rng = createRng(1);
+    const ctx: CompositionContext = {
+      characterName: 'Lin Wei', region: 'yellow_plains',
+      season: 'autumn', realm: 'mortal', dominantMood: 'serenity',
+      turnIndex: 1, runSeed: 1, extraVariables: {},
+    };
+    const rendered = renderEvent(event as any, ctx, library, registry, rng);
+    expect(rendered).toBe('p1');
+  });
+
   it('renders identically for same (runSeed, turn) + identical inputs (determinism)', () => {
     const event = {
       id: 'test_event', category: 'daily', version: 1, weight: 1, timeCost: 'SHORT',

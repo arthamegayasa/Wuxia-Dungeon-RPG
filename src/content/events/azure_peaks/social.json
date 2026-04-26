@@ -6,6 +6,7 @@
       "category": "life.social.bond",
       "version": 1,
       "weight": 35,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["outer_sect_courtyard", "meditation_cave"]
@@ -13,63 +14,39 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.outer.courtyard] A senior brother lingers after evening drill, watching $[CHARACTER] with quiet assessment.",
-          "'Your footwork is wrong. And your breathing pattern will crack a meridian by winter.' He does not say this unkindly."
+          "Evening drill is over. The other outer disciples have drifted off in twos and threes toward the dining hall, leaving the courtyard to its long blue shadows and the slow accumulating cold. The wooden practice swords are back in the rack against the cloister wall, leaning together.",
+          "A senior brother lingers at the cloister's edge, watching $[CHARACTER] with quiet assessment. He is older — perhaps three years older — but his bearing is older still, a kind of settledness that the other outer disciples have not yet earned. 'Your footwork is wrong,' he says without preamble. 'And your breathing pattern will crack a meridian by winter.' He does not say this unkindly."
+        ],
+        "body": [
+          "$[CHARACTER] turns to face him. The senior brother — Senior Brother Tang, whose name $[CHARACTER] has heard murmured in the dining hall but never spoken to directly — gestures with one hand for the practice sword. $[CHARACTER] takes one from the rack and offers it. Tang shakes his head. 'No. You. Hold it. Now show me the third form. Slowly.'",
+          "$[CHARACTER] sets stance and moves into the third form — the one Senior Sister Rou drilled the outer cohort through last week, the one with the rising-edge cut into the pivot and recovery. Tang watches without comment. At the third movement he steps in, his hand closing very lightly around $[CHARACTER]'s right wrist, redirecting the angle by perhaps the breadth of a thumb. 'There. Feel that?' $[CHARACTER] does. The whole form rebalances around the small correction.",
+          "They go through the form three more times. Each time Tang adjusts something — a foot's angle, the height of the back hand, the timing of the breath at the apex of the cut. By the fourth pass the form is no longer the form $[CHARACTER] arrived with. It is a slightly better form. Tang steps back, considers, gives the smallest possible nod. 'Better. Come find me again next week. Same time. Don't tell the others I corrected you. They have to find their own seniors.' He turns and walks toward the dining hall without looking back."
+        ],
+        "outro": [
+          "$[CHARACTER] stands with the practice sword still in hand, the late light gone from the courtyard, the corrections settling into the body the way new water settles into an old jar. The walk to the dining hall is short and the food is hot. The corrections do not leave the wrist."
         ]
       },
       "choices": [
         {
-          "id": "ch_senior_brother_accept",
-          "label": "Ask him to demonstrate the correct form. Listen closely.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 40, "stats": { "Mind": 1, "Spirit": 1 }, "difficulty": 45, "techniqueBonusCategory": "lore_scholarship" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.senior_mentor.deep_bond",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "befriend_sect_disciple" },
-                { "kind": "flag_set", "flag": "senior_brother_mentor" },
-                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
-                { "kind": "meditation_progress", "base": 10, "insightBonus": 2 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.senior_mentor.corrected",
               "stateDeltas": [
                 { "kind": "flag_set", "flag": "befriend_sect_disciple" },
                 { "kind": "flag_set", "flag": "senior_brother_mentor" },
-                { "kind": "meditation_progress", "base": 6 }
+                { "kind": "meditation_progress", "base": 6 },
+                { "kind": "insight_delta", "amount": 1 }
               ]
             },
             "PARTIAL": {
               "narrativeKey": "ap.action.senior_mentor.partial",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
             "FAILURE": {
               "narrativeKey": "ap.action.senior_mentor.missed",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.senior_mentor.embarrassed",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Charm", "amount": -1 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_senior_brother_deflect",
-          "label": "Thank him politely. Continue practicing alone.",
-          "timeCost": "SHORT",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.senior_mentor.declined",
-              "stateDeltas": []
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.senior_mentor.declined",
               "stateDeltas": []
             }
           }
@@ -82,61 +59,45 @@
       "category": "life.social.bond",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.outer.dining.hall] A junior sister catches $[CHARACTER] before supper, voice low.",
-          "'I can't figure out the third circulation sequence. The elder won't explain again. Could you… show me, just once?'"
+          "The dining hall is loud at the change of shifts — the day's work-cohorts coming in, the evening's meditation cohorts going out, bowls clattering, voices overlapping. In the small lull between the second seating and the third, a junior sister catches $[CHARACTER] at the door.",
+          "Her name is Junior Sister Mei, and her eyes are red the way only an outer disciple's eyes get red — not from weeping, but from three nights' lost sleep over a sequence that will not resolve. 'I can't figure out the third circulation sequence. The elder won't explain again. Could you… show me, just once?'"
+        ],
+        "body": [
+          "$[CHARACTER] hesitates only a breath, then nods, and they go together to the small unused side cloister where the laundry-house meets the kitchen wall. Mei carries her bowl with her; she has not eaten yet. They sit on the stone bench. The sky above the cloister roof has gone the colour of old jade.",
+          "$[CHARACTER] talks her through the sequence the way the technique drill taught it — not by naming the steps, but by describing the sensation. The qi enters from the spine here, gathers at the heart there, splits at the throat into two branches that rejoin at the crown. Mei sets the bowl aside. She closes her eyes. She breathes. By the third explanation her brow has stopped its small puzzled furrow and has gone instead very still.",
+          "On the fifth attempt, with $[CHARACTER]'s hand resting lightly on her shoulder for the alignment of the spine, the sequence resolves. Mei's breath catches. Her qi has just done the thing it has refused to do for three nights, and she has felt it do it, and now she will be able to do it on her own. She opens her eyes and looks at $[CHARACTER] with the embarrassed gratitude of someone who has just been given something she was about to give up on. 'Thank you,' she says quietly. 'I owe you. Properly.' She picks up the cooling bowl and goes to find a corner to eat in."
+        ],
+        "outro": [
+          "Walking back across the courtyard $[CHARACTER] notices that the act of explaining has clarified something in $[CHARACTER]'s own understanding of the third sequence. Teaching is its own teaching. The elder, if asked, would have said this. The elder, of course, would not have explained it again."
         ]
       },
       "choices": [
         {
-          "id": "ch_junior_sister_help",
-          "label": "Spend the evening walking her through the sequence.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 35, "stats": { "Mind": 1, "Charm": 1 }, "difficulty": 40, "techniqueBonusCategory": "social_persuade" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.junior_request.mastered",
+            "SUCCESS": {
+              "narrativeKey": "ap.action.junior_request.helped",
               "stateDeltas": [
                 { "kind": "flag_set", "flag": "befriend_sect_disciple" },
                 { "kind": "attribute_delta", "stat": "Charm", "amount": 1 },
                 { "kind": "insight_delta", "amount": 2 }
               ]
             },
-            "SUCCESS": {
-              "narrativeKey": "ap.action.junior_request.helped",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "befriend_sect_disciple" },
-                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 }
-              ]
-            },
             "PARTIAL": {
               "narrativeKey": "ap.action.junior_request.partial",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
             "FAILURE": {
               "narrativeKey": "ap.action.junior_request.confused",
-              "stateDeltas": []
-            }
-          }
-        },
-        {
-          "id": "ch_junior_sister_refuse",
-          "label": "Say you barely understand it yourself. Apologise.",
-          "timeCost": "SHORT",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.junior_request.refused",
-              "stateDeltas": []
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.junior_request.refused",
               "stateDeltas": []
             }
           }
@@ -149,6 +110,7 @@
       "category": "life.social.rivalry",
       "version": 1,
       "weight": 40,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["outer_sect_courtyard"]
@@ -156,14 +118,18 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.outer.courtyard] A rival outer disciple steps into $[CHARACTER]'s path, arms folded.",
-          "'You've been here three months. I've been here two years. Let's see what three months buys you.' He draws a wooden practice sword."
+          "The outer courtyard is half-emptied at midmorning, the leaves swept, the sparring circle still faintly traced in the dust. $[CHARACTER] is crossing it on the way to the scripture hall when a figure steps deliberately into the path."
+        ],
+        "body": [
+          "He is a head taller, two years longer in the sect, and his outer-disciple sash has the second loop that marks promotion-pending — the small badge of an outer disciple who expects to be inner by the next quarter. His name is Senior Brother Pan, and he has been watching $[CHARACTER]'s drill performances for three weeks with the careful attention of a man choosing a target.",
+          "He folds his arms across his chest. His eyes are very level. 'You've been here three months. I've been here two years. The elders have started to say your name in the same breath as mine. That is a misunderstanding I would like to correct.' He nods at the wooden sword rack against the cloister wall. 'A round. Now. In front of the courtyard. Or you can keep walking, and we both know what that means.'",
+          "Two outer disciples at the cloister's far edge have stopped folding laundry to watch. Senior Sister Rou is not present. The handler is not present. There is no elder near. Whatever happens next will happen by Pan's terms or by no terms at all."
         ]
       },
       "choices": [
         {
           "id": "ch_rival_challenge_fight",
-          "label": "Accept. Step into the circle.",
+          "label": "Take a wooden sword. Step into the circle. Words later.",
           "timeCost": "MEDIUM",
           "check": { "base": 30, "stats": { "Body": 2, "Agility": 1 }, "difficulty": 55, "techniqueBonusCategory": "melee_skill" },
           "outcomes": {
@@ -207,7 +173,7 @@
         },
         {
           "id": "ch_rival_challenge_words",
-          "label": "Meet his bluster with calm. Words, not swords.",
+          "label": "Meet his bluster with calm. Refuse the sword. Make him explain himself in front of the laundry-folders.",
           "timeCost": "SHORT",
           "check": { "base": 40, "stats": { "Charm": 2, "Mind": 1 }, "difficulty": 45, "techniqueBonusCategory": "social_intimidate" },
           "outcomes": {
@@ -234,34 +200,41 @@
       "category": "life.social.elder",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.elder.quarters] The sect elder calls $[CHARACTER] inside. The quarters smell of sandalwood and old paper.",
-          "'I have watched your conduct. Diligent. Quiet. Not ambitious in the wrong direction.' He sets a folded robe on the table. 'Inner disciple vestment. You have not earned the rank. Consider it an investment.'"
+          "An outer disciple comes to $[CHARACTER]'s sleeping cell at dawn with the message — short, formal, signed with the elder's own seal. The elder requests the disciple's presence at the East Court before the second bell. No reason given. Among the outer disciples, no reason given is itself a reason.",
+          "$[CHARACTER] arrives at the carved cedar screens of the elder's quarters with the morning still cold, mouth dry, breath shallow."
+        ],
+        "body": [
+          "The elder is at the writing desk by the eastern lattice, brush in hand, finishing a column of characters whose ink has not yet dried. He does not look up. 'I have watched your conduct,' he says, the voice level. 'Diligent. Quiet. Not ambitious in the wrong direction.' He sets the brush down very precisely on its rest. 'These are not common qualities in this season's intake.'",
+          "He turns his chair to face the room. On the low table between the two cushions there is a folded robe — the deep indigo of an inner disciple, the silver edging that marks the rank, the small embroidered phoenix at the breast that is the East Court's emblem. The robe is new. The folds are sharp.",
+          "'Inner disciple vestment,' the elder says. 'You have not earned the rank. Consider it an investment. Wear it on the third day of next month, in the inner-cloister assembly. The other elders will see it. They will draw their own conclusions. You will have the duties that follow. Do not thank me.' $[CHARACTER] does not thank him. $[CHARACTER] takes the robe in both hands, bows, and withdraws. The elder has already turned back to the column of characters."
+        ],
+        "outro": [
+          "Walking back down the East Court terrace the morning light has climbed the eastern cliffs and turned the high pines to copper. The robe in $[CHARACTER]'s arms is heavier than it should be. There will be conversations to have, debts to weigh, and a small careful navigation of who is told and who is not. None of that is for this morning. This morning is for carrying the robe back to the cell and laying it across the bed and looking at it for a long quiet hour."
         ]
       },
       "choices": [
         {
-          "id": "ch_elders_favor_accept",
-          "label": "Bow and accept with gratitude.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 50, "stats": { "Charm": 1, "Mind": 1 }, "difficulty": 35, "techniqueBonusCategory": "social_persuade" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.elder_favor.honored",
+            "SUCCESS": {
+              "narrativeKey": "ap.action.elder_favor.accepted",
               "stateDeltas": [
                 { "kind": "item_add", "id": "inner_disciple_robe", "count": 1 },
                 { "kind": "flag_set", "flag": "elders_chosen" },
-                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 },
-                { "kind": "insight_delta", "amount": 3 }
+                { "kind": "insight_delta", "amount": 2 }
               ]
             },
-            "SUCCESS": {
-              "narrativeKey": "ap.action.elder_favor.accepted",
+            "PARTIAL": {
+              "narrativeKey": "ap.action.elder_favor.awkward",
               "stateDeltas": [
                 { "kind": "item_add", "id": "inner_disciple_robe", "count": 1 },
                 { "kind": "flag_set", "flag": "elders_chosen" }
@@ -274,26 +247,6 @@
               ]
             }
           }
-        },
-        {
-          "id": "ch_elders_favor_refuse",
-          "label": "Decline respectfully. Say the rank must be earned.",
-          "timeCost": "SHORT",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.elder_favor.refused",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "refused_elders_gift" },
-                { "kind": "attribute_delta", "stat": "Charm", "amount": 1 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.elder_favor.refused",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "refused_elders_gift" }
-              ]
-            }
-          }
         }
       ],
       "repeat": "once_per_life"
@@ -303,50 +256,43 @@
       "category": "life.social.elder",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[ap.outer.courtyard] The mission board is fresh — outer disciples cluster around a new notice.",
-          "An elder cuts through the crowd and singles out $[CHARACTER]. 'You. The mountain-path patrol. Three days, minor beast hazard. Standard stone compensation.' His tone makes it clear this is not optional."
+          "The mission board at the foot of the East Court terrace is a stone slab the height of two men, polished smooth, on which the sect's monthly tasks are written in red lacquer that the rain refuses to wash off. A new notice has gone up since dawn, and a small knot of outer disciples has gathered around it, reading and re-reading.",
+          "An elder in dust-grey travel robes pushes through the cluster and stops in front of $[CHARACTER]. 'You. The mountain-path patrol. Three days, minor beast hazard. Standard stone compensation.' His tone makes it clear this is not optional."
+        ],
+        "body": [
+          "The other outer disciples step back to give the elder space, and to watch. A patrol assignment is desirable — three days off the chore rotation, a small share of stone compensation, the chance to walk the upper trails in the pre-summer sun — but it is also dangerous in the way that any work outside the cloister walls is dangerous. The elder is not handing this to a favourite. He is handing it to whoever was standing in front of him at the right moment.",
+          "$[CHARACTER] bows once, accepts the bamboo briefing-tube the elder hands over, and listens without interrupting. The route is the eastern ridge trail, switchbacking up to the third lookout, then circling back down past the high meadow. Three days' rations from the kitchen, two flasks of qi-water, a low-grade warding talisman in case of beast incursion. The previous patrol reported wolf sign but no actual contact. The elder finishes the briefing in seven sentences, none of them wasted, and walks away.",
+          "The other outer disciples converge as soon as the elder is out of earshot. They want to know if the elder said anything not in the standard briefing — anything personal, anything pointed. $[CHARACTER] tells them no. They drift off in twos and threes, faintly relieved that their own week will continue as it was. $[CHARACTER] unrolls the briefing-tube one more time and reads through the route at the cloister's quiet edge."
+        ],
+        "outro": [
+          "The kitchen disciple, when $[CHARACTER] arrives at the supply window, has the patrol pack already prepared — three days' rations, two flasks, the talisman, and a small extra wax-paper packet that he slides across with the briefest of nods. 'Salt-pickled plums,' he says. 'Long trails are easier with them.' The kindness is small and entirely unrequired."
         ]
       },
       "choices": [
         {
-          "id": "ch_mission_accept_eager",
-          "label": "Accept immediately and ask about the route.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 55, "stats": { "Charm": 1 }, "difficulty": 35, "techniqueBonusCategory": "social_persuade" },
           "outcomes": {
             "SUCCESS": {
-              "narrativeKey": "ap.action.mission_brief.eager",
+              "narrativeKey": "ap.action.mission_brief.assigned",
               "stateDeltas": [
                 { "kind": "flag_set", "flag": "sect_mission_active" },
-                { "kind": "item_add", "id": "spiritual_stone", "count": 2 },
+                { "kind": "item_add", "id": "spiritual_stone", "count": 1 },
                 { "kind": "insight_delta", "amount": 1 }
               ]
             },
-            "FAILURE": {
+            "PARTIAL": {
               "narrativeKey": "ap.action.mission_brief.assigned",
               "stateDeltas": [
-                { "kind": "flag_set", "flag": "sect_mission_active" },
-                { "kind": "item_add", "id": "spiritual_stone", "count": 1 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_mission_accept_quiet",
-          "label": "Accept without comment. Memorise the briefing.",
-          "timeCost": "SHORT",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.mission_brief.assigned",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "sect_mission_active" },
-                { "kind": "item_add", "id": "spiritual_stone", "count": 1 }
+                { "kind": "flag_set", "flag": "sect_mission_active" }
               ]
             },
             "FAILURE": {
@@ -365,20 +311,25 @@
       "category": "life.social",
       "version": 1,
       "weight": 25,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.outer.dining.hall] Two tables. One side sits the Azure Cloud disciples — neat robes, quiet voices, ink-stained fingers. The other side: Broken Mountain, loud laughter and competitive sparring stories.",
-          "Both tables have an empty seat. Both are watching $[CHARACTER]."
+          "The dining hall at the height of the supper hour is loud with two distinct kinds of laughter. From the long western table — Azure Cloud disciples, the scholarship-and-talisman line, all neat robes and ink-stained sleeves and quiet voices — comes the small precise laughter of people sharing a textual pun. From the long eastern table — Broken Mountain, the combat line, all wide shoulders and competitive sparring stories — comes the much louder laughter of people retelling the same fight for the third time."
+        ],
+        "body": [
+          "Both tables have an empty seat. Both tables have noticed $[CHARACTER] standing in the doorway with a bowl in hand and no obvious destination.",
+          "The Azure Cloud table's empty seat is at the elbow of a girl named Senior Sister Lin, whose calligraphy in the scripture hall has been quietly admired by every reader for two seasons. The Broken Mountain table's empty seat is across from Senior Brother Khor — Master Khor's nephew, broad-faced, two scars on the chin from beast-pen training, the kind of warm uncomplicated grin that draws other disciples to him without his needing to try.",
+          "Neither side has called out. Both sides are watching. Whichever bench $[CHARACTER] sits on tonight will be the bench the other tables remember in the morning. There is also, somewhere at the far end of the hall by the kitchen door, a third empty bench where a single old outer disciple — bent, grey, quietly eating — has set himself apart from both factions for whatever reasons the years gave him."
         ]
       },
       "choices": [
         {
           "id": "ch_faction_azure_cloud",
-          "label": "Sit with Azure Cloud. The scholarship track.",
+          "label": "Sit with Azure Cloud. The scholarship track. Ink-stained sleeves and quiet textual puns.",
           "timeCost": "MEDIUM",
           "check": { "base": 45, "stats": { "Mind": 1, "Charm": 1 }, "difficulty": 40, "techniqueBonusCategory": "social_persuade" },
           "outcomes": {
@@ -401,7 +352,7 @@
         },
         {
           "id": "ch_faction_broken_mountain",
-          "label": "Sit with Broken Mountain. The combat track.",
+          "label": "Sit with Broken Mountain. The combat track. Loud laughter and re-told fights.",
           "timeCost": "MEDIUM",
           "check": { "base": 40, "stats": { "Body": 1, "Charm": 1 }, "difficulty": 40, "techniqueBonusCategory": "social_intimidate" },
           "outcomes": {
@@ -424,13 +375,13 @@
         },
         {
           "id": "ch_faction_neutral",
-          "label": "Find a third table. Eat alone.",
+          "label": "Sit with the old outer disciple at the kitchen-door bench. Eat alone, almost.",
           "timeCost": "SHORT",
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "ap.action.faction_lean.neutral",
               "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
+                { "kind": "insight_delta", "amount": 2 }
               ]
             },
             "FAILURE": {

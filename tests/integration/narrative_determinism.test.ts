@@ -24,11 +24,27 @@ const EVENT: EventDef = {
   repeat: 'unlimited',
 };
 
+// Multi-entry snippets so the per-call rng pick produces seed-dependent variance.
+// Phase 2C: Composer renders ALL `intro|body|outro` lines as paragraphs, so seed
+// variance comes from the SnippetLibrary pick, not the prior per-section line pick.
 const LIB = createSnippetLibrary({
-  'weather.drought':   [{ text: 'The sun hung heavy.' }],
-  'weather.rain':      [{ text: 'Rain threaded the mountain.' }],
-  'dialogue.monk.1':   [{ text: '"Peace," the monk said.' }],
-  'dialogue.monk.2':   [{ text: 'The monk walked on.' }],
+  'weather.drought':   [
+    { text: 'The sun hung heavy.' },
+    { text: 'Heat shimmered above the road.' },
+    { text: 'No cloud crossed the sky.' },
+  ],
+  'weather.rain':      [
+    { text: 'Rain threaded the mountain.' },
+    { text: 'Drops drummed the leaves.' },
+  ],
+  'dialogue.monk.1':   [
+    { text: '"Peace," the monk said.' },
+    { text: '"All things pass," the monk said.' },
+  ],
+  'dialogue.monk.2':   [
+    { text: 'The monk walked on.' },
+    { text: 'The monk bowed and was gone.' },
+  ],
 });
 
 function makeCtx(overrides: Partial<CompositionContext> = {}): CompositionContext {

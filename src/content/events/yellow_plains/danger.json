@@ -6,22 +6,24 @@
       "category": "life.danger",
       "version": 1,
       "weight": 12,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.road] Three men step from the millet, rags tied over their mouths.",
-          "$[npc.bandit.threat] $[CHARACTER] feels the sun on the back of the neck, very clear."
+          "Three men step from the millet at the road's bend, rags tied over their mouths, the kind of cheap iron knives that have been resharpened too many times. The leader is the one in the middle. The leader is always the one in the middle."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "$[CHARACTER] feels the sun on the back of the neck very clearly. The bundle at his hip — three days' grain bought at the market — is what they want. Or it is part of what they want. The other part is the small humiliation of taking it from a peasant child on a road no soldier patrols.",
+          "Behind him the road is empty for half a li. Ahead of him there is a stand of millet thick enough to lose a man in, if a man could reach it. The leader's knife is held in the loose half-grip of someone who has used it. The two flanking him are watching not the boy but the road behind, the way men watch when they have done this before and intend to do it many times more."
+        ]
       },
       "choices": [
         {
           "id": "ch_fight",
-          "label": "Fight. A stick, a stone — anything.",
+          "label": "Take a stick from the ditch. Strike first; they expect a peasant, not a man.",
           "timeCost": "INSTANT",
           "check": { "base": 20, "stats": { "Body": 1 }, "difficulty": 75 },
           "outcomes": {
@@ -57,7 +59,7 @@
         },
         {
           "id": "ch_flee",
-          "label": "Run. Drop the bundle and run.",
+          "label": "Drop the bundle. Run for the millet.",
           "timeCost": "INSTANT",
           "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 55 },
           "outcomes": {
@@ -73,6 +75,27 @@
               "deathCause": "combat_melee"
             }
           }
+        },
+        {
+          "id": "ch_yield",
+          "label": "Set the bundle in the dust. Spread the hands. Live to walk again tomorrow.",
+          "timeCost": "INSTANT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "yielded_to_bandits" },
+                { "kind": "karma_delta", "amount": -1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "yielded_to_bandits" },
+                { "kind": "karma_delta", "amount": -1 }
+              ]
+            }
+          }
         }
       ],
       "repeat": "unlimited"
@@ -82,33 +105,31 @@
       "category": "life.danger",
       "version": 1,
       "weight": 8,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hills] The brush thrashes — a boar, tusks low, eyes small and hot.",
-          "$[CHARACTER] has only a sickle and a short breath."
+          "On the slope above the high field, where the brush thickens into low scrub-pine and the wind carries the smell of dry needles, there is a sudden crashing in the undergrowth.",
+          "The boar comes out at a charge — black, stinking, tusks low, the small hot eyes already fixed."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "$[CHARACTER] has only the harvest sickle. There is no time to think — only to move. The body remembers what the mind has not yet decided. He sidesteps; the boar passes; the sickle catches the shoulder behind the front leg, the small softer place, and the iron bites and is wrenched free as the beast tears past.",
+          "Twenty paces on, the boar wheels. The shoulder is bleeding now. The eyes have not changed. It comes again. This time there is no clean sidestep — the sickle goes up, the boar is faster, the tusk drives across the boy's thigh in a long shallow tearing line, hot and shocking. The boy goes down to one knee. The boar stops, panting, the head low, deciding.",
+          "It does not decide for the kill. The shoulder is bleeding too freely; the beast is older than its weight; the calculation, somewhere beneath whatever a boar has for thinking, comes out in the boy's favour. The boar wheels again, crashes off into the scrub, and is gone, leaving only the sickle in the dust and the boy on one knee with a hand pressed hard against the leg."
+        ],
+        "outro": [
+          "The wound will close. Slowly. The next time he walks past that slope he will know the small sound the brush makes before it gives up its boar."
+        ]
       },
       "choices": [
         {
-          "id": "ch_stand",
-          "label": "Stand. Strike at the shoulder.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "INSTANT",
-          "check": { "base": 20, "stats": { "Body": 1, "Agility": 1 }, "difficulty": 60 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.fight.desperate",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -4 },
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "slew_beast" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.fight.desperate",
               "stateDeltas": [
@@ -124,10 +145,6 @@
             "FAILURE": {
               "narrativeKey": "emotion.fear.sudden",
               "stateDeltas": [{ "kind": "hp_delta", "amount": -15 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.fear.sudden",
-              "deathCause": "beast"
             }
           }
         }
@@ -139,22 +156,55 @@
       "category": "life.danger",
       "version": 1,
       "weight": 15,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] The fever comes in the night — teeth rattling, sweat soaking the straw.",
-          "$[CHARACTER] cannot rise. The roof-beams tilt and fold like paper."
+          "The fever comes in the night — teeth rattling, sweat soaking the straw, the roof-beams tilting and folding like wet paper. By dawn $[CHARACTER] cannot rise. By the second day the family has begun to look at one another in a way that is the beginning of a particular conversation no one wants to have."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "There is the apothecary three li off in the town who sells a brewed bitter that brings down a fever, sometimes — but the price is the family's grain-jar emptied to the bottom, perhaps the whole winter's margin. There is the village herb-woman who lives at the lane's end, whose remedies cost only a small chicken and who is right perhaps half the time. There is the third path: drink the well-water, sleep, sweat, hope, and let the body decide.",
+          "The mother sits at the bedside with a wet cloth and waits to be told what to try. The grandmother in the corner does not look up from her sewing, but the needle has been moving for some time without thread."
+        ]
       },
       "choices": [
         {
+          "id": "ch_apothecary",
+          "label": "Send for the town apothecary's bitter, whatever it costs.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 35, "stats": { "Spirit": 1 }, "difficulty": 30 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "survived_fever" }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -2 },
+                { "kind": "flag_set", "flag": "survived_fever" },
+                { "kind": "item_remove", "id": "silver_pouch", "count": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.resignation.tired",
+              "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "deathCause": "disease"
+            }
+          }
+        },
+        {
           "id": "ch_endure",
-          "label": "Endure. Drink. Sleep. Drink again.",
+          "label": "Endure. Drink. Sleep. Drink again. Trust the body.",
           "timeCost": "MEDIUM",
           "check": { "base": 25, "stats": { "Spirit": 1 }, "difficulty": 50 },
           "outcomes": {
@@ -195,6 +245,7 @@
       "category": "life.danger",
       "version": 1,
       "weight": 6,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["winter"]
@@ -202,27 +253,24 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[weather.snow.winter] The grain jar scrapes empty before the first thaw.",
-          "$[CHARACTER] counts the days by the hollow under the ribs. The village is quiet in the wrong way."
+          "The grain jar scrapes empty before the first thaw. $[CHARACTER] knows the sound — wood on dry clay, the small unmistakable note of a household running out of the only thing it can be sure of.",
+          "The village is quiet in the wrong way."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "There has not been a death yet, but there will be one before the spring. Old Liu's wife at the lane's end is already shrunk to a small dry shape under her quilt, and the family has stopped pretending she is going to rise. The famine is not a single event. It is a slow grey weather that settles on the village and refuses to lift.",
+          "$[CHARACTER] walks the frozen fields between the houses, eyes down. The field stubble is gleaned for the third time. Under the broken ice of the irrigation ditch there is sometimes a small fish, half-frozen, that can be cracked free with the heel and carried back. There are bitter roots where a stand of wild leek used to grow before the autumn killed it.",
+          "By the eighth day of this the body has begun to eat itself. The wrists are thinner. The hair on the forearms stands up because the body cannot afford to keep them warm. The mind grows strangely clear in a brittle way — every smell sharpens; the small bowl of porridge at evening becomes the most beautiful object in the world for the few breaths it takes to swallow."
+        ],
+        "outro": [
+          "When the first thaw comes the village counts itself. There are fewer than there were. There always are."
+        ]
       },
       "choices": [
         {
-          "id": "ch_forage",
-          "label": "Walk the frozen fields. Dig for roots.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 20, "stats": { "Luck": 1 }, "difficulty": 45 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.hope.small",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -2 },
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "survived_famine" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.hunger.mild",
               "stateDeltas": [
@@ -237,10 +285,6 @@
             "FAILURE": {
               "narrativeKey": "emotion.hunger.severe",
               "deathCause": "starvation"
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.hunger.severe",
-              "deathCause": "starvation"
             }
           }
         }
@@ -252,22 +296,24 @@
       "category": "life.danger",
       "version": 1,
       "weight": 5,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.village] Soldiers at the well with a list and a drum — a levy for the frontier.",
-          "$[CHARACTER] stands very still. A name spoken aloud is half a chain already."
+          "The drum begins at the village well at the second hour past dawn. Three soldiers in the dust-grey of the regional levy, a sergeant with a brushed scroll, two clerks taking down names in red ink. The frontier has need of bodies. The frontier always has need of bodies. The bodies will not, mostly, come back."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "$[CHARACTER] stands very still at the back of the small crowd. A name spoken aloud at this drum is half a chain already. The sergeant's eyes move along the rows of faces the way an eye moves along a rope, looking for the weak strand. He has seen many such crowds. He knows already which faces will be on his cart by sundown.",
+          "There is the ditch behind the well, and the millet beyond, and a path through the millet to the next village where an aunt would not ask questions for two weeks. There is the option of standing forward — taking the levy on the chest, accepting the small silver bonus, walking out under the colours — and finding what kind of man the army makes of a peasant child. There is also the option of staying very still and trusting the headman to lie for the family this once."
+        ]
       },
       "choices": [
         {
           "id": "ch_evade",
-          "label": "Keep the head down. Find a reason to be elsewhere.",
+          "label": "Slip out through the millet. Be a ghost for two weeks.",
           "timeCost": "INSTANT",
           "check": { "base": 20, "stats": { "Mind": 1 }, "difficulty": 60 },
           "outcomes": {
@@ -307,53 +353,74 @@
               ]
             }
           }
+        },
+        {
+          "id": "ch_volunteer",
+          "label": "Step forward. Take the silver. Make a soldier of the body.",
+          "timeCost": "INSTANT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.fear.long",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "volunteered_army" },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "item_add", "id": "silver_pouch", "count": 1 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.fear.long",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "volunteered_army" },
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
+                { "kind": "item_add", "id": "silver_pouch", "count": 1 }
+              ]
+            }
+          }
         }
       ],
-      "repeat": "unlimited"
+      "repeat": "once_per_life"
     },
     {
       "id": "YP_DANGER_HOUSE_FIRE",
       "category": "life.danger",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] A cooking flame catches the thatch — smoke first, then the angry light.",
+          "A cooking flame catches the thatch. First the smoke — a slow coiling — then the bright angry light the moment a single beam catches.",
           "$[CHARACTER] has moments, not minutes."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The grandmother is at the back of the hut, slow on her feet. The boy gets her under the arm and into the lane in three running strides. Then back. Through smoke that has thickened to a wall, the eyes streaming, the throat closing — to find the small earthen jar where the family's three coppers and the betrothal-jade of an aunt long dead are kept. The hand finds it. The other hand snatches the cooking pot from the floor.",
+          "The thatch above is now an open rolling thing of fire. The cross-beam above the hearth has begun to crack, a sound like a breaking bone. $[CHARACTER] crosses the threshold into the lane and the heat behind him punches outward like a soft fist; the door-frame catches a heartbeat later. The neighbours have begun to come with buckets from the well. They are too late, but they will fight the fire anyway, because to not fight is to admit that a house can be lost.",
+          "The hut burns to the timbers. By dusk it is a small black square in the dust, faintly steaming. The grandmother sits in the lane with a grand-niece's borrowed shawl on her shoulders and watches without expression. The boy stands behind her with the cooking pot in one hand and the jar of coppers in the other. The neighbours are already discussing who will give the family floor-space until the new hut goes up."
+        ],
+        "outro": [
+          "A house is wood and thatch and clay. A family is the thing the house contains. The first burned tonight. The second did not."
+        ]
       },
       "choices": [
         {
-          "id": "ch_escape",
-          "label": "Beat out the flames. Save what you can.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "INSTANT",
-          "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 50 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.hope.small",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -2 },
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "saved_hut" }
-              ]
-            },
             "SUCCESS": {
-              "narrativeKey": "emotion.hope.small",
+              "narrativeKey": "emotion.grief.fresh",
               "stateDeltas": [
-                { "kind": "hp_delta", "amount": -5 },
-                { "kind": "flag_set", "flag": "saved_hut" }
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "flag_set", "flag": "lost_hut" }
               ]
             },
             "PARTIAL": {
               "narrativeKey": "emotion.grief.fresh",
               "stateDeltas": [
-                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "hp_delta", "amount": -12 },
                 { "kind": "flag_set", "flag": "lost_hut" }
               ]
             },
@@ -363,10 +430,6 @@
                 { "kind": "hp_delta", "amount": -12 },
                 { "kind": "flag_set", "flag": "lost_hut" }
               ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.grief.fresh",
-              "deathCause": "disease"
             }
           }
         }
@@ -378,6 +441,7 @@
       "category": "life.danger",
       "version": 1,
       "weight": 5,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["summer"]
@@ -385,26 +449,24 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[weather.drought.heavy] No rain since the sowing. The clay splits in wide mouths.",
-          "$[CHARACTER] walks the cracked field. The millet is already yellow in the wrong way."
+          "No rain since the sowing. The clay of the high fields splits in wide brown mouths. The sky has been the same hard blue for thirty days; the shadows under the eaves are sharp enough to cut.",
+          "$[CHARACTER] walks the cracked field in the early heat. The millet is already yellow in the wrong way."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The old well at the village edge has gone shallow. Where last spring it took twenty hauls of the rope to bring the bucket up wet, now it takes thirty, and the water that comes up is not water but a thin grey sediment-mix that settles to mud in the bottom of the jar. The river beyond the field has shrunk to a brown trickle in a wide white bed. The frogs are gone. The herons are gone.",
+          "In the second month of the drought the children in the lane stop running. They sit at the doorstep and watch the dust. The dogs lie in the shade and do not snap at flies any more. The boy hauls water from the river bed in two clay jars, half a li each way, six trips a day, until his shoulders are a single bruise from collar-bone to elbow.",
+          "There is a night in the third week when the dry lightning walks the western horizon for an hour without a single drop of rain — a cruel theatre of weather, all promise, no kept word. The whole village stands in the lanes and watches. No one speaks. When the lightning passes, the village goes to bed in silence."
+        ],
+        "outro": [
+          "The first real rain, when it comes, comes in the night and is heard before it is felt — a hush against the thatch, then a hiss, then the dry country drinking."
+        ]
       },
       "choices": [
         {
-          "id": "ch_endure_dry",
-          "label": "Ration. Wait. Pray to whichever name answers.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
-          "check": { "base": 20, "stats": { "Luck": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "weather.drought.breaking",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "survived_drought" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "weather.drought.breaking",
               "stateDeltas": [
@@ -419,10 +481,6 @@
             "FAILURE": {
               "narrativeKey": "emotion.hunger.severe",
               "deathCause": "starvation"
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.hunger.severe",
-              "deathCause": "starvation"
             }
           }
         }
@@ -434,6 +492,7 @@
       "category": "life.danger",
       "version": 1,
       "weight": 7,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["spring", "summer"]
@@ -441,27 +500,24 @@
       "timeCost": "INSTANT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.river_flood] The river climbs the bank in the night — brown, roaring, hungry.",
-          "$[CHARACTER] wakes to water at the door. The chickens are already gone."
+          "The river climbs the bank in the night — brown, roaring, hungry. By the time the village wakes the water is already at the doors of the hutments along the low lane.",
+          "$[CHARACTER] wakes to water at the threshold. The chickens are already gone."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The grandmother is hauled up onto the boy's shoulders — light, paper-light, all the weight gone out of her with the years. The small bundle of her possessions, the jar of household coppers, the rice pot, the family's only iron knife — these are gathered in two trips and taken to the high lane where the headman's house stands on its low stone plinth.",
+          "The third trip is for the rice-jar, which is heavy and which is the family's winter, and which $[CHARACTER] cannot carry alone. The water is at the waist now. The current pulls at the calves. The world has become very small and very wet and very fast — only the rope of the rice-jar's lid in his hand, only the dim light of the doorway behind, only the brown water swirling forward.",
+          "He gets the jar to the threshold. The current takes him a step sideways; he braces; a tile from the roof above strikes the shoulder and is gone before the pain registers. The neighbour's son, twelve years old and braver than sense, splashes out into the lane with a length of rope, and together they get the jar to the high ground."
+        ],
+        "outro": [
+          "When the dawn comes the lane is a brown river. Half the lower village is roof-deep. The rice is dry. The grandmother is alive. The hut is gone, but huts are built again."
+        ]
       },
       "choices": [
         {
-          "id": "ch_climb",
-          "label": "Climb to higher ground. Carry what the hands can hold.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "INSTANT",
-          "check": { "base": 25, "stats": { "Agility": 1 }, "difficulty": 55 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.hope.small",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -3 },
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "survived_flood" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.fear.sudden",
               "stateDeltas": [
@@ -474,10 +530,6 @@
               "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
             },
             "FAILURE": {
-              "narrativeKey": "emotion.fear.sudden",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -10 }]
-            },
-            "CRIT_FAILURE": {
               "narrativeKey": "emotion.grief.fresh",
               "deathCause": "drowning"
             }

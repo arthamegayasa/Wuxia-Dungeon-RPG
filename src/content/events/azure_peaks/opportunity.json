@@ -6,20 +6,25 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 8,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[ap.mountain.path] The trail narrows until it is barely a goat path, and then the goat path disappears. $[CHARACTER] pushes through a curtain of hanging moss and finds a cave mouth, perfectly circular, breathing cold air.",
-          "Inside, a jade lectern stands alone on a raised stone. A single scorched page rests on it, covered in seal script that pulses faintly red."
+          "The trail above the second waterfall narrows until it is barely a goat path, and then the goat path disappears altogether into a curtain of hanging moss between two leaning slabs of grey rock. $[CHARACTER] has come too far to turn back without seeing what is on the other side."
+        ],
+        "body": [
+          "The cave mouth, when the moss is parted, is perfectly circular — the kind of perfection that does not occur in nature, the kind that only a long-dead cultivator's formation-work produces. The air inside is colder than the trail outside by a clear measurable degree. It is also moving — a slow steady draw, as if the cave were breathing.",
+          "Twenty paces in, where the natural stone gives way to cut and polished floor, a jade lectern stands alone on a raised stone dais. A single scorched page rests on it, the corners burned but the central script intact, covered in seal-script characters that pulse faintly red in the cave's low light.",
+          "$[CHARACTER] stops at the threshold of the dais. The seal-script is old enough that some of the characters are no longer in current use, and what they spell is not language any current sect teaches openly. Two paths from this threshold. Read it now — risk the qi-backlash, learn what the page is — or memorise the cave's location and run for the elders, who will know what to do with such a thing and may or may not let an outer disciple anywhere near the answer."
         ]
       },
       "choices": [
         {
           "id": "ch_cave_decipher_the_seal",
-          "label": "Study the script. It is dangerous — but so is ignorance.",
+          "label": "Study the script. Risk the backlash. Knowledge is dangerous, but ignorance is dangerous in slower ways.",
           "timeCost": "LONG",
           "check": { "base": 20, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 70, "techniqueBonusCategory": "lore_scholarship" },
           "outcomes": {
@@ -66,7 +71,7 @@
         },
         {
           "id": "ch_cave_mark_and_report",
-          "label": "Memorize the location. Report it to the elders. Let them handle it.",
+          "label": "Memorise the location. Walk back. The elders need to know — let them decide who reads it.",
           "timeCost": "SHORT",
           "check": { "base": 50, "stats": { "Charm": 1, "Mind": 1 }, "difficulty": 45, "techniqueBonusCategory": "social_persuade" },
           "outcomes": {
@@ -94,20 +99,24 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 10,
+      "kind": "decision",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[ap.elder.quarters] The head elder summons $[CHARACTER] without explanation. By the time $[CHARACTER] arrives, the elder has already turned back to the window.",
-          "'You have shown patience this season. I do not say this often.' A wrapped scroll sits on the table. 'Do not thank me. Read it until you understand it.'"
+          "An outer disciple summons $[CHARACTER] to the head elder's quarters at the late afternoon hour. By the time $[CHARACTER] arrives, the elder has already turned back to the eastern lattice window and the long view down to the lower terraces."
+        ],
+        "body": [
+          "The room smells of sandalwood and the very faint bitter edge of medicinal tea. The elder does not turn. 'You have shown patience this season,' he says without preamble. 'I do not say this often. The other elders have noticed. So have I, which is more relevant.' On the low table between the door and the window, beside the tea-tray with its one half-empty cup, lies a wrapped scroll bound in pale green silk.",
+          "'Still Water Heart Sutra,' he says. 'A core text. Read it until you understand it.' He pauses, then adds: 'Or ask me what it is for, and I will decide whether to tell you. Both responses have been correct, in different disciples, at different times. Choose the one that is correct for you.'"
         ]
       },
       "choices": [
         {
           "id": "ch_elders_gift_accept_and_study",
-          "label": "Accept with both hands and a bow. Begin reading the same evening.",
+          "label": "Accept the scroll with both hands and a deep bow. Begin reading the same evening, without further question.",
           "timeCost": "SHORT",
           "check": { "base": 40, "stats": { "Spirit": 2, "Mind": 1 }, "difficulty": 50, "techniqueBonusCategory": "insight_puzzle" },
           "outcomes": {
@@ -146,7 +155,7 @@
         },
         {
           "id": "ch_elders_gift_ask_for_context",
-          "label": "Ask the elder what the sutra is for. Understand before you read.",
+          "label": "Ask the elder what the sutra is for. Show that curiosity is part of the patience he has noticed.",
           "timeCost": "SHORT",
           "check": { "base": 35, "stats": { "Charm": 1, "Mind": 1 }, "difficulty": 55, "techniqueBonusCategory": "social_persuade" },
           "outcomes": {
@@ -176,31 +185,32 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 12,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[ap.market.stalls] The sect's monthly exchange fair. Disciples trade spirit stones for pellets, scrolls, and things best not described. $[CHARACTER] notices an old vendor asleep behind a pile of water-stained texts.",
-          "Under the pile: a half-legible scroll, a small vial sealed with wax, and a price tag that has been written over three times. The lowest figure is still a bargain."
+          "The sect's monthly exchange fair fills the lower terrace with dust and noise — disciples trading spirit stones for pellets, scrolls, talismans of varying quality, and things best not described in front of the elders.",
+          "$[CHARACTER] is wandering the back row of stalls when a small detail catches the eye: an old vendor asleep on a folding stool behind a pile of water-stained texts. The pile is unattended. A hand-written price tag on top of the stack has been written over three times, each price lower than the last."
+        ],
+        "body": [
+          "The lowest figure on the price tag is roughly half what an ordinary scroll-of-this-condition would fetch from the careful disciples. The vendor has clearly given up on selling the lot before sundown and gone to sleep on the matter. $[CHARACTER] crouches and goes through the pile carefully.",
+          "Most of it is junk — household record-scrolls from a defunct lower sect, mildewed ledgers, a folded poetry-collection by a third-rate immortal whose name even the librarian would not recognise. But near the bottom, between two ledgers, $[CHARACTER]'s fingers find a small bound scroll wrapped in oiled silk. The silk is recent. The oil is fresh. Whoever sold this lot did not know what was at the bottom of it.",
+          "$[CHARACTER] unties the silk just enough to glance at the title characters: Wind Walking Steps. A partial — the second half is missing — but a partial of a real cultivator-grade movement technique is worth twenty times the price tag's lowest figure. $[CHARACTER] retie the silk, walks calmly to the front of the stall, sets the lowest written price in spirit stones on the counter beside the sleeping vendor, picks up the scroll, and walks away. The vendor does not stir.",
+          "Halfway across the terrace $[CHARACTER] feels the small late twinge of conscience — a real cultivator's manual for half its value, from a sleeping man who clearly does not know what he had. But the vendor set the price. The price was paid. The scroll is now $[CHARACTER]'s. The conscience can be addressed later, in some quiet meditation hour, when the qi-balance permits."
+        ],
+        "outro": [
+          "Back at the disciple cell $[CHARACTER] unwraps the scroll on the bed and reads the first three diagrams in the early evening light. Wind Walking Steps. A real text. The luck of it is almost embarrassing."
         ]
       },
       "choices": [
         {
-          "id": "ch_market_buy_the_scroll",
-          "label": "Buy the scroll. A partial technique manual is worth more than a full-priced nothing.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 30, "stats": { "Mind": 2, "Luck": 1 }, "difficulty": 55, "techniqueBonusCategory": "lore_scholarship" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.market_lucky_find.pristine_scroll",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "manual_wind_walking_steps_partial", "count": 1 },
-                { "kind": "insight_delta", "amount": 3 },
-                { "kind": "flag_set", "flag": "lucky_market_find" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.market_lucky_find.good_scroll",
               "stateDeltas": [
@@ -221,27 +231,6 @@
               ]
             }
           }
-        },
-        {
-          "id": "ch_market_buy_the_vial",
-          "label": "Take the vial. Insight dew at this price is not a coincidence — it is a test.",
-          "timeCost": "SHORT",
-          "check": { "base": 40, "stats": { "Luck": 2, "Charm": 1 }, "difficulty": 45, "techniqueBonusCategory": "insight_puzzle" },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.market_lucky_find.dew_found",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "insight_dew", "count": 2 },
-                { "kind": "flag_set", "flag": "lucky_market_find" }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.market_lucky_find.counterfeit",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            }
-          }
         }
       ],
       "repeat": "once_per_life"
@@ -251,6 +240,7 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 10,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"],
         "locales": ["beast_pass"]
@@ -258,65 +248,39 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.beast.pass.lower] A small creature sits on a flat rock near the stream — fox-shaped but wrong, ears too long, fur faintly iridescent.",
-          "It is watching $[CHARACTER] with the unnerving intelligence of something that has been watching cultivators for a very long time. It does not flee. It waits."
+          "The Beast Pass stream at the third bend runs over a flat slab of grey granite where the late afternoon sun warms the stone enough that the small qi-creatures of the upper trail come down to drink and bask.",
+          "$[CHARACTER] has stopped to refill the water-flask when something on the opposite bank shifts. A small creature is sitting on the flat rock — fox-shaped but wrong, ears too long, fur faintly iridescent in the slanted light, a single white markings between the eyes that no ordinary fox would carry. It is watching $[CHARACTER] with the unnerving intelligence of something that has been watching cultivators for a very long time."
+        ],
+        "body": [
+          "$[CHARACTER] does what the herb-elder said to do, on the third day of the apprenticeship year, when she described the spirit-foxes of the Beast Pass: do not move quickly, do not reach out, do not speak, do not assume the creature is what it appears to be. $[CHARACTER] sits down very slowly on the near bank of the stream and rests both palms open on the knees and waits.",
+          "The fox-thing watches. It is in no hurry. The stream between them is shallow and clear and the small bright qi-fish flicker between the stones. A long minute passes. Two. The sun shifts a finger's-breadth lower in the western sky. The fox-thing finally rises from its rock — the motion is uncannily smooth, more like ink lifting from paper than a living animal standing — and crosses the stream at the shallows to within three paces of where $[CHARACTER] sits.",
+          "It stops. It tilts its head. It studies $[CHARACTER]'s face the way the librarian studies a difficult character — patiently, without judgement, as if reading. Whatever it finds in the reading must satisfy some criterion known only to spirit-foxes, because it then sits down on its haunches in front of $[CHARACTER] and very deliberately closes its eyes for the length of three breaths. When it opens them again the qi between the two of them has shifted — there is a small thread of recognition, real and warm, that was not there before.",
+          "Then it stands, turns, recrosses the stream, and is gone up the bank into the trees in the same uncannily smooth motion. The thread of recognition does not go with it. It stays behind, in $[CHARACTER]'s chest, a small bright presence that the herb-elder will recognise instantly when $[CHARACTER] comes back to the cloister."
+        ],
+        "outro": [
+          "$[CHARACTER] sits on the bank a while longer with the water-flask still empty, watching the place where the fox-thing climbed into the trees. The qi-fish flicker between the stones. The thread in the chest is small and warm and very alive."
         ]
       },
       "choices": [
         {
-          "id": "ch_beast_befriend_sit_and_wait",
-          "label": "Sit down on the opposite bank. Do not reach out. Let it decide.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 35, "stats": { "Spirit": 2, "Charm": 1 }, "difficulty": 55, "techniqueBonusCategory": "social_persuade" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.spirit_beast.bonded",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "friend_of_spirit_beast" },
-                { "kind": "insight_delta", "amount": 4 },
-                { "kind": "attribute_delta", "stat": "Spirit", "amount": 1 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.spirit_beast.accepted",
               "stateDeltas": [
                 { "kind": "flag_set", "flag": "friend_of_spirit_beast" },
-                { "kind": "insight_delta", "amount": 2 }
+                { "kind": "insight_delta", "amount": 3 },
+                { "kind": "attribute_delta", "stat": "Spirit", "amount": 1 }
               ]
             },
             "PARTIAL": {
               "narrativeKey": "ap.action.spirit_beast.wary",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 1 }
-              ]
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
             "FAILURE": {
               "narrativeKey": "ap.action.spirit_beast.fled",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.spirit_beast.nipped",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -5 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_beast_befriend_offer_food",
-          "label": "Offer a handful of dried spirit berries from your pack. See if it wants a trade.",
-          "timeCost": "SHORT",
-          "check": { "base": 40, "stats": { "Charm": 2, "Luck": 1 }, "difficulty": 50, "techniqueBonusCategory": "social_persuade" },
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "ap.action.spirit_beast.bribed",
-              "stateDeltas": [
-                { "kind": "flag_set", "flag": "friend_of_spirit_beast" },
-                { "kind": "insight_delta", "amount": 2 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.spirit_beast.ignored",
               "stateDeltas": []
             }
           }
@@ -329,77 +293,32 @@
       "category": "life.opportunity",
       "version": 1,
       "weight": 14,
+      "kind": "beat",
       "conditions": {
         "regions": ["azure_peaks"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[ap.mountain.path] A rumor circulates among the outer disciples: a cache of spirit stones, sealed behind a minor formation, somewhere in the eastern cliffs. The elder who left them has not returned this decade.",
-          "$[CHARACTER] finds the cliff. The formation is old and tired, its edges visibly crumbling. Whether the stones are still inside is another question."
+          "A rumour has been circulating the outer disciples' dining hall for the past three weeks: a cache of spirit stones, sealed behind a minor formation, somewhere in the eastern cliffs above the lower waterfall. The elder who left them has not returned this decade. By now the formation will be old. By now the seals will be tired.",
+          "$[CHARACTER] has spent two free afternoons climbing the eastern cliff trail and finally, on the third afternoon, finds it — a small chamber cut into the rock face, sealed with a formation circle whose outer edges are visibly crumbling."
+        ],
+        "body": [
+          "The formation is old in the way old work is old: still functional, but with the small hairline cracks across its outer ring that mean it has been held together by inertia rather than maintenance for at least a decade. $[CHARACTER] sits cross-legged in front of the chamber and reads the formation the way the scripture-elder taught — not character by character but pattern by pattern, looking for the seal's spine, the single key-character on which all the others depend.",
+          "It is in the lower-left quadrant. A simple binding-character, of the kind a cultivator above Foundation Formation would consider beneath them. The decade of weathering has thinned the ink on its second stroke to a faint grey trace. $[CHARACTER] gathers a small precise thread of qi at the fingertip — not a force, only a presence — and touches the worn stroke. The whole formation seems to inhale once, and then, with a small dry papery sound, the outer ring releases.",
+          "The chamber inside is the size of a wardrobe. There are five spirit stones stacked in a small wooden box on the back ledge — low-grade, the kind any sect disciple could buy at the monthly exchange, but five of them is a real sum, and stacked like this they have been here long enough to have absorbed faint mountain-qi into their crystalline structure. Better than they were when they were left. $[CHARACTER] gathers them carefully.",
+          "On the way back down the cliff trail there is the small uncomfortable knowledge that the elder who left these stones, whoever she was, did not return because something prevented her. The cache was not abandoned. It was orphaned. $[CHARACTER] tucks the box into the satchel and continues down. The stones do not know whose they are now. The stones, in the end, do not care."
+        ],
+        "outro": [
+          "Back in the disciple cell, $[CHARACTER] stacks the five stones in the small alcove above the bed. They glow very faintly in the dimness, the slow patient glow of low-grade refinement, a small treasury of mortal-realm potential. Tomorrow they can be taken to the alchemy pavilion, or kept against need."
         ]
       },
       "choices": [
         {
-          "id": "ch_treasure_break_formation",
-          "label": "Crack the formation open. Brute-force the seals with raw qi.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 30, "stats": { "Spirit": 2, "Body": 1 }, "difficulty": 60, "techniqueBonusCategory": "insight_puzzle" },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.treasure_hunt.cracked_clean",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "spiritual_stone", "count": 5 },
-                { "kind": "insight_delta", "amount": 3 },
-                { "kind": "flag_set", "flag": "found_treasure_cache" }
-              ]
-            },
-            "SUCCESS": {
-              "narrativeKey": "ap.action.treasure_hunt.opened",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "spiritual_stone", "count": 5 },
-                { "kind": "qi_delta", "amount": -10 },
-                { "kind": "flag_set", "flag": "found_treasure_cache" }
-              ]
-            },
-            "PARTIAL": {
-              "narrativeKey": "ap.action.treasure_hunt.partial_break",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "spiritual_stone", "count": 2 },
-                { "kind": "qi_delta", "amount": -15 }
-              ]
-            },
-            "FAILURE": {
-              "narrativeKey": "ap.action.treasure_hunt.rebound",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -12 },
-                { "kind": "qi_delta", "amount": -15 }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "ap.action.treasure_hunt.formation_collapse",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -25 },
-                { "kind": "qi_delta", "amount": -20 }
-              ]
-            }
-          }
-        },
-        {
-          "id": "ch_treasure_read_the_seals",
-          "label": "Read the formation seals. There is a pattern — find the weak point.",
-          "timeCost": "MEDIUM",
-          "check": { "base": 35, "stats": { "Mind": 2, "Spirit": 1 }, "difficulty": 55, "techniqueBonusCategory": "lore_scholarship" },
-          "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "ap.action.treasure_hunt.cracked_clean",
-              "stateDeltas": [
-                { "kind": "item_add", "id": "spiritual_stone", "count": 5 },
-                { "kind": "insight_delta", "amount": 4 },
-                { "kind": "attribute_delta", "stat": "Mind", "amount": 1 },
-                { "kind": "flag_set", "flag": "found_treasure_cache" }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "ap.action.treasure_hunt.opened",
               "stateDeltas": [
