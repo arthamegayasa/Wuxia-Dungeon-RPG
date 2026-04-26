@@ -58,7 +58,15 @@ function renderLine(
   });
 }
 
-/** Pick one entry per non-empty section; concatenate with single spaces. */
+/**
+ * Phase 2C: emit each non-empty array element of intro/body/outro as its own
+ * paragraph; join all paragraphs with `\n\n` (blank line between paragraphs).
+ *
+ * Pre-2C behaviour was "pick one line per section, join with single space".
+ * For novel-mode beats authored as `body: ['p1', 'p2', 'p3']` the player now
+ * sees three paragraphs of prose instead of a single random pick. Snippet
+ * expansion still happens per-paragraph (so `$[KEY]` resolution is unchanged).
+ */
 export function renderEvent(
   event: EventDef,
   ctx: CompositionContext,
@@ -66,17 +74,18 @@ export function renderEvent(
   registry: NameRegistry,
   rng: IRng,
 ): string {
-  const parts: string[] = [];
+  const paragraphs: string[] = [];
 
   for (const section of ['intro', 'body', 'outro'] as const) {
     const lines = event.text[section] ?? [];
-    if (lines.length === 0) continue;
-    const chosen = lines[rng.intRange(0, lines.length - 1)]!;
-    const rendered = renderLine(chosen, ctx, library, registry, rng);
-    if (rendered.length > 0) parts.push(rendered);
+    for (const line of lines) {
+      if (line.length === 0) continue;
+      const rendered = renderLine(line, ctx, library, registry, rng);
+      if (rendered.length > 0) paragraphs.push(rendered);
+    }
   }
 
-  let rendered = parts.join(' ');
+  let rendered = paragraphs.join('\n\n');
 
   // Phase 2A-1 post-pass 1: interior-thought injection.
   rendered = maybeInjectInteriorThought({
