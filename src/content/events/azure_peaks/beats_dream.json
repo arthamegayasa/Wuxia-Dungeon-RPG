@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "AP_BEAT_DREAM_CLIFF_FALL",
+      "category": "life.dream",
+      "version": 1,
+      "weight": 30,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The cliff-fall dream comes again, the way it has come three times this season already.",
+          "$[CHARACTER] is standing at the edge of the eastern cliff above the cloister, in the hour before dawn, with the wind off the gorges lifting the silver-edged hem of the robe."
+        ],
+        "body": [
+          "The cliff itself is exactly the cliff that runs along the cloister's eastern boundary — the same dark stone, the same scattered cling of high pine at the lip, the same view down into the long grey lake of the morning mist that fills the gorges before the sun comes up. $[CHARACTER] has stood at this exact lip in waking life perhaps fifty times. There is, in waking life, a low stone parapet built by the elders three centuries ago precisely to keep junior disciples from doing what the dream has $[CHARACTER] doing now.",
+          "In the dream the parapet is gone. There is only the lip. And $[CHARACTER] is moving forward — not running, not jumping, only walking, the small slow walking of a body that has decided something the mind is still half a step behind on. The toes find the edge. The wind, which is the same eastern wind the cloister knows in waking life, lifts the robe. The dream pauses there, very long. The body knows it will not stop. It knows the next step will be onto air.",
+          "The next step comes. The fall is not a fall. The fall is the slow weightless thing that the texts say a soul becomes for an instant during the breakthrough between sublayers, the small loosening of the small banked self into the larger air. The mist of the gorges below comes up to meet $[CHARACTER]. The cloister, which is above and behind, has shrunk to a small careful arrangement of lacquered eaves and silver lanterns and the scattered movement of disciples beginning the dawn rite. They do not look up. The fall continues. It does not end."
+        ],
+        "outro": [
+          "$[CHARACTER] wakes in the dormitory cell with the breath very fast and the body pressed against the inside of the sleeping-mat. The thatch overhead is the cloister's thatch. The cliff is not, this morning, anywhere $[CHARACTER] is falling from. But the dream will be back. The dream has been back three times now and is not done with him."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.dream.cliff_fall",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "dreamed_of_cliff_fall" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.dream.cliff_fall", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.dream.cliff_fall", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_DREAM_BONE_SWORD",
+      "category": "life.dream",
+      "version": 1,
+      "weight": 25,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "In the dream the master is at the dais of the great hall in the deep blue master's robe with the silver embroidery, and across his lap is laid a sword $[CHARACTER] has never seen.",
+          "It is bone-white. It does not catch the lamplight the way a sword should."
+        ],
+        "body": [
+          "The blade is the colour of old polished bone — not the dull yellowish white of a real bone, but the high cold white of a thing that has been made from bone and then made into something else, something the body recognises but the eyes have to keep working on. The hilt is wrapped in plain dark leather. There is no guard. The cross-piece, where a cross-piece would be on any ordinary sword, is only the small tapered place where the leather meets the blade. The whole shape is wrong, and right, in the way only the things in dreams are wrong and right.",
+          "The master does not look at $[CHARACTER]. He looks at the sword. His hands rest on the dais on either side of it, palms up, the small jade pendant at his throat catching the lamplight in a way the sword refuses to. He says, in the voice that the great hall always carries to every cushion, a single phrase: 'It was yours. You will be asked for it.' He does not explain. He does not look up.",
+          "$[CHARACTER] tries to step forward. The dream does not permit it. The flagstones between the cushions and the dais have lengthened, the way only flagstones in dreams lengthen, so that each step takes the body further away rather than closer. The bone-white sword stays exactly where it is. The master's face stays exactly where it is. The phrase, having been said once, repeats itself in the small private chamber of $[CHARACTER]'s mind — it was yours, you will be asked for it — until the dream lets go and there is only the dark of the dormitory cell again."
+        ],
+        "outro": [
+          "$[CHARACTER] wakes with the phrase still in the mouth, almost spoken aloud. The dormitory is dark. The other disciples sleep. The bone-white sword is somewhere — has been somewhere — and the dream has decided that $[CHARACTER] is the one who will, in some future the dream is not yet ready to show, be asked for it."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.dream.bone_sword",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "dreamed_of_bone_sword" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.dream.bone_sword", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.dream.bone_sword", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "AP_BEAT_DREAM_IMPERIAL_VISION",
+      "category": "life.dream",
+      "version": 1,
+      "weight": 25,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["azure_peaks"],
+        "seasons": ["winter"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "$[CHARACTER] is somewhere very high in the dream — higher than the cloister, higher than the high cliffs above the cloister, higher than the cloud-line that the eastern peaks sometimes touch in autumn.",
+          "The wind is not cold. The wind is not anything. There is only the looking down."
+        ],
+        "body": [
+          "Below, very far below, is a city the dream has not shown $[CHARACTER] before. It is the imperial city — the dream is sure of this, with the small certain knowledge that dreams have — and it is laid out across the bend of a great river the way the texts describe the imperial city as being laid out: nine great avenues running north to south, twelve running east to west, the imperial palace at the centre with its gold-tile roofs that even from this height catch the light like the small movements of fish in a sunlit pond.",
+          "The city is on fire in three places. Not the dream-fire of $[CHARACTER]'s earlier dreams; this is a small precise distant fire, the kind of fire a city has when it is being besieged carefully rather than destroyed in haste. One fire is at the eastern gate. One is at the long market street that the dream knows runs along the river's southern bank. The third is at the imperial palace itself, at the small carved gate the texts call the Gate of the Twelve Phoenixes. Smoke from the third fire rises in a single dark column high enough that $[CHARACTER], at this great height, can see it begin to bend in some upper wind.",
+          "The dream does not show $[CHARACTER] who is besieging the city or who is defending it. The dream only shows the looking down. There is a small voice — not the master's voice, not anyone's voice $[CHARACTER] knows — that says, very quietly, somewhere not in the ears but inside the chest: 'Remember this. You will see it again from below.' The smoke from the Gate of the Twelve Phoenixes continues to rise. The dream does not let go for a long time."
+        ],
+        "outro": [
+          "When $[CHARACTER] wakes the cloister is its small ordinary self in the cold pre-dawn dark. The imperial city is a thing the texts have described and the disciple has never seen and the dream will not let go of. The smoke is in the chest for an hour after waking, which is, $[CHARACTER] suspects, the length of time the dream intended."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "ap.action.dream.imperial_vision",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 },
+                { "kind": "flag_set", "flag": "dreamed_of_imperial_city" }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "ap.action.dream.imperial_vision", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "ap.action.dream.imperial_vision", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
