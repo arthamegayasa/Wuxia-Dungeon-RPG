@@ -72,3 +72,41 @@ describe('CreationScreen', () => {
     expect(card.className).toMatch(/shimmer|animate-pulse/i);
   });
 });
+
+describe('Phase 2B-3: Sect Initiate anchor renders correctly', () => {
+  const sectInitiateLocked = {
+    id: 'sect_initiate',
+    name: 'Sect Initiate',
+    description: 'You spawn at age 10 within Azure Peaks Sect.',
+    locked: true,
+    unlockHint: 'Reach Qi Sensing in any past life',
+    freshlyUnlocked: false,
+  };
+  const sectInitiateUnlocked = { ...sectInitiateLocked, locked: false };
+
+  it('renders Sect Initiate as locked silhouette when meta has not unlocked it', () => {
+    render(<CreationScreen anchors={[sectInitiateLocked]} onBegin={() => {}} onBack={() => {}} />);
+    expect(screen.getByText(/reach qi sensing in any past life/i)).toBeInTheDocument();
+    const lockedCard = screen.getByText(/reach qi sensing in any past life/i).closest('button')!;
+    expect(lockedCard).toBeDisabled();
+  });
+
+  it('renders Sect Initiate as selectable when unlocked', () => {
+    render(<CreationScreen anchors={[sectInitiateUnlocked]} onBegin={() => {}} onBack={() => {}} />);
+    expect(screen.getByText(/sect initiate/i)).toBeInTheDocument();
+    // The "locked" text shouldn't appear in the visible DOM as a selectable anchor button.
+    const lockedTextNodes = screen.queryAllByText(/^— locked —$/);
+    expect(lockedTextNodes.length).toBe(0);
+  });
+
+  it('applies fresh-unlock shimmer when freshlyUnlocked is true', () => {
+    const { container } = render(
+      <CreationScreen
+        anchors={[{ ...sectInitiateUnlocked, freshlyUnlocked: true }]}
+        onBegin={() => {}} onBack={() => {}}
+      />,
+    );
+    const shimmerNode = container.querySelector('.shimmer, .animate-pulse');
+    expect(shimmerNode).not.toBeNull();
+  });
+});
