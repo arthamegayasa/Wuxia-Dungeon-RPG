@@ -36,13 +36,13 @@ For **large phases** (e.g., Phase 2+), brainstorm first via `superpowers:brainst
 
 ## Full roadmap (from spec §13)
 
-The spec defines 6 major phases (0–5). Each ships a standalone playable build with an explicit exit criterion. Phases 0, 1, and 2A are **complete** (11 PRs merged). Phase 2B–5 remain.
+The spec defines 6 major phases (0–5). Each ships a standalone playable build with an explicit exit criterion. Phases 0, 1, 2A, and Phase 2B sub-phases 2B-1+2B-2 are **complete** (15 PRs merged). Phase 2B-3 + 3-5 remain.
 
 | Phase | Title | Deliverable | Status |
 |-------|-------|-------------|--------|
 | **0** | Foundation | Engine skeleton, RNG, SaveManager, TitleScreen, CI | ✅ merged (see Phase 1 table below for full breakdown) |
 | **1** | The Mortal's Burden | Vertical slice: Peasant Farmer anchor, Yellow Plains, Body Tempering, 50 events, karma cycle | ✅ **complete** — delivered across 1A/1B/1C/1D-1/1D-2/1D-3 |
-| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI | 🟡 2A ✅ complete (inheritance + reveal UI, 4 PRs) — 2B pending (Azure Peaks + techniques + core paths + realm expansion) |
+| **2** | The Wheel Turns | Meta-progression real: Echoes + Memories + +3 anchors + Azure Peaks region + Qi Sensing/Condensation realms + MoodFilter + Codex/Lineage UI | 🟡 2A ✅ complete (inheritance + reveal UI, 4 PRs); 2B-1 ✅ + 2B-2 ✅ (engine + content, 4 PRs); **2B-3 pending** (Inventory/Technique/CorePath UI + Tribulation I UI + integration) |
 | **3** | The Heavens Notice | Heavenly Notice system + Karmic Imprints + Karmic Hunters + Tribulations I-II + Foundation/Core realms + Bone Marshes + cross-life Threads + world map | ⏳ pending |
 | **4** | Mind Benders | Pillar puzzles + NPC persistence + faction state + Imperial Capital + Northern Wastes + Nascent Soul realms + Tribulations III-IV | ⏳ pending |
 | **5** | Ascension | Sunken Isles + Void Refinement + Immortal realms + Tribulations V-IX + 5 true endings + PWA | ⏳ pending |
@@ -97,27 +97,63 @@ Phase 2A was rescoped during brainstorming (PR #8): the original 2A (inheritance
 
 **Branch tag (suggested)**: `phase-2a-complete` at merge commit `59155d9`.
 
+## Phase 2B partial completion — 2B-1 + 2B-2 detailed
+
+Phase 2B was split during spec-writing into 2B-1 (engine) / 2B-2 (content + wiring) / 2B-3 (UI + Tribulation I + integration). 2B-1 and 2B-2 shipped between 2026-04-25 and 2026-04-26; **2B-3 is the only remaining sub-phase**.
+
+| Sub-phase | Scope | Tests | PR / Commit |
+|-----------|-------|-------|-------------|
+| 2B spec + 2B-1 plan | 605-line design doc ([`docs/superpowers/specs/2026-04-25-phase-2b-techniques-paths-azure-peaks-design.md`](docs/superpowers/specs/2026-04-25-phase-2b-techniques-paths-azure-peaks-design.md)) covering tech registry / item registry / Azure Peaks / Qi Sensing+Condensation / Tribulation I stub / Sect Initiate anchor + 2B-1/2B-2/2B-3 decomposition. Plus 2B-1 implementation plan. | +0 | [#14](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/14) → `421507c` |
+| 2B-1 | Engine foundations: `TechniqueSchema` + `TechniqueRegistry` (canLearn gating w/ specific-meridians support), `TechniqueEffect` extended with 3 new kinds (`mood_modifier`, `unlock_choice`, `cultivation_multiplier_pct`) + `CoreAffinityToken`, `affinityMultiplier` (1.0 on-path / 0.5 off-path), `resolveTechniqueBonusWithAffinity` (corePath-aware) wired at both turn call sites, `ItemSchema` + `ItemRegistry` + `Manual` discriminated subtype, partial-manual deviation-risk formula + tier resolver, `computeCultivationMultiplier` from active techniques, `Character.qiCondensationLayer` field, polymorphic `attemptSublayerBreakthrough` by realm, `attemptQiSensingAwakening` (BT9 → QS) + `attemptQiCondensationEntry` (QS → QC1), `meridian_open` outcome-applier routes through `withOpenedMeridian` (closes 1A bug), `PostOutcomeHooks.corePathRevealed` + `preRunState`, `TribulationI` scripted 4-phase pillar engine (non-fatal in 2B), `MetaState` v3 → v4 migration, **peek/resolve RNG stream split via `derivedRng`** (closes Phase 1 lingering item). | +93 | [#15](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/15) → `580efa9` |
+| 2B-2 plan | 2B-2 content + engine wiring implementation plan. | +0 | [#16](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/16) → `befc78b` |
+| 2B-2 | Content + engine wiring: `RegionSchema` + `RegionRegistry` + `loadRegions`, **Azure Peaks region** (qiDensity 1.5×) + namePool, `loadTechniques` + 10 canonical techniques (mortal/yellow tier), `loadItems` + 20-item corpus (6 pills + 6 manuals + 5 wpn/armor/tal + 3 misc), Sect Initiate anchor + `startingMeridians` wiring, `LifeSummary.maxRealm` + `life_reached_qi_sensing` unlock rule, registries hydrated from JSON via `engineBridge`, **forward notes wired**: `mood_modifier` → `dominantMood`, `unlock_choice` → choice rendering, `meditation_progress` StateDelta. **Azure Peaks events**: 8 daily + 6 sect-training + 6 sect-social + 5 danger + 5 opportunity + 5 realm-gate + 5 region-transition (40 total). +50 Azure Peaks snippet leaves. Phase 1 item-id backfill regression test. **Lazy-load Azure Peaks chunk via dynamic import** (spec §8.6 mitigation — Azure Peaks content + gameplay registries split into `azure-peaks.js` chunk loaded on first AP life). Integration test: Azure Peaks playable life closes exit #1 + #4. | +181 | [#17](https://github.com/arthamegayasa/Wuxia-Dungeon-RPG/pull/17) → `25df368` |
+
+**Phase 2B-1 + 2B-2 aggregate:** 4 PRs (1 spec + 1 engine + 1 plan + 1 content), 694 → 968 tests on main (+274, across 102 → 133 test files), ~2 days elapsed.
+
+**Phase 2B exit criteria status** (§2 of 2B spec):
+
+1. ✅ Azure Peaks life playable end-to-end via Sect Initiate (`tests/integration/azure_peaks_playable_life.test.ts`)
+2. ✅ ≥10 techniques registered, learnable via `technique_learn` / `Manual`-read, modify ≥5 distinct later checks (`technique_bonus_resolution.test.ts`)
+3. ✅ Core Path on-path full / off-path ×0.5 split in `ChoiceResolver` (resolver unit tests)
+4. ✅ Qi Sensing awakening + QC progression reachable (`azure_peaks_playable_life.test.ts`; full BT1 → QC9 reachability is 2B-3 verification)
+5. ⏳ **2B-3** — Inventory + Technique list UI integration tests
+6. ⏳ **2B-3** — `BardoPanel` techniques+corePath / `LineageScreen` corePath+techniqueCount / `CodexScreen` Techniques tab
+7. ✅ `MetaState` v3 → v4 migration (`Migrator.v3_to_v4.test.ts`)
+8. 🟡 Tribulation I engine ships (non-fatal, scripted 4-phase); **UI deferred to 2B-3**
+9. ✅ Bundle constraint — main 449.24 KB raw / 125.43 KB gzip (under 450 KB Phase 3 budget) + Azure Peaks lazy chunk 110.44 KB raw / 23.95 KB gzip on first-AP-life-only
+
+**Test count on main**: 968 (across 133 files). Build: 449.24 KB raw / 125.43 KB gzip main + 110.44 KB raw / 23.95 KB gzip lazy `azure-peaks.js` chunk + 5× ~0.35 KB loader chunks. Phase 3 budget 450 KB raw — **main bundle holds 0.76 KB headroom**; Azure Peaks content already isolated to lazy chunk.
+
+**Branch tag (suggested)**: none yet — wait for 2B complete after 2B-3 merges.
+
 ## Resuming work — next action
 
-**Phase 2A is complete.** On top of Phase 1's playable life, the game now rolls Soul Echoes at spawn from unlocks earned in past lives, logs Forbidden Memory witnesses that can manifest 1-5 lives later, applies MoodFilter to narrative output, unlocks anchors through play (4 of 5 unlocked by repeating 5-life loop), and surfaces all of it via Codex + Lineage + enhanced Bardo + enhanced Creation.
+**Phase 2B-1 + 2B-2 are complete.** The game now ships the Azure Peaks region (lazy-loaded), 10 techniques, 20 items including 6 partial manuals, the Sect Initiate anchor (unlocks via `life_reached_qi_sensing`), Qi Sensing → Qi Condensation realms with awakening/entry helpers, the on-path/off-path technique-bonus split, and the Tribulation I scripted 4-phase pillar engine (non-fatal). Peek/resolve RNG streams are now split (closes Phase 1 lingering item).
 
-The next step is to **brainstorm Phase 2B scope** via the `superpowers:brainstorming` skill. Phase 2B (the rescoped old 2C) is itself a substantial sub-phase; recommend splitting into 2-3 sub-sub-phases.
+The next step is to **write the Phase 2B-3 plan** via `superpowers:writing-plans` at `docs/superpowers/plans/2026-04-26-phase-2b3-ui-tribulation-integration.md`. Spec source: [`docs/superpowers/specs/2026-04-25-phase-2b-techniques-paths-azure-peaks-design.md`](docs/superpowers/specs/2026-04-25-phase-2b-techniques-paths-azure-peaks-design.md) §7 (search "Phase 2B-3"). 2B-3 closes the only-UI-and-final-integration gap; engine work is fully shipped.
 
-**Phase 2B candidate scope (to refine in brainstorming):**
+**Phase 2B-3 scope** (from spec §7 sub-phase decomposition):
 
-- **Azure Peaks region** — second region per spec §8, with content authoring: ~30-50 events (transition from Yellow Plains + region-specific daily/training/social/danger/opportunity), snippet additions aiming for 200-leaf total library.
-- **Technique registry** — central registry so `technique_learn` stateDelta maps to real techniques; 10 basic techniques (mortal / Body Tempering / Qi Sensing tier); integrate into choice resolver via `techniqueBonusCategory` checks; inventory / character-sheet surfacing.
-- **Core Path detection + bonus application** — per spec §3.6, 5 paths (Martial / Sword / Body / Alchemy / Array), detection from attribute/meridian/event-history pattern, bonus application affecting at least 5 choice resolvers (exit criterion).
-- **Realm expansion** — Qi Sensing 1-9 + Qi Condensation 1-9 on top of existing Body Tempering 1-9, sub-layer breakthrough content and gating on Azure Peaks progression.
-- **Item registry** — central registry so Phase 1D-3 opaque items (`spiritual_stone`, `minor_healing_pill`, `silver_pouch`) become real and can affect checks / inventory UI.
-- **Phase 1 lingering fixes** (optional, bundle permitting) — peek/resolve RNG stream split, `getCurrentPendingPreview` non-advancing resume path, unconsumed event flags (`married`, `apprentice`, etc.) wired into follow-up events.
+- `InventoryPanel` component + integration into PlayScreen overlay
+- `TechniqueList` char-sheet section
+- `CorePathBadge` with reveal-on-3rd-meridian shimmer (`corePathRevealed` post-outcome hook already firing from 2B-1)
+- Region indicator on PlayScreen header
+- `BardoPanel` extensions (techniques learned + core path reveal sections)
+- `LineageScreen` LifeCards show corePath + technique count
+- `CodexScreen` new "Techniques" tab (seen-in-world vs learned distinction)
+- `CreationScreen` Sect Initiate locked silhouette until unlock (consistent with 2A-3 anchor lock UI)
+- Tribulation I UI — scripted 4-phase pillar with per-phase check feedback (engine already ships; UI is the gap)
+- Full multi-life UI integration test: `tests/integration/playable_life_2b.test.tsx` (3-life loop where Sect Initiate unlocks and is then used)
 
-**Phase 2B exit criteria** (§13 — the three unsatisfied Phase 2 criteria plus the implicit ones from spec):
+**Phase 2B-3 exit criteria** (closes spec §2 #5, #6, #8 full, plus bundle re-audit):
 
-1. Player can play a life fully set in Azure Peaks (not Yellow Plains) with region-appropriate events.
-2. At least 10 basic techniques are learnable via choice outcomes and meaningfully modify later checks.
-3. Core Path detection fires in-life and affects at least 5 choice resolvers reproducibly.
-4. Qi Sensing 1 → Qi Condensation 9 progression is reachable and testable.
+1. UI integration tests assert DOM for InventoryPanel + TechniqueList + CorePathBadge + region indicator
+2. `BardoPanel` reveals this-life techniques + core path; `LineageScreen` LifeCards show both; Codex "Techniques" tab lists seen + learned
+3. Tribulation I UI fires at QC9 → Foundation breakthrough attempt, runs 4-phase pillar, returns non-fatal fail (Phase 3 will flip to fatal + Heavenly Notice scaling via the existing `tribulation_mode` runtime flag)
+4. Full 3-life UI loop works (`playable_life_2b.test.tsx`)
+5. Bundle re-audit: main bundle stays ≤ 450 KB raw (currently 449.24 KB — UI additions must offset elsewhere or move into the lazy chunk)
+
+**Target test count**: ~50 added → ~1018 total.
 
 **Exact first steps for a new session:**
 
@@ -127,19 +163,21 @@ git status                           # confirm clean, on main
 git pull --ff-only                   # pick up any merged work
 ```
 
-Then invoke `superpowers:brainstorming` to explore Phase 2B scope. Expected output: 1 spec doc at `docs/superpowers/specs/YYYY-MM-DD-phase-2b-azure-peaks-techniques-paths.md` + 2-3 sub-phase plan files (e.g., `2B-1 technique + path engine`, `2B-2 Azure Peaks content`, `2B-3 realm expansion + integration`), each driving its own implementation via `superpowers:subagent-driven-development` + `superpowers:writing-plans`.
+Then invoke `superpowers:writing-plans` to draft 2B-3 plan, branch from main as `phase-2b3-ui-tribulation`, commit plan as first commit, then drive implementation via `superpowers:subagent-driven-development`.
 
-## Known lingering items (Phase 1 + 2A)
+## Known lingering items (Phase 1 + 2A + 2B-1/2B-2)
 
 These are accepted trade-offs from prior phases that later phases should address, documented so they aren't re-fixed mid-flight:
 
-- **Cached-peek narrative drift** (Phase 1): `peekNextEvent` uses `cursor+1` for local RNG, `resolveChoice` uses `cursor`. Repeated peeks without resolving return the same event/choices but slightly varied narrative. Phase 2B should split peek/resolve RNG streams cleanly.
-- **`onContinue` consumes a turn on resume** (Phase 1): calls `peekNextEvent`, which runs the selector and advances turn state. Phase 2B can add a `getCurrentPendingPreview()` path that re-renders the stored `pendingEventId` without running the selector.
-- **Event flags unconsumed** (Phase 1): Phase 1D-3 events set ~20 flags (e.g., `married`, `friend_of_elder`, `apprentice`, `has_child`) that no current event gates on. Phase 2A-2 added witness-memory + anchor-bridging events but did not exhaustively wire these; Phase 2B content authoring should branch on them.
-- **Item registry absent** (Phase 1): events reference `spiritual_stone`, `minor_healing_pill`, `silver_pouch` via `item_add` deltas. No central item registry yet — items are opaque strings. Phase 2B introduces a registry so items can affect checks and show in inventory.
-- **Technique registry absent** (Phase 1): `technique_learn` stateDelta is supported but no technique corpus ships. Phase 2B adds 10 basic techniques + registry + check bonus wiring.
+- ~~**Cached-peek narrative drift**~~ (Phase 1, **closed** in 2B-1): `peekNextEvent` and `resolveChoice` now share a clean `derivedRng` split (`fix(rng): split peek/resolve RNG streams via derivedRng` → `5d33dca`). Repeated peeks no longer drift narrative.
+- **`onContinue` consumes a turn on resume** (Phase 1): calls `peekNextEvent`, which runs the selector and advances turn state. **Explicitly deferred** by 2B spec §2 ("out of scope: `getCurrentPendingPreview` non-advancing resume") — re-evaluate Phase 3+ when world-map UI lands.
+- **Event flags unconsumed** (Phase 1): Phase 1D-3 events set ~20 flags (e.g., `married`, `friend_of_elder`, `apprentice`, `has_child`) that no current event gates on. 2A-2 wired witness-memory + anchor-bridging events; 2B-2 added Sect Initiate transition events. **Still partial** — exhaustive flag-consumption retrofit was explicitly deferred by 2B spec; Phase 3 content authoring should branch on them naturally.
+- ~~**Item registry absent**~~ (Phase 1, **closed** in 2B-1/2B-2): `ItemSchema` + `ItemRegistry` + `Manual` discriminated subtype shipped in 2B-1; 20-item corpus + Phase 1D-3 opaque-id backfill shipped in 2B-2.
+- ~~**Technique registry absent**~~ (Phase 1, **closed** in 2B-1/2B-2): `TechniqueSchema` + `TechniqueRegistry` + on-path/off-path bonus split shipped in 2B-1; 10-technique corpus shipped in 2B-2 + wired at both turn call sites.
 - ~~**Anchor-unlock evaluator not wired**~~ (Phase 2A-2, **closed** in 2A-3): 2A-2 shipped the evaluator class but did not wire it into `runBardoFlow`. 2A-3 wired it (`feat(meta): anchor unlock evaluator wired at bardo` → `b03365c`) so `meta.unlockedAnchors` now grows through play.
-- **Bundle growth budget**: 434.76 KB raw / 120.99 KB gzip after 2A-3. Spec §13 allows growth through Phase 3 (450 KB raw target) — **15 KB headroom remaining**. Phase 2B must audit carefully; Azure Peaks content + technique registry + realm expansion will push close to the budget.
+- **`meridian_open` outcome-applier polymorphism** (Phase 1A bug, **closed** in 2B-1): `OutcomeApplier` now routes `meridian_open` deltas through `Character.withOpenedMeridian` so `detectCorePath` fires correctly when the third meridian opens via event outcome (was previously direct push into `openMeridians`, bypassing the detector).
+- **Bundle growth budget**: 449.24 KB raw / 125.43 KB gzip after 2B-2 (main chunk only). Phase 3 budget is 450 KB raw — **0.76 KB headroom remaining on the main bundle**. Azure Peaks content + gameplay registries are isolated to a `azure-peaks.js` lazy chunk (110.44 KB raw / 23.95 KB gzip) loaded on first AP-life only. Phase 2B-3 UI additions must either offset elsewhere on main or move into the lazy chunk.
+- **Tribulation I `tribulation_mode` runtime flag** (Phase 2B-1): engine ships with `tribulation_mode: 'non_fatal' | 'fatal'` defaulting to `'non_fatal'`. Phase 3 flips the default to `'fatal'` and layers Heavenly Notice scaling on top of the same 4-phase pillar engine — do **not** rewrite the engine in Phase 3, only flip the flag and add the Notice multiplier.
 
 ## Tone & communication preferences
 
@@ -176,17 +214,21 @@ When working on a subsystem, re-read the relevant spec section first:
 - **Mood baseline**: `computeDominantMood(zeroMoodInputs())` returns `'serenity'` via explicit early-return — plan's priority loop alone would return `melancholy`. Test expectations win.
 - **`MeridianId` is numeric 1-12** (not string ids like `'heart_meridian'`). Events using `meridian_open` stateDelta pass integer ids.
 - **`DeathCause` enum includes `drowning`, `beast`, `childbirth`** — not all causes fit the obvious categories. Check `src/engine/core/Types.ts` before assuming a cause needs to be mapped to `disease`.
-- **`peekNextEvent` rng uses `cursor + 1`**: to avoid mutating the resolver's seed trajectory. Acceptable Phase 1 compromise; Phase 2B should redesign peek/resolve RNG streams.
-- **`MetaState` schema version is `3`** (Phase 2A-3 bump). `v1 → v2` added echo/memory/unlocks/v2 fields; `v2 → v3` added `birthYear`/`deathYear` to `LineageEntrySummary`. Future bumps are cumulative — don't drop prior fields.
+- **`peekNextEvent` and `resolveChoice` use a `derivedRng` split** (Phase 2B-1, replaces the old `cursor+1` workaround). Don't fold them back into a single shared stream — the `derivedRng` ensures peek doesn't perturb resolver seed trajectory while keeping repeated peeks deterministic.
+- **`MetaState` schema version is `4`** (Phase 2B-1 bump). `v1 → v2` added echo/memory/unlocks/v2 fields; `v2 → v3` added `birthYear`/`deathYear` to `LineageEntrySummary`; `v3 → v4` added `corePath` + `techniquesLearned[]` to `LineageEntrySummary`. Migrations are cumulative — don't drop prior fields.
 - **`GamePhase` is an exhaustive `Record<GamePhase, ...>` keyed map in `StateMachine.ts`**. Adding a new `GamePhase` value (e.g., Phase 2A-3's `LINEAGE`) will NOT break the test suite — the tsc `--noEmit` check is the only signal. `npm run typecheck` is a **required** gate, not optional.
 - **`MemoryManifestResolver` uses a derived-seed RNG** (isolated from the resolver stream). Don't refactor it to share the turn-level `IRng` without re-validating the determinism integration tests.
+- **`affinityMultiplier` is 1.0 on-path / 0.5 off-path** (Phase 2B-1, spec §3.6). Don't introduce a third "neutral" tier — the binary split is intentional per spec. Detection is exclusive (a character has exactly one Core Path or none-yet).
+- **`tribulation_mode` runtime flag defaults to `'non_fatal'`** (Phase 2B-1). Phase 3 flips the default; do not hardcode either branch — keep the flag plumbed through.
+- **Azure Peaks lazy-load chunk has 2 dynamic-import warnings** (`loader.ts` for events + snippets). Both `loader.ts` files are also statically imported by `engineBridge`, so Vite cannot relocate them into the lazy chunk. Accepted trade-off — chunking still saves ~110 KB on cold start. Don't try to "fix" this by removing the static imports; it would break the synchronous Yellow Plains spawn path.
 
 ## Don't do
 
 - Don't rewrite history. Commits on main are final.
 - Don't modify files in other phase-locked subsystems unless your current task requires it (and the plan permits it).
 - Don't add runtime dependencies beyond the locked set in `package.json` without explicit user approval.
-- Don't regress Phase 1 or Phase 2A exit criteria — `tests/integration/playable_life.test.ts`, `ui_full_cycle.test.tsx`, `echo_inheritance.test.ts`, `memory_manifestation.test.ts`, `mood_filter_variance.test.ts`, `life_cycle_with_bardo.test.ts`, and `playable_life_2a.test.tsx` must all stay green.
-- Don't replace `peasant_farmer` / `true_random` / `martial_family` / `scholars_son` / `outer_disciple` anchor defaults — Phase 2B may add more, doesn't replace.
-- Don't delete the Yellow Plains content — Phase 2B authors Azure Peaks alongside, doesn't replace.
-- Don't downgrade `MetaState` schema version (currently `3`). Migrators are cumulative (`v1 → v2 → v3`); any future bump is additive and must preserve all prior fields.
+- Don't regress Phase 1, Phase 2A, or Phase 2B-1/2B-2 exit criteria — `tests/integration/playable_life.test.ts`, `ui_full_cycle.test.tsx`, `echo_inheritance.test.ts`, `memory_manifestation.test.ts`, `mood_filter_variance.test.ts`, `life_cycle_with_bardo.test.ts`, `playable_life_2a.test.tsx`, `azure_peaks_playable_life.test.ts`, and `technique_bonus_resolution.test.ts` must all stay green.
+- Don't replace `peasant_farmer` / `true_random` / `martial_family` / `scholars_son` / `outer_disciple` / `sect_initiate` anchor defaults — Phase 2B-3 + Phase 3 may add more, doesn't replace.
+- Don't delete the Yellow Plains or Azure Peaks content — Phase 3 authors new regions alongside, doesn't replace either.
+- Don't downgrade `MetaState` schema version (currently `4`). Migrators are cumulative (`v1 → v2 → v3 → v4`); any future bump is additive and must preserve all prior fields.
+- Don't break the `azure-peaks.js` lazy-chunk boundary. Static imports of Azure Peaks content from non-bridge code will collapse the chunk back into main and blow the bundle budget. If unsure, run `npm run build` and confirm the `azure-peaks-*.js` chunk is still ~110 KB.
