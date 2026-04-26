@@ -6,6 +6,7 @@
       "category": "life.daily",
       "version": 1,
       "weight": 80,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["autumn"]
@@ -13,26 +14,24 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.millet_field] The harvest cannot be delayed.",
-          "$[CHARACTER] kneels among the millet. The stalks are heavy with grain."
+          "Autumn comes to the Yellow Plains as it always comes — first the yellowing of the millet, then the cold edge in the morning wind, then the smell of woodsmoke threading through the dry stalks at dusk.",
+          "$[CHARACTER] rises before the sun. There is no choice in this; in the harvest season the body wakes itself, fearful of what the day requires."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The sickle is older than $[CHARACTER]'s father. The handle has been smoothed by three generations of palms, and the iron blade hisses faintly when it parts the stalks. Bending into the field, knees pressing into dust still cool with night, $[CHARACTER] cuts and bundles, cuts and bundles. The stalks fall in soft golden whispers.",
+          "By midday the sun has burned the haze off the eastern hills. Sweat runs into the eyes and is blinked away. The other villagers are scattered across the field, each one a small bent shape in their own square of work. No one speaks. There is nothing to say that the work does not already say.",
+          "When the carts come in the late afternoon, the boy helps load them. The weight of the bundles is the weight of a winter, of children fed or children hungry, of taxes paid or taxes owed. Old Wen the headman walks the rows counting and counting again, his lips moving without sound."
+        ],
+        "outro": [
+          "By dusk $[CHARACTER]'s back is a wall of slow fire. But the field is cleared. Above, the first stars prick out one by one, indifferent and clean."
+        ]
       },
       "choices": [
         {
-          "id": "ch_harvest_hard",
-          "label": "Work from dawn till dark.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Body": 1 }, "difficulty": 40 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.work.harvest",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 2 },
-                { "kind": "insight_delta", "amount": 2 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.work.harvest",
               "stateDeltas": [
@@ -40,33 +39,8 @@
                 { "kind": "insight_delta", "amount": 1 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -5 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -8 }]
-            }
-          }
-        },
-        {
-          "id": "ch_harvest_easy",
-          "label": "Pace yourself.",
-          "timeCost": "LONG",
-          "outcomes": {
-            "SUCCESS": {
-              "narrativeKey": "action.work.harvest",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "action.work.harvest",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.work.harvest", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.work.harvest", "stateDeltas": [] }
           }
         }
       ],
@@ -77,6 +51,7 @@
       "category": "life.daily",
       "version": 1,
       "weight": 70,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["spring"]
@@ -84,26 +59,24 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.millet_field] The earth is still cold, still heavy with winter.",
-          "$[CHARACTER] leans into the plough. The ox knows the row better than the man."
+          "Spring on the Yellow Plains is no soft thing. The earth is still cold, still heavy with the winter's wet, and it gives up its breaking only to those willing to sweat for it.",
+          "$[CHARACTER] takes the plough handles in two hands. The grain of the wood is darker where palms have rubbed it for thirty seasons."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The ox knows the row better than the man. Step, step, the slow heavy walk of a beast that has done this before and will do it until it cannot. The blade bites the soil, turns it, lays it open like a slow wound. Earthworms curl in the upturned dark.",
+          "By the third row the small of the back is on fire. By the sixth the shoulders forget how to be anything but tight. $[CHARACTER] watches the ox's flank rise and fall, the steady hot breath of an animal that lives in its body the way a mortal must.",
+          "A heron lifts off the irrigation ditch at the field's far edge, slow grey wings against grey sky. The plough turns. The earth turns. The world is a small turning thing, just this one corner of it, and it is enough work to fill a day."
+        ],
+        "outro": [
+          "When the sun lowers the field is half-broken and the rest waits for tomorrow. The ox is unyoked and led to water. $[CHARACTER]'s palms are blistered and quiet."
+        ]
       },
       "choices": [
         {
-          "id": "ch_plow",
-          "label": "Break the heavy earth.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Body": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.work.plowing",
-              "stateDeltas": [
-                { "kind": "attribute_delta", "stat": "Body", "amount": 1 },
-                { "kind": "insight_delta", "amount": 2 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
               "stateDeltas": [
@@ -111,18 +84,8 @@
                 { "kind": "insight_delta", "amount": 1 }
               ]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -3 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -6 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.work.plowing", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.work.plowing", "stateDeltas": [] }
           }
         }
       ],
@@ -133,35 +96,37 @@
       "category": "life.daily",
       "version": 1,
       "weight": 100,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[time.noon.work] The weeds come back faster than the crop.",
-          "$[CHARACTER] works the rows, one stalk at a time. The day is very long."
+          "The weeds come back faster than the crop. They always have. They always will.",
+          "By noon the sun has hammered the field flat and the cicadas have begun their long unbroken song."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "$[CHARACTER] works the rows one stalk at a time, fingers learning to find the wiry root by touch. Pull. The dry crack of soil. Toss aside. Pull. The sickle's smaller cousin — a bent paring knife — is for the deeper roots, the ones that mean it.",
+          "The day is very long. The sky is very wide. There is no shade except what the body throws on the ground beneath itself, and the body is bent low, so even that shade is small. A woman three rows over begins, very softly, to sing — an old song about a girl waiting for a brother who would not come back from the river. After a verse she stops. The cicadas swallow the silence whole.",
+          "Some hours into the afternoon $[CHARACTER] notices that the hands have learned to do this without the mind. The mind has gone elsewhere — to a steamed bun eaten last week, to the look of a neighbour's daughter in lamplight, to nothing at all. The hands keep pulling. The work keeps becoming less work and more weather."
+        ],
+        "outro": [
+          "When the headman calls the row done it is later than it should be. The shadows of the millet stalks lie long and thin across the cleared earth, like ribs."
+        ]
       },
       "choices": [
         {
-          "id": "ch_weed",
-          "label": "Bend. Pull. Bend. Pull.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "action.work.plowing",
               "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -1 },
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "action.work.plowing", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.work.plowing", "stateDeltas": [] }
           }
         }
       ],
@@ -172,41 +137,37 @@
       "category": "life.daily",
       "version": 1,
       "weight": 90,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.well] The bucket waits.",
-          "$[CHARACTER] takes up the yoke. Two jars to fill before the sun climbs."
+          "The well at the village's edge is older than memory. Its lip is grooved smooth where rope after rope has bitten the stone for two hundred years.",
+          "$[CHARACTER] takes up the yoke before sunrise. Two clay jars to fill before the sun climbs. This is the first work of every day."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The bucket goes down on its hempen rope. The sound of it striking the dark water below is the sound of a small bell, dropped, struck once. Then the slow hauling — hand over hand, the rope rough, the wood of the windlass groaning faintly. The cold rises out of the well in a thin breath.",
+          "The water tastes of stone and of the old earth beneath stone. $[CHARACTER] cups a palmful and drinks. It is colder than anything else the body will touch all day. For a moment, just for that moment, the world is small and clean and survivable.",
+          "The yoke goes across the shoulders, the jars hung in their woven bands. The walk back is half a li and feels longer with every step. By the third trip the shoulders have a bruise. By the fourth the bruise is a part of the body, like the elbow or the ear."
+        ],
+        "outro": [
+          "The water-jar at the hearth is full. The hut's small day can begin."
+        ]
       },
       "choices": [
         {
-          "id": "ch_fetch",
-          "label": "Carry the water home.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 30, "stats": { "Body": 1 }, "difficulty": 25 },
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "action.drink.water",
               "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -2 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.drink.water", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.drink.water", "stateDeltas": [] }
           }
         }
       ],
@@ -217,32 +178,37 @@
       "category": "life.daily",
       "version": 1,
       "weight": 60,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] The cooking fire is low but willing.",
-          "$[CHARACTER] sets the pot, counts what is left in the jar."
+          "The cooking fire is low but willing. Smoke curls along the bamboo rafters, finds the gap in the thatch, slips out into the cooling sky.",
+          "$[CHARACTER] sets the iron pot on the trivet, counts what is left in the millet jar — the family's measure, kept honest by the eye."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "Two scoops of millet. Three of water. A single dried green pepper, broken into halves, then into halves again. A pinch of salt — the smallest pinch, because the salt-jar is nearly empty and the merchant comes only once in fifteen days. The fire takes the pot in its small orange hands and begins to teach it to boil.",
+          "While the porridge thickens $[CHARACTER] sits on the threshold. The yard is bare-swept clay, the chickens already roosted. A neighbour somewhere is calling a child in for the night, the high impatient song of every mother. The smell of someone else's frying oil drifts over the wall — they have eggs tonight, then. Lucky.",
+          "When the porridge is done it is poured into the family's three bowls. There is one left for the morning. There is no meat, no fish, no green herb except the one pepper. But the bowl is hot and the hands are clean and the day's work has earned this much: a meal."
+        ],
+        "outro": [
+          "$[CHARACTER] eats slowly. Hunger is older than language; meeting it is the oldest small comfort."
+        ]
       },
       "choices": [
         {
-          "id": "ch_cook",
-          "label": "Cook a simple meal.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "action.eat.simple",
               "stateDeltas": [{ "kind": "hp_delta", "amount": 2 }]
             },
-            "FAILURE": {
-              "narrativeKey": "action.eat.simple",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": 2 }]
-            }
+            "PARTIAL": { "narrativeKey": "action.eat.simple", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.eat.simple", "stateDeltas": [] }
           }
         }
       ],
@@ -253,6 +219,7 @@
       "category": "life.daily",
       "version": 1,
       "weight": 50,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["winter"]
@@ -260,48 +227,30 @@
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[weather.frost.winter] The hut barely holds the warmth of a candle.",
-          "$[CHARACTER] lies down in straw, breath clouding under the thatch."
+          "Winter on the Yellow Plains is a cold that gets into the bone and stays there. The hut barely holds the warmth of a candle.",
+          "$[CHARACTER] lies down in straw and old blankets, breath clouding under the thatch."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The wind finds the gaps in the walls. There are many gaps. Each one is a small mouth that whispers. The body curls itself smaller, hands tucked inside the elbow-folds, knees drawn to the chest — the old, animal posture of cold, older than the human shape.",
+          "The candle on the low shelf gutters and steadies. Its small light makes the rafters into the ribs of a slow whale. Somewhere outside a dog barks once and stops. Sleep is slow in coming. The mind drifts to summer — the millet head heavy, the cicadas, the long sweat — and the memory itself is a small warmth held in cupped hands.",
+          "When sleep does come it is shallow. The body keeps a watch the mind cannot. Every shift in the wind, every creak of the door-frame, registers somewhere beneath the dream. The breath slows. The heart slows. The qi banks low in the dantian like a fire keeping itself alive through a long night."
+        ],
+        "outro": [
+          "Morning will come. It always does. The cold is not eternal, only enormous."
+        ]
       },
       "choices": [
         {
-          "id": "ch_rest",
-          "label": "Try to sleep through the cold.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 25, "stats": { "Spirit": 1 }, "difficulty": 30 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "action.rest.meditation",
-              "stateDeltas": [
-                { "kind": "qi_delta", "amount": 5 },
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            },
             "SUCCESS": {
               "narrativeKey": "action.rest.sleep",
               "stateDeltas": [{ "kind": "qi_delta", "amount": 3 }]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "qi_delta", "amount": -1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "qi_delta", "amount": -2 },
-                { "kind": "hp_delta", "amount": -1 }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "qi_delta", "amount": -3 },
-                { "kind": "hp_delta", "amount": -2 }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "action.rest.sleep", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.rest.sleep", "stateDeltas": [] }
           }
         }
       ],
@@ -312,35 +261,37 @@
       "category": "life.daily",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.road] The next village is a day's walk, if the legs hold.",
-          "$[CHARACTER] sets out. $[npc.traveler.stranger]"
+          "The road runs between villages the way a thread runs between two stitches — slack, dust-coloured, only there because someone has to keep the cloth together.",
+          "$[CHARACTER] sets out at dawn with a flatbread wrapped in cloth and the day's full sky to walk under."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The first li is easy. The legs remember. By the third li the sandals' straps have begun their slow conversation with the foot's instep, and a small blister blooms beneath the heel. The road dust rises with each step and settles into the trouser-legs, into the open collar, into the corners of the eyes.",
+          "An old man passes the other way, leading a thin black goat on a frayed rope. He nods. $[CHARACTER] nods. Neither speaks. There is nothing on this road but the road; the man and the goat and the boy and the sun are all merely things travelling on it.",
+          "Toward midday a cart driver overtakes from behind, ox-cart loaded with rough-cut firewood, and offers the silent half-smile of country travellers. $[CHARACTER] walks beside the cart for a li, and they pass a shrine — three smooth stones stacked at the road's edge, a half-burned stick of incense leaning in the topmost. Someone before them has already stopped to ask the small gods for an easy way."
+        ],
+        "outro": [
+          "By evening the next village's smoke shows above the hills. The walking has been the lesson; the arriving is only its quiet end."
+        ]
       },
       "choices": [
         {
-          "id": "ch_walk",
-          "label": "Walk the long road.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "action.travel.slow",
               "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
             },
-            "FAILURE": {
-              "narrativeKey": "action.travel.slow",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -3 },
-                { "kind": "insight_delta", "amount": 1 }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "action.travel.slow", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.travel.slow", "stateDeltas": [] }
           }
         }
       ],
@@ -351,46 +302,38 @@
       "category": "life.daily",
       "version": 1,
       "weight": 25,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.village] Market day. Dust. Voices. The smell of cheap oil.",
-          "$[CHARACTER] threads between stalls. $[npc.merchant.haggle]"
+          "Market day. Dust. Voices. The smell of cheap oil hot in iron pans, of the sweet rot beneath a melon-stall, of a butcher's block scrubbed only as well as it can be scrubbed.",
+          "$[CHARACTER] threads between stalls, the few copper coins of a small purchase warm against the palm."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "A merchant with a yellow cloth tied over his nose sells salt at the corner stall, weighing each measure in a small bronze scale. His eyes flick to $[CHARACTER]'s clothes and judge. He gives a price. It is too high. They begin the old, ritual conversation — the merchant's lament about taxes and bandits, the buyer's lament about the harvest and the children, both of them lying just enough to be polite.",
+          "Two stalls down a storyteller has set up his folding stool and his small drum. He is telling the story of General Yue Fei, the loyal officer betrayed by his own court — the version where the courtiers are demons in human skins. A small crowd has gathered. A boy with a missing front tooth is hanging on every word.",
+          "A pair of caravan guards push through the market with the easy indifference of men who have weapons on their belts. They do not look at $[CHARACTER]. $[CHARACTER] does not look at them. The street rearranges itself softly around their passing, the way reeds bend around a heron."
+        ],
+        "outro": [
+          "The salt is bought. The walk home is long. A storyteller's voice, rising over the market crowd, follows for half a li before the wind takes it."
+        ]
       },
       "choices": [
         {
-          "id": "ch_haggle",
-          "label": "Haggle with the merchants.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "MEDIUM",
-          "check": { "base": 25, "stats": { "Charm": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "npc.merchant.story",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }],
-              "unlocks": { "codex": ["met_merchant"] }
-            },
             "SUCCESS": {
               "narrativeKey": "npc.merchant.haggle",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
+              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }],
+              "unlocks": { "codex": ["met_merchant"] }
             },
-            "PARTIAL": {
-              "narrativeKey": "npc.merchant.haggle",
-              "stateDeltas": []
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": []
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.anger.flash",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            }
+            "PARTIAL": { "narrativeKey": "npc.merchant.haggle", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "npc.merchant.haggle", "stateDeltas": [] }
           }
         }
       ],
@@ -401,22 +344,29 @@
       "category": "life.daily",
       "version": 1,
       "weight": 8,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.village] Lanterns up. Drums. The old banyan hung with red paper.",
+          "Lanterns up. Drums. The old banyan at the village square hung with red paper, and beneath it three musicians — a fiddle, a clay flute, and a small skin drum — beginning their first slow song of the night.",
           "$[CHARACTER] walks into the square. For one night the hunger is not the first thing in the belly."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "Children in red tunics chase each other between the legs of the elders. A grandmother with a face like a folded paper laughs and laughs at something the smallest of them has said. The fire-pit in the centre of the square has been built up taller than it needs to be — a small extravagance, a small defiance against winter, paid for by the headman's own jar of grain.",
+          "There are dumplings tonight. The smell of them is as good as the eating. $[CHARACTER] stands in line, takes the small bowl of three, eats them slowly, savouring. The pork has been cut with leek and a single threadlike scrape of ginger. After the long dry months it is a flavour the mouth almost cannot believe.",
+          "Later the headman climbs onto a low cart and gives a short, drunken speech about the village and its dead and its unborn and the long weather. He stumbles over the names of the dead, then says them right, and a few of the older women cry without making any sound. The fiddle picks up a dance-song. Someone pulls $[CHARACTER] into the dance. The hands of strangers are warm."
+        ],
+        "outro": [
+          "Walking home in the dark, three friends or four, the lanterns swinging — for a moment it is possible to forget that tomorrow there is a field to weed and a roof to mend."
+        ]
       },
       "choices": [
         {
-          "id": "ch_celebrate",
-          "label": "Join the festival.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "LONG",
           "outcomes": {
             "SUCCESS": {
@@ -426,12 +376,13 @@
                 { "kind": "flag_set", "flag": "attended_festival" }
               ]
             },
+            "PARTIAL": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [{ "kind": "flag_set", "flag": "attended_festival" }]
+            },
             "FAILURE": {
               "narrativeKey": "emotion.hope.dawn",
-              "stateDeltas": [
-                { "kind": "insight_delta", "amount": 2 },
-                { "kind": "flag_set", "flag": "attended_festival" }
-              ]
+              "stateDeltas": [{ "kind": "flag_set", "flag": "attended_festival" }]
             }
           }
         }
@@ -443,6 +394,7 @@
       "category": "life.daily",
       "version": 1,
       "weight": 40,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"],
         "seasons": ["winter"]
@@ -450,26 +402,30 @@
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[weather.snow.winter] Nothing to harvest. Nothing to plant. Only the slow day.",
-          "$[CHARACTER] sits at the door of the hut. $[reflection.mood.melancholy.1]"
+          "Snow on the thatch. Snow on the road that is no longer a road but a long white absence between houses.",
+          "Nothing to harvest. Nothing to plant. Only the slow day."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "$[CHARACTER] sits at the open door of the hut, wrapped in the thicker of the two coats. The threshold is a cold line under the soles. Outside, three sparrows have come down to the swept patch of clay, looking for the smallest of grains. They find one, lose it under another's foot, find it again, fly away.",
+          "Inside, the small grandmother of the house mends a sleeve by the window's pale light. Her needle goes in, comes out, goes in. The thread is the colour of dust. She does not speak; she does not need to. Her hands say what hands say in winter — that the work is small and slow, but that work is the way through.",
+          "The afternoon hangs there. A kettle begins very softly to whistle and is taken off the fire. A neighbour calls something across the lane — a word about a dog. The light through the paper window goes from white-grey to grey-grey to the colour of slate. $[CHARACTER] watches it change and watches the sparrows come back and watches the day pass without happening."
+        ],
+        "outro": [
+          "The mind, given nothing, makes its own small music. Old griefs visit and leave. Old hopes visit and leave."
+        ]
       },
       "choices": [
         {
-          "id": "ch_wait",
-          "label": "Let the hours pass.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
           "outcomes": {
             "SUCCESS": {
               "narrativeKey": "reflection.mood.melancholy.2",
               "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
-            "FAILURE": {
-              "narrativeKey": "reflection.mood.melancholy.2",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
-            }
+            "PARTIAL": { "narrativeKey": "reflection.mood.melancholy.2", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "reflection.mood.melancholy.2", "stateDeltas": [] }
           }
         }
       ],
@@ -480,22 +436,25 @@
       "category": "life.daily",
       "version": 1,
       "weight": 25,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "The ox has not risen. It lies in the stall, breath shallow, eyes wet.",
-          "$[CHARACTER] stands in the doorway. A family ox is half a field."
+          "The ox has not risen. It lies in the stall, breath shallow, eyes wet and far away. A pale crust of foam has gathered at the corner of its mouth.",
+          "$[CHARACTER] stands in the doorway, hand still on the rough plank of the gate. A family ox is half a field. A family ox is the difference between this winter and a worse one."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The grandmother comes out of the hut and looks once and folds her hands beneath her shawl. She does not say what she thinks; she does not need to. The ox's flank rises and falls in the slow rhythm of an animal that has decided, somewhere below thought, that it is done.",
+          "Two paths from this doorway, then. The boy could fetch warm water and the bitter herb the old midwife sells, sit by the beast through the night, sing to it the way a brother might sing to a sister, and hope that an ox can be talked back from the dark. Or he could go to the woodshed for the heavy cleaver, and turn the tragedy into meat — three weeks of rare full bellies, but the field next spring would have to be broken by hands and shoulders and nothing else."
+        ]
       },
       "choices": [
         {
           "id": "ch_treat",
-          "label": "Nurse the ox back to health.",
+          "label": "Sit by the beast through the night. An ox can be coaxed back from the dark.",
           "timeCost": "MEDIUM",
           "check": { "base": 20, "stats": { "Spirit": 1 }, "difficulty": 40 },
           "outcomes": {
@@ -535,7 +494,7 @@
         },
         {
           "id": "ch_slaughter",
-          "label": "Slaughter it. Eat while there is meat.",
+          "label": "Take the cleaver. Eat while there is meat.",
           "timeCost": "MEDIUM",
           "outcomes": {
             "SUCCESS": {
@@ -557,58 +516,44 @@
           }
         }
       ],
-      "repeat": "unlimited"
+      "repeat": "once_per_life"
     },
     {
       "id": "YP_DAILY_ROOF_LEAK",
       "category": "life.daily",
       "version": 1,
       "weight": 30,
+      "kind": "beat",
       "conditions": {
         "regions": ["yellow_plains"]
       },
       "timeCost": "SHORT",
       "text": {
         "intro": [
-          "$[weather.rain.autumn] The roof drips, then runs, then pools on the clay floor.",
-          "$[CHARACTER] climbs the ladder. The thatch is sodden and mean."
+          "Autumn rain begins as a hush against the thatch and grows, in an hour, into a steady weeping. The roof drips, then runs, then pools on the clay floor in a small dark eye.",
+          "$[CHARACTER] climbs the wooden ladder in the rain. The thatch is sodden and mean."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "The old reeds have rotted at the south corner. Black where they should be the pale gold of new straw. The boy works one-handed, the other clamped on the ladder's slick rail, and the wet grass gives off the sour, unmistakable smell of decay. Each handful of new thatch must be tied in with twine that has also been soaked and is slow to knot.",
+          "Below, the grandmother is moving the sleeping-mat away from the leak's mouth, scolding the puddle as if it could be made to listen. Two of the chickens have come inside out of the storm and are huddled in the dry corner with their heads tucked, their pale eyelids drawn slow. A neighbour somewhere is hammering — a roof problem, then, for half the lane.",
+          "The wind shifts. Cold rain drives directly into the boy's face, into the open collar, down the spine. He works faster. There is a moment, twine pulled tight, knot held in the teeth, when $[CHARACTER] understands very clearly that the body is the only roof a poor man owns, and that the body too will one day fail at the corner."
+        ],
+        "outro": [
+          "When the patch is set the leak slows to a trickle, then to a slow drip, then to nothing at all. Down the ladder. Inside. The grandmother hands a bowl of hot water without looking up."
+        ]
       },
       "choices": [
         {
-          "id": "ch_patch",
-          "label": "Patch the roof in the rain.",
+          "id": "continue",
+          "label": "Continue",
           "timeCost": "SHORT",
-          "check": { "base": 20, "stats": { "Body": 1, "Mind": 1 }, "difficulty": 35 },
           "outcomes": {
-            "CRIT_SUCCESS": {
-              "narrativeKey": "emotion.hope.small",
-              "stateDeltas": [{ "kind": "insight_delta", "amount": 2 }]
-            },
             "SUCCESS": {
               "narrativeKey": "emotion.hope.small",
               "stateDeltas": [{ "kind": "insight_delta", "amount": 1 }]
             },
-            "PARTIAL": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [{ "kind": "hp_delta", "amount": -1 }]
-            },
-            "FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -2 },
-                { "kind": "flag_set", "flag": "wet_bedding" }
-              ]
-            },
-            "CRIT_FAILURE": {
-              "narrativeKey": "emotion.resignation.tired",
-              "stateDeltas": [
-                { "kind": "hp_delta", "amount": -4 },
-                { "kind": "flag_set", "flag": "wet_bedding" }
-              ]
-            }
+            "PARTIAL": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "emotion.hope.small", "stateDeltas": [] }
           }
         }
       ],
