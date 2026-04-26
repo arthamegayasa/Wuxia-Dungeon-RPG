@@ -208,6 +208,12 @@ export interface RevealedEcho {
   description: string;
 }
 
+export interface RevealedTechnique {
+  id: string;
+  name: string;
+  description: string;
+}
+
 export interface BardoPayload {
   lifeIndex: number;
   years: number;
@@ -227,6 +233,10 @@ export interface BardoPayload {
   witnessedThisLife: ReadonlyArray<RevealedMemory>;
   /** Phase 2A-3: echoes whose unlock condition fired this life (10c reveal). */
   echoesUnlockedThisLife: ReadonlyArray<RevealedEcho>;
+  /** Phase 2B-3: core path locked this life (null if 3rd meridian never opened). */
+  corePath: string | null;
+  /** Phase 2B-3: techniques the player learned during this life. */
+  techniquesLearnedThisLife: ReadonlyArray<RevealedTechnique>;
 }
 
 export interface CreationAnchorView {
@@ -647,6 +657,11 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       return { id, name: e?.name ?? id, description: e?.description ?? '' };
     });
 
+    const techniquesLearnedThisLife: RevealedTechnique[] = (rs.learnedTechniques ?? []).flatMap((id) => {
+      const t = TECHNIQUE_REGISTRY.byId(id);
+      return t ? [{ id, name: t.name, description: t.description }] : [];
+    });
+
     return {
       lifeIndex: meta.lifeCount,
       years: br.summary.yearsLived,
@@ -668,6 +683,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       manifestedThisLife,
       witnessedThisLife,
       echoesUnlockedThisLife,
+      corePath: rs.character.corePath,
+      techniquesLearnedThisLife,
     };
   }
 

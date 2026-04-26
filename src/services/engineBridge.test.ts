@@ -503,3 +503,34 @@ describe('Phase 2B-3: corePathRevealed → gameStore wiring', () => {
     expect(preview.corePathRevealedThisTurn).toBe(false);
   });
 });
+
+describe('Phase 2B-3: BardoPayload surfaces corePath + techniques', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('exposes corePath and techniquesLearnedThisLife on BardoPayload', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'Bardo Test');
+    // Force-mutate the run state so the character has a corePath + a learnedTechnique.
+    // (Bypassing the natural progression for test brevity.)
+    const gs = useGameStore.getState();
+    const rs = gs.runState!;
+    gs.updateRun(
+      { ...rs, character: { ...rs.character, corePath: 'iron_mountain' as const }, learnedTechniques: ['iron_mountain_body_seal'], deathCause: 'old_age' as any },
+      gs.streak!,
+      gs.nameRegistry!,
+    );
+    const bardo = await engine.beginBardo();
+    expect(bardo.corePath).toBe('iron_mountain');
+    expect(bardo.techniquesLearnedThisLife).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'iron_mountain_body_seal' }),
+      ]),
+    );
+  });
+});
