@@ -474,3 +474,32 @@ describe('Phase 2B-3: TurnPreview surfaces region + corePath + techniques + inve
     expect(preview.openMeridians).toEqual([]);
   });
 });
+
+describe('Phase 2B-3: corePathRevealed → gameStore wiring', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('clears corePathRevealedThisTurn at the start of the next peek', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'X');
+    useGameStore.getState().markCorePathRevealed();
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(true);
+    await engine.peekNextEvent();
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(false);
+  });
+
+  it('TurnPreview.corePathRevealedThisTurn reflects the live store flag', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'Y');
+    // After peek, the flag is cleared (to false) and the preview reflects false.
+    const preview = await engine.peekNextEvent();
+    expect(preview.corePathRevealedThisTurn).toBe(false);
+  });
+});

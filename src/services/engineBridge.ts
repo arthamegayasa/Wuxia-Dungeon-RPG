@@ -39,7 +39,7 @@ import { loadEvents } from '@/content/events/loader';
 import { loadSnippets, mergeSnippetPacks, mergeSnippetLibraries } from '@/content/snippets/loader';
 import { EchoRegistry } from '@/engine/meta/EchoRegistry';
 import { MemoryRegistry } from '@/engine/meta/MemoryRegistry';
-import { ItemRegistry, ItemDef } from '@/engine/cultivation/ItemRegistry';
+import { ItemRegistry, ItemDef, ItemType } from '@/engine/cultivation/ItemRegistry';
 import { RegionRegistry } from '@/engine/world/RegionRegistry';
 import { SoulEcho } from '@/engine/meta/SoulEcho';
 import type { UnlockCondition, EchoEffect } from '@/engine/meta/SoulEcho';
@@ -157,7 +157,7 @@ export interface TurnPreviewItem {
   id: string;
   name: string;
   count: number;
-  itemType: 'pill' | 'manual' | 'weapon' | 'armor' | 'talisman' | 'misc';
+  itemType: ItemType;
 }
 
 export interface TribulationPayload {
@@ -459,7 +459,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       region: rs.region,
       regionName: regionDef?.name ?? rs.region.replace(/_/g, ' '),
       corePath: rs.character.corePath,
-      corePathRevealedThisTurn: false,
+      corePathRevealedThisTurn: gs.corePathRevealedThisTurn,
       learnedTechniques,
       inventory,
       openMeridians: rs.character.openMeridians,
@@ -497,6 +497,7 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
    * could hit a choiceId that no longer existed.
    */
   async function doPeek(): Promise<TurnPreview> {
+    useGameStore.getState().clearCorePathRevealed();
     const gs = useGameStore.getState();
     if (!gs.runState || !gs.streak || !gs.nameRegistry) {
       throw new Error('peekNextEvent: no active run in store');
@@ -876,6 +877,9 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       });
       nextRunState = hooks.runState;
       const nextEchoTracker = hooks.echoTracker;
+      if (hooks.corePathRevealed) {
+        useGameStore.getState().markCorePathRevealed();
+      }
 
       useGameStore.getState().updateRun(nextRunState, nextStreak, gs.nameRegistry);
       useGameStore.getState().setEchoTracker(nextEchoTracker);
