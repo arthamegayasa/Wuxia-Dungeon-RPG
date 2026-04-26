@@ -574,6 +574,8 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
         heavenlyNotice: gs.runState.heavenlyNotice,
         ageYears: Math.floor(gs.runState.character.ageDays / 365),
         learnedTechniques: gs.runState.learnedTechniques,
+        // Phase 2C: feed novel-mode pacing into the selector.
+        turnsSinceLastDecision: gs.runState.turnsSinceLastDecision ?? 0,
       },
       gs.lifetimeSeenEvents,
       gs.runState.thisLifeSeenEvents,
