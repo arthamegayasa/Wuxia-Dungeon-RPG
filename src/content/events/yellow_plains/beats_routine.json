@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "YP_BEAT_ROUTINE_DAWN_BREATH",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 100,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "Before the sun, before the cock, before the village dogs settle into the small uncertain quiet that always precedes the first bird, $[CHARACTER] is awake.",
+          "There is no decision in it. The body wakes itself."
+        ],
+        "body": [
+          "Sitting up on the sleeping-mat, eyes still closed, $[CHARACTER] takes the first breath of the day the way the old farmers take it — through the nose, slow, all the way to the bottom of the belly, then held a beat, then released through the mouth in a long thin whisper of warm air against the cold pre-dawn dark.",
+          "Three of these breaths and the small ache in the lower back is gone. Six and the mind is clear of whatever the night's last dream had been. Nine and the small steady warmth at the dantian, banked through the night, has begun to wake.",
+          "The grandmother across the hut coughs once, the small dry cough of an old woman in winter, and rolls back into sleep. The hut smells of last night's millet, of the cold ash in the hearth, of woollen blanket and the particular dust of dried herbs hung in the rafters. $[CHARACTER] opens the eyes. The thatch overhead is just beginning to be visible — a darker grey against the grey of the dark, the world's first small concession to morning."
+        ],
+        "outro": [
+          "By the time $[CHARACTER] reaches for the patched cotton tunic, the day has already begun in the body. The work is only the body's outward shape; the work is already underway."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.routine.breath",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.routine.breath", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.routine.breath", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_ROUTINE_SWEEP_COURTYARD",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 90,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The sweep-broom is bound bamboo, the handle blackened by twenty years of palms. It leans always against the wall to the left of the door, where the hand can find it without the eyes.",
+          "$[CHARACTER] takes it up after the morning's first breath."
+        ],
+        "body": [
+          "The yard is small — three paces across, bare-swept clay, one low stone for sitting and one taller stone for setting things upon. The first stroke of the broom raises a thin pale curl of dust into the slanted morning light, and that curl is the day's first visible thing, hanging there a long moment before settling.",
+          "Sweep, sweep. The bamboo whispers against the clay in a sound the village hears every dawn from every yard, so that the sound is no sound, the sound is only the village waking. The chickens come scratching around the swept edge, hoping for what the broom has uncovered. A small black ant that survived the night is moved gently with the toe of the sandal to the safer corner by the wall. The grandmother taught $[CHARACTER] this when he was small: do not crush what is making its own small living.",
+          "When the yard is done $[CHARACTER] leans the broom back against its wall in the same place it has stood for twenty years. The clay is the same clay. The yard is the same yard. But it has been swept this morning, and the day can begin in a clean space, and that small thing is, as the grandmother used to say, not nothing."
+        ],
+        "outro": [
+          "The water-jar is next, and the chickens are next, and the day is next. The broom waits."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.routine.sweep",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.routine.sweep", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.routine.sweep", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_ROUTINE_WATER_FROM_WELL",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 95,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "Mid-morning. The shoulder-yoke leans by the door where it always leans. Two empty clay jars hang from its woven cords. The well is half a li off, by the path that runs east past the threshing-floor.",
+          "$[CHARACTER] takes the yoke and goes."
+        ],
+        "body": [
+          "The path is dust in the dry months and mud in the wet, and the bare feet have learned every lift and dip in it without ever being asked. Past the threshing-floor where Old Ma is already laying out the morning's threshed grain to dry. Past the lean-to where the village's one ox is chewing without urgency at a wisp of yesterday's straw. Past the small wayside shrine where a stick of incense has burned itself out in the night, leaving a thin grey curl of ash on the offering-stone.",
+          "The well is the village's oldest centre. The lip of it has been worn into a smooth round groove by two centuries of rope. The handle of the windlass has been replaced four times in living memory; the iron axle is original. $[CHARACTER] sets the bucket on its rope and lets it down. The hempen cord plays out through the palms, the weight of the empty bucket pulling steady, the small dry creak of the windlass-wood the only sound.",
+          "Then the change in the rope's pull when the bucket meets the dark water below — the small soft thud of it, then the slow filling, then the drag-back as the bucket begins, full now, to want to come up. Hand over hand. The water that arrives at the lip is so cold it is almost a kind of smoke."
+        ],
+        "outro": [
+          "Two jars, hung from the yoke, the cool weight settling honest across both shoulders. The walk back is half a li and the feet know it. The water-jar at the hearth will be full again. The day's small bookkeeping continues."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.routine.water",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.routine.water", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.routine.water", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_ROUTINE_SPEAR_FORMS",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 70,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "MEDIUM",
+      "text": {
+        "intro": [
+          "Behind the threshing-floor, in the small flat space the children use for kicking-games, $[CHARACTER] practises the spear at dusk.",
+          "The spear is the village's, not his — a battered ash-wood shaft with a leaf-shaped iron head, kept in the headman's lean-to against bandits, lent to any youth willing to learn it."
+        ],
+        "body": [
+          "The forms are the four that every village in the Yellow Plains teaches to its young: stand-the-mountain, part-the-grain, draw-the-river, stab-the-low-snake. They were taught two centuries ago by a wandering soldier and have been taught from boy to boy ever since, drifting a little in each generation, becoming with each retelling slightly less of what they were and slightly more of what the Yellow Plains needs them to be.",
+          "Stand-the-mountain: the feet wide, the spear vertical, the back straight. Hold it. Hold it. The shoulders begin to burn after a hundred breaths and that is the form. The form is the burning. To stand still while the body protests is the foundation of every other thing the spear knows.",
+          "Then part-the-grain: the long horizontal sweep, the hips turning, the spear's tip cutting the dusk air at the height of a man's neck. Then draw-the-river: the shaft pulled close along the body, the iron head describing a small slow circle. Then stab-the-low-snake: down on one knee, the thrust delivered low at the shin of an attacker, the body folded small. Repeat. Repeat. The dusk thickens; a bat begins to cut the air over the threshing-floor; the small gasping breath of a young body learning a craft is the only sound."
+        ],
+        "outro": [
+          "When it is too dark to see the iron head $[CHARACTER] stops. The shaft goes back to the headman's lean-to. The shoulders are a small steady fire that will be a deeper, slower ache by morning. The body has been added to."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "MEDIUM",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.routine.spear",
+              "stateDeltas": [
+                { "kind": "attribute_delta", "stat": "Body", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.routine.spear", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.routine.spear", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    },
+    {
+      "id": "YP_BEAT_ROUTINE_EVENING_MEAL",
+      "category": "life.routine",
+      "version": 1,
+      "weight": 90,
+      "kind": "beat",
+      "conditions": {
+        "regions": ["yellow_plains"]
+      },
+      "timeCost": "SHORT",
+      "text": {
+        "intro": [
+          "The fire is low. The pot has been boiling its slow boil for the better part of an hour. The sun has gone from the western field and the eastern sky has begun, very softly, to bruise into evening.",
+          "$[CHARACTER] sits cross-legged at the threshold with a chipped clay bowl in both hands."
+        ],
+        "body": [
+          "The grandmother spoons out the millet porridge with the long bamboo ladle the family has used since before the headman's father was born. The porridge is not generous; it is honest. There is a single dried strip of pickled radish across the top of $[CHARACTER]'s bowl, brown and crinkled and salty, set there with the small careful pride of a woman who has made the harvest stretch one more day.",
+          "There is a moment, before the first spoonful, when nobody speaks. The grandmother is settled on her low stool, her own bowl in her lap. The grandfather, when there was a grandfather, used to bow his head toward the household shrine and murmur a single old phrase before any meal; the grandmother no longer does this aloud, but $[CHARACTER] sees her lips move the small motion of remembering it. Then she nods, the smallest nod, and they begin.",
+          "The porridge is hot. The salt of the radish wakes the tongue. The body, which has been working since before the sun, takes the food the way a dry field takes a small steady rain. There is no conversation. There is the sound of two spoons and one ladle and the small wet sounds of careful eating. Outside, somewhere down the lane, a neighbour is calling a child in for the night. The crickets have begun. The day is closing the way the day closes."
+        ],
+        "outro": [
+          "When the bowl is empty $[CHARACTER] sets it down on the threshold-stone. The grandmother takes the dishes. The day has been earned, and the body has been fed, and the small accounts of being alive have for one more evening been settled."
+        ]
+      },
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "timeCost": "SHORT",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "action.routine.meal",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 1 }
+              ]
+            },
+            "PARTIAL": { "narrativeKey": "action.routine.meal", "stateDeltas": [] },
+            "FAILURE": { "narrativeKey": "action.routine.meal", "stateDeltas": [] }
+          }
+        }
+      ],
+      "repeat": "unlimited"
+    }
+  ]
+}
