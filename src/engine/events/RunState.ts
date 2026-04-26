@@ -5,6 +5,17 @@ import { Season } from '@/engine/core/Types';
 import { Character } from '@/engine/character/Character';
 import { RngState } from '@/engine/core/RNG';
 
+export interface PendingTribulationResult {
+  readonly pillarId: 'tribulation_i';
+  readonly phases: ReadonlyArray<{
+    readonly phaseId: string;
+    readonly success: boolean;
+    readonly chance: number;
+    readonly roll: number;
+  }>;
+  readonly fatal: boolean;
+}
+
 export interface RunState {
   readonly character: Character;
   readonly turn: number;
@@ -36,6 +47,8 @@ export interface RunState {
   readonly memoriesManifestedThisLife: ReadonlyArray<string>;
   /** How many manifestation attempts have been made this life. Max 3. Task 11/13 field. */
   readonly manifestAttemptsThisLife: number;
+  /** Phase 2B-3: Tribulation I result captured at qc9_to_foundation, consumed by UI. */
+  readonly pendingTribulationResult?: PendingTribulationResult;
 }
 
 export interface CreateRunStateArgs {

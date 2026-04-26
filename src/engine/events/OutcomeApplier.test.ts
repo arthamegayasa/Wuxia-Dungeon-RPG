@@ -5,6 +5,7 @@ import { Realm } from '@/engine/core/Types';
 import { Outcome } from '@/content/schema';
 import { createRunState } from './RunState';
 import { applyOutcome } from './OutcomeApplier';
+import { runTribulationIPillar } from '@/engine/cultivation/TribulationI';
 
 const ATTRS = { Body: 20, Mind: 15, Spirit: 10, Agility: 12, Charm: 8, Luck: 30 };
 
@@ -324,14 +325,15 @@ describe('applyOutcome — attempt_realm_crossing (Phase 2B-2 Task 20)', () => {
     expect(['qi_sensing', 'body_tempering']).toContain(next.character.realm);
   });
 
-  it('qc9_to_foundation: sets attempted_tribulation_i flag (stub)', () => {
+  it('qc9_to_foundation: runs TribulationI and stamps pendingTribulationResult', () => {
     const rs = baseState();
     const rng = createRng(42);
     const next = applyOutcome(rs, {
       narrativeKey: 'k',
       stateDeltas: [{ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' }],
     }, { rng });
-    expect(next.character.flags).toContain('attempted_tribulation_i');
+    expect(next.pendingTribulationResult).toBeDefined();
+    expect(next.pendingTribulationResult!.pillarId).toBe('tribulation_i');
   });
 });
 
@@ -354,5 +356,38 @@ describe('applyOutcome — region_change (Phase 2B-2 Task 21)', () => {
     expect(next.character).toBe(rs.character);
     expect(next.worldFlags).toBe(rs.worldFlags);
     expect(next.karmaEarnedBuffer).toBe(rs.karmaEarnedBuffer);
+  });
+});
+
+function makeRunStateAtQc9() {
+  const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
+  const qc9Char = {
+    ...c,
+    realm: Realm.QI_CONDENSATION,
+    qiCondensationLayer: 9,
+    cultivationProgress: 100,
+  };
+  const rs = createRunState({ character: c, runSeed: 1, region: 'azure_peaks', year: 1000, birthYear: 1000, season: 'summer' });
+  return { ...rs, character: qc9Char };
+}
+
+describe('Phase 2B-3: qc9_to_foundation runs Tribulation I and stores result', () => {
+  it('stores phase results on runState.pendingTribulationResult (non-fatal default)', () => {
+    const rs = makeRunStateAtQc9();
+    const outcome: Outcome = { narrativeKey: 'k', stateDeltas: [{ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' }] };
+    const next = applyOutcome(rs, outcome, { rng: createRng(42) });
+    expect(next.pendingTribulationResult).toBeDefined();
+    expect(next.pendingTribulationResult!.pillarId).toBe('tribulation_i');
+    expect(next.pendingTribulationResult!.phases).toHaveLength(4);
+    expect(next.pendingTribulationResult!.fatal).toBe(false);
+    expect(next.deathCause).toBeNull();
+  });
+
+  it('matches direct runTribulationIPillar output (deterministic)', () => {
+    const rs = makeRunStateAtQc9();
+    const outcome: Outcome = { narrativeKey: 'k', stateDeltas: [{ kind: 'attempt_realm_crossing', transition: 'qc9_to_foundation' }] };
+    const next = applyOutcome(rs, outcome, { rng: createRng(42) });
+    const direct = runTribulationIPillar(rs.character, { rng: createRng(42), tribulationMode: 'non_fatal' });
+    expect(next.pendingTribulationResult!.phases.map((p) => p.phaseId)).toEqual(direct.phaseResults.map((p) => p.phaseId));
   });
 });

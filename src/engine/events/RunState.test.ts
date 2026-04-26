@@ -45,4 +45,13 @@ describe('createRunState', () => {
     expect(rs.memoriesManifestedThisLife).toEqual([]);
     expect(rs.manifestAttemptsThisLife).toBe(0);
   });
+
+  it('createRunState defaults pendingTribulationResult to undefined', () => {
+    const c = createCharacter({ name: 't', attributes: ATTRS, rng: createRng(1) });
+    const rs = createRunState({
+      character: c, runSeed: 42, region: 'yellow_plains',
+      year: 1000, birthYear: 1000, season: 'summer',
+    });
+    expect(rs.pendingTribulationResult).toBeUndefined();
+  });
 });
