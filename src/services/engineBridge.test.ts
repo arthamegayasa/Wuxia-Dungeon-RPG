@@ -451,3 +451,26 @@ describe('engineBridge dominantMood with techniques (Phase 2B-2 Task 10)', () =>
     expect((moodEffect as any).mood).toBe('serenity');
   });
 });
+
+describe('Phase 2B-3: TurnPreview surfaces region + corePath + techniques + inventory', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useGameStore.getState().reset();
+    useMetaStore.getState().reset();
+  });
+
+  it('exposes region label, corePath, learnedTechniques, inventory on every preview', async () => {
+    const sm = createSaveManager({ storage: () => localStorage, gameVersion: '0.1.0' });
+    const engine = createEngineBridge({ saveManager: sm, now: () => 7 });
+    await engine.loadOrInit();
+    await engine.beginLife('peasant_farmer', 'Test One');
+    const preview = await engine.peekNextEvent();
+    expect(preview.region).toBe('yellow_plains');
+    expect(preview.regionName).toMatch(/yellow plains/i);
+    expect(preview.corePath).toBeNull();
+    expect(preview.corePathRevealedThisTurn).toBe(false);
+    expect(preview.learnedTechniques).toEqual([]);
+    expect(preview.inventory).toEqual([]);
+    expect(preview.openMeridians).toEqual([]);
+  });
+});

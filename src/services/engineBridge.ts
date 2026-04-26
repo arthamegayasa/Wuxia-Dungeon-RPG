@@ -148,6 +148,29 @@ export interface LoadOrInitResult {
   hasSave: boolean;
 }
 
+export interface TurnPreviewTechnique {
+  id: string;
+  name: string;
+}
+
+export interface TurnPreviewItem {
+  id: string;
+  name: string;
+  count: number;
+  itemType: 'pill' | 'manual' | 'weapon' | 'armor' | 'talisman' | 'misc';
+}
+
+export interface TribulationPayload {
+  pillarId: 'tribulation_i';
+  phases: ReadonlyArray<{
+    phaseId: string;
+    success: boolean;
+    chance: number;
+    roll: number;
+  }>;
+  fatal: boolean;
+}
+
 export interface TurnPreview {
   narrative: string;
   name: string;
@@ -159,6 +182,17 @@ export interface TurnPreview {
   realm: string;
   insight: number;
   choices: Array<{ id: string; label: string }>;
+  // Phase 2B-3 additions
+  region: string;
+  regionName: string;
+  corePath: string | null;
+  /** True only on the turn the 3rd meridian opened. UI uses for shimmer animation. */
+  corePathRevealedThisTurn: boolean;
+  learnedTechniques: ReadonlyArray<TurnPreviewTechnique>;
+  inventory: ReadonlyArray<TurnPreviewItem>;
+  openMeridians: ReadonlyArray<number>;
+  /** Set only by resolveChoice when the resolved outcome triggered a Tribulation pillar. */
+  tribulation?: TribulationPayload;
 }
 
 export interface RevealedMemory {
@@ -396,10 +430,21 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
   function buildTurnPreview(
     narrative: string,
     choices: Array<{ id: string; label: string }>,
+    tribulation?: TribulationPayload,
   ): TurnPreview {
     const gs = useGameStore.getState();
     if (!gs.runState) throw new Error('buildTurnPreview: no runState in store');
     const rs = gs.runState;
+    const regionDef = REGION_REGISTRY.current.byId(rs.region);
+    const learnedTechniques: TurnPreviewTechnique[] = rs.learnedTechniques.flatMap((id) => {
+      const t = TECHNIQUE_REGISTRY.byId(id);
+      return t ? [{ id, name: t.name }] : [];
+    });
+    const inventory: TurnPreviewItem[] = rs.inventory.flatMap((slot) => {
+      const def = ITEM_REGISTRY.byId(slot.id);
+      if (!def) return [];
+      return [{ id: slot.id, name: def.name, count: slot.count, itemType: def.type }];
+    });
     return {
       narrative,
       name: rs.character.name,
@@ -411,6 +456,14 @@ export function createEngineBridge(opts: BridgeOpts = {}): EngineBridge {
       realm: rs.character.realm,
       insight: rs.character.insight,
       choices,
+      region: rs.region,
+      regionName: regionDef?.name ?? rs.region.replace(/_/g, ' '),
+      corePath: rs.character.corePath,
+      corePathRevealedThisTurn: false,
+      learnedTechniques,
+      inventory,
+      openMeridians: rs.character.openMeridians,
+      tribulation,
     };
   }
 
