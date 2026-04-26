@@ -34,6 +34,9 @@ export interface GameStoreState {
   turnResult: TurnResult | null;
   bardoResult: BardoResult | null;
 
+  /** Phase 2B-3: one-turn shimmer signal — true for exactly the turn corePath is first revealed. */
+  corePathRevealedThisTurn: boolean;
+
   // Actions
   setPhase: (p: GamePhase) => void;
   setLoading: (b: boolean) => void;
@@ -44,6 +47,8 @@ export interface GameStoreState {
   setTurnResult: (tr: TurnResult | null) => void;
   setBardoResult: (br: BardoResult | null) => void;
   appendSeenEvent: (eventId: string) => void;
+  markCorePathRevealed: () => void;
+  clearCorePathRevealed: () => void;
   resetRun: () => void;
   reset: () => void;
 }
@@ -60,6 +65,7 @@ const INITIAL: Pick<
   | 'turnResult'
   | 'bardoResult'
   | 'echoTracker'
+  | 'corePathRevealedThisTurn'
 > = {
   phase: GamePhase.TITLE,
   isLoading: false,
@@ -71,6 +77,7 @@ const INITIAL: Pick<
   turnResult: null,
   bardoResult: null,
   echoTracker: null,
+  corePathRevealedThisTurn: false,
 };
 
 export const useGameStore = create<GameStoreState>((set) => ({
@@ -105,6 +112,9 @@ export const useGameStore = create<GameStoreState>((set) => ({
   setTurnResult: (turnResult) => set({ turnResult }),
   setBardoResult: (bardoResult) => set({ bardoResult }),
 
+  markCorePathRevealed: () => set({ corePathRevealedThisTurn: true }),
+  clearCorePathRevealed: () => set({ corePathRevealedThisTurn: false }),
+
   appendSeenEvent: (eventId) =>
     set((prev) => ({
       lifetimeSeenEvents: prev.lifetimeSeenEvents.includes(eventId)
@@ -121,6 +131,7 @@ export const useGameStore = create<GameStoreState>((set) => ({
       turnResult: null,
       bardoResult: null,
       echoTracker: null,
+      corePathRevealedThisTurn: false,
     }),
 
   reset: () => set({ ...INITIAL }),

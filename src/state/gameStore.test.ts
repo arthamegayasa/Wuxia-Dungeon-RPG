@@ -83,3 +83,27 @@ describe('gameStore', () => {
     expect(s.error).toBeNull();
   });
 });
+
+describe('Phase 2B-3: corePathRevealedThisTurn flag', () => {
+  beforeEach(() => {
+    useGameStore.getState().reset();
+  });
+
+  it('starts false', () => {
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(false);
+  });
+  it('markCorePathRevealed flips to true', () => {
+    useGameStore.getState().markCorePathRevealed();
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(true);
+  });
+  it('clearCorePathRevealed flips back to false', () => {
+    useGameStore.getState().markCorePathRevealed();
+    useGameStore.getState().clearCorePathRevealed();
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(false);
+  });
+  it('resetRun clears the flag', () => {
+    useGameStore.getState().markCorePathRevealed();
+    useGameStore.getState().resetRun();
+    expect(useGameStore.getState().corePathRevealedThisTurn).toBe(false);
+  });
+});
