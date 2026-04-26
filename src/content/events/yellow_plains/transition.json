@@ -6,6 +6,7 @@
       "category": "life.transition",
       "version": 1,
       "weight": 30,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 60
@@ -13,17 +14,17 @@
       "timeCost": "LONG",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] The years have thinned the hands to paper. The lamp is low. The house is quiet.",
-          "$[CHARACTER] lies on the kang and watches the shadow of a beam that has held the roof up since before memory.",
-          "$[reflection.mood.serenity.1]"
+          "The years have thinned the hands to paper, the breath to a rumour, the sight to the soft pale shapes of a world that no longer needs to be looked at clearly to be known. The kang is warm. The lamp is low. The house is quiet."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "Outside in the lane a child is calling another child. The sound comes through the paper window the way water comes through a cupped hand — softened, beautiful, inexact. $[CHARACTER] lies on the kang and watches the shadow of a roof-beam that has held the roof up since long before memory.",
+          "There is the small choice that the dying are sometimes given by their own bodies — to let the breath simply grow small and to be carried out by it, or to gather what is left of the will and reach, one last time, for something the long life kept trying to grasp. The qi at the dantian is a small ember, no longer warm. It could be banked or it could be spent. There is a third path, the oldest one: to call for the family, to put one's small accounting in order with the people who will remain."
+        ]
       },
       "choices": [
         {
-          "id": "ch_rest_final",
-          "label": "Rest. Let the breath grow small.",
+          "id": "ch_rest_peaceful",
+          "label": "Rest. Let the breath grow small. The lamp burns down on its own.",
           "timeCost": "LONG",
           "outcomes": {
             "SUCCESS": {
@@ -43,6 +44,77 @@
               "deathCause": "old_age"
             }
           }
+        },
+        {
+          "id": "ch_final_meditation",
+          "label": "Gather what is left. Reach, one last time, for the breakthrough that was never granted.",
+          "timeCost": "LONG",
+          "check": { "base": 15, "stats": { "Spirit": 1, "Mind": 1 }, "difficulty": 60 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.wonder.sudden",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 8 },
+                { "kind": "flag_set", "flag": "died_in_breakthrough" }
+              ],
+              "deathCause": "old_age"
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.wonder.quiet",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 5 },
+                { "kind": "flag_set", "flag": "died_in_breakthrough" }
+              ],
+              "deathCause": "old_age"
+            },
+            "PARTIAL": {
+              "narrativeKey": "reflection.mood.serenity.2",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "died_in_breakthrough" }
+              ],
+              "deathCause": "old_age"
+            },
+            "FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.2",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "died_in_breakthrough" }
+              ],
+              "deathCause": "qi_deviation"
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "reflection.mood.melancholy.2",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "died_in_breakthrough" }
+              ],
+              "deathCause": "qi_deviation"
+            }
+          }
+        },
+        {
+          "id": "ch_call_family",
+          "label": "Call for the family. Set the small accounts in order before the lamp goes out.",
+          "timeCost": "LONG",
+          "outcomes": {
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "karma_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "died_with_family" }
+              ],
+              "deathCause": "old_age"
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.hope.dawn",
+              "stateDeltas": [
+                { "kind": "insight_delta", "amount": 4 },
+                { "kind": "karma_delta", "amount": 2 },
+                { "kind": "flag_set", "flag": "died_with_family" }
+              ],
+              "deathCause": "old_age"
+            }
+          }
         }
       ],
       "repeat": "once_per_life"
@@ -52,6 +124,7 @@
       "category": "life.transition",
       "version": 1,
       "weight": 8,
+      "kind": "decision",
       "conditions": {
         "regions": ["yellow_plains"],
         "minAge": 18,
@@ -62,18 +135,19 @@
       "timeCost": "MEDIUM",
       "text": {
         "intro": [
-          "$[terrain.yellow_plains.hut] A long night — the midwife's hands, the boiling water, the moon at the paper window.",
-          "$[CHARACTER] hears a cry that is small and certain, and the world is a different shape than it was."
+          "A long night. The midwife — Old Mother Liu, who has done this for forty years and knows all the small signs no diagram in any text would record — kneels at the kang's edge with sleeves rolled back. The water is boiling on the stove. The moon is at the paper window, full and very white."
         ],
-        "body": [],
-        "outro": []
+        "body": [
+          "$[CHARACTER]'s body has been doing the work for sixteen hours. The pain is no longer something separate from the body; the body is the pain, and the breath is the body's small attempt to keep itself together inside the storm.",
+          "The midwife mutters that the baby is turned wrong. There is, in such cases, the choice the family is asked to make on behalf of the labouring woman, since the labouring woman has long since stopped being able to make it for herself. The slow careful path: trust the midwife, trust the body, and risk the long dangerous turning. The forced path: a cut, a fast extraction, a wound that will or will not heal. The third path, ancient and grim: pray to the mother goddesses and let the body decide on its own, taking what comes."
+        ]
       },
       "choices": [
         {
-          "id": "ch_labor",
-          "label": "Endure the hours. Push when the body says push.",
+          "id": "ch_trust_midwife",
+          "label": "Trust the midwife's hands. Slowly turn the child.",
           "timeCost": "MEDIUM",
-          "check": { "base": 20, "stats": { "Charm": 1, "Body": 1 }, "difficulty": 50 },
+          "check": { "base": 25, "stats": { "Spirit": 1, "Body": 1 }, "difficulty": 50 },
           "outcomes": {
             "CRIT_SUCCESS": {
               "narrativeKey": "emotion.hope.dawn",
@@ -102,6 +176,47 @@
               "narrativeKey": "emotion.grief.fresh",
               "stateDeltas": [
                 { "kind": "hp_delta", "amount": -10 },
+                { "kind": "flag_set", "flag": "lost_child_in_birth" }
+              ]
+            },
+            "CRIT_FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "deathCause": "childbirth"
+            }
+          }
+        },
+        {
+          "id": "ch_force_cut",
+          "label": "Send for the town surgeon. The cut is fast; the wound is later.",
+          "timeCost": "MEDIUM",
+          "check": { "base": 20, "stats": { "Body": 2 }, "difficulty": 55 },
+          "outcomes": {
+            "CRIT_SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "has_child" },
+                { "kind": "hp_delta", "amount": -8 },
+                { "kind": "insight_delta", "amount": 3 }
+              ]
+            },
+            "SUCCESS": {
+              "narrativeKey": "emotion.hope.small",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "has_child" },
+                { "kind": "hp_delta", "amount": -12 }
+              ]
+            },
+            "PARTIAL": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "flag_set", "flag": "has_child" },
+                { "kind": "hp_delta", "amount": -20 }
+              ]
+            },
+            "FAILURE": {
+              "narrativeKey": "emotion.grief.fresh",
+              "stateDeltas": [
+                { "kind": "hp_delta", "amount": -25 },
                 { "kind": "flag_set", "flag": "lost_child_in_birth" }
               ]
             },
